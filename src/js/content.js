@@ -17,6 +17,24 @@
   };
 
   /**
+   * log warn
+   * @param {*} msg - message
+   * @returns {boolean} - false
+   */
+  const logWarn = msg => {
+    msg && console.warn(msg);
+    return false;
+  };
+
+  /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
    * is string
    * @param {*} o - object to check
    * @returns {boolean} - result
@@ -29,48 +47,51 @@
    * @returns {void} - Promise.<void>
    */
   const copyToClipboard = async text => {
-    if (isString(text)) {
-      const root = document.querySelector("body") || document.documentElement;
-      if (root) {
-        const {namespaceURI} = root;
-        const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
-                   "http://www.w3.org/1999/xhtml" || "";
-        const elm = document.createElementNS(ns, "div");
-        const range = document.createRange();
-        const selection = window.getSelection();
-        const arr = [];
-        if (!selection.isCollapsed) {
-          const l = selection.rangeCount;
-          let i = 0;
-          while (i < l) {
-            arr.push(selection.getRangeAt(i));
-            i++;
-          }
+    if (!isString(text)) {
+      throw new TypeError(`Expected String but got ${getType(text)}.`);
+    }
+    const root = document.querySelector("body") || document.documentElement;
+    if (root) {
+      const {namespaceURI} = root;
+      const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
+                 "http://www.w3.org/1999/xhtml" || "";
+      const elm = document.createElementNS(ns, "div");
+      const range = document.createRange();
+      const sel = window.getSelection();
+      const arr = [];
+      if (!sel.isCollapsed) {
+        const l = sel.rangeCount;
+        let i = 0;
+        while (i < l) {
+          arr.push(sel.getRangeAt(i));
+          i++;
         }
-        elm.textContent = text;
-        elm.setAttributeNS(
-          ns, "style", "all:unset;position:absolute;width:0;height:0;"
-        );
-        root.append(elm);
-        range.selectNodeContents(elm);
-        selection.removeAllRanges();
-        selection.addRange(range);
-        document.execCommand("copy");
-        selection.removeAllRanges();
-        if (arr.length) {
-          for (const i of arr) {
-            selection.addRange(i);
-          }
-        }
-        root.removeChild(elm);
       }
+      elm.textContent = text;
+      elm.setAttributeNS(
+        ns, "style", "all:unset;position:absolute;width:0;height:0;"
+      );
+      root.append(elm);
+      range.selectNodeContents(elm);
+      sel.removeAllRanges();
+      sel.addRange(range);
+      document.execCommand("copy");
+      sel.removeAllRanges();
+      if (arr.length) {
+        for (const i of arr) {
+          sel.addRange(i);
+        }
+      }
+      root.removeChild(elm);
+    } else {
+      logWarn(`url2clipboard: No handler found for ${document.contentType}.`);
     }
   };
 
   /**
    * get user input
-   * @param {string} value - value
-   * @returns {string} - input value
+   * @param {string} value - default value
+   * @returns {string} - user input value
    */
   const getInput = async (value = "") => {
     const msg = await i18n.getMessage("userInput");
@@ -80,9 +101,9 @@
 
   /**
    * create HTML Anchor
-   * @param {string} content - content
-   * @param {string} title - title
-   * @param {string} url - title
+   * @param {string} content - content title
+   * @param {string} title - document title
+   * @param {string} url - document URL
    * @returns {Object} - Promise.<?string>
    */
   const createHtml = async (content, title, url) =>
@@ -91,10 +112,10 @@
 
   /**
    * create Markdown Link
-   * @param {string} content - content
-   * @param {string} title - title
-   * @param {string} url - title
-   * @returns {Object} - Promise.<string>
+   * @param {string} content - content title
+   * @param {string} title - document title
+   * @param {string} url - document URL
+   * @returns {Object} - Promise.<?string>
    */
   const createMarkdown = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
@@ -102,8 +123,8 @@
 
   /**
    * create Text Link
-   * @param {string} content - content
-   * @param {string} url - title
+   * @param {string} content - content title
+   * @param {string} url - document URL
    * @returns {Object} - Promise.<?string>
    */
   const createText = async (content, url) =>
@@ -146,7 +167,7 @@
 
   /**
    * send status
-   * @param {!Object} evt - event
+   * @param {!Object} evt - Event
    * @returns {Object} - Promise.<AsincFunction>
    */
   const sendStatus = async evt => {
