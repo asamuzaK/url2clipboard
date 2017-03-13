@@ -30,22 +30,40 @@
    */
   const copyToClipboard = async text => {
     if (isString(text)) {
-      const body = document.querySelector("body");
-      const elm = document.createElement("div");
-      const range = document.createRange();
-      const selection = window.getSelection();
-      elm.textContent = text;
-      elm.style.all = "unset";
-      elm.style.appearance = "none";
-      elm.style.width = "0";
-      elm.style.height = "0";
-      elm.style.position = "absolute";
-      body.append(elm);
-      range.selectNodeContents(elm);
-      selection.addRange(range);
-      document.execCommand("copy");
-      selection.removeRange(selection.getRangeAt(selection.rangeCount - 1));
-      body.removeChild(elm);
+      const root = document.querySelector("body") || document.documentElement;
+      if (root) {
+        const {namespaceURI} = root;
+        const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
+                   "http://www.w3.org/1999/xhtml" || "";
+        const elm = document.createElementNS(ns, "div");
+        const range = document.createRange();
+        const selection = window.getSelection();
+        const arr = [];
+        if (!selection.isCollapsed) {
+          const l = selection.rangeCount;
+          let i = 0;
+          while (i < l) {
+            arr.push(selection.getRangeAt(i));
+            i++;
+          }
+        }
+        elm.textContent = text;
+        elm.setAttributeNS(
+          ns, "style", "all:unset;position:absolute;width:0;height:0;"
+        );
+        root.append(elm);
+        range.selectNodeContents(elm);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("copy");
+        selection.removeAllRanges();
+        if (arr.length) {
+          for (const i of arr) {
+            selection.addRange(i);
+          }
+        }
+        root.removeChild(elm);
+      }
     }
   };
 
