@@ -29,7 +29,7 @@
    * @returns {void} - Promise.<void>
    */
   const copyToClipboard = async text => {
-    if (await isString(text)) {
+    if (isString(text)) {
       const body = document.querySelector("body");
       const elm = document.createElement("div");
       const range = document.createRange();
@@ -68,7 +68,7 @@
    * @returns {Object} - Promise.<?string>
    */
   const createHtml = async (content, title, url) =>
-    await isString(content) && await isString(title) && await isString(url) &&
+    isString(content) && isString(title) && isString(url) &&
     `<a href="${url}" title="${title}">${content}</a>` || null;
 
   /**
@@ -79,7 +79,7 @@
    * @returns {Object} - Promise.<string>
    */
   const createMarkDown = async (content, title, url) =>
-    await isString(content) && await isString(title) && await isString(url) &&
+    isString(content) && isString(title) && isString(url) &&
     `[${content}](${url} "${title}")` || null;
 
   /**
@@ -89,8 +89,7 @@
    * @returns {Object} - Promise.<?string>
    */
   const createText = async (content, url) =>
-    await isString(content) && await isString(url) &&
-    `${content} <${url}>` || null;
+    isString(content) && isString(url) && `${content} <${url}>` || null;
 
   /**
    * extract message
