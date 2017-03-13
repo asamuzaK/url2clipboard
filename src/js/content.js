@@ -132,7 +132,7 @@
    * @returns {Object} - Promise.<AsincFunction>
    */
   const sendStatus = async evt => {
-    const enabled = /^(?:application\/(?:(?:[\w\-.]+\+)?xml|image\/[\w\-.]+\+xml|text\/(?:ht|x)ml)$/.test(document.contentType);
+    const enabled = /^(?:application\/(?:(?:[\w\-.]+\+)?xml)|image\/[\w\-.]+\+xml|text\/(?:ht|x)ml)$/.test(document.contentType);
     const msg = {
       [evt.type]: enabled,
     };
