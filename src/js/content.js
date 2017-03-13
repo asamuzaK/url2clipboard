@@ -51,44 +51,45 @@
    * @returns {void} - Promise.<void>
    */
   const copyToClipboard = async text => {
-    if (!isString(text)) {
-      throw new TypeError(`Expected String but got ${getType(text)}.`);
-    }
-    const root = document.querySelector("body") || document.documentElement;
-    if (root) {
-      const {namespaceURI} = root;
-      const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
-                 "http://www.w3.org/1999/xhtml" || "";
-      const elm = document.createElementNS(ns, "div");
-      const range = document.createRange();
-      const sel = window.getSelection();
-      const arr = [];
-      if (!sel.isCollapsed) {
-        const l = sel.rangeCount;
-        let i = 0;
-        while (i < l) {
-          arr.push(sel.getRangeAt(i));
-          i++;
+    if (isString(text)) {
+      const root = document.querySelector("body") || document.documentElement;
+      if (root) {
+        const {namespaceURI} = root;
+        const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
+                   "http://www.w3.org/1999/xhtml" || "";
+        const elm = document.createElementNS(ns, "div");
+        const range = document.createRange();
+        const sel = window.getSelection();
+        const arr = [];
+        if (!sel.isCollapsed) {
+          const l = sel.rangeCount;
+          let i = 0;
+          while (i < l) {
+            arr.push(sel.getRangeAt(i));
+            i++;
+          }
         }
-      }
-      elm.textContent = text;
-      elm.setAttributeNS(
-        ns, "style", "all:unset;position:absolute;width:0;height:0;"
-      );
-      root.append(elm);
-      range.selectNodeContents(elm);
-      sel.removeAllRanges();
-      sel.addRange(range);
-      document.execCommand("copy");
-      sel.removeAllRanges();
-      if (arr.length) {
-        for (const i of arr) {
-          sel.addRange(i);
+        elm.textContent = text;
+        elm.setAttributeNS(
+          ns, "style", "all:unset;position:absolute;width:0;height:0;"
+        );
+        root.append(elm);
+        range.selectNodeContents(elm);
+        sel.removeAllRanges();
+        sel.addRange(range);
+        document.execCommand("copy");
+        sel.removeAllRanges();
+        if (arr.length) {
+          for (const i of arr) {
+            sel.addRange(i);
+          }
         }
+        root.removeChild(elm);
+      } else {
+        logWarn(`url2clipboard: ${document.contentType} not supported yet.`);
       }
-      root.removeChild(elm);
     } else {
-      logWarn(`url2clipboard: No handler found for ${document.contentType}.`);
+      logWarn(`url2clipboard: Expected String but got ${getType(text)}.`);
     }
   };
 
@@ -175,7 +176,7 @@
    * @returns {Object} - Promise.<AsincFunction>
    */
   const sendStatus = async evt => {
-    const enabled = /^(?:application\/(?:(?:[\w\-.]+\+)?xml)|image\/[\w\-.]+\+xml|text\/(?:ht|x)ml)$/.test(document.contentType);
+    const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
     const msg = {
       [evt.type]: enabled,
     };
