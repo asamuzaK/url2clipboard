@@ -37,7 +37,7 @@
     const data = {info, tab};
     const input = /\.input$/.test(menuItemId);
     const msg = {data, input, menuItemId};
-    return id !== tabs.TAB_ID_NONE && tabs.sendMessage(id, msg) || false;
+    return id !== tabs.TAB_ID_NONE && tabs.sendMessage(id, msg) || null;
   };
 
   /**
@@ -64,7 +64,7 @@
     for (const item of menus) {
       func.push(
         createMenuItem(item, ["all"]),
-        createMenuItem(`${item}.input`, ["all"]),
+        createMenuItem(`${item}.input`, ["all"])
       );
     }
     return Promise.all(func);
