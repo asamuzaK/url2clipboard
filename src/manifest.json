@@ -19,8 +19,17 @@
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/url2clipboard",
+  "icons": {
+    "32": "img/icon.svg#gray",
+    "64": "img/icon.svg"
+  },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
+  "page_action": {
+    "browser_style": true,
+    "default_icon": "img/icon.svg#gray",
+    "default_title": "__MSG_extensionName__"
+  },
   "permissions": [
     "<all_urls>",
     "activeTab",

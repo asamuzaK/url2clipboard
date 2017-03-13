@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:cc="http://creativecommons.org/ns#"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     height="128" width="128" viewBox="0 0 128 128">
+  <metadata>
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>url2clipboard icon</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <style>
+    g:not(#color):not(:target),
+    g:target ~ #color {
+      display: none;
+    }
+  </style>
+  <symbol id="board">
+    <path stroke-width="16" fill="none"
+          d="m 34,28 h 60 c 4.432,0 8,3.568 8,8 v 72 c 0,4.432 -3.568,8 -8,8
+             H 34 c -4.432,0 -8,-3.568 -8,-8 V 36 c 0,-4.432 3.568,-8 8,-8 z"/>
+  </symbol>
+  <symbol id="clip">
+    <path d="M 76,16 A 12,12 0 0 1 64,28 12,12 0 0 1 52,16 12,12 0 0 1 64,4
+             12,12 0 0 1 76,16 Z"/>
+    <path d="M 42,16 H 86 V 44 H 42 Z"/>
+  </symbol>
+  <g id="gray">
+    <use href="#board" stroke="#4C4C4C"/>
+    <use href="#clip" fill="#4C4C4C"/>
+  </g>
+  <g id="white">
+    <use href="#board" stroke="#FFF"/>
+    <use href="#clip" fill="#FFF"/>
+  </g>
+  <g id="off">
+    <use href="#board" stroke="ButtonShadow"/>
+    <use href="#clip" fill="ButtonShadow"/>
+  </g>
+  <g id="color">
+    <use href="#board" stroke="#002147"/>
+    <use href="#clip" fill="#E66000"/>
+  </g>
+</svg>
