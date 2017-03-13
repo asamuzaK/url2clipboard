@@ -6,6 +6,10 @@
   /* api */
   const {i18n, runtime} = browser;
 
+  /* constants */
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
+
   /**
    * log error
    * @param {!Object} e - Error
