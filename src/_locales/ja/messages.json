@@ -1,0 +1,29 @@
+{
+  "extensionDescription": {
+   "message": "ドキュメントの URL を HTML Anchor、Markdown、Text でクリップボードにコピー"
+  },
+  "extensionName": {
+    "message": "URL をクリップボードにコピー"
+  },
+  "htmlAnchor": {
+    "message": "HTML"
+  },
+  "htmlAnchor.input": {
+    "message": "HTML (Input)"
+  },
+  "markdownLink": {
+    "message": "Markdown"
+  },
+  "markdownLink.input": {
+    "message": "Markdown (Input)"
+  },
+  "textLink": {
+    "message": "Text"
+  },
+  "textLink.input": {
+    "message": "Text (Input)"
+  },
+  "userInput": {
+    "message": "タイトルを入力"
+  }
+}

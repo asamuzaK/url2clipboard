@@ -1,0 +1,29 @@
+{
+  "extensionDescription": {
+   "message": "Copy document URL to clipboard in HTML Anchor, Markdown, Text"
+  },
+  "extensionName": {
+    "message": "Copy URL To Clipboard"
+  },
+  "htmlAnchor": {
+    "message": "HTML"
+  },
+  "htmlAnchor.input": {
+    "message": "HTML (Input)"
+  },
+  "markdownLink": {
+    "message": "Markdown"
+  },
+  "markdownLink.input": {
+    "message": "Markdown (Input)"
+  },
+  "textLink": {
+    "message": "Text"
+  },
+  "textLink.input": {
+    "message": "Text (Input)"
+  },
+  "userInput": {
+    "message": "Input title"
+  }
+}

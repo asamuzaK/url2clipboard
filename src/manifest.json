@@ -1,0 +1,31 @@
+{
+  "applications": {
+    "gecko": {
+      "id": "url2clipboard@asamuzak.jp",
+      "strict_min_version": "52.0a1"
+    }
+  },
+  "background": {
+    "scripts": ["js/background.js"]
+  },
+  "content_scripts": [
+    {
+      "all_frames": false,
+      "js": ["js/content.js"],
+      "matches": ["<all_urls>"],
+      "run_at": "document_start"
+    }
+  ],
+  "default_locale": "en",
+  "description": "__MSG_extensionDescription__",
+  "homepage_url": "https://github.com/asamuzaK/url2clipboard",
+  "manifest_version": 2,
+  "name": "__MSG_extensionName__",
+  "permissions": [
+    "<all_urls>",
+    "activeTab",
+    "clipboardWrite",
+    "contextMenus"
+  ],
+  "version": "0.1.0"
+}
