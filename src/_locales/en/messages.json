@@ -5,25 +5,28 @@
   "extensionName": {
     "message": "Copy URL To Clipboard"
   },
+  "extensionLocale": {
+    "message": "en"
+  },
   "htmlAnchor": {
     "message": "HTML"
   },
   "htmlAnchor.input": {
-    "message": "HTML (Input)"
+    "message": "HTML (Input Title)"
   },
   "markdownLink": {
     "message": "Markdown"
   },
   "markdownLink.input": {
-    "message": "Markdown (Input)"
+    "message": "Markdown (Input Title)"
   },
   "textLink": {
     "message": "Text"
   },
   "textLink.input": {
-    "message": "Text (Input)"
+    "message": "Text (Input Title)"
   },
   "userInput": {
-    "message": "Input title"
+    "message": "Input Title"
   }
 }

@@ -1,0 +1,38 @@
+@charset "UTF-8";
+/**
+ * popup.css
+ */
+body {
+  margin: 0;
+  border: none;
+  padding: 0.5rem 0;
+  background-color: #FFF;
+  color: #000;
+}
+main {
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+ul {
+  display: block;
+  margin: 0;
+  padding: 0 0.25rem;
+  list-style: none;
+}
+li {
+  display: block;
+  margin 0;
+  border: 1px solid transparent;
+  padding: 0.15rem 1rem;
+}
+li:hover,
+li:focus {
+  border-color: rgba(0,0,0,0.1);
+  background-color: #EAEAEA;/*#F5F6F7;*/
+}
+li:active,
+li:focus:active {
+  border-color: rgba(0,0,0,0.15);
+  background-color: #D7D7D8;
+}

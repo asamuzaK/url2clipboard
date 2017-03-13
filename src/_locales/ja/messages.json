@@ -5,23 +5,26 @@
   "extensionName": {
     "message": "URL をクリップボードにコピー"
   },
+  "extensionLocale": {
+    "message": "ja"
+  },
   "htmlAnchor": {
     "message": "HTML"
   },
   "htmlAnchor.input": {
-    "message": "HTML (Input)"
+    "message": "HTML （タイトルを入力）"
   },
   "markdownLink": {
     "message": "Markdown"
   },
   "markdownLink.input": {
-    "message": "Markdown (Input)"
+    "message": "Markdown （タイトルを入力）"
   },
   "textLink": {
     "message": "Text"
   },
   "textLink.input": {
-    "message": "Text (Input)"
+    "message": "Text （タイトルを入力）"
   },
   "userInput": {
     "message": "タイトルを入力"
