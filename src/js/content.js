@@ -25,7 +25,7 @@
 
   /**
    * copy to clipboard
-   * @param {str} text - text
+   * @param {string} text - text to copy
    * @returns {void} - Promise.<void>
    */
   const copyToClipboard = async text => {
