@@ -72,18 +72,18 @@
     `<a href="${url}" title="${title}">${content}</a>` || null;
 
   /**
-   * create Markdown
+   * create Markdown Link
    * @param {string} content - content
    * @param {string} title - title
    * @param {string} url - title
    * @returns {Object} - Promise.<string>
    */
-  const createMarkDown = async (content, title, url) =>
+  const createMarkdown = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
     `[${content}](${url} "${title}")` || null;
 
   /**
-   * create Text
+   * create Text Link
    * @param {string} content - content
    * @param {string} url - title
    * @returns {Object} - Promise.<?string>
