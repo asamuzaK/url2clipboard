@@ -8,6 +8,13 @@
   "background": {
     "scripts": ["js/background.js"]
   },
+  "commands": {
+    "_execute_page_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+C"
+      }
+    }
+  },
   "content_scripts": [
     {
       "all_frames": false,
@@ -28,6 +35,7 @@
   "page_action": {
     "browser_style": true,
     "default_icon": "img/icon.svg#gray",
+    "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__"
   },
   "permissions": [

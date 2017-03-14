@@ -7,6 +7,11 @@
   const {i18n, runtime} = browser;
 
   /* constants */
+  const HTML_A = "htmlAnchor";
+  const INPUT = "userInput";
+  const MD_LINK = "markdownLink";
+  const NS_HTML = "http://www.w3.org/1999/xhtml";
+  const TXT_LINK = "textLink";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
@@ -56,7 +61,7 @@
       if (root) {
         const {namespaceURI} = root;
         const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
-                   "http://www.w3.org/1999/xhtml" || "";
+                   NS_HTML || "";
         const elm = document.createElementNS(ns, "div");
         const range = document.createRange();
         const sel = window.getSelection();
@@ -94,14 +99,31 @@
   };
 
   /**
-   * get user input
-   * @param {string} value - default value
-   * @returns {string} - user input value
+   * get selection text
+   * @param {Object} info - info
+   * @returns {Object} - Promise.<string>
    */
-  const getInput = async (value = "") => {
-    const msg = await i18n.getMessage("userInput");
-    value = await window.prompt(msg, value);
-    return value;
+  const getSelectionText = async (info = {}) => {
+    let text;
+    if (await getType(info) === "Object" && Object.keys(info).length) {
+      const {selectionText} = info;
+      text = selectionText;
+    } else {
+      const sel = window.getSelection();
+      !sel.isCollapsed && (text = sel.toString());
+    }
+    return text || "";
+  };
+
+  /**
+   * get user input
+   * @param {string} text - default text
+   * @returns {string} - user input text
+   */
+  const getInput = async (text = "") => {
+    const msg = await i18n.getMessage(INPUT);
+    text = await window.prompt(msg, text);
+    return text || "";
   };
 
   /**
@@ -113,7 +135,7 @@
    */
   const createHtml = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
-    `<a href="${url}" title="${title}">${content}</a>` || null;
+    `<a href="${url}" title="${title}">${content.trim()}</a>` || null;
 
   /**
    * create Markdown Link
@@ -124,7 +146,7 @@
    */
   const createMarkdown = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
-    `[${content}](${url} "${title}")` || null;
+    `[${content.trim()}](${url} "${title}")` || null;
 
   /**
    * create Text Link
@@ -133,7 +155,7 @@
    * @returns {Object} - Promise.<?string>
    */
   const createText = async (content, url) =>
-    isString(content) && isString(url) && `${content} <${url}>` || null;
+    isString(content) && isString(url) && `${content.trim()} <${url}>` || null;
 
   /**
    * extract message
@@ -144,23 +166,24 @@
     const {data, input, menuItemId} = msg;
     let func;
     if (data) {
-      const {info, tab} = data;
-      if (info && tab) {
-        const {selectionText} = info;
+      const {tab} = data;
+      if (tab) {
         const {title, url} = tab;
-        const content = input && await getInput(selectionText || title) ||
-                        selectionText || title;
+        const selectionText = await getSelectionText(input);
+        const content = input ?
+                          await getInput(selectionText || title) :
+                          selectionText || title;
         switch (menuItemId) {
-          case "htmlAnchor":
-          case "htmlAnchor.input":
+          case HTML_A:
+          case `${HTML_A}.input`:
             func = createHtml(content, title, url).then(copyToClipboard);
             break;
-          case "markdownLink":
-          case "markdownLink.input":
+          case MD_LINK:
+          case `${MD_LINK}.input`:
             func = createMarkdown(content, title, url).then(copyToClipboard);
             break;
-          case "textLink":
-          case "textLink.input":
+          case TXT_LINK:
+          case `${TXT_LINK}.input`:
             func = createText(content, url).then(copyToClipboard);
             break;
           default:
@@ -173,20 +196,23 @@
   /**
    * send status
    * @param {!Object} evt - Event
-   * @returns {Object} - Promise.<AsincFunction>
+   * @returns {Object} - Promise.<?AsincFunction>
    */
   const sendStatus = async evt => {
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
     const msg = {
       [evt.type]: enabled,
     };
-    return runtime.sendMessage(msg);
+    return enabled && runtime.sendMessage(msg) || null;
   };
 
   /* listeners */
   runtime.onMessage.addListener(msg => extractMsg(msg).catch(logError));
   document.addEventListener(
     "DOMContentLoaded", evt => sendStatus(evt).catch(logError), false
+  );
+  window.addEventListener(
+    "load", evt => sendStatus(evt).catch(logError), false
   );
   window.addEventListener(
     "contextmenu", evt => sendStatus(evt).catch(logError), false

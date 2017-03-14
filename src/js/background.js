@@ -3,7 +3,16 @@
  */
 "use strict";
 {
-  const {contextMenus, i18n, runtime, tabs} = browser;
+  /* api */
+  const {contextMenus, i18n, pageAction, runtime, tabs} = browser;
+
+  /* constants */
+  const EXT_NAME = "extensionName";
+  const ICON = "./img/icon.svg";
+  const KEY = "Alt + Shift + C";
+  const HTML_A = "htmlAnchor";
+  const MD_LINK = "markdownLink";
+  const TXT_LINK = "textLink";
 
   /**
    * log error
@@ -22,16 +31,13 @@
    */
   const isString = o => typeof o === "string" || o instanceof String;
 
-  /* context menu */
-  const menus = ["htmlAnchor", "markdownLink", "textLink"];
-
   /**
-   * send context menu clicked data
+   * send data
    * @param {!Object} info - contextMenus.OnClickData
    * @param {!Object} tab - tabs.Tab
    * @returns {Object} - Promise.<?AsyncFunction>
    */
-  const sendContextMenuClickedData = async (info, tab) => {
+  const sendData = async (info, tab) => {
     const {id} = tab;
     const {menuItemId} = info;
     const data = {info, tab};
@@ -39,6 +45,50 @@
     const msg = {data, input, menuItemId};
     return id !== tabs.TAB_ID_NONE && tabs.sendMessage(id, msg) || null;
   };
+
+  /* active tab info */
+  const actTab = {
+    info: null,
+  };
+
+  /**
+   * set active tab info
+   * @param {Object} info - active tab info
+   * @returns {void} - Promise.<void>
+   */
+  const setActiveTab = async (info = {}) => {
+    console.log(info);
+    const {tabId} = info;
+    tabId !== tabs.TAB_ID_NONE && (actTab.info = info);
+  };
+
+  /**
+   * get active tab info
+   * @returns {Object} - Promise.<Object>, tabs.Tab
+   */
+  const getActiveTab = async () => {
+    const {info} = actTab;
+    let tab;
+    if (info) {
+      const {tabId} = info;
+      tab = await tabs.get(tabId);
+    }
+    return tab || null;
+  };
+
+  /**
+   * create data
+   * @param {Object} menuItemId - menuItemId
+   * @returns {Object} - Promise.<?AsyncFunction>
+   */
+  const createData = async menuItemId => {
+    const info = isString(menuItemId) && {menuItemId};
+    const tab = await getActiveTab();
+    return info && tab && sendData(info, tab) || null;
+  };
+
+  /* context menu */
+  const menus = [HTML_A, MD_LINK, TXT_LINK];
 
   /**
    * create context menu item
@@ -93,23 +143,72 @@
     return Promise.all(func);
   };
 
+  /* page action*/
+  /**
+   * replace icon
+   * @param {boolean} enabled - enabled
+   * @param {Object} sender - sender info
+   * @returns {void} - Promise.<void>
+   */
+  const replaceIcon = async (enabled = false, sender = {}) => {
+    const {tab} = sender;
+    if (tab) {
+      const {id: tabId} = tab;
+      const path = enabled && `${ICON}#gray` || `${ICON}#off`;
+      tabId !== tabs.TAB_ID_NONE && pageAction.setIcon({path, tabId});
+    }
+  };
+
+  /**
+   * show icon
+   * @param {boolean} enabled - enabled
+   * @param {Object} sender - sender info
+   * @returns {void} - Promise.<void>
+   */
+  const showIcon = async (enabled = false, sender = {}) => {
+    const {tab} = sender;
+    if (tab) {
+      const {id: tabId} = tab;
+      if (tabId !== tabs.TAB_ID_NONE) {
+        if (enabled) {
+          const name = await i18n.getMessage(EXT_NAME);
+          const path = `${ICON}#off`;
+          const title = `${name} (${KEY})`;
+          pageAction.setIcon({path, tabId});
+          pageAction.setTitle({tabId, title});
+          pageAction.show(tabId);
+        } else {
+          pageAction.hide(tabId);
+        }
+        setActiveTab({tabId});
+      }
+    }
+  };
+
   /**
    * handle message
    * @param {*} msg - message
+   * @param {Object} sender - sender
    * @returns {Object} - Promise.<Array>
    */
-  const handleMsg = async msg => {
+  const handleMsg = async (msg, sender) => {
     const func = [];
     const items = msg && Object.keys(msg);
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
+          case "DOMContentLoaded":
+            func.push(updateContextMenu(obj), showIcon(obj, sender));
+            break;
           case "contextmenu":
             func.push(updateContextMenu(obj));
             break;
-          case "DOMContentLoaded":
-            func.push(updateContextMenu(obj));
+          case "load":
+            func.push(updateContextMenu(obj), replaceIcon(obj, sender));
+            break;
+          case "menuItemId":
+            func.push(createData(obj));
             break;
           default:
         }
@@ -120,10 +219,17 @@
 
   /* listeners */
   contextMenus.onClicked.addListener((info, tab) =>
-    sendContextMenuClickedData(info, tab).catch(logError)
+    sendData(info, tab).catch(logError)
   );
-  runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
-  tabs.onActivated.addListener(() => restoreContextMenu().catch(logError));
+  runtime.onMessage.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(logError)
+  );
+  tabs.onActivated.addListener(info =>
+    Promise.all([
+      restoreContextMenu(),
+      setActiveTab(info),
+    ]).catch(logError)
+  );
 
   /* startup */
   createMenuItems().catch(logError);

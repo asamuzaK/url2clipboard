@@ -23,16 +23,27 @@ ul {
 li {
   display: block;
   margin 0;
+  border: none; /*1px solid transparent;*/
+  padding: 0;
+}
+button {
+  all: unset;
+  appearance: none;
+  display: block;
+  margin 0;
   border: 1px solid transparent;
-  padding: 0.15rem 1rem;
+  padding: 0;
+  line-height: 1.5;
+  text-indent: 1rem;
+  width: 100%;
 }
-li:hover,
-li:focus {
-  border-color: rgba(0,0,0,0.1);
-  background-color: #EAEAEA;/*#F5F6F7;*/
+button:hover,
+button:focus {
+  border: 1px solid #CCC;
+  background-color: #EAEAEA;
 }
-li:active,
-li:focus:active {
-  border-color: rgba(0,0,0,0.15);
+button:active,
+button:focus:active {
+  border: 1px solid #CCC;
   background-color: #D7D7D8;
 }
