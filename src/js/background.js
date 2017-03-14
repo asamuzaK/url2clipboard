@@ -57,7 +57,6 @@
    * @returns {void} - Promise.<void>
    */
   const setActiveTab = async (info = {}) => {
-    console.log(info);
     const {tabId} = info;
     tabId !== tabs.TAB_ID_NONE && (actTab.info = info);
   };
