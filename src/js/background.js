@@ -8,9 +8,9 @@
 
   /* constants */
   const EXT_NAME = "extensionName";
+  const HTML_A = "htmlAnchor";
   const ICON = "./img/icon.svg";
   const KEY = "Alt + Shift + C";
-  const HTML_A = "htmlAnchor";
   const MD_LINK = "markdownLink";
   const TXT_LINK = "textLink";
 
