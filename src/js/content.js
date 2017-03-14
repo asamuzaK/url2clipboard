@@ -208,13 +208,12 @@
 
   /* listeners */
   runtime.onMessage.addListener(msg => extractMsg(msg).catch(logError));
-  document.addEventListener(
-    "DOMContentLoaded", evt => sendStatus(evt).catch(logError), false
-  );
-  window.addEventListener(
-    "load", evt => sendStatus(evt).catch(logError), false
-  );
-  window.addEventListener(
-    "contextmenu", evt => sendStatus(evt).catch(logError), false
-  );
+  document.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener(
+      "load", evt => sendStatus(evt).catch(logError), false
+    );
+    window.addEventListener(
+      "contextmenu", evt => sendStatus(evt).catch(logError), false
+    );
+  }, false);
 }

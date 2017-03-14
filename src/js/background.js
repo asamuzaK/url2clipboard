@@ -145,21 +145,6 @@
 
   /* page action*/
   /**
-   * replace icon
-   * @param {boolean} enabled - enabled
-   * @param {Object} sender - sender info
-   * @returns {void} - Promise.<void>
-   */
-  const replaceIcon = async (enabled = false, sender = {}) => {
-    const {tab} = sender;
-    if (tab) {
-      const {id: tabId} = tab;
-      const path = enabled && `${ICON}#gray` || `${ICON}#off`;
-      tabId !== tabs.TAB_ID_NONE && pageAction.setIcon({path, tabId});
-    }
-  };
-
-  /**
    * show icon
    * @param {boolean} enabled - enabled
    * @param {Object} sender - sender info
@@ -198,14 +183,11 @@
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
-          case "DOMContentLoaded":
-            func.push(updateContextMenu(obj), showIcon(obj, sender));
-            break;
           case "contextmenu":
             func.push(updateContextMenu(obj));
             break;
           case "load":
-            func.push(updateContextMenu(obj), replaceIcon(obj, sender));
+            func.push(updateContextMenu(obj), showIcon(obj, sender));
             break;
           case "menuItemId":
             func.push(createData(obj));
