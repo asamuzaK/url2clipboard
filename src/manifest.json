@@ -34,7 +34,7 @@
   "name": "__MSG_extensionName__",
   "page_action": {
     "browser_style": true,
-    "default_icon": "img/icon.svg#off",
+    "default_icon": "img/icon.svg#neutral",
     "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__"
   },

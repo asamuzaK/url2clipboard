@@ -157,7 +157,7 @@
       if (tabId !== tabs.TAB_ID_NONE) {
         if (enabled) {
           const name = await i18n.getMessage(EXT_NAME);
-          const path = `${ICON}#off`;
+          const path = `${ICON}#neutral`;
           const title = `${name} (${KEY})`;
           pageAction.setIcon({path, tabId});
           pageAction.setTitle({tabId, title});

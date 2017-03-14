@@ -40,6 +40,10 @@
     <use href="#board" stroke="ButtonShadow"/>
     <use href="#clip" fill="ButtonShadow"/>
   </g>
+  <g id="neutral">
+    <use href="#board" stroke="#808080"/>
+    <use href="#clip" fill="#808080"/>
+  </g>
   <g id="color">
     <use href="#board" stroke="#002147"/>
     <use href="#clip" fill="#E66000"/>
