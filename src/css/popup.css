@@ -22,15 +22,15 @@ ul {
 }
 li {
   display: block;
-  margin 0;
-  border: none; /*1px solid transparent;*/
+  margin: 0;
+  border: none;
   padding: 0;
 }
 button {
   all: unset;
   appearance: none;
   display: block;
-  margin 0;
+  margin: 0;
   border: 1px solid transparent;
   padding: 0;
   line-height: 1.5;
