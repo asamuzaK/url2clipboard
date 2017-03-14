@@ -166,10 +166,10 @@
     const {data, input, menuItemId} = msg;
     let func;
     if (data) {
-      const {tab} = data;
+      const {info, tab} = data;
       if (tab) {
         const {title, url} = tab;
-        const selectionText = await getSelectionText(input);
+        const selectionText = await getSelectionText(info);
         const content = input ?
                           await getInput(selectionText || title) :
                           selectionText || title;
