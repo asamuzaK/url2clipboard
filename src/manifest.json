@@ -6,6 +6,7 @@
     }
   },
   "background": {
+    "page": "html/background.html",
     "scripts": ["js/background.js"]
   },
   "commands": {
