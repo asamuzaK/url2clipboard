@@ -6,8 +6,7 @@
     }
   },
   "background": {
-    "page": "html/background.html",
-    "scripts": ["js/background.js"]
+    "page": "html/background.html"
   },
   "commands": {
     "_execute_page_action": {
@@ -43,7 +42,8 @@
     "<all_urls>",
     "activeTab",
     "clipboardWrite",
-    "contextMenus"
+    "contextMenus",
+    "tabs"
   ],
   "version": "0.5.4"
 }
