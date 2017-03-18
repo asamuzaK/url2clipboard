@@ -16,7 +16,7 @@
   const LINK_MD = "markdownLink";
   const LINK_TEXT = "textLink";
   const MENU_ITEM_ID = "menuItemId";
-  const MENU_POPUP = "html/menu.html";
+  const MENU_POPUP = "html/popup.html";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT_GET = "userInputGet";
