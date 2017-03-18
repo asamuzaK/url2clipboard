@@ -4,13 +4,16 @@
 "use strict";
 {
   /* api */
-  const {runtime} = browser;
+  const {i18n, runtime} = browser;
 
   /* constants */
   const CLIP_TEXT = "clipboardText";
   const NS_HTML = "http://www.w3.org/1999/xhtml";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
+  const USER_INPUT = "userInput";
+  const USER_INPUT_GET = "userInputGet";
+  const USER_INPUT_RES = "userInputRes";
 
   /**
    * log error
@@ -46,6 +49,54 @@
    * @returns {boolean} - result
    */
   const isString = o => typeof o === "string" || o instanceof String;
+
+  /**
+   * send message
+   * @param {*} msg - message
+   * @returns {Object} - Promise.<?AsyncFunction>
+   */
+  const sendMsg = async msg => {
+    const func = msg && runtime.sendMessage(msg);
+    return func || null;
+  };
+
+  /**
+   * send status
+   * @param {!Object} evt - Event
+   * @returns {Object} - Promise.<?AsincFunction>
+   */
+  const sendStatus = async evt => {
+    const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
+    const msg = {
+      [evt.type]: enabled,
+    };
+    return enabled && sendMsg(msg) || null;
+  };
+
+  /**
+   * send user input
+   * @param {Object} data - input data
+   * @returns {Object} - Promise.<AsyncFunction>
+   */
+  const sendInput = async (data = {}) => {
+    const msg = {
+      [USER_INPUT_RES]: data,
+    };
+    return sendMsg(msg);
+  };
+
+  /**
+   * get user input
+   * @param {Object} data - input data
+   * @returns {Object} - input data
+   */
+  const getInput = async (data = {}) => {
+    let {content: text} = data;
+    const msg = await i18n.getMessage(USER_INPUT);
+    text = await window.prompt(msg, text);
+    isString(text) && (data.content = text);
+    return data;
+  };
 
   /**
    * copy to clipboard
@@ -110,24 +161,14 @@
           case CLIP_TEXT:
             func.push(copyToClipboard(obj));
             break;
+          case USER_INPUT_GET:
+            func.push(getInput(obj).then(sendInput));
+            break;
           default:
         }
       }
     }
     return Promise.all(func);
-  };
-
-  /**
-   * send status
-   * @param {!Object} evt - Event
-   * @returns {Object} - Promise.<?AsincFunction>
-   */
-  const sendStatus = async evt => {
-    const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
-    const msg = {
-      [evt.type]: enabled,
-    };
-    return enabled && runtime.sendMessage(msg) || null;
   };
 
   /* listeners */

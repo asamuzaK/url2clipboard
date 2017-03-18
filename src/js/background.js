@@ -10,15 +10,17 @@
   const CLIP_ELEMENT = "clipboard";
   const CLIP_TEXT = "clipboardText";
   const EXT_NAME = "extensionName";
-  const HTML_A = "htmlAnchor";
   const ICON = "img/icon.svg";
-  const INPUT = "userInput";
   const KEY = "Alt + Shift + C";
-  const MD_LINK = "markdownLink";
-  const POPUP = "html/popup.html";
-  const TXT_LINK = "textLink";
+  const LINK_HTML = "htmlAnchor";
+  const LINK_MD = "markdownLink";
+  const LINK_TEXT = "textLink";
+  const MENU_ITEM_ID = "menuItemId";
+  const MENU_POPUP = "html/menu.html";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
+  const USER_INPUT_GET = "userInputGet";
+  const USER_INPUT_RES = "userInputRes";
 
   /**
    * log error
@@ -64,7 +66,6 @@
   const stringifyPositiveInt = (i, zero = false) =>
     Number.isSafeInteger(i) && (zero && i >= 0 || i > 0) && `${i}` || null;
 
-  /* background */
   /**
    * is tabId
    * @param {*} tabId - tabId
@@ -100,7 +101,7 @@
   };
 
   /**
-   * send text
+   * send text to copy
    * @param {number} tabId - tab ID
    * @param {string} text - text to clip
    * @returns {Object} - Promise.<?AsyncFunction>
@@ -117,14 +118,20 @@
   };
 
   /**
-   * get user input
-   * @param {string} text - default text
-   * @returns {string} - user input text
+   * send user input request
+   * @param {number} tabId - tab ID
+   * @param {Object} data - input data
+   * @returns {Object} - Promise.<?AsyncFunction>
    */
-  const getInput = async (text = "") => {
-    const msg = await i18n.getMessage(INPUT);
-    text = await window.prompt(msg, text);
-    return text || "";
+  const requestInput = async (tabId, data) => {
+    let func;
+    if (isTabId(tabId)) {
+      const msg = {
+        [USER_INPUT_GET]: data,
+      };
+      func = tabs.sendMessage(tabId, msg);
+    }
+    return func || null;
   };
 
   /**
@@ -170,26 +177,27 @@
       const {id: tabId, title, url} = tab;
       if (isTabId(tabId)) {
         const {menuItemId, selectionText} = info;
-        const input = /\.input$/.test(menuItemId);
-        const content = input ?
-                          await getInput(selectionText || title) :
-                          selectionText || title;
+        const content = selectionText || title;
         let text;
         switch (menuItemId) {
-          case HTML_A:
-          case `${HTML_A}.input`:
+          case LINK_HTML:
             text = await createHtml(content, title, url);
             text && (func = sendText(tabId, text));
             break;
-          case MD_LINK:
-          case `${MD_LINK}.input`:
+          case LINK_MD:
             text = await createMarkdown(content, title, url);
             text && (func = sendText(tabId, text));
             break;
-          case TXT_LINK:
-          case `${TXT_LINK}.input`:
+          case LINK_TEXT:
             text = await createText(content, url);
             text && (func = sendText(tabId, text));
+            break;
+          case `${LINK_HTML}.input`:
+          case `${LINK_MD}.input`:
+          case `${LINK_TEXT}.input`:
+            func = requestInput(tabId, {
+              content, menuItemId, tabId, title, url,
+            });
             break;
           default:
         }
@@ -198,11 +206,37 @@
     return func || null;
   };
 
-  /* tabs */
-  /* enabled tabs collection */
-  const enabledTabs = {
-    active: null,
+  /**
+   * extract user input data
+   * @param {Object} data - tab data
+   * @returns {Object} - Promise.<?AsyncFunction>
+   */
+  const extractInput = async (data = {}) => {
+    const {content, menuItemId, tabId, title, url} = data;
+    let func;
+    if (isTabId(tabId)) {
+      let text;
+      switch (menuItemId) {
+        case `${LINK_HTML}.input`:
+          text = await createHtml(content, title, url);
+          text && (func = sendText(tabId, text));
+          break;
+        case `${LINK_MD}.input`:
+          text = await createMarkdown(content, title, url);
+          text && (func = sendText(tabId, text));
+          break;
+        case `${LINK_TEXT}.input`:
+          text = await createText(content, url);
+          text && (func = sendText(tabId, text));
+          break;
+        default:
+      }
+    }
+    return func || null;
   };
+
+  /* enabled tabs collection */
+  const enabledTabs = {};
 
   /**
    * set enabled tab
@@ -236,10 +270,10 @@
    * @returns {Object} - tabs.Tab
    */
   const getActiveTab = async () => {
-    const {active: tabId} = enabledTabs;
+    const arr = await tabs.query({active: true});
     let tab;
-    if (isTabId(tabId)) {
-      tab = await tabs.get(tabId);
+    if (arr.length) {
+      [tab] = arr;
     }
     return tab || null;
   };
@@ -256,7 +290,7 @@
   };
 
   /* context menu */
-  const menus = [HTML_A, MD_LINK, TXT_LINK];
+  const menus = [LINK_HTML, LINK_MD, LINK_TEXT];
 
   /**
    * create context menu item
@@ -306,7 +340,6 @@
     return Promise.all(func);
   };
 
-  /* page action*/
   /**
    * show icon
    * @param {number} tabId - tab ID
@@ -320,7 +353,7 @@
         const name = await i18n.getMessage(EXT_NAME);
         const icon = await extension.getURL(ICON);
         const path = `${icon}#neutral`;
-        const popup = await extension.getURL(POPUP);
+        const popup = await extension.getURL(MENU_POPUP);
         const title = `${name} (${KEY})`;
         func.push(
           pageAction.setIcon({path, tabId}),
@@ -335,7 +368,6 @@
     return Promise.all(func);
   };
 
-  /* handlers */
   /**
    * handle message
    * @param {*} msg - message
@@ -360,8 +392,11 @@
               updateContextMenu(obj)
             );
             break;
-          case "menuItemId":
+          case MENU_ITEM_ID:
             func.push(createData(obj));
+            break;
+          case USER_INPUT_RES:
+            func.push(extractInput(obj));
             break;
           default:
         }
@@ -378,7 +413,6 @@
   const handleActiveTab = async (info = {}) => {
     const {tabId} = info;
     const func = [];
-    enabledTabs.active = tabId;
     if (isTabId(tabId)) {
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
