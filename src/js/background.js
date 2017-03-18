@@ -179,17 +179,17 @@
           case HTML_A:
           case `${HTML_A}.input`:
             text = await createHtml(content, title, url);
-            text && (func = sendText(text));
+            text && (func = sendText(tabId, text));
             break;
           case MD_LINK:
           case `${MD_LINK}.input`:
             text = await createMarkdown(content, title, url);
-            text && (func = sendText(text));
+            text && (func = sendText(tabId, text));
             break;
           case TXT_LINK:
           case `${TXT_LINK}.input`:
             text = await createText(content, url);
-            text && (func = sendText(text));
+            text && (func = sendText(tabId, text));
             break;
           default:
         }
@@ -379,11 +379,10 @@
     const {tabId} = info;
     const func = [];
     enabledTabs.active = tabId;
-    await contextMenus.removeAll();
     if (isTabId(tabId)) {
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
-      func.push(createMenuItems(enabled), showIcon(tabId, enabled));
+      func.push(updateContextMenu(enabled), showIcon(tabId, enabled));
     }
     return Promise.all(func);
   };

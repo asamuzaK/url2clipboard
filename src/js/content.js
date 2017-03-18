@@ -96,11 +96,11 @@
   };
 
   /**
-   * extract message
+   * handle message
    * @param {*} msg - message
    * @returns {Object} - Promise.<Array>
    */
-  const extractMsg = async (msg = {}) => {
+  const handleMsg = async (msg = {}) => {
     const items = msg && Object.keys(msg);
     const func = [];
     if (items && items.length) {
@@ -131,7 +131,7 @@
   };
 
   /* listeners */
-  runtime.onMessage.addListener(msg => extractMsg(msg).catch(logError));
+  runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
   document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener(
       "load", evt => sendStatus(evt).catch(logError), false
