@@ -4,14 +4,11 @@
 "use strict";
 {
   /* api */
-  const {i18n, runtime} = browser;
+  const {runtime} = browser;
 
   /* constants */
-  const HTML_A = "htmlAnchor";
-  const INPUT = "userInput";
-  const MD_LINK = "markdownLink";
+  const CLIP_TEXT = "clipboardText";
   const NS_HTML = "http://www.w3.org/1999/xhtml";
-  const TXT_LINK = "textLink";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
 
@@ -99,98 +96,25 @@
   };
 
   /**
-   * get selection text
-   * @param {Object} info - info
-   * @returns {Object} - Promise.<string>
-   */
-  const getSelectionText = async (info = {}) => {
-    let text;
-    if (await getType(info) === "Object" && Object.keys(info).length) {
-      const {selectionText} = info;
-      text = selectionText;
-    } else {
-      const sel = window.getSelection();
-      !sel.isCollapsed && (text = sel.toString());
-    }
-    return text || "";
-  };
-
-  /**
-   * get user input
-   * @param {string} text - default text
-   * @returns {string} - user input text
-   */
-  const getInput = async (text = "") => {
-    const msg = await i18n.getMessage(INPUT);
-    text = await window.prompt(msg, text);
-    return text || "";
-  };
-
-  /**
-   * create HTML Anchor
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {Object} - Promise.<?string>
-   */
-  const createHtml = async (content, title, url) =>
-    isString(content) && isString(title) && isString(url) &&
-    `<a href="${url}" title="${title}">${content.trim()}</a>` || null;
-
-  /**
-   * create Markdown Link
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {Object} - Promise.<?string>
-   */
-  const createMarkdown = async (content, title, url) =>
-    isString(content) && isString(title) && isString(url) &&
-    `[${content.trim()}](${url} "${title}")` || null;
-
-  /**
-   * create Text Link
-   * @param {string} content - content title
-   * @param {string} url - document URL
-   * @returns {Object} - Promise.<?string>
-   */
-  const createText = async (content, url) =>
-    isString(content) && isString(url) && `${content.trim()} <${url}>` || null;
-
-  /**
    * extract message
    * @param {*} msg - message
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - Promise.<Array>
    */
   const extractMsg = async (msg = {}) => {
-    const {data, input, menuItemId} = msg;
-    let func;
-    if (data) {
-      const {info, tab} = data;
-      if (tab) {
-        const {title, url} = tab;
-        const selectionText = await getSelectionText(info);
-        const content = input ?
-                          await getInput(selectionText || title) :
-                          selectionText || title;
-        switch (menuItemId) {
-          case HTML_A:
-          case `${HTML_A}.input`:
-            func = createHtml(content, title, url).then(copyToClipboard);
-            break;
-          case MD_LINK:
-          case `${MD_LINK}.input`:
-            func = createMarkdown(content, title, url).then(copyToClipboard);
-            break;
-          case TXT_LINK:
-          case `${TXT_LINK}.input`:
-            func = createText(content, url).then(copyToClipboard);
+    const items = msg && Object.keys(msg);
+    const func = [];
+    if (items && items.length) {
+      for (const item of items) {
+        const obj = msg[item];
+        switch (item) {
+          case CLIP_TEXT:
+            func.push(copyToClipboard(obj));
             break;
           default:
         }
       }
     }
-    return func || null;
+    return Promise.all(func);
   };
 
   /**
