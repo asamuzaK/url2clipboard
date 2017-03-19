@@ -12,6 +12,7 @@
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
+  const USER_INPUT_DEFAULT = "Input Title";
   const USER_INPUT_GET = "userInputGet";
   const USER_INPUT_RES = "userInputRes";
 
@@ -78,7 +79,7 @@
    * @param {Object} data - input data
    * @returns {Object} - Promise.<AsyncFunction>
    */
-  const sendInput = async (data = {}) => {
+  const sendInput = async data => {
     const msg = {
       [USER_INPUT_RES]: data,
     };
@@ -91,9 +92,9 @@
    * @returns {Object} - input data
    */
   const getInput = async (data = {}) => {
+    const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
     let {content: text} = data;
-    const msg = await i18n.getMessage(USER_INPUT);
-    text = await window.prompt(msg, text);
+    text = await window.prompt(msg, text || "");
     isString(text) && (data.content = text);
     return data;
   };
