@@ -112,6 +112,7 @@
   /**
    * send text to copy
    * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
    * @param {string} text - text to clip
    * @returns {Object} - Promise.<?AsyncFunction>
    */
@@ -129,6 +130,7 @@
   /**
    * send user input request
    * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
    * @param {Object} data - input data
    * @returns {Object} - Promise.<?AsyncFunction>
    */
@@ -251,6 +253,7 @@
   /**
    * set enabled tab
    * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
    * @returns {void} - Promise.<void>
    */
@@ -353,6 +356,7 @@
   /**
    * show icon
    * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
    * @returns {Object} - Promise.<Array>
    */
@@ -419,6 +423,7 @@
   /**
    * handle active tab
    * @param {Object} info - active tab info
+   * @param {Object} tab - tabs.Tab
    * @returns {Object} - Promise.<Array>
    */
   const handleActiveTab = async (info = {}, tab = null) => {
