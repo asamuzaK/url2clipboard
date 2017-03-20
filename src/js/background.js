@@ -74,11 +74,7 @@
   const isTab = async tabId => {
     let tab;
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-      try {
-        tab = await tabs.get(tabId);
-      } catch (e) {
-        tab = false;
-      }
+      tab = await tabs.get(tabId).catch(e => false);
     }
     return !!tab;
   };
@@ -224,7 +220,7 @@
    */
   const extractInput = async (data = {}) => {
     const {content, menuItemId, tabId, title, url} = data;
-    const tab = await isTab(tabId);
+    const tab = await tabs.get(tabId).catch(e => false);
     let func;
     if (tab) {
       let text;
