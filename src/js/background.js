@@ -11,7 +11,7 @@
   const CLIP_TEXT = "clipboardText";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
-  const KEY = "Alt + Shift + C";
+  const KEY = "Alt+Shift+C";
   const LINK_HTML = "htmlAnchor";
   const LINK_MD = "markdownLink";
   const LINK_TEXT = "textLink";
@@ -67,12 +67,21 @@
     Number.isSafeInteger(i) && (zero && i >= 0 || i > 0) && `${i}` || null;
 
   /**
-   * is tabId
-   * @param {*} tabId - tabId
+   * is tab
+   * @param {*} tabId - tab ID
    * @returns {boolean} - result
    */
-  const isTabId = tabId =>
-    Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE;
+  const isTab = async tabId => {
+    let tab;
+    if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
+      try {
+        tab = await tabs.get(tabId);
+      } catch (e) {
+        tab = false;
+      }
+    }
+    return !!tab;
+  };
 
   // NOTE: not working yet. issue #1
   /**
@@ -106,9 +115,9 @@
    * @param {string} text - text to clip
    * @returns {Object} - Promise.<?AsyncFunction>
    */
-  const sendText = async (tabId, text) => {
+  const sendText = async (tabId, tab, text) => {
     let func;
-    if (isTabId(tabId) && isString(text)) {
+    if ((tab || await isTab(tabId)) && isString(text)) {
       const msg = {
         [CLIP_TEXT]: text,
       };
@@ -123,9 +132,9 @@
    * @param {Object} data - input data
    * @returns {Object} - Promise.<?AsyncFunction>
    */
-  const requestInput = async (tabId, data) => {
+  const requestInput = async (tabId, tab, data) => {
     let func;
-    if (isTabId(tabId)) {
+    if (tab || await isTab(tabId)) {
       const msg = {
         [USER_INPUT_GET]: data,
       };
@@ -175,27 +184,27 @@
     let func;
     if (info && tab) {
       const {id: tabId, title, url} = tab;
-      if (isTabId(tabId)) {
+      if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
         const {menuItemId, selectionText} = info;
         const content = selectionText || title;
         let text;
         switch (menuItemId) {
           case LINK_HTML:
             text = await createHtml(content, title, url);
-            text && (func = sendText(tabId, text));
+            text && (func = sendText(tabId, tab, text));
             break;
           case LINK_MD:
             text = await createMarkdown(content, title, url);
-            text && (func = sendText(tabId, text));
+            text && (func = sendText(tabId, tab, text));
             break;
           case LINK_TEXT:
             text = await createText(content, url);
-            text && (func = sendText(tabId, text));
+            text && (func = sendText(tabId, tab, text));
             break;
           case `${LINK_HTML}.input`:
           case `${LINK_MD}.input`:
           case `${LINK_TEXT}.input`:
-            func = requestInput(tabId, {
+            func = requestInput(tabId, tab, {
               content, menuItemId, tabId, title, url,
             });
             break;
@@ -213,21 +222,22 @@
    */
   const extractInput = async (data = {}) => {
     const {content, menuItemId, tabId, title, url} = data;
+    const tab = await isTab(tabId);
     let func;
-    if (isTabId(tabId)) {
+    if (tab) {
       let text;
       switch (menuItemId) {
         case `${LINK_HTML}.input`:
           text = await createHtml(content, title, url);
-          text && (func = sendText(tabId, text));
+          text && (func = sendText(tabId, tab, text));
           break;
         case `${LINK_MD}.input`:
           text = await createMarkdown(content, title, url);
-          text && (func = sendText(tabId, text));
+          text && (func = sendText(tabId, tab, text));
           break;
         case `${LINK_TEXT}.input`:
           text = await createText(content, url);
-          text && (func = sendText(tabId, text));
+          text && (func = sendText(tabId, tab, text));
           break;
         default:
       }
@@ -244,8 +254,8 @@
    * @param {boolean} enabled - enabled
    * @returns {void} - Promise.<void>
    */
-  const setEnabledTab = async (tabId, enabled = false) => {
-    if (isTabId(tabId)) {
+  const setEnabledTab = async (tabId, tab, enabled = false) => {
+    if (tab || await isTab(tabId)) {
       tabId = stringifyPositiveInt(tabId);
       tabId && (enabledTabs[tabId] = !!enabled);
     }
@@ -346,9 +356,9 @@
    * @param {boolean} enabled - enabled
    * @returns {Object} - Promise.<Array>
    */
-  const showIcon = async (tabId, enabled = false) => {
+  const showIcon = async (tabId, tab, enabled = false) => {
     const func = [];
-    if (isTabId(tabId)) {
+    if (tab || await isTab(tabId)) {
       if (enabled) {
         const name = await i18n.getMessage(EXT_NAME);
         const icon = await extension.getURL(ICON);
@@ -377,7 +387,8 @@
   const handleMsg = async (msg, sender = {}) => {
     const func = [];
     const items = msg && Object.keys(msg);
-    const tabId = sender && sender.tab && sender.tab.id;
+    const tab = sender && sender.tab;
+    const tabId = tab && tab.id;
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
@@ -387,8 +398,8 @@
             break;
           case "load":
             func.push(
-              setEnabledTab(tabId, obj),
-              showIcon(tabId, obj),
+              setEnabledTab(tabId, tab, obj),
+              showIcon(tabId, tab, obj),
               updateContextMenu(obj)
             );
             break;
@@ -410,13 +421,16 @@
    * @param {Object} info - active tab info
    * @returns {Object} - Promise.<Array>
    */
-  const handleActiveTab = async (info = {}) => {
+  const handleActiveTab = async (info = {}, tab = null) => {
     const {tabId} = info;
     const func = [];
-    if (isTabId(tabId)) {
+    if (tab || await isTab(tabId)) {
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
-      func.push(updateContextMenu(enabled), showIcon(tabId, enabled));
+      func.push(
+        updateContextMenu(enabled),
+        showIcon(tabId, tab, enabled)
+      );
     }
     return Promise.all(func);
   };
@@ -429,7 +443,7 @@
    */
   const handleUpdatedTab = async (tabId, tab = {}) => {
     const {active} = tab;
-    const func = active && handleActiveTab({tabId});
+    const func = active && handleActiveTab({tabId}, tab);
     return func || null;
   };
 
