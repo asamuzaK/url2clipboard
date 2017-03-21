@@ -54,7 +54,7 @@
   /**
    * send message
    * @param {*} msg - message
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send message to runtime
    */
   const sendMsg = async msg => {
     const func = msg && runtime.sendMessage(msg);
@@ -64,7 +64,7 @@
   /**
    * send status
    * @param {!Object} evt - Event
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send message
    */
   const sendStatus = async evt => {
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
@@ -77,7 +77,7 @@
   /**
    * send user input
    * @param {Object} data - input data
-   * @returns {Object} - Promise.<AsyncFunction>
+   * @returns {AsyncFunction} - send message
    */
   const sendInput = async data => {
     const msg = {
@@ -150,7 +150,7 @@
   /**
    * handle message
    * @param {*} msg - message
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const handleMsg = async (msg = {}) => {
     const items = msg && Object.keys(msg);

@@ -110,7 +110,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {string} text - text to clip
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send message
    */
   const sendText = async (tabId, tab, text) => {
     let func;
@@ -128,7 +128,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {Object} data - input data
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send message
    */
   const requestInput = async (tabId, tab, data) => {
     let func;
@@ -146,7 +146,7 @@
    * @param {string} content - content title
    * @param {string} title - document title
    * @param {string} url - document URL
-   * @returns {?string} - HTML Anchor
+   * @returns {?string} - HTML Anchor format
    */
   const createHtml = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
@@ -157,7 +157,7 @@
    * @param {string} content - content title
    * @param {string} title - document title
    * @param {string} url - document URL
-   * @returns {?string} - Markdown Link
+   * @returns {?string} - Markdown Link format
    */
   const createMarkdown = async (content, title, url) =>
     isString(content) && isString(title) && isString(url) &&
@@ -167,7 +167,7 @@
    * create Text Link
    * @param {string} content - content title
    * @param {string} url - document URL
-   * @returns {?string} - Text Link
+   * @returns {?string} - Text Link format
    */
   const createText = async (content, url) =>
     isString(content) && isString(url) && `${content.trim()} <${url}>` || null;
@@ -175,7 +175,7 @@
   /**
    * extract data
    * @param {Object} data - tab data
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send text / request input
    */
   const extractData = async (data = {}) => {
     const {info, tab} = data;
@@ -216,7 +216,7 @@
   /**
    * extract user input data
    * @param {Object} data - tab data
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - send text
    */
   const extractInput = async (data = {}) => {
     const {content, menuItemId, tabId, title, url} = data;
@@ -290,7 +290,7 @@
   /**
    * create data
    * @param {Object} menuItemId - menuItemId
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - extract data
    */
   const createData = async menuItemId => {
     const info = isString(menuItemId) && {menuItemId};
@@ -320,7 +320,7 @@
   /**
    * create context menu items
    * @param {boolean} enabled - enabled
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const createMenuItems = async enabled => {
     const func = [];
@@ -336,7 +336,7 @@
   /**
    * update context menu
    * @param {boolean} enabled - enabled
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const updateContextMenu = async (enabled = false) => {
     const func = [];
@@ -354,7 +354,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const showIcon = async (tabId, tab, enabled = false) => {
     const func = [];
@@ -382,7 +382,7 @@
    * handle message
    * @param {*} msg - message
    * @param {Object} sender - sender
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const handleMsg = async (msg, sender = {}) => {
     const func = [];
@@ -420,7 +420,7 @@
    * handle active tab
    * @param {Object} info - active tab info
    * @param {Object} tab - tabs.Tab
-   * @returns {Object} - Promise.<Array>
+   * @returns {Promise.<Array>} - functions
    */
   const handleActiveTab = async (info = {}, tab = null) => {
     const {tabId} = info;
@@ -440,7 +440,7 @@
    * handle updated tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tab.Tab
-   * @returns {Object} - ?Promise.<AsyncFunction>
+   * @returns {?AsyncFunction} - handle active tab
    */
   const handleUpdatedTab = async (tabId, tab = {}) => {
     const {active} = tab;
