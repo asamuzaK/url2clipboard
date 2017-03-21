@@ -83,7 +83,7 @@
   /**
    * copy to clipboard
    * @param {string} text - text to copy
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const copyToClipboard = async text => {
     const elm = document.getElementById(CLIP_ELEMENT);
@@ -110,7 +110,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {string} text - text to clip
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const sendText = async (tabId, tab, text) => {
     let func;
@@ -128,7 +128,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {Object} data - input data
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const requestInput = async (tabId, tab, data) => {
     let func;
@@ -175,7 +175,7 @@
   /**
    * extract data
    * @param {Object} data - tab data
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const extractData = async (data = {}) => {
     const {info, tab} = data;
@@ -216,7 +216,7 @@
   /**
    * extract user input data
    * @param {Object} data - tab data
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const extractInput = async (data = {}) => {
     const {content, menuItemId, tabId, title, url} = data;
@@ -251,7 +251,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const setEnabledTab = async (tabId, tab, enabled = false) => {
     if (tab || await isTab(tabId)) {
@@ -290,7 +290,7 @@
   /**
    * create data
    * @param {Object} menuItemId - menuItemId
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const createData = async menuItemId => {
     const info = isString(menuItemId) && {menuItemId};
@@ -306,7 +306,7 @@
    * @param {string} id - menu item ID
    * @param {Array} contexts - contexts
    * @param {boolean} enabled - enabled
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const createMenuItem = async (id, contexts, enabled = false) => {
     isString(id) && Array.isArray(contexts) &&
@@ -440,7 +440,7 @@
    * handle updated tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tab.Tab
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const handleUpdatedTab = async (tabId, tab = {}) => {
     const {active} = tab;

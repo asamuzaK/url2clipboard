@@ -31,7 +31,7 @@
   /**
    * send menuItemId
    * @param {!Object} evt - Event
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const sendMenuItemId = async evt => {
     const {target} = evt;
@@ -47,7 +47,7 @@
   /**
    * localize node
    * @param {Object} node - Element
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const localizeNode = async node => {
     const data = await i18n.getMessage(node.getAttribute(DATA_I18N));

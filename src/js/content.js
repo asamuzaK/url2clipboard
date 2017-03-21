@@ -54,7 +54,7 @@
   /**
    * send message
    * @param {*} msg - message
-   * @returns {Object} - Promise.<?AsyncFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const sendMsg = async msg => {
     const func = msg && runtime.sendMessage(msg);
@@ -64,7 +64,7 @@
   /**
    * send status
    * @param {!Object} evt - Event
-   * @returns {Object} - Promise.<?AsincFunction>
+   * @returns {Object} - ?Promise.<AsyncFunction>
    */
   const sendStatus = async evt => {
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
@@ -102,7 +102,7 @@
   /**
    * copy to clipboard
    * @param {string} text - text to copy
-   * @returns {void} - Promise.<void>
+   * @returns {void}
    */
   const copyToClipboard = async text => {
     if (isString(text)) {
