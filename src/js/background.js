@@ -320,7 +320,7 @@
   /**
    * create context menu items
    * @param {boolean} enabled - enabled
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const createMenuItems = async enabled => {
     const func = [];
@@ -336,7 +336,7 @@
   /**
    * update context menu
    * @param {boolean} enabled - enabled
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const updateContextMenu = async (enabled = false) => {
     const func = [];
@@ -354,7 +354,7 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const showIcon = async (tabId, tab, enabled = false) => {
     const func = [];
@@ -382,7 +382,7 @@
    * handle message
    * @param {*} msg - message
    * @param {Object} sender - sender
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg, sender = {}) => {
     const func = [];
@@ -420,7 +420,7 @@
    * handle active tab
    * @param {Object} info - active tab info
    * @param {Object} tab - tabs.Tab
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const handleActiveTab = async (info = {}, tab = null) => {
     const {tabId} = info;

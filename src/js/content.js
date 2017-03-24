@@ -150,7 +150,7 @@
   /**
    * handle message
    * @param {*} msg - message
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg = {}) => {
     const items = msg && Object.keys(msg);

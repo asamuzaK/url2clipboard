@@ -57,7 +57,7 @@
 
   /**
    * setup html
-   * @returns {Promise.<Array>} - resolved values
+   * @returns {Promise.<Array>} - results of each handler
    */
   const setupHtml = async () => {
     const lang = await i18n.getMessage(EXT_LOCALE);
