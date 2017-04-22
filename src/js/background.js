@@ -452,7 +452,5 @@
   );
 
   /* startup */
-  Promise.all([
-    createMenuItems(),
-  ]).catch(logError);
+  createMenuItems().catch(logError);
 }

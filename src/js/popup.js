@@ -76,7 +76,7 @@
     return Promise.all(func);
   };
 
-  window.addEventListener(
+  document.addEventListener(
     "DOMContentLoaded", () => setupHtml().catch(logError), false
   );
 }
