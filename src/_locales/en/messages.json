@@ -11,19 +11,19 @@
   "htmlAnchor": {
     "message": "HTML"
   },
-  "htmlAnchor.input": {
+  "htmlAnchor_input": {
     "message": "HTML (Input Title)"
   },
   "markdownLink": {
     "message": "Markdown"
   },
-  "markdownLink.input": {
+  "markdownLink_input": {
     "message": "Markdown (Input Title)"
   },
   "textLink": {
     "message": "Text"
   },
-  "textLink.input": {
+  "textLink_input": {
     "message": "Text (Input Title)"
   },
   "userInput": {

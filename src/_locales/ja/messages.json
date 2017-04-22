@@ -11,19 +11,19 @@
   "htmlAnchor": {
     "message": "HTML"
   },
-  "htmlAnchor.input": {
+  "htmlAnchor_input": {
     "message": "HTML （タイトルを入力）"
   },
   "markdownLink": {
     "message": "Markdown"
   },
-  "markdownLink.input": {
+  "markdownLink_input": {
     "message": "Markdown （タイトルを入力）"
   },
   "textLink": {
     "message": "Text"
   },
-  "textLink.input": {
+  "textLink_input": {
     "message": "Text （タイトルを入力）"
   },
   "userInput": {

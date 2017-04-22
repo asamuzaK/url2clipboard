@@ -8,8 +8,14 @@
   "background": {
     "page": "html/background.html"
   },
+  "browser_action": {
+    "browser_style": true,
+    "default_icon": "img/icon-gray.png",
+    "default_popup": "html/popup.html",
+    "default_title": "__MSG_extensionName__"
+  },
   "commands": {
-    "_execute_page_action": {
+    "_execute_browser_action": {
       "suggested_key": {
         "default": "Alt+Shift+C"
       }
@@ -18,7 +24,10 @@
   "content_scripts": [
     {
       "all_frames": false,
-      "js": ["js/content.js"],
+      "js": [
+        "js/browser-polyfill.js",
+        "js/content.js"
+      ],
       "matches": ["<all_urls>"],
       "run_at": "document_start"
     }
@@ -27,17 +36,11 @@
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/url2clipboard",
   "icons": {
-    "32": "img/icon.svg#gray",
-    "64": "img/icon.svg"
+    "32": "img/icon-gray.png",
+    "64": "img/icon-color.png"
   },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
-  "page_action": {
-    "browser_style": true,
-    "default_icon": "img/icon.svg#neutral",
-    "default_popup": "html/popup.html",
-    "default_title": "__MSG_extensionName__"
-  },
   "permissions": [
     "<all_urls>",
     "activeTab",

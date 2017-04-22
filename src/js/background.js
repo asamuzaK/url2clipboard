@@ -4,7 +4,7 @@
 "use strict";
 {
   /* api */
-  const {contextMenus, extension, i18n, pageAction, runtime, tabs} = browser;
+  const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
 
   /* constants */
   const CLIP_ELEMENT = "clipboard";
@@ -16,7 +16,6 @@
   const LINK_MD = "markdownLink";
   const LINK_TEXT = "textLink";
   const MENU_ITEM_ID = "menuItemId";
-  const MENU_POPUP = "html/popup.html";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT_GET = "userInputGet";
@@ -199,9 +198,9 @@
             text = await createText(content, url);
             text && (func = sendText(tabId, tab, text));
             break;
-          case `${LINK_HTML}.input`:
-          case `${LINK_MD}.input`:
-          case `${LINK_TEXT}.input`:
+          case `${LINK_HTML}_input`:
+          case `${LINK_MD}_input`:
+          case `${LINK_TEXT}_input`:
             func = requestInput(tabId, tab, {
               content, menuItemId, tabId, title, url,
             });
@@ -225,15 +224,15 @@
     if (tab) {
       let text;
       switch (menuItemId) {
-        case `${LINK_HTML}.input`:
+        case `${LINK_HTML}_input`:
           text = await createHtml(content, title, url);
           text && (func = sendText(tabId, tab, text));
           break;
-        case `${LINK_MD}.input`:
+        case `${LINK_MD}_input`:
           text = await createMarkdown(content, title, url);
           text && (func = sendText(tabId, tab, text));
           break;
-        case `${LINK_TEXT}.input`:
+        case `${LINK_TEXT}_input`:
           text = await createText(content, url);
           text && (func = sendText(tabId, tab, text));
           break;
@@ -327,7 +326,7 @@
     for (const item of menus) {
       func.push(
         createMenuItem(item, ["all"], enabled),
-        createMenuItem(`${item}.input`, ["all"], enabled)
+        createMenuItem(`${item}_input`, ["all"], enabled)
       );
     }
     return Promise.all(func);
@@ -343,7 +342,7 @@
     for (const item of menus) {
       func.push(
         contextMenus.update(item, {enabled}),
-        contextMenus.update(`${item}.input`, {enabled})
+        contextMenus.update(`${item}_input`, {enabled})
       );
     }
     return Promise.all(func);
@@ -351,31 +350,18 @@
 
   /**
    * show icon
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tabs.Tab
    * @param {boolean} enabled - enabled
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (tabId, tab, enabled = false) => {
-    const func = [];
-    if (tab || await isTab(tabId)) {
-      if (enabled) {
-        const name = await i18n.getMessage(EXT_NAME);
-        const icon = await extension.getURL(ICON);
-        const path = `${icon}#neutral`;
-        const popup = await extension.getURL(MENU_POPUP);
-        const title = `${name} (${KEY})`;
-        func.push(
-          pageAction.setIcon({path, tabId}),
-          pageAction.setPopup({popup, tabId}),
-          pageAction.setTitle({tabId, title}),
-          pageAction.show(tabId)
-        );
-      } else {
-        func.push(pageAction.hide(tabId));
-      }
-    }
-    return Promise.all(func);
+  const showIcon = async (enabled = false) => {
+    const name = await i18n.getMessage(EXT_NAME);
+    const icon = await extension.getURL(ICON);
+    const path = enabled && `${icon}#gray` || `${icon}#off`;
+    const title = `${name} (${KEY})`;
+    return Promise.all([
+      browserAction.setIcon({path}),
+      browserAction.setTitle({title}),
+    ]);
   };
 
   /**
@@ -399,7 +385,7 @@
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj),
-              showIcon(tabId, tab, obj),
+              showIcon(obj),
               updateContextMenu(obj)
             );
             break;
@@ -430,7 +416,7 @@
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
       func.push(
         updateContextMenu(enabled),
-        showIcon(tabId, tab, enabled)
+        showIcon(enabled)
       );
     }
     return Promise.all(func);
@@ -466,5 +452,7 @@
   );
 
   /* startup */
-  createMenuItems().catch(logError);
+  Promise.all([
+    createMenuItems(),
+  ]).catch(logError);
 }
