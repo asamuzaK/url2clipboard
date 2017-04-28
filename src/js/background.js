@@ -147,9 +147,15 @@
    * @param {string} url - document URL
    * @returns {?string} - HTML Anchor format
    */
-  const createHtml = async (content, title, url) =>
-    isString(content) && isString(title) && isString(url) &&
-    `<a href="${url}" title="${title}">${content.trim()}</a>` || null;
+  const createHtml = async (content, title, url) => {
+    let text;
+    if (isString(content) && isString(title) && isString(url)) {
+      content = content.trim();
+      title = title.replace(/"/g, "&quot;");
+      text = `<a href="${url}" title="${title}">${content}</a>`;
+    }
+    return text || null;
+  };
 
   /**
    * create Markdown Link
@@ -158,9 +164,15 @@
    * @param {string} url - document URL
    * @returns {?string} - Markdown Link format
    */
-  const createMarkdown = async (content, title, url) =>
-    isString(content) && isString(title) && isString(url) &&
-    `[${content.trim()}](${url} "${title}")` || null;
+  const createMarkdown = async (content, title, url) => {
+    let text;
+    if (isString(content) && isString(title) && isString(url)) {
+      content = content.trim();
+      title = title.replace(/"/g, "\\\"");
+      text = `[${content}](${url} "${title}")`;
+    }
+    return text || null;
+  };
 
   /**
    * create Text Link
@@ -168,8 +180,14 @@
    * @param {string} url - document URL
    * @returns {?string} - Text Link format
    */
-  const createText = async (content, url) =>
-    isString(content) && isString(url) && `${content.trim()} <${url}>` || null;
+  const createText = async (content, url) => {
+    let text;
+    if (isString(content) && isString(url)) {
+      content = content.trim();
+      text = `${content} <${url}>`;
+    }
+    return text || null;
+  };
 
   /**
    * extract data
