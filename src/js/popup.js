@@ -10,6 +10,7 @@
   const DATA_I18N = "data-i18n";
   const EXT_LOCALE = "extensionLocale";
   const MENU_ELM = "button";
+  const MENU_ITEM_ID = "menuItemId";
 
   /**
    * log error
@@ -38,7 +39,9 @@
     if (target) {
       const menuItemId = target.getAttribute(DATA_I18N);
       if (isString(menuItemId)) {
-        await runtime.sendMessage({menuItemId});
+        await runtime.sendMessage({
+          [MENU_ITEM_ID]: menuItemId,
+        });
         window.close();
       }
     }
