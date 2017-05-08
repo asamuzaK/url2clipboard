@@ -9,6 +9,7 @@
   /* constants */
   const CLIP_TEXT = "clipboardText";
   const NS_HTML = "http://www.w3.org/1999/xhtml";
+  const MOUSE_BUTTON_RIGHT = 2;
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
@@ -179,7 +180,10 @@
       "load", evt => sendStatus(evt).catch(logError), false
     );
     window.addEventListener(
-      "contextmenu", evt => sendStatus(evt).catch(logError), false
+      "mousedown",
+      evt => evt.button === MOUSE_BUTTON_RIGHT &&
+               sendStatus(evt).catch(logError),
+      true
     );
   }, false);
 }
