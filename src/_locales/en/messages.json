@@ -5,6 +5,9 @@
   "extensionName": {
     "message": "Copy URL To Clipboard"
   },
+  "extensionShortName": {
+    "message": "url2clipboard"
+  },
   "extensionLocale": {
     "message": "en"
   },

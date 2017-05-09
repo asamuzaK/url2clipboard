@@ -48,5 +48,6 @@
     "contextMenus",
     "tabs"
   ],
+  "short_name": "__MSG_extensionShortName__",
   "version": "0.10.0"
 }
