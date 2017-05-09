@@ -11,6 +11,7 @@
   const CLIP_TEXT = "clipboardText";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
+  const ID_WEBEXT = "url2clipboard@asamuzak.jp";
   const KEY = "Alt+Shift+C";
   const LINK_HTML = "htmlAnchor";
   const LINK_MD = "markdownLink";
@@ -78,7 +79,7 @@
     return !!tab;
   };
 
-  // NOTE: not working yet. issue #1
+  // NOTE: not working yet in WebExtensions. issue #1
   /**
    * copy to clipboard
    * @param {string} text - text to copy
@@ -88,14 +89,9 @@
     const elm = document.getElementById(CLIP_ELEMENT);
     if (elm) {
       if (isString(text)) {
-        const range = document.createRange();
-        const sel = window.getSelection();
         elm.textContent = text;
-        range.selectNodeContents(elm);
-        sel.removeAllRanges();
-        sel.addRange(range);
+        elm.select();
         document.execCommand("copy");
-        sel.removeAllRanges();
       } else {
         logWarn(`url2clipboard: Expected String but got ${getType(text)}.`);
       }
@@ -196,6 +192,7 @@
    */
   const extractData = async (data = {}) => {
     const {info, tab} = data;
+    const isWebExt = runtime.id === ID_WEBEXT;
     let func;
     if (info && tab) {
       const {id: tabId, title, url} = tab;
@@ -206,15 +203,12 @@
         switch (menuItemId) {
           case LINK_HTML:
             text = await createHtml(content, title, url);
-            text && (func = sendText(tabId, tab, text));
             break;
           case LINK_MD:
             text = await createMarkdown(content, title, url);
-            text && (func = sendText(tabId, tab, text));
             break;
           case LINK_TEXT:
             text = await createText(content, url);
-            text && (func = sendText(tabId, tab, text));
             break;
           case `${LINK_HTML}_input`:
           case `${LINK_MD}_input`:
@@ -224,6 +218,11 @@
             });
             break;
           default:
+        }
+        if (!func && text) {
+          func = isWebExt ?
+                   sendText(tabId, tab, text) :
+                   copyToClipboard(text);
         }
       }
     }
@@ -238,23 +237,26 @@
   const extractInput = async (data = {}) => {
     const {content, menuItemId, tabId, title, url} = data;
     const tab = await tabs.get(tabId).catch(logError);
+    const isWebExt = runtime.id === ID_WEBEXT;
     let func;
     if (tab) {
       let text;
       switch (menuItemId) {
         case `${LINK_HTML}_input`:
           text = await createHtml(content, title, url);
-          text && (func = sendText(tabId, tab, text));
           break;
         case `${LINK_MD}_input`:
           text = await createMarkdown(content, title, url);
-          text && (func = sendText(tabId, tab, text));
           break;
         case `${LINK_TEXT}_input`:
           text = await createText(content, url);
-          text && (func = sendText(tabId, tab, text));
           break;
         default:
+      }
+      if (text) {
+        func = isWebExt ?
+                 sendText(tabId, tab, text) :
+                 copyToClipboard(text);
       }
     }
     return func || null;
