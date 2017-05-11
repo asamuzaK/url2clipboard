@@ -11,6 +11,15 @@
   "extensionLocale": {
     "message": "ja"
   },
+  "bbcodeLink": {
+    "message": "BBCode"
+  },
+  "bbcodeLink_input": {
+    "message": "BBCode （タイトルを入力）"
+  },
+  "bbcodeLink_url": {
+    "message": "BBCode （URL）"
+  },
   "htmlAnchor": {
     "message": "HTML"
   },

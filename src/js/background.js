@@ -13,6 +13,7 @@
   const ICON = "img/icon.svg";
   const ID_WEBEXT = "url2clipboard@asamuzak.jp";
   const KEY = "Alt+Shift+C";
+  const LINK_BBCODE = "bbcodeLink";
   const LINK_HTML = "htmlAnchor";
   const LINK_MD = "markdownLink";
   const LINK_TEXT = "textLink";
@@ -171,6 +172,34 @@
   };
 
   /**
+   * create BBCode Link
+   * @param {string} content - content title
+   * @param {string} url - document URL
+   * @returns {?string} - BBCode Link format
+   */
+  const createBBCode = async (content, url) => {
+    let text;
+    if (isString(content) && isString(url)) {
+      content = content.trim();
+      text = `[url=${url}]${content}[/url]`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create BBCode URL Link
+   * @param {string} url - document URL
+   * @returns {?string} - BBCode Link format
+   */
+  const createBBCodeUrl = async url => {
+    let text;
+    if (isString(url)) {
+      text = `[url]${url}[/url]`;
+    }
+    return text || null;
+  };
+
+  /**
    * create Text Link
    * @param {string} content - content title
    * @param {string} url - document URL
@@ -201,6 +230,9 @@
         const content = selectionText || title;
         let text;
         switch (menuItemId) {
+          case LINK_BBCODE:
+            text = await createBBCode(content, url);
+            break;
           case LINK_HTML:
             text = await createHtml(content, title, url);
             break;
@@ -210,6 +242,10 @@
           case LINK_TEXT:
             text = await createText(content, url);
             break;
+          case `${LINK_BBCODE}_url`:
+            text = await createBBCodeUrl(url);
+            break;
+          case `${LINK_BBCODE}_input`:
           case `${LINK_HTML}_input`:
           case `${LINK_MD}_input`:
           case `${LINK_TEXT}_input`:
@@ -242,6 +278,9 @@
     if (tab) {
       let text;
       switch (menuItemId) {
+        case `${LINK_BBCODE}_input`:
+          text = await createBBCode(content, url);
+          break;
         case `${LINK_HTML}_input`:
           text = await createHtml(content, title, url);
           break;
@@ -318,7 +357,7 @@
   };
 
   /* context menu */
-  const menus = [LINK_HTML, LINK_MD, LINK_TEXT];
+  const menus = [LINK_HTML, LINK_MD, LINK_BBCODE, LINK_TEXT];
 
   /**
    * create context menu item
@@ -344,10 +383,10 @@
   const createMenuItems = async enabled => {
     const func = [];
     for (const item of menus) {
-      func.push(
-        createMenuItem(item, ["all"], enabled),
-        createMenuItem(`${item}_input`, ["all"], enabled)
-      );
+      func.push(createMenuItem(item, ["all"], enabled));
+      item === LINK_BBCODE &&
+        func.push(createMenuItem(`${item}_url`, ["all"], enabled));
+      func.push(createMenuItem(`${item}_input`, ["all"], enabled));
     }
     return Promise.all(func);
   };
@@ -364,6 +403,8 @@
         contextMenus.update(item, {enabled}),
         contextMenus.update(`${item}_input`, {enabled})
       );
+      item === LINK_BBCODE &&
+        func.push(contextMenus.update(`${item}_url`, {enabled}));
     }
     return Promise.all(func);
   };

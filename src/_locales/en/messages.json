@@ -11,6 +11,15 @@
   "extensionLocale": {
     "message": "en"
   },
+  "bbcodeLink": {
+    "message": "BBCode"
+  },
+  "bbcodeLink_input": {
+    "message": "BBCode (Input Title)"
+  },
+  "bbcodeLink_url": {
+    "message": "BBCode (URL)"
+  },
   "htmlAnchor": {
     "message": "HTML"
   },
