@@ -63,14 +63,67 @@
   };
 
   /**
+   * get anchor element
+   * @param {Object} node - element
+   * @returns {Object} - anchor element
+   */
+  const getAnchorElm = async node => {
+    const root = document.documentElement;
+    let elm;
+    if (root) {
+      while (node && node.parentNode && node.parentNode !== root) {
+        if (node.localName === "a") {
+          elm = node;
+          break;
+        }
+        node = node.parentNode;
+      }
+    }
+    return elm || null;
+  };
+
+  /**
+   * create context info
+   * @param {Object} node - element
+   * @returns {Object} - context info
+   */
+  const createContextInfo = async node => {
+    const info = {
+      isLink: false,
+      content: document.title,
+      title: document.title,
+      url: document.URL,
+    };
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const anchor = await getAnchorElm(node);
+      if (anchor) {
+        const {textContent, href, title} = anchor;
+        if (href) {
+          const content = textContent.trim();
+          const url = href instanceof SVGAnimatedString && href.baseVal || href;
+          info.isLink = true;
+          info.content = content;
+          info.title = title || content;
+          info.url = url;
+        }
+      }
+    }
+    return info;
+  };
+
+  /**
    * send status
    * @param {!Object} evt - Event
    * @returns {?AsyncFunction} - send message
    */
   const sendStatus = async evt => {
+    const {target, type} = evt;
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
+    const info = await createContextInfo(target);
     const msg = {
-      [evt.type]: enabled,
+      [type]: {
+        enabled, info,
+      },
     };
     return enabled && sendMsg(msg) || null;
   };

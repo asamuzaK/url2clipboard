@@ -308,10 +308,11 @@
    * set enabled tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context info
    * @returns {void}
    */
-  const setEnabledTab = async (tabId, tab, enabled = false) => {
+  const setEnabledTab = async (tabId, tab, data = {}) => {
+    const {enabled} = data;
     if (tab || await isTab(tabId)) {
       tabId = stringifyPositiveInt(tabId);
       tabId && (enabledTabs[tabId] = !!enabled);
@@ -363,10 +364,11 @@
    * create context menu item
    * @param {string} id - menu item ID
    * @param {Array} contexts - contexts
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {void}
    */
-  const createMenuItem = async (id, contexts, enabled = false) => {
+  const createMenuItem = async (id, contexts, data = {}) => {
+    const {enabled} = data;
     isString(id) && Array.isArray(contexts) &&
       contextMenus.create({
         id, contexts,
@@ -377,44 +379,46 @@
 
   /**
    * create context menu items
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const createMenuItems = async enabled => {
+  const createMenuItems = async data => {
     const func = [];
     for (const item of menus) {
-      func.push(createMenuItem(item, ["all"], enabled));
+      func.push(createMenuItem(item, ["all"], data));
       item === LINK_BBCODE &&
-        func.push(createMenuItem(`${item}_url`, ["all"], enabled));
-      func.push(createMenuItem(`${item}_input`, ["all"], enabled));
+        func.push(createMenuItem(`${item}_url`, ["all"], data));
+      func.push(createMenuItem(`${item}_input`, ["all"], data));
     }
     return Promise.all(func);
   };
 
   /**
    * update context menu
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const updateContextMenu = async (enabled = false) => {
+  const updateContextMenu = async (data = {}) => {
+    const {enabled} = data;
     const func = [];
     for (const item of menus) {
       func.push(
-        contextMenus.update(item, {enabled}),
-        contextMenus.update(`${item}_input`, {enabled})
+        contextMenus.update(item, {enabled: !!enabled}),
+        contextMenus.update(`${item}_input`, {enabled: !!enabled})
       );
       item === LINK_BBCODE &&
-        func.push(contextMenus.update(`${item}_url`, {enabled}));
+        func.push(contextMenus.update(`${item}_url`, {enabled: !!enabled}));
     }
     return Promise.all(func);
   };
 
   /**
    * show icon
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (enabled = false) => {
+  const showIcon = async (data = {}) => {
+    const {enabled} = data;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
     const path = enabled && `${icon}#gray` || `${icon}#off`;
@@ -476,8 +480,8 @@
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
       func.push(
-        updateContextMenu(enabled),
-        showIcon(enabled)
+        updateContextMenu({enabled}),
+        showIcon({enabled})
       );
     }
     return Promise.all(func);
