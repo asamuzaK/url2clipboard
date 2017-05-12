@@ -82,18 +82,20 @@
     return elm || null;
   };
 
+  /* context info */
+  const contextInfo = {
+    isLink: false,
+    content: document.title,
+    title: document.title,
+    url: document.URL,
+  };
+
   /**
    * create context info
    * @param {Object} node - element
    * @returns {Object} - context info
    */
   const createContextInfo = async node => {
-    const info = {
-      isLink: false,
-      content: document.title,
-      title: document.title,
-      url: document.URL,
-    };
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
       if (anchor) {
@@ -101,14 +103,14 @@
         if (href) {
           const content = textContent.trim();
           const url = href instanceof SVGAnimatedString && href.baseVal || href;
-          info.isLink = true;
-          info.content = content;
-          info.title = title || content;
-          info.url = url;
+          contextInfo.isLink = true;
+          contextInfo.content = content;
+          contextInfo.title = title || content;
+          contextInfo.url = url;
         }
       }
     }
-    return info;
+    return contextInfo;
   };
 
   /**
