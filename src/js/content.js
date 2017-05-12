@@ -106,46 +106,20 @@
    * @returns {void}
    */
   const copyToClipboard = async text => {
-    if (isString(text)) {
-      const root = document.querySelector("body") || document.documentElement;
-      if (root) {
-        const {namespaceURI} = root;
-        const ns = !/^http:\/\/www\.w3\.org\/1999\/xhtml$/.test(namespaceURI) &&
-                   NS_HTML || "";
-        const elm = document.createElementNS(ns, "div");
-        const range = document.createRange();
-        const sel = window.getSelection();
-        const arr = [];
-        if (!sel.isCollapsed) {
-          const l = sel.rangeCount;
-          let i = 0;
-          while (i < l) {
-            arr.push(sel.getRangeAt(i));
-            i++;
-          }
-        }
-        elm.textContent = text;
-        elm.setAttributeNS(
-          ns, "style", "all:unset;position:absolute;width:0;height:0;"
-        );
-        root.append(elm);
-        range.selectNodeContents(elm);
-        sel.removeAllRanges();
-        sel.addRange(range);
-        document.execCommand("copy");
-        sel.removeAllRanges();
-        if (arr.length) {
-          for (const i of arr) {
-            sel.addRange(i);
-          }
-        }
-        root.removeChild(elm);
-      } else {
-        logWarn(`url2clipboard: ${document.contentType} not supported yet.`);
-      }
-    } else {
-      logWarn(`url2clipboard: Expected String but got ${getType(text)}.`);
-    }
+    /**
+     * set clipboard data
+     * @param {!Object} evt - Event
+     * @returns {void}
+     */
+    const setClipboardData = evt => {
+      document.removeEventListener("copy", setClipboardData, true);
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+      evt.clipboardData.setData("text/plain", text);
+    };
+
+    document.addEventListener("copy", setClipboardData, true);
+    document.execCommand("copy");
   };
 
   /**
