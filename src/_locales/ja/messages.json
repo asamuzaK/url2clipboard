@@ -11,31 +11,37 @@
   "extensionLocale": {
     "message": "ja"
   },
-  "bbcodeLink": {
+  "copyPageUrl": {
+    "message": "ページの URL をコピー"
+  },
+  "copyLinkUrl": {
+    "message": "リンクの URL をコピー"
+  },
+  "menuBBCode": {
     "message": "BBCode"
   },
-  "bbcodeLink_input": {
+  "menuBBCode_input": {
     "message": "BBCode （タイトルを入力）"
   },
-  "bbcodeLink_url": {
+  "menuBBCode_url": {
     "message": "BBCode （URL）"
   },
-  "htmlAnchor": {
+  "menuHtml": {
     "message": "HTML"
   },
-  "htmlAnchor_input": {
+  "menuHtml_input": {
     "message": "HTML （タイトルを入力）"
   },
-  "markdownLink": {
+  "menuMarkdown": {
     "message": "Markdown"
   },
-  "markdownLink_input": {
+  "menuMarkdown_input": {
     "message": "Markdown （タイトルを入力）"
   },
-  "textLink": {
+  "menuText": {
     "message": "Text"
   },
-  "textLink_input": {
+  "menuText_input": {
     "message": "Text （タイトルを入力）"
   },
   "userInput": {

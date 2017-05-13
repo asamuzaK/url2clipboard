@@ -5,7 +5,7 @@
 body {
   margin: 0;
   border: none;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
   min-width: 15rem;
   background-color: #FFF;
   color: #000;
@@ -14,6 +14,12 @@ main {
   margin: 0;
   border: none;
   padding: 0;
+}
+h1 {
+  margin: 0 0.5rem;
+  border: none;
+  padding: 0.25rem 0;
+  font-size: 1rem;
 }
 ul {
   display: block;
@@ -47,4 +53,56 @@ button:active,
 button:focus:active {
   border: 1px solid #CCC;
   background-color: #D7D7D8;
+}
+.tabMenu {
+  all: unset;
+  display: flex;
+}
+.tabMenu > li {
+  all: unset;
+  flex: 1 1 max-content;
+  margin: 0;
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 4px 4px 0 0;
+}
+.tabMenu > li > label {
+  all: unset;
+  display: block;
+  padding: 0.25rem;
+  color: GrayText;
+  background: InactiveCaption;
+}
+.tabControl {
+  position: absolute;
+  left: -999px;
+}
+.tabContent {
+  display: none;
+  border: 1px solid rgb(192, 192, 192);
+  border-radius: 0 0 4px 4px;
+  padding: 0 0 0.25rem;
+}
+#copyPageTab:checked ~ .tabMenu > li > label[for="copyPageTab"],
+#copyLinkTab:checked ~ .tabMenu > li > label[for="copyLinkTab"] {
+  color: CaptionText;
+  background: ActiveCaption;
+  /*
+  color: rgb(0, 0, 0);
+  background: rgba(192, 192, 192, 0.5);
+  */
+}
+.tabMenu > li > label:hover,
+.tabMenu > li > label:focus,
+#copyPageTab:checked ~ .tabMenu > li > label[for="copyPageTab"]:hover,
+#copyLinkTab:checked ~ .tabMenu > li > label[for="copyLinkTab"]:hover {
+  color: HighlightText;
+  background: Highlight;
+  /*
+  color: rgb(0, 0, 0);
+  background: rgba(192, 192, 192, 1);
+  */
+}
+#copyPageTab:checked ~ #copyPageContent,
+#copyLinkTab:checked ~ #copyLinkContent {
+  display: block;
 }

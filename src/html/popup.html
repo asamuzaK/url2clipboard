@@ -9,53 +9,127 @@
   </head>
   <body>
     <main>
-      <ul>
-        <li>
-          <button data-i18n="htmlAnchor">
-            HTML
-          </button>
-        </li>
-        <li>
-          <button data-i18n="htmlAnchor_input">
-            HTML (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="markdownLink">
-            Markdown
-          </button>
-        </li>
-        <li>
-          <button data-i18n="markdownLink_input">
-            Markdown (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink">
-            BBCode
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink_url">
-            BBCode (URL)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink_input">
-            BBCode (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="textLink">
-            Text
-          </button>
-        </li>
-        <li>
-          <button data-i18n="textLink_input">
-            Text (Input Title)
-          </button>
-        </li>
-      </ul>
+      <form>
+        <input type="radio" name="tabControl" id="copyPageTab"
+               class="tabControl"  aria-controls="copyPageContent"
+               checked="checked" />
+        <input type="radio" name="tabControl" id="copyLinkTab"
+               class="tabControl" aria-controls="copyLinkContent" />
+        <ul class="tabMenu" role="tablist">
+          <li role="tab">
+            <label for="copyPageTab" data-i18n="copyPageUrl">
+              Copy Page URL
+            </label>
+          </li>
+          <li role="tab">
+            <label for="copyLinkTab" data-i18n="copyLinkUrl">
+              Copy Link URL
+            </label>
+          </li>
+        </ul>
+        <section id="copyPageContent" class="tabContent" role="tabpanel"
+                 aria-labelledby="copyPageTab">
+          <h1 data-i18n="copyPageUrl">Copy Page URL</h1>
+          <ul>
+            <li>
+              <button id="pageHtml" data-i18n="menuHtml">
+                HTML
+              </button>
+            </li>
+            <li>
+              <button id="pageHtml_input" data-i18n="menuHtml_input">
+                HTML (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="pageMarkdown" data-i18n="menuMarkdown">
+                Markdown
+             </button>
+            </li>
+            <li>
+              <button id="pageMarkdown_input" data-i18n="menuMarkdown_input">
+                Markdown (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="pageBBCode" data-i18n="menuBBCode">
+                BBCode
+              </button>
+            </li>
+            <li>
+              <button id="pageBBCode_url" data-i18n="menuBBCode_url">
+                BBCode (URL)
+              </button>
+            </li>
+            <li>
+              <button id="pageBBCode_input" data-i18n="menuBBCode_input">
+                BBCode (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="pageText" data-i18n="menuText">
+                Text
+              </button>
+            </li>
+            <li>
+              <button id="pageText_input" data-i18n="menuText_input">
+                Text (Input Title)
+              </button>
+            </li>
+          </ul>
+        </section>
+        <section id="copyLinkContent" class="tabContent" role="tabpanel"
+                 aria-labelledby="copyLinkTab">
+          <h1 data-i18n="copyLinkUrl">Copy Link URL</h1>
+          <ul>
+            <li>
+              <button id="linkHtml" data-i18n="menuHtml">
+                HTML
+              </button>
+            </li>
+            <li>
+              <button id="linkHtml_input" data-i18n="menuHtml_input">
+                HTML (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="linkMarkdown" data-i18n="menuMarkdown">
+                Markdown
+              </button>
+            </li>
+            <li>
+              <button id="linkMarkdown_input" data-i18n="menuMarkdown_input">
+                Markdown (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="linkBBCode" data-i18n="menuBBCode">
+                BBCode
+              </button>
+            </li>
+            <li>
+              <button id="linkBBCode_url" data-i18n="menuBBCode_url">
+                BBCode (URL)
+              </button>
+            </li>
+            <li>
+              <button id="linkBBCode_input" data-i18n="menuBBCode_input">
+                BBCode (Input Title)
+              </button>
+            </li>
+            <li>
+              <button id="linkText" data-i18n="menuText">
+                Text
+              </button>
+            </li>
+            <li>
+              <button id="linkText_input" data-i18n="menuText_input">
+                Text (Input Title)
+              </button>
+            </li>
+          </ul>
+        </section>
+      </form>
     </main>
   </body>
 </html>

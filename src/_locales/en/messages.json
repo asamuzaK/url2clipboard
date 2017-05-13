@@ -11,31 +11,37 @@
   "extensionLocale": {
     "message": "en"
   },
-  "bbcodeLink": {
+  "copyPageUrl": {
+    "message": "Copy Page URL"
+  },
+  "copyLinkUrl": {
+    "message": "Copy Link URL"
+  },
+  "menuBBCode": {
     "message": "BBCode"
   },
-  "bbcodeLink_input": {
+  "menuBBCode_input": {
     "message": "BBCode (Input Title)"
   },
-  "bbcodeLink_url": {
+  "menuBBCode_url": {
     "message": "BBCode (URL)"
   },
-  "htmlAnchor": {
+  "menuHtml": {
     "message": "HTML"
   },
-  "htmlAnchor_input": {
+  "menuHtml_input": {
     "message": "HTML (Input Title)"
   },
-  "markdownLink": {
+  "menuMarkdown": {
     "message": "Markdown"
   },
-  "markdownLink_input": {
+  "menuMarkdown_input": {
     "message": "Markdown (Input Title)"
   },
-  "textLink": {
+  "menuText": {
     "message": "Text"
   },
-  "textLink_input": {
+  "menuText_input": {
     "message": "Text (Input Title)"
   },
   "userInput": {

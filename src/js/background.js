@@ -9,15 +9,25 @@
   /* constants */
   const CLIP_ELEMENT = "clipboard";
   const CLIP_TEXT = "clipboardText";
+  const COPY_LINK = "copyLinkUrl";
+  const COPY_PAGE = "copyPageUrl";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
   const ID_WEBEXT = "url2clipboard@asamuzak.jp";
   const KEY = "Alt+Shift+C";
-  const LINK_BBCODE = "bbcodeLink";
-  const LINK_HTML = "htmlAnchor";
-  const LINK_MD = "markdownLink";
-  const LINK_TEXT = "textLink";
+  const LINK_BBCODE = "linkBBCode";
+  const LINK_HTML = "linkHtml";
+  const LINK_MD = "linkMarkdown";
+  const LINK_TEXT = "linkText";
+  const MENU_BBCODE = "menuBBCode";
+  const MENU_HTML = "menuHtml";
   const MENU_ITEM_ID = "menuItemId";
+  const MENU_MD = "menuMarkdown";
+  const MENU_TEXT = "menuText";
+  const PAGE_BBCODE = "pageBBCode";
+  const PAGE_HTML = "pageHtml";
+  const PAGE_MD = "pageMarkdown";
+  const PAGE_TEXT = "pageText";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT_GET = "userInputGet";
@@ -230,25 +240,25 @@
         const content = selectionText || title;
         let text;
         switch (menuItemId) {
-          case LINK_BBCODE:
+          case MENU_BBCODE:
             text = await createBBCode(content, url);
             break;
-          case LINK_HTML:
+          case MENU_HTML:
             text = await createHtml(content, title, url);
             break;
-          case LINK_MD:
+          case MENU_MD:
             text = await createMarkdown(content, title, url);
             break;
-          case LINK_TEXT:
+          case MENU_TEXT:
             text = await createText(content, url);
             break;
-          case `${LINK_BBCODE}_url`:
+          case `${MENU_BBCODE}_url`:
             text = await createBBCodeUrl(url);
             break;
-          case `${LINK_BBCODE}_input`:
-          case `${LINK_HTML}_input`:
-          case `${LINK_MD}_input`:
-          case `${LINK_TEXT}_input`:
+          case `${MENU_BBCODE}_input`:
+          case `${MENU_HTML}_input`:
+          case `${MENU_MD}_input`:
+          case `${MENU_TEXT}_input`:
             func = requestInput(tabId, tab, {
               content, menuItemId, tabId, title, url,
             });
@@ -278,16 +288,16 @@
     if (tab) {
       let text;
       switch (menuItemId) {
-        case `${LINK_BBCODE}_input`:
+        case `${MENU_BBCODE}_input`:
           text = await createBBCode(content, url);
           break;
-        case `${LINK_HTML}_input`:
+        case `${MENU_HTML}_input`:
           text = await createHtml(content, title, url);
           break;
-        case `${LINK_MD}_input`:
+        case `${MENU_MD}_input`:
           text = await createMarkdown(content, title, url);
           break;
-        case `${LINK_TEXT}_input`:
+        case `${MENU_TEXT}_input`:
           text = await createText(content, url);
           break;
         default:
@@ -358,7 +368,7 @@
   };
 
   /* context menu */
-  const menus = [LINK_HTML, LINK_MD, LINK_BBCODE, LINK_TEXT];
+  const menus = [MENU_HTML, MENU_MD, MENU_BBCODE, MENU_TEXT];
 
   /**
    * create context menu item
@@ -386,7 +396,7 @@
     const func = [];
     for (const item of menus) {
       func.push(createMenuItem(item, ["all"], data));
-      item === LINK_BBCODE &&
+      item === MENU_BBCODE &&
         func.push(createMenuItem(`${item}_url`, ["all"], data));
       func.push(createMenuItem(`${item}_input`, ["all"], data));
     }
@@ -406,7 +416,7 @@
         contextMenus.update(item, {enabled: !!enabled}),
         contextMenus.update(`${item}_input`, {enabled: !!enabled})
       );
-      item === LINK_BBCODE &&
+      item === MENU_BBCODE &&
         func.push(contextMenus.update(`${item}_url`, {enabled: !!enabled}));
     }
     return Promise.all(func);

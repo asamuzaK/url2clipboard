@@ -37,10 +37,10 @@
   const sendMenuItemId = async evt => {
     const {target} = evt;
     if (target) {
-      const menuItemId = target.getAttribute(DATA_I18N);
-      if (isString(menuItemId)) {
+      const {id} = target;
+      if (id) {
         await runtime.sendMessage({
-          [MENU_ITEM_ID]: menuItemId,
+          [MENU_ITEM_ID]: id,
         });
         window.close();
       }
