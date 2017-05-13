@@ -11,11 +11,11 @@
   "extensionLocale": {
     "message": "en"
   },
-  "copyPageUrl": {
-    "message": "Copy Page URL"
-  },
   "copyLinkUrl": {
     "message": "Copy Link URL"
+  },
+  "copyPageUrl": {
+    "message": "Copy Page URL"
   },
   "menuBBCode": {
     "message": "BBCode"

@@ -91,7 +91,8 @@ button:focus:active {
   background: ActiveCaption;
 }
 .tabMenu > li > label:hover,
-.tabMenu > li > label:focus,
+#copyPageTab:focus ~ .tabMenu > li > label[for="copyPageTab"],
+#copyLinkTab:focus ~ .tabMenu > li > label[for="copyLinkTab"],
 #copyPageTab:checked ~ .tabMenu > li > label[for="copyPageTab"]:hover,
 #copyLinkTab:checked ~ .tabMenu > li > label[for="copyLinkTab"]:hover {
   color: HighlightText;
