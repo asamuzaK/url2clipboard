@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-   "message": "Copy document URL to clipboard as HTML Anchor, Markdown, Text"
+   "message": "Copy document URL to clipboard as HTML, Markdown, Text etc."
   },
   "extensionName": {
     "message": "Copy URL To Clipboard"
