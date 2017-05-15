@@ -23,13 +23,6 @@
   };
 
   /**
-   * is string
-   * @param {*} o - object to check
-   * @returns {boolean} - result
-   */
-  const isString = o => typeof o === "string" || o instanceof String;
-
-  /**
    * send menuItemId
    * @param {!Object} evt - Event
    * @returns {void}

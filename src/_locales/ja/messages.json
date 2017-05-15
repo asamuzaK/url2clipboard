@@ -20,29 +20,17 @@
   "menuBBCode": {
     "message": "BBCode"
   },
-  "menuBBCode_input": {
-    "message": "BBCode （タイトルを入力）"
-  },
   "menuBBCode_url": {
     "message": "BBCode （URL）"
   },
   "menuHtml": {
     "message": "HTML"
   },
-  "menuHtml_input": {
-    "message": "HTML （タイトルを入力）"
-  },
   "menuMarkdown": {
     "message": "Markdown"
   },
-  "menuMarkdown_input": {
-    "message": "Markdown （タイトルを入力）"
-  },
   "menuText": {
     "message": "Text"
-  },
-  "menuText_input": {
-    "message": "Text （タイトルを入力）"
   },
   "userInput": {
     "message": "タイトルを入力"

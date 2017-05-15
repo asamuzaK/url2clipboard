@@ -260,8 +260,7 @@
       func.push(contextMenus.update(id, {enabled: !!enabled}));
       for (const subItem of subMenuItems) {
         func.push(
-          contextMenus.update(subItem, {enabled: !!enabled}),
-          contextMenus.update(`${subItem}_input`, {enabled: !!enabled})
+          contextMenus.update(subItem, {enabled: !!enabled})
         );
         (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
           func.push(
