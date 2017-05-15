@@ -8,7 +8,7 @@
 
   /* constants */
   const CONTEXT_INFO = "contextInfo";
-  const CONTEXT_INFO_GET = "requestContextInfo";
+  const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
   const ELM_MENU = "button";
   const EXT_LOCALE = "extensionLocale";
@@ -57,6 +57,21 @@
   };
 
   /**
+   * add listener to menu
+   * @returns {void}
+   */
+  const addListenerToMenu = async () => {
+    const nodes = document.querySelectorAll(ELM_MENU);
+    if (nodes instanceof NodeList) {
+      for (const node of nodes) {
+        node.addEventListener(
+          "click", evt => sendMenuItemId(evt).catch(logError), false
+        );
+      }
+    }
+  };
+
+  /**
    * localize node
    * @param {Object} node - Element
    * @returns {void}
@@ -68,21 +83,19 @@
   };
 
   /**
-   * setup html
+   * localize html
    * @returns {Promise.<Array>} - results of each handler
    */
-  const setupHtml = async () => {
+  const localizeHtml = async () => {
     const lang = await i18n.getMessage(EXT_LOCALE);
-    const nodes = document.querySelectorAll(`[${DATA_I18N}]`);
     const func = [];
-    lang && document.documentElement.setAttribute("lang", lang);
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        lang && func.push(localizeNode(node));
-        node.nodeType === Node.ELEMENT_NODE && node.localName === ELM_MENU &&
-          node.addEventListener(
-            "click", evt => sendMenuItemId(evt).catch(logError), false
-          );
+    if (lang) {
+      const nodes = document.querySelectorAll(`[${DATA_I18N}]`);
+      document.documentElement.setAttribute("lang", lang);
+      if (nodes instanceof NodeList) {
+        for (const node of nodes) {
+          func.push(localizeNode(node));
+        }
       }
     }
     return Promise.all(func);
@@ -91,17 +104,22 @@
   /**
    * update menu
    * @param {Object} data - context data;
+   * @returns {void}
    */
   const updateMenu = async (data = {}) => {
-    const {isLink} = data;
-    const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        const attr = "disabled";
-        if (isLink) {
-          node.removeAttribute(attr);
-        } else {
-          node.setAttribute(attr, attr);
+    const {info} = data;
+    console.log(data);
+    if (info) {
+      const {isLink} = info;
+      const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
+      if (nodes instanceof NodeList) {
+        for (const node of nodes) {
+          const attr = "disabled";
+          if (isLink) {
+            node.removeAttribute(attr);
+          } else {
+            node.setAttribute(attr, attr);
+          }
         }
       }
     }
@@ -135,7 +153,14 @@
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
-        item === CONTEXT_INFO && func.push(updateMenu(obj));
+        switch (item) {
+          case CONTEXT_INFO:
+          case "keydown":
+          case "mousedown":
+            func.push(updateMenu(obj));
+            break;
+          default:
+        }
       }
     }
     return Promise.all(func);
@@ -143,7 +168,8 @@
 
   document.addEventListener(
     "DOMContentLoaded", () => Promise.all([
-      setupHtml(),
+      localizeHtml(),
+      addListenerToMenu(),
       requestContextInfo(),
     ]).catch(logError), false
   );

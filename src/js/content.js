@@ -121,12 +121,12 @@
   const sendStatus = async evt => {
     const {target, type} = evt;
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
+    const info = await createContextInfo(target);
     const msg = {
       [type]: {
-        enabled,
+        enabled, info,
       },
     };
-    await createContextInfo(target);
     return sendMsg(msg);
   };
 
@@ -302,7 +302,9 @@
             break;
           case CONTEXT_INFO_GET:
             func.push(sendMsg({
-              [CONTEXT_INFO]: contextInfo,
+              [CONTEXT_INFO]: {
+                info: contextInfo,
+              },
             }));
             break;
           default:

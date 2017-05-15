@@ -6,7 +6,7 @@ body {
   margin: 0;
   border: none;
   padding: 0.5rem;
-  min-width: 17rem;
+  min-width: 10rem;
   background-color: #FFF;
   color: #000;
 }
@@ -57,51 +57,4 @@ button:not([disabled]):active,
 button:not([disabled]):focus:active {
   border: 1px solid #CCC;
   background-color: #D7D7D8;
-}
-.tabMenu {
-  all: unset;
-  display: flex;
-}
-.tabMenu > li {
-  all: unset;
-  flex: 1 1 auto;
-  margin: 0;
-}
-.tabMenu > li > label {
-  all: unset;
-  display: block;
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #C0C0C0;
-  border-bottom: none;
-  border-radius: 4px 4px 0 0;
-  color: GrayText;
-  background: InactiveCaption;
-  font-size: 0.9em;
-}
-.tabControl {
-  position: absolute;
-  left: -999px;
-}
-.tabContent {
-  display: none;
-  border: 1px solid #C0C0C0;
-  border-radius: 0 0 4px 4px;
-  padding: 0 0 0.25rem;
-}
-#copyPageTab:checked ~ .tabMenu > li > label[for="copyPageTab"],
-#copyLinkTab:checked ~ .tabMenu > li > label[for="copyLinkTab"] {
-  color: CaptionText;
-  background: ActiveCaption;
-}
-.tabMenu > li > label:hover,
-#copyPageTab:focus ~ .tabMenu > li > label[for="copyPageTab"],
-#copyLinkTab:focus ~ .tabMenu > li > label[for="copyLinkTab"],
-#copyPageTab:checked ~ .tabMenu > li > label[for="copyPageTab"]:hover,
-#copyLinkTab:checked ~ .tabMenu > li > label[for="copyLinkTab"]:hover {
-  color: HighlightText;
-  background: Highlight;
-}
-#copyPageTab:checked ~ #copyPageContent,
-#copyLinkTab:checked ~ #copyLinkContent {
-  display: block;
 }
