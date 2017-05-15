@@ -240,9 +240,6 @@
           func.push(createMenuItem(`${subItem}_url`,
                                    `${subItemTitle}_url`,
                                    subItemData));
-/*        func.push(createMenuItem(`${subItem}_input`,
-                                 `${subItemTitle}_input`,
-                                 subItemData));*/
       }
     }
     return Promise.all(func);
@@ -362,7 +359,6 @@
   /* listeners */
   contextMenus.onClicked.addListener((info, tab) =>
     sendExecCopy({info, tab}).catch(logError)
-    //extractData({info, tab}).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
