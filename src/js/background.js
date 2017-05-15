@@ -22,10 +22,10 @@
   const MENU_ITEM_ID = "menuItemId";
   const MENU_MD = "Markdown";
   const MENU_TEXT = "Text";
-  const PAGE_BBCODE = "BBCode";
-  const PAGE_HTML = "Html";
-  const PAGE_MD = "Markdown";
-  const PAGE_TEXT = "Text";
+  const PAGE_BBCODE = "pageBBCode";
+  const PAGE_HTML = "pageHtml";
+  const PAGE_MD = "pageMarkdown";
+  const PAGE_TEXT = "pageText";
 
   /**
    * log error
