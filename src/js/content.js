@@ -327,7 +327,7 @@
     window.addEventListener(
       "keydown",
       evt => (evt.altKey && evt.shiftKey && evt.key === "C" ||
-              evt.ShiftKey && evt.key === "F10" ||
+              evt.shiftKey && evt.key === "F10" ||
               evt.key === "ContextMenu") &&
                sendStatus(evt).catch(logError),
       true
