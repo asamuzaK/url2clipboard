@@ -45,13 +45,16 @@ button {
   text-indent: 1rem;
   width: 100%;
 }
-button:hover,
-button:focus {
+button[disabled] {
+  color: GrayText;
+}
+button:not([disabled]):hover,
+button:not([disabled]):focus {
   border: 1px solid #CCC;
   background-color: #EAEAEA;
 }
-button:active,
-button:focus:active {
+button:not([disabled]):active,
+button:not([disabled]):focus:active {
   border: 1px solid #CCC;
   background-color: #D7D7D8;
 }

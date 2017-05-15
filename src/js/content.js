@@ -7,6 +7,8 @@
   const {i18n, runtime} = browser;
 
   /* constants */
+  const CONTEXT_INFO = "contextInfo";
+  const CONTEXT_INFO_GET = "getContextInfo";
   const EXEC_COPY = "executeCopy";
   const LINK_BBCODE = "linkBBCode";
   const LINK_HTML = "linkHtml";
@@ -81,6 +83,7 @@
    * @returns {Object} - context info
    */
   const createContextInfo = async node => {
+    contextInfo.isLink = false;
     contextInfo.content = document.title;
     contextInfo.title = document.title;
     contextInfo.url = document.URL;
@@ -104,7 +107,7 @@
   /**
    * send status
    * @param {!Object} evt - Event
-   * @returns {?AsyncFunction} - send message
+   * @returns {AsyncFunction} - send message
    */
   const sendStatus = async evt => {
     const {target, type} = evt;
@@ -115,7 +118,7 @@
         enabled, info,
       },
     };
-    return enabled && sendMsg(msg) || null;
+    return sendMsg(msg);
   };
 
   /**
@@ -271,7 +274,6 @@
     return func || null;
   };
 
-  /* FIXME: remove switch */
   /**
    * handle message
    * @param {*} msg - message
@@ -286,6 +288,11 @@
         switch (item) {
           case EXEC_COPY:
             func.push(extractCopyData(obj));
+            break;
+          case CONTEXT_INFO_GET:
+            func.push(sendMsg({
+              [CONTEXT_INFO]: contextInfo,
+            }));
             break;
           default:
         }
@@ -303,6 +310,12 @@
     window.addEventListener(
       "mousedown",
       evt => evt.button === MOUSE_BUTTON_RIGHT &&
+               sendStatus(evt).catch(logError),
+      true
+    );
+    window.addEventListener(
+      "keydown",
+      evt => evt.altKey && evt.shiftKey && evt.key === "C" &&
                sendStatus(evt).catch(logError),
       true
     );
