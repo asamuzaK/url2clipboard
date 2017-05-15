@@ -7,15 +7,18 @@
   const {i18n, runtime} = browser;
 
   /* constants */
-  const CLIP_TEXT = "clipboardText";
-  const NS_HTML = "http://www.w3.org/1999/xhtml";
+  const EXEC_COPY = "executeCopy";
+  const LINK_BBCODE = "linkBBCode";
+  const LINK_HTML = "linkHtml";
+  const LINK_MD = "linkMarkdown";
+  const LINK_TEXT = "linkText";
   const MOUSE_BUTTON_RIGHT = 2;
-  const TYPE_FROM = 8;
-  const TYPE_TO = -1;
+  const PAGE_BBCODE = "pageBBCode";
+  const PAGE_HTML = "pageHtml";
+  const PAGE_MD = "pageMarkdown";
+  const PAGE_TEXT = "pageText";
   const USER_INPUT = "userInput";
   const USER_INPUT_DEFAULT = "Input Title";
-  const USER_INPUT_GET = "userInputGet";
-  const USER_INPUT_RES = "userInputRes";
 
   /**
    * log error
@@ -26,24 +29,6 @@
     console.error(e);
     return false;
   };
-
-  /**
-   * log warn
-   * @param {*} msg - message
-   * @returns {boolean} - false
-   */
-  const logWarn = msg => {
-    msg && console.warn(msg);
-    return false;
-  };
-
-  /**
-   * get type
-   * @param {*} o - object to check
-   * @returns {string} - type of object
-   */
-  const getType = o =>
-    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
 
   /**
    * is string
@@ -85,9 +70,9 @@
   /* context info */
   const contextInfo = {
     isLink: false,
-    content: document.title,
-    title: document.title,
-    url: document.URL,
+    content: null,
+    title: null,
+    url: null,
   };
 
   /**
@@ -96,6 +81,9 @@
    * @returns {Object} - context info
    */
   const createContextInfo = async node => {
+    contextInfo.content = document.title;
+    contextInfo.title = document.title;
+    contextInfo.url = document.URL;
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
       if (anchor) {
@@ -131,31 +119,6 @@
   };
 
   /**
-   * send user input
-   * @param {Object} data - input data
-   * @returns {AsyncFunction} - send message
-   */
-  const sendInput = async data => {
-    const msg = {
-      [USER_INPUT_RES]: data,
-    };
-    return sendMsg(msg);
-  };
-
-  /**
-   * get user input
-   * @param {Object} data - input data
-   * @returns {Object} - input data
-   */
-  const getInput = async (data = {}) => {
-    const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
-    let {content: text} = data;
-    text = await window.prompt(msg, text || "");
-    isString(text) && (data.content = text);
-    return data;
-  };
-
-  /**
    * copy to clipboard
    * @param {string} text - text to copy
    * @returns {void}
@@ -178,6 +141,138 @@
   };
 
   /**
+   * create HTML link
+   * @param {string} content - content title
+   * @param {string} title - document title
+   * @param {string} url - document URL
+   * @returns {?string} - HTML Anchor format
+   */
+  const createHtml = async (content, title, url) => {
+    let text;
+    if (isString(content) && isString(title) && isString(url)) {
+      content = content.trim();
+      title = title.replace(/"/g, "&quot;");
+      text = `<a href="${url}" title="${title}">${content}</a>`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create Markdown link
+   * @param {string} content - content title
+   * @param {string} title - document title
+   * @param {string} url - document URL
+   * @returns {?string} - Markdown Link format
+   */
+  const createMarkdown = async (content, title, url) => {
+    let text;
+    if (isString(content) && isString(title) && isString(url)) {
+      content = content.trim();
+      title = title.replace(/"/g, "\\\"");
+      text = `[${content}](${url} "${title}")`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create BBCode link
+   * @param {string} content - content title
+   * @param {string} url - document URL
+   * @returns {?string} - BBCode Link format
+   */
+  const createBBCode = async (content, url) => {
+    let text;
+    if (isString(content) && isString(url)) {
+      content = content.trim();
+      text = `[url=${url}]${content}[/url]`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create BBCode URL link
+   * @param {string} url - document URL
+   * @returns {?string} - BBCode Link format
+   */
+  const createBBCodeUrl = async url => {
+    let text;
+    if (isString(url)) {
+      text = `[url]${url}[/url]`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create Text link
+   * @param {string} content - content title
+   * @param {string} url - document URL
+   * @returns {?string} - Text Link format
+   */
+  const createText = async (content, url) => {
+    let text;
+    if (isString(content) && isString(url)) {
+      content = content.trim();
+      text = `${content} <${url}>`;
+    }
+    return text || null;
+  };
+
+  /**
+   * create user input link
+   * @param {Object} data - copy data
+   * @returns {?string} - text
+   */
+  const createUserInputLink = async (data = {}) => {
+    const {content: contentText, menuItemId, title, url} = data;
+    const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
+    const content = await window.prompt(msg, contentText || "");
+    let text;
+    switch (menuItemId) {
+      case LINK_BBCODE:
+      case PAGE_BBCODE:
+        text = await createBBCode(content, url);
+        break;
+      case LINK_HTML:
+      case PAGE_HTML:
+        text = await createHtml(content, title, url);
+        break;
+      case LINK_MD:
+      case PAGE_MD:
+        text = await createMarkdown(content, title, url);
+        break;
+      case LINK_TEXT:
+      case PAGE_TEXT:
+        text = await createText(content, url);
+        break;
+      case `${LINK_BBCODE}_url`:
+      case `${PAGE_BBCODE}_url`:
+        text = await createBBCodeUrl(content);
+        break;
+      default:
+    }
+    return text || null;
+  };
+
+  /**
+   * extract copy data
+   * @param {Object} data - copy data
+   * @returns {?AsyncFunction} - copy to clipboard
+   */
+  const extractCopyData = async (data = {}) => {
+    const {menuItemId, selectionText} = data;
+    const {content: contentText, title, url} = contextInfo;
+    const content = (menuItemId === `${LINK_BBCODE}_url` ||
+                     menuItemId === `${PAGE_BBCODE}_url`) && url ||
+                    selectionText || contentText || title;
+    const text = await createUserInputLink({
+      content, menuItemId, title, url,
+    });
+    const func = text && copyToClipboard(text);
+    return func || null;
+  };
+
+  /* FIXME: remove switch */
+  /**
    * handle message
    * @param {*} msg - message
    * @returns {Promise.<Array>} - results of each handler
@@ -189,11 +284,8 @@
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
-          case CLIP_TEXT:
-            func.push(copyToClipboard(obj));
-            break;
-          case USER_INPUT_GET:
-            func.push(getInput(obj).then(sendInput));
+          case EXEC_COPY:
+            func.push(extractCopyData(obj));
             break;
           default:
         }
