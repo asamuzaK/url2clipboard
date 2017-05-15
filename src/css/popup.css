@@ -46,7 +46,7 @@ button {
   width: 100%;
 }
 button[disabled] {
-  color: #CCC;
+  color: #808080;
 }
 button:not([disabled]):hover,
 button:not([disabled]):focus {
