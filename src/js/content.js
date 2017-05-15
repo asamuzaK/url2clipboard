@@ -92,7 +92,7 @@
       if (anchor) {
         const {textContent, href, title} = anchor;
         if (href) {
-          const content = textContent.trim();
+          const content = textContent.trim().replace(/\s+/g, " ");
           const url = href instanceof SVGAnimatedString && href.baseVal || href;
           contextInfo.isLink = true;
           contextInfo.content = content;
