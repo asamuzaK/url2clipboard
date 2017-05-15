@@ -234,11 +234,14 @@
           enabled: false,
           parentId: id,
         };
-        func.push(createMenuItem(subItem, subItemTitle, subItemData));
-        (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
-          func.push(createMenuItem(`${subItem}_url`,
-                                   `${subItemTitle} (URL)`,
+        if (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) {
+          func.push(createMenuItem(subItem, `${subItemTitle} (Text)`,
+                                   subItemData),
+                    createMenuItem(`${subItem}_url`, `${subItemTitle} (URL)`,
                                    subItemData));
+        } else {
+          func.push(createMenuItem(subItem, subItemTitle, subItemData));
+        }
       }
     }
     return Promise.all(func);
