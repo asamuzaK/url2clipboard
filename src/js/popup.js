@@ -4,12 +4,15 @@
 "use strict";
 {
   /* api */
-  const {i18n, runtime} = browser;
+  const {i18n, runtime, tabs} = browser;
 
   /* constants */
+  const CONTEXT_INFO = "contextInfo";
+  const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
+  const ELM_MENU = "button";
   const EXT_LOCALE = "extensionLocale";
-  const MENU_ELM = "button";
+  const LINK_CONTENT = "copyLinkContent";
   const MENU_ITEM_ID = "menuItemId";
 
   /**
@@ -23,11 +26,17 @@
   };
 
   /**
-   * is string
-   * @param {*} o - object to check
-   * @returns {boolean} - result
+   * get active tab
+   * @returns {Object} - tabs.Tab
    */
-  const isString = o => typeof o === "string" || o instanceof String;
+  const getActiveTab = async () => {
+    const arr = await tabs.query({active: true});
+    let tab;
+    if (arr.length) {
+      [tab] = arr;
+    }
+    return tab || null;
+  };
 
   /**
    * send menuItemId
@@ -37,12 +46,27 @@
   const sendMenuItemId = async evt => {
     const {target} = evt;
     if (target) {
-      const menuItemId = target.getAttribute(DATA_I18N);
-      if (isString(menuItemId)) {
+      const {id} = target;
+      if (id) {
         await runtime.sendMessage({
-          [MENU_ITEM_ID]: menuItemId,
+          [MENU_ITEM_ID]: id,
         });
         window.close();
+      }
+    }
+  };
+
+  /**
+   * add listener to menu
+   * @returns {void}
+   */
+  const addListenerToMenu = async () => {
+    const nodes = document.querySelectorAll(ELM_MENU);
+    if (nodes instanceof NodeList) {
+      for (const node of nodes) {
+        node.addEventListener(
+          "click", evt => sendMenuItemId(evt).catch(logError), false
+        );
       }
     }
   };
@@ -59,27 +83,97 @@
   };
 
   /**
-   * setup html
+   * localize html
    * @returns {Promise.<Array>} - results of each handler
    */
-  const setupHtml = async () => {
+  const localizeHtml = async () => {
     const lang = await i18n.getMessage(EXT_LOCALE);
-    const nodes = document.querySelectorAll(`[${DATA_I18N}]`);
     const func = [];
-    lang && document.documentElement.setAttribute("lang", lang);
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        lang && func.push(localizeNode(node));
-        node.nodeType === Node.ELEMENT_NODE && node.localName === MENU_ELM &&
-          node.addEventListener(
-            "click", evt => sendMenuItemId(evt).catch(logError), false
-          );
+    if (lang) {
+      const nodes = document.querySelectorAll(`[${DATA_I18N}]`);
+      document.documentElement.setAttribute("lang", lang);
+      if (nodes instanceof NodeList) {
+        for (const node of nodes) {
+          func.push(localizeNode(node));
+        }
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * update menu
+   * @param {Object} data - context data;
+   * @returns {void}
+   */
+  const updateMenu = async (data = {}) => {
+    const {info} = data;
+    if (info) {
+      const {isLink} = info;
+      const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
+      if (nodes instanceof NodeList) {
+        for (const node of nodes) {
+          const attr = "disabled";
+          if (isLink) {
+            node.removeAttribute(attr);
+          } else {
+            node.setAttribute(attr, attr);
+          }
+        }
+      }
+    }
+  };
+
+  /**
+   * request context info 
+   * @returns {AsyncFunction} - send message
+   */
+  const requestContextInfo = async () => {
+    const tab = await getActiveTab();
+    const {id} = tab;
+    let func;
+    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+      const msg = {
+        [CONTEXT_INFO_GET]: true,
+      };
+      func = tabs.sendMessage(id, msg);
+    }
+    return func || null;
+  };
+
+  /**
+   * handle message
+   * @param {*} msg - message
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleMsg = async msg => {
+    const func = [];
+    const items = msg && Object.keys(msg);
+    if (items && items.length) {
+      for (const item of items) {
+        const obj = msg[item];
+        switch (item) {
+          case CONTEXT_INFO:
+          case "keydown":
+          case "mousedown":
+            func.push(updateMenu(obj));
+            break;
+          default:
+        }
       }
     }
     return Promise.all(func);
   };
 
   document.addEventListener(
-    "DOMContentLoaded", () => setupHtml().catch(logError), false
+    "DOMContentLoaded", () => Promise.all([
+      localizeHtml(),
+      addListenerToMenu(),
+      requestContextInfo(),
+    ]).catch(logError), false
+  );
+
+  runtime.onMessage.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(logError)
   );
 }

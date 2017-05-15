@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-   "message": "Copy document URL to clipboard as HTML Anchor, Markdown, Text"
+   "message": "Copy document URL to clipboard as HTML, Markdown, Text etc."
   },
   "extensionName": {
     "message": "Copy URL To Clipboard"
@@ -11,32 +11,11 @@
   "extensionLocale": {
     "message": "en"
   },
-  "bbcodeLink": {
-    "message": "BBCode"
+  "copyLinkUrl": {
+    "message": "Copy Link URL"
   },
-  "bbcodeLink_input": {
-    "message": "BBCode (Input Title)"
-  },
-  "bbcodeLink_url": {
-    "message": "BBCode (URL)"
-  },
-  "htmlAnchor": {
-    "message": "HTML"
-  },
-  "htmlAnchor_input": {
-    "message": "HTML (Input Title)"
-  },
-  "markdownLink": {
-    "message": "Markdown"
-  },
-  "markdownLink_input": {
-    "message": "Markdown (Input Title)"
-  },
-  "textLink": {
-    "message": "Text"
-  },
-  "textLink_input": {
-    "message": "Text (Input Title)"
+  "copyPageUrl": {
+    "message": "Copy Page URL"
   },
   "userInput": {
     "message": "Input Title"

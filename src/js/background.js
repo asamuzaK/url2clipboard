@@ -7,21 +7,25 @@
   const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
 
   /* constants */
-  const CLIP_ELEMENT = "clipboard";
-  const CLIP_TEXT = "clipboardText";
+  const COPY_LINK = "copyLinkUrl";
+  const COPY_PAGE = "copyPageUrl";
+  const EXEC_COPY = "executeCopy";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
-  const ID_WEBEXT = "url2clipboard@asamuzak.jp";
   const KEY = "Alt+Shift+C";
-  const LINK_BBCODE = "bbcodeLink";
-  const LINK_HTML = "htmlAnchor";
-  const LINK_MD = "markdownLink";
-  const LINK_TEXT = "textLink";
+  const LINK_BBCODE = "linkBBCode";
+  const LINK_HTML = "linkHtml";
+  const LINK_MD = "linkMarkdown";
+  const LINK_TEXT = "linkText";
+  const MENU_BBCODE = "BBCode";
+  const MENU_HTML = "HTML";
   const MENU_ITEM_ID = "menuItemId";
-  const TYPE_FROM = 8;
-  const TYPE_TO = -1;
-  const USER_INPUT_GET = "userInputGet";
-  const USER_INPUT_RES = "userInputRes";
+  const MENU_MD = "Markdown";
+  const MENU_TEXT = "Text";
+  const PAGE_BBCODE = "BBCode";
+  const PAGE_HTML = "Html";
+  const PAGE_MD = "Markdown";
+  const PAGE_TEXT = "Text";
 
   /**
    * log error
@@ -32,24 +36,6 @@
     console.error(e);
     return false;
   };
-
-  /**
-   * log warn
-   * @param {*} msg - message
-   * @returns {boolean} - false
-   */
-  const logWarn = msg => {
-    msg && console.warn(msg);
-    return false;
-  };
-
-  /**
-   * get type
-   * @param {*} o - object to check
-   * @returns {string} - type of object
-   */
-  const getType = o =>
-    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
 
   /**
    * is string
@@ -80,223 +66,23 @@
     return !!tab;
   };
 
-  // NOTE: not working yet in WebExtensions. issue #1
   /**
-   * copy to clipboard
-   * @param {string} text - text to copy
-   * @returns {void}
-   */
-  const copyToClipboard = async text => {
-    const elm = document.getElementById(CLIP_ELEMENT);
-    if (elm) {
-      if (isString(text)) {
-        elm.textContent = text;
-        elm.select();
-        document.execCommand("copy");
-      } else {
-        logWarn(`url2clipboard: Expected String but got ${getType(text)}.`);
-      }
-    } else {
-      logWarn(`url2clipboard: Element#${CLIP_ELEMENT} not found.`);
-    }
-  };
-
-  /**
-   * send text to copy
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tabs.Tab
-   * @param {string} text - text to clip
-   * @returns {?AsyncFunction} - send message
-   */
-  const sendText = async (tabId, tab, text) => {
-    let func;
-    if ((tab || await isTab(tabId)) && isString(text)) {
-      const msg = {
-        [CLIP_TEXT]: text,
-      };
-      func = tabs.sendMessage(tabId, msg);
-    }
-    return func || null;
-  };
-
-  /**
-   * send user input request
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tabs.Tab
-   * @param {Object} data - input data
-   * @returns {?AsyncFunction} - send message
-   */
-  const requestInput = async (tabId, tab, data) => {
-    let func;
-    if (tab || await isTab(tabId)) {
-      const msg = {
-        [USER_INPUT_GET]: data,
-      };
-      func = tabs.sendMessage(tabId, msg);
-    }
-    return func || null;
-  };
-
-  /**
-   * create HTML Anchor
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {?string} - HTML Anchor format
-   */
-  const createHtml = async (content, title, url) => {
-    let text;
-    if (isString(content) && isString(title) && isString(url)) {
-      content = content.trim();
-      title = title.replace(/"/g, "&quot;");
-      text = `<a href="${url}" title="${title}">${content}</a>`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create Markdown Link
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {?string} - Markdown Link format
-   */
-  const createMarkdown = async (content, title, url) => {
-    let text;
-    if (isString(content) && isString(title) && isString(url)) {
-      content = content.trim();
-      title = title.replace(/"/g, "\\\"");
-      text = `[${content}](${url} "${title}")`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create BBCode Link
-   * @param {string} content - content title
-   * @param {string} url - document URL
-   * @returns {?string} - BBCode Link format
-   */
-  const createBBCode = async (content, url) => {
-    let text;
-    if (isString(content) && isString(url)) {
-      content = content.trim();
-      text = `[url=${url}]${content}[/url]`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create BBCode URL Link
-   * @param {string} url - document URL
-   * @returns {?string} - BBCode Link format
-   */
-  const createBBCodeUrl = async url => {
-    let text;
-    if (isString(url)) {
-      text = `[url]${url}[/url]`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create Text Link
-   * @param {string} content - content title
-   * @param {string} url - document URL
-   * @returns {?string} - Text Link format
-   */
-  const createText = async (content, url) => {
-    let text;
-    if (isString(content) && isString(url)) {
-      content = content.trim();
-      text = `${content} <${url}>`;
-    }
-    return text || null;
-  };
-
-  /**
-   * extract data
+   * send exec copy message
    * @param {Object} data - tab data
-   * @returns {?AsyncFunction} - send text / request input
+   * @returns {?AsyncFunction} - send message
    */
-  const extractData = async (data = {}) => {
+  const sendExecCopy = async (data = {}) => {
     const {info, tab} = data;
-    const isWebExt = runtime.id === ID_WEBEXT;
+    const {id} = tab;
     let func;
-    if (info && tab) {
-      const {id: tabId, title, url} = tab;
-      if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-        const {menuItemId, selectionText} = info;
-        const content = selectionText || title;
-        let text;
-        switch (menuItemId) {
-          case LINK_BBCODE:
-            text = await createBBCode(content, url);
-            break;
-          case LINK_HTML:
-            text = await createHtml(content, title, url);
-            break;
-          case LINK_MD:
-            text = await createMarkdown(content, title, url);
-            break;
-          case LINK_TEXT:
-            text = await createText(content, url);
-            break;
-          case `${LINK_BBCODE}_url`:
-            text = await createBBCodeUrl(url);
-            break;
-          case `${LINK_BBCODE}_input`:
-          case `${LINK_HTML}_input`:
-          case `${LINK_MD}_input`:
-          case `${LINK_TEXT}_input`:
-            func = requestInput(tabId, tab, {
-              content, menuItemId, tabId, title, url,
-            });
-            break;
-          default:
-        }
-        if (!func && text) {
-          func = isWebExt ?
-                   sendText(tabId, tab, text) :
-                   copyToClipboard(text);
-        }
-      }
-    }
-    return func || null;
-  };
-
-  /**
-   * extract user input data
-   * @param {Object} data - tab data
-   * @returns {?AsyncFunction} - send text
-   */
-  const extractInput = async (data = {}) => {
-    const {content, menuItemId, tabId, title, url} = data;
-    const tab = await tabs.get(tabId).catch(logError);
-    const isWebExt = runtime.id === ID_WEBEXT;
-    let func;
-    if (tab) {
-      let text;
-      switch (menuItemId) {
-        case `${LINK_BBCODE}_input`:
-          text = await createBBCode(content, url);
-          break;
-        case `${LINK_HTML}_input`:
-          text = await createHtml(content, title, url);
-          break;
-        case `${LINK_MD}_input`:
-          text = await createMarkdown(content, title, url);
-          break;
-        case `${LINK_TEXT}_input`:
-          text = await createText(content, url);
-          break;
-        default:
-      }
-      if (text) {
-        func = isWebExt ?
-                 sendText(tabId, tab, text) :
-                 copyToClipboard(text);
-      }
+    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+      const {menuItemId, selectionText} = info;
+      const msg = {
+        [EXEC_COPY]: {
+          menuItemId, selectionText,
+        },
+      };
+      func = tabs.sendMessage(id, msg);
     }
     return func || null;
   };
@@ -308,10 +94,11 @@
    * set enabled tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context info
    * @returns {void}
    */
-  const setEnabledTab = async (tabId, tab, enabled = false) => {
+  const setEnabledTab = async (tabId, tab, data = {}) => {
+    const {enabled} = data;
     if (tab || await isTab(tabId)) {
       tabId = stringifyPositiveInt(tabId);
       tabId && (enabledTabs[tabId] = !!enabled);
@@ -348,73 +135,148 @@
   /**
    * create data
    * @param {Object} menuItemId - menuItemId
-   * @returns {?AsyncFunction} - extract data
+   * @returns {?AsyncFunction} - send exec copy message
    */
   const createData = async menuItemId => {
     const info = isString(menuItemId) && {menuItemId};
     const tab = await getActiveTab();
-    return info && tab && extractData({info, tab}) || null;
+    return info && tab && sendExecCopy({info, tab}) || null;
   };
 
-  /* context menu */
-  const menus = [LINK_HTML, LINK_MD, LINK_BBCODE, LINK_TEXT];
+  /* context menu items */
+  const menuItems = {
+    [COPY_PAGE]: {
+      id: COPY_PAGE,
+      contexts: ["all"],
+      title: i18n.getMessage(COPY_PAGE),
+      subItems: {
+        [PAGE_HTML]: {
+          id: PAGE_HTML,
+          title: MENU_HTML,
+        },
+        [PAGE_MD]: {
+          id: PAGE_MD,
+          title: MENU_MD,
+        },
+        [PAGE_BBCODE]: {
+          id: PAGE_BBCODE,
+          title: MENU_BBCODE,
+        },
+        [PAGE_TEXT]: {
+          id: PAGE_TEXT,
+          title: MENU_TEXT,
+        },
+      },
+    },
+    [COPY_LINK]: {
+      id: COPY_LINK,
+      contexts: ["link"],
+      title: i18n.getMessage(COPY_LINK),
+      subItems: {
+        [LINK_HTML]: {
+          id: LINK_HTML,
+          title: MENU_HTML,
+        },
+        [LINK_MD]: {
+          id: LINK_MD,
+          title: MENU_MD,
+        },
+        [LINK_BBCODE]: {
+          id: LINK_BBCODE,
+          title: MENU_BBCODE,
+        },
+        [LINK_TEXT]: {
+          id: LINK_TEXT,
+          title: MENU_TEXT,
+        },
+      },
+    },
+  };
 
   /**
    * create context menu item
    * @param {string} id - menu item ID
-   * @param {Array} contexts - contexts
-   * @param {boolean} enabled - enabled
+   * @param {string} title - menu item title
+   * @param {Object} data - context data
    * @returns {void}
    */
-  const createMenuItem = async (id, contexts, enabled = false) => {
-    isString(id) && Array.isArray(contexts) &&
-      contextMenus.create({
-        id, contexts,
+  const createMenuItem = async (id, title, data = {}) => {
+    const {contexts, enabled, parentId} = data;
+    if (isString(id) && isString(title) && Array.isArray(contexts)) {
+      const opt = {
+        id, contexts, title,
         enabled: !!enabled,
-        title: i18n.getMessage(id),
-      });
+      };
+      parentId && (opt.parentId = parentId);
+      contextMenus.create(opt);
+    }
   };
 
   /**
    * create context menu items
-   * @param {boolean} enabled - enabled
    * @returns {Promise.<Array>} - results of each handler
    */
-  const createMenuItems = async enabled => {
+  const createContextMenu = async () => {
+    const items = Object.keys(menuItems);
     const func = [];
-    for (const item of menus) {
-      func.push(createMenuItem(item, ["all"], enabled));
-      item === LINK_BBCODE &&
-        func.push(createMenuItem(`${item}_url`, ["all"], enabled));
-      func.push(createMenuItem(`${item}_input`, ["all"], enabled));
+    for (const item of items) {
+      const {contexts, id, subItems, title} = menuItems[item];
+      const itemData = {
+        contexts,
+        enabled: false,
+      };
+      const subMenuItems = Object.keys(subItems);
+      func.push(createMenuItem(id, title, itemData));
+      for (const subItem of subMenuItems) {
+        const {title: subItemTitle} = subItems[subItem];
+        const subItemData = {
+          contexts,
+          enabled: false,
+          parentId: id,
+        };
+        func.push(createMenuItem(subItem, subItemTitle, subItemData));
+        (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
+          func.push(createMenuItem(`${subItem}_url`,
+                                   `${subItemTitle} (URL)`,
+                                   subItemData));
+      }
     }
     return Promise.all(func);
   };
 
   /**
    * update context menu
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const updateContextMenu = async (enabled = false) => {
+  const updateContextMenu = async (data = {}) => {
+    const {enabled} = data;
+    const items = Object.keys(menuItems);
     const func = [];
-    for (const item of menus) {
-      func.push(
-        contextMenus.update(item, {enabled}),
-        contextMenus.update(`${item}_input`, {enabled})
-      );
-      item === LINK_BBCODE &&
-        func.push(contextMenus.update(`${item}_url`, {enabled}));
+    for (const item of items) {
+      const {id, subItems} = menuItems[item];
+      const subMenuItems = Object.keys(subItems);
+      func.push(contextMenus.update(id, {enabled: !!enabled}));
+      for (const subItem of subMenuItems) {
+        func.push(
+          contextMenus.update(subItem, {enabled: !!enabled})
+        );
+        (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
+          func.push(
+            contextMenus.update(`${subItem}_url`, {enabled: !!enabled})
+          );
+      }
     }
     return Promise.all(func);
   };
 
   /**
    * show icon
-   * @param {boolean} enabled - enabled
+   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (enabled = false) => {
+  const showIcon = async (data = {}) => {
+    const {enabled} = data;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
     const path = enabled && `${icon}#gray` || `${icon}#off`;
@@ -441,6 +303,7 @@
         const obj = msg[item];
         switch (item) {
           case "mousedown":
+          case "keydown":
             func.push(updateContextMenu(obj));
             break;
           case "load":
@@ -452,9 +315,6 @@
             break;
           case MENU_ITEM_ID:
             func.push(createData(obj));
-            break;
-          case USER_INPUT_RES:
-            func.push(extractInput(obj));
             break;
           default:
         }
@@ -476,8 +336,8 @@
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
       func.push(
-        updateContextMenu(enabled),
-        showIcon(enabled)
+        updateContextMenu({enabled}),
+        showIcon({enabled})
       );
     }
     return Promise.all(func);
@@ -497,7 +357,7 @@
 
   /* listeners */
   contextMenus.onClicked.addListener((info, tab) =>
-    extractData({info, tab}).catch(logError)
+    sendExecCopy({info, tab}).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
@@ -513,5 +373,5 @@
   );
 
   /* startup */
-  createMenuItems().catch(logError);
+  createContextMenu().catch(logError);
 }

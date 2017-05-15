@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-   "message": "ドキュメントの URL を HTML Anchor、Markdown、Text でクリップボードにコピー"
+   "message": "ドキュメントの URL を HTML、Markdown、Text などでクリップボードにコピー"
   },
   "extensionName": {
     "message": "URL をクリップボードにコピー"
@@ -11,32 +11,11 @@
   "extensionLocale": {
     "message": "ja"
   },
-  "bbcodeLink": {
-    "message": "BBCode"
+  "copyLinkUrl": {
+    "message": "リンクの URL をコピー"
   },
-  "bbcodeLink_input": {
-    "message": "BBCode （タイトルを入力）"
-  },
-  "bbcodeLink_url": {
-    "message": "BBCode （URL）"
-  },
-  "htmlAnchor": {
-    "message": "HTML"
-  },
-  "htmlAnchor_input": {
-    "message": "HTML （タイトルを入力）"
-  },
-  "markdownLink": {
-    "message": "Markdown"
-  },
-  "markdownLink_input": {
-    "message": "Markdown （タイトルを入力）"
-  },
-  "textLink": {
-    "message": "Text"
-  },
-  "textLink_input": {
-    "message": "Text （タイトルを入力）"
+  "copyPageUrl": {
+    "message": "ページの URL をコピー"
   },
   "userInput": {
     "message": "タイトルを入力"

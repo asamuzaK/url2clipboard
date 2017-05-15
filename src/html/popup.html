@@ -9,53 +9,68 @@
   </head>
   <body>
     <main>
-      <ul>
-        <li>
-          <button data-i18n="htmlAnchor">
-            HTML
-          </button>
-        </li>
-        <li>
-          <button data-i18n="htmlAnchor_input">
-            HTML (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="markdownLink">
-            Markdown
-          </button>
-        </li>
-        <li>
-          <button data-i18n="markdownLink_input">
-            Markdown (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink">
-            BBCode
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink_url">
-            BBCode (URL)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="bbcodeLink_input">
-            BBCode (Input Title)
-          </button>
-        </li>
-        <li>
-          <button data-i18n="textLink">
-            Text
-          </button>
-        </li>
-        <li>
-          <button data-i18n="textLink_input">
-            Text (Input Title)
-          </button>
-        </li>
-      </ul>
+      <section id="copyPageContent" class="tabContent" role="tabpanel"
+               aria-labelledby="copyPageTab">
+        <h1 data-i18n="copyPageUrl">Copy Page URL</h1>
+        <ul>
+          <li>
+            <button id="pageHtml">
+              HTML
+            </button>
+          </li>
+          <li>
+            <button id="pageMarkdown">
+              Markdown
+            </button>
+          </li>
+          <li>
+            <button id="pageBBCode">
+              BBCode
+            </button>
+          </li>
+          <li>
+            <button id="pageBBCode_url">
+              BBCode (URL)
+            </button>
+          </li>
+          <li>
+            <button id="pageText">
+              Text
+            </button>
+          </li>
+        </ul>
+      </section>
+      <section id="copyLinkContent" class="tabContent" role="tabpanel"
+               aria-labelledby="copyLinkTab">
+        <h1 data-i18n="copyLinkUrl">Copy Link URL</h1>
+        <ul>
+          <li>
+            <button id="linkHtml">
+              HTML
+            </button>
+          </li>
+          <li>
+            <button id="linkMarkdown">
+              Markdown
+            </button>
+          </li>
+          <li>
+            <button id="linkBBCode">
+              BBCode
+            </button>
+          </li>
+          <li>
+            <button id="linkBBCode_url">
+              BBCode (URL)
+            </button>
+          </li>
+          <li>
+            <button id="linkText">
+              Text
+            </button>
+          </li>
+        </ul>
+      </section>
     </main>
   </body>
 </html>
