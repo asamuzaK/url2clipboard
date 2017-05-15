@@ -17,15 +17,15 @@
   const LINK_HTML = "linkHtml";
   const LINK_MD = "linkMarkdown";
   const LINK_TEXT = "linkText";
-  const MENU_BBCODE = "menuBBCode";
-  const MENU_HTML = "menuHtml";
+  const MENU_BBCODE = "BBCode";
+  const MENU_HTML = "HTML";
   const MENU_ITEM_ID = "menuItemId";
-  const MENU_MD = "menuMarkdown";
-  const MENU_TEXT = "menuText";
-  const PAGE_BBCODE = "pageBBCode";
-  const PAGE_HTML = "pageHtml";
-  const PAGE_MD = "pageMarkdown";
-  const PAGE_TEXT = "pageText";
+  const MENU_MD = "Markdown";
+  const MENU_TEXT = "Text";
+  const PAGE_BBCODE = "BBCode";
+  const PAGE_HTML = "Html";
+  const PAGE_MD = "Markdown";
+  const PAGE_TEXT = "Text";
 
   /**
    * log error
@@ -237,7 +237,7 @@
         func.push(createMenuItem(subItem, subItemTitle, subItemData));
         (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
           func.push(createMenuItem(`${subItem}_url`,
-                                   `${subItemTitle}_url`,
+                                   `${subItemTitle} (URL)`,
                                    subItemData));
       }
     }
@@ -303,6 +303,7 @@
         const obj = msg[item];
         switch (item) {
           case "mousedown":
+          case "keydown":
             func.push(updateContextMenu(obj));
             break;
           case "load":
