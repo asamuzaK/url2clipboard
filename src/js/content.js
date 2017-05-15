@@ -321,16 +321,16 @@
       "load", evt => sendStatus(evt).catch(logError), false
     );
     window.addEventListener(
-      "mousedown",
-      evt => evt.button === MOUSE_BUTTON_RIGHT &&
-               sendStatus(evt).catch(logError),
-      true
-    );
-    window.addEventListener(
       "keydown",
       evt => (evt.altKey && evt.shiftKey && evt.key === "C" ||
               evt.shiftKey && evt.key === "F10" ||
               evt.key === "ContextMenu") &&
+               sendStatus(evt).catch(logError),
+      true
+    );
+    window.addEventListener(
+      "mousedown",
+      evt => evt.button === MOUSE_BUTTON_RIGHT &&
                sendStatus(evt).catch(logError),
       true
     );

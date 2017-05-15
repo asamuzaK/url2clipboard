@@ -302,8 +302,8 @@
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
-          case "mousedown":
           case "keydown":
+          case "mousedown":
             func.push(updateContextMenu(obj));
             break;
           case "load":
