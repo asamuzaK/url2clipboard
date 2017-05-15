@@ -78,15 +78,24 @@
   };
 
   /**
+   * init context info
+   * @returns {Object} - context info
+   */
+  const initContextInfo = async () => {
+    contextInfo.isLink = false;
+    contextInfo.content = document.title;
+    contextInfo.title = document.title;
+    contextInfo.url = document.URL;
+    return contextInfo;
+  };
+
+  /**
    * create context info
    * @param {Object} node - element
    * @returns {Object} - context info
    */
   const createContextInfo = async node => {
-    contextInfo.isLink = false;
-    contextInfo.content = document.title;
-    contextInfo.title = document.title;
-    contextInfo.url = document.URL;
+    await initContextInfo();
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
       if (anchor) {
@@ -112,12 +121,12 @@
   const sendStatus = async evt => {
     const {target, type} = evt;
     const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
-    const info = await createContextInfo(target);
     const msg = {
       [type]: {
-        enabled, info,
+        enabled,
       },
     };
+    await createContextInfo(target);
     return sendMsg(msg);
   };
 
@@ -259,7 +268,7 @@
   /**
    * extract copy data
    * @param {Object} data - copy data
-   * @returns {?AsyncFunction} - copy to clipboard
+   * @returns {Promise.<Array>} - results of each handler
    */
   const extractCopyData = async (data = {}) => {
     const {menuItemId, selectionText} = data;
@@ -270,8 +279,10 @@
     const text = await createUserInputLink({
       content, menuItemId, title, url,
     });
-    const func = text && copyToClipboard(text);
-    return func || null;
+    const func = [];
+    text && func.push(copyToClipboard(text));
+    func.push(initContextInfo());
+    return Promise.all(func);
   };
 
   /**
