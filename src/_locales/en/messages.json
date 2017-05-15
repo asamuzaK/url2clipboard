@@ -17,21 +17,6 @@
   "copyPageUrl": {
     "message": "Copy Page URL"
   },
-  "menuBBCode": {
-    "message": "BBCode"
-  },
-  "menuBBCode_url": {
-    "message": "BBCode (URL)"
-  },
-  "menuHtml": {
-    "message": "HTML"
-  },
-  "menuMarkdown": {
-    "message": "Markdown"
-  },
-  "menuText": {
-    "message": "Text"
-  },
   "userInput": {
     "message": "Input Title"
   }

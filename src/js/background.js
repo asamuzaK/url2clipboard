@@ -148,7 +148,7 @@
     [COPY_PAGE]: {
       id: COPY_PAGE,
       contexts: ["all"],
-      title: COPY_PAGE,
+      title: i18n.getMessage(COPY_PAGE),
       subItems: {
         [PAGE_HTML]: {
           id: PAGE_HTML,
@@ -171,7 +171,7 @@
     [COPY_LINK]: {
       id: COPY_LINK,
       contexts: ["link"],
-      title: COPY_LINK,
+      title: i18n.getMessage(COPY_LINK),
       subItems: {
         [LINK_HTML]: {
           id: LINK_HTML,
@@ -204,9 +204,8 @@
     const {contexts, enabled, parentId} = data;
     if (isString(id) && isString(title) && Array.isArray(contexts)) {
       const opt = {
-        id, contexts,
+        id, contexts, title,
         enabled: !!enabled,
-        title: i18n.getMessage(title),
       };
       parentId && (opt.parentId = parentId);
       contextMenus.create(opt);
