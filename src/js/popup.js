@@ -108,7 +108,6 @@
    */
   const updateMenu = async (data = {}) => {
     const {info} = data;
-    console.log(data);
     if (info) {
       const {isLink} = info;
       const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
