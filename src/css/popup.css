@@ -45,15 +45,18 @@ button {
   width: 100%;
 }
 button[disabled] {
+  background-color: transparent;
   color: #808080;
 }
 button:not([disabled]):hover,
 button:not([disabled]):focus {
   border: 1px solid #CCC;
   background-color: #EAEAEA;
+  color: #000;
 }
 button:not([disabled]):active,
 button:not([disabled]):focus:active {
   border: 1px solid #CCC;
   background-color: #D7D7D8;
+  color: #000;
 }
