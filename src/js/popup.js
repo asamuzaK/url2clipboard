@@ -8,11 +8,11 @@
 
   /* constants */
   const CONTEXT_INFO = "contextInfo";
-  const CONTEXT_INFO_GET = "getContextInfo";
+  const CONTEXT_INFO_GET = "requestContextInfo";
   const DATA_I18N = "data-i18n";
+  const ELM_MENU = "button";
   const EXT_LOCALE = "extensionLocale";
   const LINK_CONTENT = "copyLinkContent";
-  const MENU_ELM = "button";
   const MENU_ITEM_ID = "menuItemId";
 
   /**
@@ -79,7 +79,7 @@
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
         lang && func.push(localizeNode(node));
-        node.nodeType === Node.ELEMENT_NODE && node.localName === MENU_ELM &&
+        node.nodeType === Node.ELEMENT_NODE && node.localName === ELM_MENU &&
           node.addEventListener(
             "click", evt => sendMenuItemId(evt).catch(logError), false
           );
@@ -94,22 +94,24 @@
    */
   const updateMenu = async (data = {}) => {
     const {isLink} = data;
-    const buttons = document.querySelectorAll(`#${LINK_CONTENT} button`);
-    for (const button of buttons) {
-      const attr = "disabled";
-      if (isLink) {
-        button.removeAttribute(attr);
-      } else {
-        button.setAttribute(attr, attr);
+    const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
+    if (nodes instanceof NodeList) {
+      for (const node of nodes) {
+        const attr = "disabled";
+        if (isLink) {
+          node.removeAttribute(attr);
+        } else {
+          node.setAttribute(attr, attr);
+        }
       }
     }
   };
 
   /**
-   * send get context info message
+   * request context info 
    * @returns {AsyncFunction} - send message
    */
-  const getContextInfo = async () => {
+  const requestContextInfo = async () => {
     const tab = await getActiveTab();
     const {id} = tab;
     let func;
@@ -142,7 +144,7 @@
   document.addEventListener(
     "DOMContentLoaded", () => Promise.all([
       setupHtml(),
-      getContextInfo(),
+      requestContextInfo(),
     ]).catch(logError), false
   );
 
