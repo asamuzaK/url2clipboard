@@ -239,7 +239,6 @@
     const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
     const content = await window.prompt(msg, contentText || "");
     let text;
-    console.log(menuItemId);
     switch (menuItemId) {
       case LINK_BBCODE:
       case PAGE_BBCODE:
