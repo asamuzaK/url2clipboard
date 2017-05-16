@@ -15,9 +15,7 @@
   const KEY = "Alt+Shift+C";
   const MENU_ITEM_ID = "menuItemId";
 
-  const COPY = "copy";
   const LINK = "link";
-  const MENU = "menu";
   const PAGE = "page";
 
   const BBCODE = "BBCode";

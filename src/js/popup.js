@@ -125,7 +125,7 @@
   };
 
   /**
-   * request context info 
+   * request context info
    * @returns {AsyncFunction} - send message
    */
   const requestContextInfo = async () => {

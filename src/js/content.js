@@ -14,9 +14,7 @@
   const USER_INPUT = "userInput";
   const USER_INPUT_DEFAULT = "Input Title";
 
-  const COPY = "copy";
   const LINK = "link";
-  const MENU = "menu";
   const PAGE = "page";
 
   const BBCODE_TEXT = "BBCodeText";
