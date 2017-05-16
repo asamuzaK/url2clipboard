@@ -11,6 +11,8 @@
   const CONTEXT_INFO_GET = "getContextInfo";
   const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
+  const USER_INPUT = "userInput";
+  const USER_INPUT_DEFAULT = "Input Title";
 
   const COPY = "copy";
   const LINK = "link";
