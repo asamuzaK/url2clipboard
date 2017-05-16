@@ -3,7 +3,7 @@ EN | [JA](./README.ja.md)
 # Copy URL To Clipboard
 
 Extension for Gecko based browsers and Blink based browsers.
-Copy document URL / link within the document to clipboard as HTML, Markdown, Text etc.
+Copy document URL / link URL to clipboard as HTML, Markdown, Text etc.
 
 * Copy to clipboard can be executed from the tool button, context menu, or keyboard shortcut (Alt+Shift+C).
 * Right click (Shift+F10 etc.) on a link (anchor element), select either `Copy Page URL` or `Copy Link URL`, and choose the format to copy.
