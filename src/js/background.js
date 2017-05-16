@@ -7,25 +7,25 @@
   const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
 
   /* constants */
-  const COPY_LINK = "copyLinkUrl";
-  const COPY_PAGE = "copyPageUrl";
+  const COPY_LINK = "copyLinkURL";
+  const COPY_PAGE = "copyPageURL";
   const EXEC_COPY = "executeCopy";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
-  const LINK_BBCODE = "linkBBCode";
-  const LINK_HTML = "linkHtml";
-  const LINK_MD = "linkMarkdown";
-  const LINK_TEXT = "linkText";
-  const MENU_BBCODE = "BBCode";
-  const MENU_HTML = "HTML";
   const MENU_ITEM_ID = "menuItemId";
-  const MENU_MD = "Markdown";
-  const MENU_TEXT = "Text";
-  const PAGE_BBCODE = "pageBBCode";
-  const PAGE_HTML = "pageHtml";
-  const PAGE_MD = "pageMarkdown";
-  const PAGE_TEXT = "pageText";
+
+  const COPY = "copy";
+  const LINK = "link";
+  const MENU = "menu";
+  const PAGE = "page";
+
+  const BBCODE = "BBCode";
+  const BBCODE_TEXT = "BBCodeText";
+  const BBCODE_URL = "BBCodeURL";
+  const HTML = "HTML";
+  const MARKDOWN = "Markdown";
+  const TEXT = "Text";
 
   /**
    * log error
@@ -145,49 +145,57 @@
 
   /* context menu items */
   const menuItems = {
-    [COPY_PAGE]: {
+    [PAGE]: {
       id: COPY_PAGE,
       contexts: ["all"],
       title: i18n.getMessage(COPY_PAGE),
       subItems: {
-        [PAGE_HTML]: {
-          id: PAGE_HTML,
-          title: MENU_HTML,
+        [`${PAGE}${HTML}`]: {
+          id: `${PAGE}${HTML}`,
+          title: HTML,
         },
-        [PAGE_MD]: {
-          id: PAGE_MD,
-          title: MENU_MD,
+        [`${PAGE}${MARKDOWN}`]: {
+          id: `${PAGE}${MARKDOWN}`,
+          title: MARKDOWN,
         },
-        [PAGE_BBCODE]: {
-          id: PAGE_BBCODE,
-          title: MENU_BBCODE,
+        [`${PAGE}${BBCODE_TEXT}`]: {
+          id: `${PAGE}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
         },
-        [PAGE_TEXT]: {
-          id: PAGE_TEXT,
-          title: MENU_TEXT,
+        [`${PAGE}${BBCODE_URL}`]: {
+          id: `${PAGE}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [`${PAGE}${TEXT}`]: {
+          id: `${PAGE}${TEXT}`,
+          title: TEXT,
         },
       },
     },
-    [COPY_LINK]: {
+    [LINK]: {
       id: COPY_LINK,
       contexts: ["link"],
       title: i18n.getMessage(COPY_LINK),
       subItems: {
-        [LINK_HTML]: {
-          id: LINK_HTML,
-          title: MENU_HTML,
+        [`${LINK}${HTML}`]: {
+          id: `${LINK}${HTML}`,
+          title: HTML,
         },
-        [LINK_MD]: {
-          id: LINK_MD,
-          title: MENU_MD,
+        [`${LINK}${MARKDOWN}`]: {
+          id: `${LINK}${MARKDOWN}`,
+          title: MARKDOWN,
         },
-        [LINK_BBCODE]: {
-          id: LINK_BBCODE,
-          title: MENU_BBCODE,
+        [`${LINK}${BBCODE_TEXT}`]: {
+          id: `${LINK}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
         },
-        [LINK_TEXT]: {
-          id: LINK_TEXT,
-          title: MENU_TEXT,
+        [`${LINK}${BBCODE_URL}`]: {
+          id: `${LINK}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [`${LINK}${TEXT}`]: {
+          id: `${LINK}${TEXT}`,
+          title: TEXT,
         },
       },
     },
@@ -234,14 +242,7 @@
           enabled: false,
           parentId: id,
         };
-        if (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) {
-          func.push(createMenuItem(subItem, `${subItemTitle} (Text)`,
-                                   subItemData),
-                    createMenuItem(`${subItem}_url`, `${subItemTitle} (URL)`,
-                                   subItemData));
-        } else {
-          func.push(createMenuItem(subItem, subItemTitle, subItemData));
-        }
+        func.push(createMenuItem(subItem, subItemTitle, subItemData));
       }
     }
     return Promise.all(func);
@@ -261,13 +262,7 @@
       const subMenuItems = Object.keys(subItems);
       func.push(contextMenus.update(id, {enabled: !!enabled}));
       for (const subItem of subMenuItems) {
-        func.push(
-          contextMenus.update(subItem, {enabled: !!enabled})
-        );
-        (subItem === PAGE_BBCODE || subItem === LINK_BBCODE) &&
-          func.push(
-            contextMenus.update(`${subItem}_url`, {enabled: !!enabled})
-          );
+        func.push(contextMenus.update(subItem, {enabled: !!enabled}));
       }
     }
     return Promise.all(func);

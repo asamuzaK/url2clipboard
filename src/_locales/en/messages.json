@@ -11,10 +11,10 @@
   "extensionLocale": {
     "message": "en"
   },
-  "copyLinkUrl": {
+  "copyLinkURL": {
     "message": "Copy Link URL"
   },
-  "copyPageUrl": {
+  "copyPageURL": {
     "message": "Copy Page URL"
   },
   "userInput": {

@@ -10,17 +10,18 @@
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const EXEC_COPY = "executeCopy";
-  const LINK_BBCODE = "linkBBCode";
-  const LINK_HTML = "linkHtml";
-  const LINK_MD = "linkMarkdown";
-  const LINK_TEXT = "linkText";
   const MOUSE_BUTTON_RIGHT = 2;
-  const PAGE_BBCODE = "pageBBCode";
-  const PAGE_HTML = "pageHtml";
-  const PAGE_MD = "pageMarkdown";
-  const PAGE_TEXT = "pageText";
-  const USER_INPUT = "userInput";
-  const USER_INPUT_DEFAULT = "Input Title";
+
+  const COPY = "copy";
+  const LINK = "link";
+  const MENU = "menu";
+  const PAGE = "page";
+
+  const BBCODE_TEXT = "BBCodeText";
+  const BBCODE_URL = "BBCodeURL";
+  const HTML = "HTML";
+  const MARKDOWN = "Markdown";
+  const TEXT = "Text";
 
   /**
    * log error
@@ -240,25 +241,25 @@
     const content = await window.prompt(msg, contentText || "");
     let text;
     switch (menuItemId) {
-      case LINK_BBCODE:
-      case PAGE_BBCODE:
+      case `${LINK}${BBCODE_TEXT}`:
+      case `${PAGE}${BBCODE_TEXT}`:
         text = await createBBCode(content, url);
         break;
-      case LINK_HTML:
-      case PAGE_HTML:
+      case `${LINK}${BBCODE_URL}`:
+      case `${PAGE}${BBCODE_URL}`:
+        text = await createBBCodeUrl(content);
+        break;
+      case `${LINK}${HTML}`:
+      case `${PAGE}${HTML}`:
         text = await createHtml(content, title, url);
         break;
-      case LINK_MD:
-      case PAGE_MD:
+      case `${LINK}${MARKDOWN}`:
+      case `${PAGE}${MARKDOWN}`:
         text = await createMarkdown(content, title, url);
         break;
-      case LINK_TEXT:
-      case PAGE_TEXT:
+      case `${LINK}${TEXT}`:
+      case `${PAGE}${TEXT}`:
         text = await createText(content, url);
-        break;
-      case `${LINK_BBCODE}_url`:
-      case `${PAGE_BBCODE}_url`:
-        text = await createBBCodeUrl(content);
         break;
       default:
     }
@@ -273,8 +274,8 @@
   const extractCopyData = async (data = {}) => {
     const {menuItemId, selectionText} = data;
     const {content: contentText, title, url} = contextInfo;
-    const content = (menuItemId === `${LINK_BBCODE}_url` ||
-                     menuItemId === `${PAGE_BBCODE}_url`) && url ||
+    const content = (menuItemId === `${LINK}${BBCODE_URL}` ||
+                     menuItemId === `${PAGE}${BBCODE_URL}`) && url ||
                     selectionText || contentText || title;
     const text = await createUserInputLink({
       content, menuItemId, title, url,

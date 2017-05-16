@@ -6,7 +6,10 @@
     }
   },
   "background": {
-    "page": "html/background.html"
+    "scripts": [
+      "js/browser-polyfill.js",
+      "js/background.js"
+    ]
   },
   "browser_action": {
     "browser_style": true,

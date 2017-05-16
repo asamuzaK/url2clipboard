@@ -11,10 +11,10 @@
   "extensionLocale": {
     "message": "ja"
   },
-  "copyLinkUrl": {
+  "copyLinkURL": {
     "message": "リンクの URL をコピー"
   },
-  "copyPageUrl": {
+  "copyPageURL": {
     "message": "ページの URL をコピー"
   },
   "userInput": {
