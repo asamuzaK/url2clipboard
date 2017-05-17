@@ -259,9 +259,11 @@
       const subMenuItems = Object.keys(subItems);
       func.push(contextMenus.update(id, {enabled: !!enabled}));
       for (const subItem of subMenuItems) {
-        func.push(contextMenus.update(subItem, {enabled: !!enabled}));
+        const {id: subItemId} = subItems[subItem];
+        func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
       }
     }
+    console.log(func.length);
     return Promise.all(func);
   };
 
