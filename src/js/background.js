@@ -295,9 +295,10 @@
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
       func.push(
         showIcon(enabled),
-        updateContextMenu({enabled}),
-        enabled && browserAction.enable(tabId) || browserAction.disable(tabId)
+        updateContextMenu({enabled})
       );
+      enabled && func.push(browserAction.enable(tabId)) ||
+      func.push(browserAction.disable(tabId));
     }
     return Promise.all(func);
   };
