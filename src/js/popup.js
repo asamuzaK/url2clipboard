@@ -165,15 +165,14 @@
     return Promise.all(func);
   };
 
-  document.addEventListener(
-    "DOMContentLoaded", () => Promise.all([
-      localizeHtml(),
-      addListenerToMenu(),
-      requestContextInfo(),
-    ]).catch(logError), false
-  );
-
+  /* listeners */
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
   );
+
+  document.addEventListener("DOMContentLoaded", () => Promise.all([
+    localizeHtml(),
+    addListenerToMenu(),
+    requestContextInfo(),
+  ]).catch(logError), false);
 }

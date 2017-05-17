@@ -263,7 +263,6 @@
         func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
       }
     }
-    console.log(func.length);
     return Promise.all(func);
   };
 
