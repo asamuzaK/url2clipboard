@@ -62,24 +62,16 @@
   };
 
   /**
-   * send exec copy message
-   * @param {Object} data - tab data
-   * @returns {?AsyncFunction} - send message
+   * get active tab
+   * @returns {Object} - tabs.Tab
    */
-  const sendExecCopy = async (data = {}) => {
-    const {info, tab} = data;
-    const {id} = tab;
-    let func;
-    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
-      const {menuItemId, selectionText} = info;
-      const msg = {
-        [EXEC_COPY]: {
-          menuItemId, selectionText,
-        },
-      };
-      func = tabs.sendMessage(id, msg);
+  const getActiveTab = async () => {
+    const arr = await tabs.query({active: true});
+    let tab;
+    if (arr.length) {
+      [tab] = arr;
     }
-    return func || null;
+    return tab || null;
   };
 
   /* enabled tabs collection */
@@ -117,27 +109,35 @@
   };
 
   /**
-   * get active tab
-   * @returns {Object} - tabs.Tab
+   * send exec copy message
+   * @param {Object} data - tab data
+   * @returns {?AsyncFunction} - send message
    */
-  const getActiveTab = async () => {
-    const arr = await tabs.query({active: true});
-    let tab;
-    if (arr.length) {
-      [tab] = arr;
+  const sendExecCopy = async (data = {}) => {
+    const {info, tab} = data;
+    const {id} = tab;
+    let func;
+    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+      const {menuItemId, selectionText} = info;
+      const msg = {
+        [EXEC_COPY]: {
+          menuItemId, selectionText,
+        },
+      };
+      func = tabs.sendMessage(id, msg);
     }
-    return tab || null;
+    return func || null;
   };
 
   /**
-   * create data
+   * create tab data
    * @param {Object} menuItemId - menuItemId
-   * @returns {?AsyncFunction} - send exec copy message
+   * @returns {Object} - tab data
    */
-  const createData = async menuItemId => {
+  const createTabData = async menuItemId => {
     const info = isString(menuItemId) && {menuItemId};
     const tab = await getActiveTab();
-    return info && tab && sendExecCopy({info, tab}) || null;
+    return info && tab && {info, tab} || null;
   };
 
   /* context menu items */
@@ -339,7 +339,7 @@
             );
             break;
           case MENU_ITEM_ID:
-            func.push(createData(obj));
+            func.push(createTabData(obj).then(sendExecCopy));
             break;
           default:
         }
