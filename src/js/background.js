@@ -267,11 +267,10 @@
 
   /**
    * show icon
-   * @param {Object} data - context data
+   * @param {boolean} enabled - enabled
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (data = {}) => {
-    const {enabled} = data;
+  const showIcon = async (enabled = false) => {
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
     const path = enabled && `${icon}#gray` || `${icon}#off`;
@@ -294,7 +293,7 @@
       const enabledTab = await stringifyPositiveInt(tabId);
       const enabled = enabledTab && enabledTabs[enabledTab] || false;
       func.push(
-        showIcon({enabled}),
+        showIcon(enabled),
         updateContextMenu({enabled}),
         enabled && browserAction.enable(tabId) || browserAction.disable(tabId)
       );
