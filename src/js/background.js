@@ -15,9 +15,6 @@
   const KEY = "Alt+Shift+C";
   const MENU_ITEM_ID = "menuItemId";
 
-  const LINK = "link";
-  const PAGE = "page";
-
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
@@ -93,14 +90,16 @@
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
    * @param {Object} data - context info
-   * @returns {void}
+   * @returns {Object} - tab ID info
    */
   const setEnabledTab = async (tabId, tab, data = {}) => {
     const {enabled} = data;
+    const info = {tabId};
     if (tab || await isTab(tabId)) {
-      tabId = stringifyPositiveInt(tabId);
-      tabId && (enabledTabs[tabId] = !!enabled);
+      const id = stringifyPositiveInt(tabId);
+      id && (enabledTabs[id] = !!enabled);
     }
+    return info;
   };
 
   /**
@@ -143,56 +142,56 @@
 
   /* context menu items */
   const menuItems = {
-    [PAGE]: {
+    [COPY_PAGE]: {
       id: COPY_PAGE,
       contexts: ["all"],
       title: i18n.getMessage(COPY_PAGE),
       subItems: {
         [HTML]: {
-          id: `${PAGE}${HTML}`,
+          id: `${COPY_PAGE}${HTML}`,
           title: HTML,
         },
         [MARKDOWN]: {
-          id: `${PAGE}${MARKDOWN}`,
+          id: `${COPY_PAGE}${MARKDOWN}`,
           title: MARKDOWN,
         },
         [BBCODE_TEXT]: {
-          id: `${PAGE}${BBCODE_TEXT}`,
+          id: `${COPY_PAGE}${BBCODE_TEXT}`,
           title: `${BBCODE} (${TEXT})`,
         },
         [BBCODE_URL]: {
-          id: `${PAGE}${BBCODE_URL}`,
+          id: `${COPY_PAGE}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
         [TEXT]: {
-          id: `${PAGE}${TEXT}`,
+          id: `${COPY_PAGE}${TEXT}`,
           title: TEXT,
         },
       },
     },
-    [LINK]: {
+    [COPY_LINK]: {
       id: COPY_LINK,
       contexts: ["link"],
       title: i18n.getMessage(COPY_LINK),
       subItems: {
         [HTML]: {
-          id: `${LINK}${HTML}`,
+          id: `${COPY_LINK}${HTML}`,
           title: HTML,
         },
         [MARKDOWN]: {
-          id: `${LINK}${MARKDOWN}`,
+          id: `${COPY_LINK}${MARKDOWN}`,
           title: MARKDOWN,
         },
         [BBCODE_TEXT]: {
-          id: `${LINK}${BBCODE_TEXT}`,
+          id: `${COPY_LINK}${BBCODE_TEXT}`,
           title: `${BBCODE} (${TEXT})`,
         },
         [BBCODE_URL]: {
-          id: `${LINK}${BBCODE_URL}`,
+          id: `${COPY_LINK}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
         [TEXT]: {
-          id: `${LINK}${TEXT}`,
+          id: `${COPY_LINK}${TEXT}`,
           title: TEXT,
         },
       },
@@ -284,6 +283,38 @@
   };
 
   /**
+   * handle active tab
+   * @param {Object} info - active tab info
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleActiveTab = async (info = {}) => {
+    const {tabId} = info;
+    const func = [];
+    if (await isTab(tabId)) {
+      const enabledTab = await stringifyPositiveInt(tabId);
+      const enabled = enabledTab && enabledTabs[enabledTab] || false;
+      func.push(
+        showIcon({enabled}),
+        updateContextMenu({enabled}),
+        enabled && browserAction.enable(tabId) || browserAction.disable(tabId)
+      );
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * handle updated tab
+   * @param {number} tabId - tab ID
+   * @param {Object} tab - tab.Tab
+   * @returns {?AsyncFunction} - handle active tab
+   */
+  const handleUpdatedTab = async (tabId, tab = {}) => {
+    const {active} = tab;
+    const func = active && handleActiveTab({tabId});
+    return func || null;
+  };
+
+  /**
    * handle message
    * @param {*} msg - message
    * @param {Object} sender - sender
@@ -304,8 +335,7 @@
             break;
           case "load":
             func.push(
-              setEnabledTab(tabId, tab, obj),
-              showIcon(obj),
+              setEnabledTab(tabId, tab, obj).then(handleActiveTab),
               updateContextMenu(obj)
             );
             break;
@@ -317,38 +347,6 @@
       }
     }
     return Promise.all(func);
-  };
-
-  /**
-   * handle active tab
-   * @param {Object} info - active tab info
-   * @param {Object} tab - tabs.Tab
-   * @returns {Promise.<Array>} - results of each handler
-   */
-  const handleActiveTab = async (info = {}, tab = null) => {
-    const {tabId} = info;
-    const func = [];
-    if (tab || await isTab(tabId)) {
-      const enabledTab = await stringifyPositiveInt(tabId);
-      const enabled = enabledTab && enabledTabs[enabledTab] || false;
-      func.push(
-        updateContextMenu({enabled}),
-        showIcon({enabled})
-      );
-    }
-    return Promise.all(func);
-  };
-
-  /**
-   * handle updated tab
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tab.Tab
-   * @returns {?AsyncFunction} - handle active tab
-   */
-  const handleUpdatedTab = async (tabId, tab = {}) => {
-    const {active} = tab;
-    const func = active && handleActiveTab({tabId}, tab);
-    return func || null;
   };
 
   /* listeners */
