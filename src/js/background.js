@@ -148,23 +148,23 @@
       contexts: ["all"],
       title: i18n.getMessage(COPY_PAGE),
       subItems: {
-        [`${PAGE}${HTML}`]: {
+        [HTML]: {
           id: `${PAGE}${HTML}`,
           title: HTML,
         },
-        [`${PAGE}${MARKDOWN}`]: {
+        [MARKDOWN]: {
           id: `${PAGE}${MARKDOWN}`,
           title: MARKDOWN,
         },
-        [`${PAGE}${BBCODE_TEXT}`]: {
+        [BBCODE_TEXT]: {
           id: `${PAGE}${BBCODE_TEXT}`,
           title: `${BBCODE} (${TEXT})`,
         },
-        [`${PAGE}${BBCODE_URL}`]: {
+        [BBCODE_URL]: {
           id: `${PAGE}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
-        [`${PAGE}${TEXT}`]: {
+        [TEXT]: {
           id: `${PAGE}${TEXT}`,
           title: TEXT,
         },
@@ -175,23 +175,23 @@
       contexts: ["link"],
       title: i18n.getMessage(COPY_LINK),
       subItems: {
-        [`${LINK}${HTML}`]: {
+        [HTML]: {
           id: `${LINK}${HTML}`,
           title: HTML,
         },
-        [`${LINK}${MARKDOWN}`]: {
+        [MARKDOWN]: {
           id: `${LINK}${MARKDOWN}`,
           title: MARKDOWN,
         },
-        [`${LINK}${BBCODE_TEXT}`]: {
+        [BBCODE_TEXT]: {
           id: `${LINK}${BBCODE_TEXT}`,
           title: `${BBCODE} (${TEXT})`,
         },
-        [`${LINK}${BBCODE_URL}`]: {
+        [BBCODE_URL]: {
           id: `${LINK}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
-        [`${LINK}${TEXT}`]: {
+        [TEXT]: {
           id: `${LINK}${TEXT}`,
           title: TEXT,
         },
@@ -234,13 +234,13 @@
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
       for (const subItem of subMenuItems) {
-        const {title: subItemTitle} = subItems[subItem];
+        const {id: subItemId, title: subItemTitle} = subItems[subItem];
         const subItemData = {
           contexts,
           enabled: false,
           parentId: id,
         };
-        func.push(createMenuItem(subItem, subItemTitle, subItemData));
+        func.push(createMenuItem(subItemId, subItemTitle, subItemData));
       }
     }
     return Promise.all(func);
