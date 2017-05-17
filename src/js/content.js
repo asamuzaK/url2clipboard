@@ -9,13 +9,12 @@
   /* constants */
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
+  const COPY_LINK = "copyLinkURL";
+  const COPY_PAGE = "copyPageURL";
   const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
   const USER_INPUT = "userInput";
   const USER_INPUT_DEFAULT = "Input Title";
-
-  const LINK = "link";
-  const PAGE = "page";
 
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
@@ -241,24 +240,24 @@
     const content = await window.prompt(msg, contentText || "");
     let text;
     switch (menuItemId) {
-      case `${LINK}${BBCODE_TEXT}`:
-      case `${PAGE}${BBCODE_TEXT}`:
+      case `${COPY_LINK}${BBCODE_TEXT}`:
+      case `${COPY_PAGE}${BBCODE_TEXT}`:
         text = await createBBCode(content, url);
         break;
-      case `${LINK}${BBCODE_URL}`:
-      case `${PAGE}${BBCODE_URL}`:
+      case `${COPY_LINK}${BBCODE_URL}`:
+      case `${COPY_PAGE}${BBCODE_URL}`:
         text = await createBBCodeUrl(content);
         break;
-      case `${LINK}${HTML}`:
-      case `${PAGE}${HTML}`:
+      case `${COPY_LINK}${HTML}`:
+      case `${COPY_PAGE}${HTML}`:
         text = await createHtml(content, title, url);
         break;
-      case `${LINK}${MARKDOWN}`:
-      case `${PAGE}${MARKDOWN}`:
+      case `${COPY_LINK}${MARKDOWN}`:
+      case `${COPY_PAGE}${MARKDOWN}`:
         text = await createMarkdown(content, title, url);
         break;
-      case `${LINK}${TEXT}`:
-      case `${PAGE}${TEXT}`:
+      case `${COPY_LINK}${TEXT}`:
+      case `${COPY_PAGE}${TEXT}`:
         text = await createText(content, url);
         break;
       default:
@@ -274,8 +273,8 @@
   const extractCopyData = async (data = {}) => {
     const {menuItemId, selectionText} = data;
     const {content: contentText, title, url} = contextInfo;
-    const content = (menuItemId === `${LINK}${BBCODE_URL}` ||
-                     menuItemId === `${PAGE}${BBCODE_URL}`) && url ||
+    const content = (menuItemId === `${COPY_LINK}${BBCODE_URL}` ||
+                     menuItemId === `${COPY_PAGE}${BBCODE_URL}`) && url ||
                     selectionText || contentText || title;
     const text = await createUserInputLink({
       content, menuItemId, title, url,

@@ -10,10 +10,10 @@
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const DATA_I18N = "data-i18n";
-  const ELM_MENU = "button";
   const EXT_LOCALE = "extensionLocale";
-  const LINK_CONTENT = "copyLinkContent";
+  const MENU_ITEM_ELM = "button";
   const MENU_ITEM_ID = "menuItemId";
+  const MENU_ITEMS_LINK = `#copyLinkContainer ${MENU_ITEM_ELM}`;
 
   /**
    * log error
@@ -61,7 +61,7 @@
    * @returns {void}
    */
   const addListenerToMenu = async () => {
-    const nodes = document.querySelectorAll(ELM_MENU);
+    const nodes = document.querySelectorAll(MENU_ITEM_ELM);
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
         node.addEventListener(
@@ -110,7 +110,7 @@
     const {info} = data;
     if (info) {
       const {isLink} = info;
-      const nodes = document.querySelectorAll(`#${LINK_CONTENT} ${ELM_MENU}`);
+      const nodes = document.querySelectorAll(MENU_ITEMS_LINK);
       if (nodes instanceof NodeList) {
         for (const node of nodes) {
           const attr = "disabled";
