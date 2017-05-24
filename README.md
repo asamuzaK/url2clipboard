@@ -6,7 +6,7 @@ Extension for Gecko based browsers and Blink based browsers.
 Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Text.
 
 * When copying the URL of the page, right-click anywhere on the page and open the context menu, then select the format to copy.
-* When you right-click on the link (anchor element), you can copy the URL of the link.
+* When you right-click on a link (an anchor element), you can copy the URL of that link.
 * If you select some text before right-click, that selected text will be used for the content of the link.
 * You can edit content text when copying.
 * Copy to clipboard can be executed from the context menu, the tool button, or keyboard shortcut (Alt+Shift+C).
