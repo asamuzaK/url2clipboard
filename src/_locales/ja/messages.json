@@ -1,6 +1,6 @@
 {
   "extensionDescription": {
-   "message": "ドキュメントの URL やリンクの URL を、 HTML、 Markdown、 Text 形式などでクリップボードにコピー"
+   "message": "ドキュメントのURLやリンクのURLを、HTML、Markdown、BBCode、Text形式でクリップボードにコピー"
   },
   "extensionName": {
     "message": "URL をクリップボードにコピー"
