@@ -17,10 +17,15 @@
   const USER_INPUT_DEFAULT = "Input Title";
 
   const BBCODE_TEXT = "BBCodeText";
+  const BBCODE_TEXT_TEMPLATE = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
+  const BBCODE_URL_TEMPLATE = "[url]%content%[/url]";
   const HTML = "HTML";
+  const HTML_TEMPLATE = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
   const MARKDOWN = "Markdown";
+  const MARKDOWN_TEMPLATE = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
+  const TEXT_TEMPLATE = "%content% <%url%>";
 
   /**
    * log error
@@ -153,78 +158,32 @@
   };
 
   /**
-   * create HTML link
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {?string} - HTML Anchor format
+   * create link text
+   * @param {Object} data - link data
+   * @returns {?string} - link text
    */
-  const createHtml = async (content, title, url) => {
+  const createLink = async (data = {}) => {
+    const {content, menuItemId, template, title, url} = data;
     let text;
-    if (isString(content) && isString(title) && isString(url)) {
-      content = content.trim();
-      title = title.replace(/"/g, "&quot;");
-      text = `<a href="${url}" title="${title}">${content}</a>`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create Markdown link
-   * @param {string} content - content title
-   * @param {string} title - document title
-   * @param {string} url - document URL
-   * @returns {?string} - Markdown Link format
-   */
-  const createMarkdown = async (content, title, url) => {
-    let text;
-    if (isString(content) && isString(title) && isString(url)) {
-      content = content.trim();
-      title = title.replace(/"/g, "\\\"");
-      text = `[${content}](${url} "${title}")`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create BBCode link
-   * @param {string} content - content title
-   * @param {string} url - document URL
-   * @returns {?string} - BBCode Link format
-   */
-  const createBBCode = async (content, url) => {
-    let text;
-    if (isString(content) && isString(url)) {
-      content = content.trim();
-      text = `[url=${url}]${content}[/url]`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create BBCode URL link
-   * @param {string} url - document URL
-   * @returns {?string} - BBCode Link format
-   */
-  const createBBCodeUrl = async url => {
-    let text;
-    if (isString(url)) {
-      text = `[url]${url}[/url]`;
-    }
-    return text || null;
-  };
-
-  /**
-   * create Text link
-   * @param {string} content - content title
-   * @param {string} url - document URL
-   * @returns {?string} - Text Link format
-   */
-  const createText = async (content, url) => {
-    let text;
-    if (isString(content) && isString(url)) {
-      content = content.trim();
-      text = `${content} <${url}>`;
+    if (isString(menuItemId) && isString(template)) {
+      const contentText = isString(content) && content.trim() || "";
+      const urlText = isString(url) && url.trim() || "";
+      let titleText = isString(title) && title || "";
+      if (titleText) {
+        switch (menuItemId) {
+          case `${COPY_LINK}${HTML}`:
+          case `${COPY_PAGE}${HTML}`:
+            titleText = titleText.replace(/"/g, "\\\"");
+            break;
+          case `${COPY_LINK}${MARKDOWN}`:
+          case `${COPY_PAGE}${MARKDOWN}`:
+            titleText = titleText.replace(/"/g, "\\\"");
+            break;
+          default:
+        }
+      }
+      text = template.replace(/%content%/g, contentText)
+               .replace(/%title%/g, titleText).replace(/%url%/g, urlText);
     }
     return text || null;
   };
@@ -242,23 +201,38 @@
     switch (menuItemId) {
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
-        text = await createBBCode(content, url);
+        text = await createLink({
+          content, menuItemId, url,
+          template: BBCODE_TEXT_TEMPLATE,
+        });
         break;
       case `${COPY_LINK}${BBCODE_URL}`:
       case `${COPY_PAGE}${BBCODE_URL}`:
-        text = await createBBCodeUrl(content);
+        text = await createLink({
+          content, menuItemId,
+          template: BBCODE_URL_TEMPLATE,
+        });
         break;
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
-        text = await createHtml(content, title, url);
+        text = await createLink({
+          content, menuItemId, title, url,
+          template: HTML_TEMPLATE,
+        });
         break;
       case `${COPY_LINK}${MARKDOWN}`:
       case `${COPY_PAGE}${MARKDOWN}`:
-        text = await createMarkdown(content, title, url);
+        text = await createLink({
+          content, menuItemId, title, url,
+          template: MARKDOWN_TEMPLATE,
+        });
         break;
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
-        text = await createText(content, url);
+        text = await createLink({
+          content, menuItemId, url,
+          template: TEXT_TEMPLATE,
+        });
         break;
       default:
     }
