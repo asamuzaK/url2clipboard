@@ -141,20 +141,21 @@
    * @returns {void}
    */
   const copyToClipboard = async text => {
-    /**
-     * set clipboard data
-     * @param {!Object} evt - Event
-     * @returns {void}
-     */
-    const setClipboardData = evt => {
-      document.removeEventListener("copy", setClipboardData, true);
-      evt.stopImmediatePropagation();
-      evt.preventDefault();
-      evt.clipboardData.setData("text/plain", text);
-    };
-
-    document.addEventListener("copy", setClipboardData, true);
-    document.execCommand("copy");
+    if (isString(text)) {
+      /**
+       * set clipboard data
+       * @param {!Object} evt - Event
+       * @returns {void}
+       */
+      const setClipboardData = evt => {
+        document.removeEventListener("copy", setClipboardData, true);
+        evt.stopImmediatePropagation();
+        evt.preventDefault();
+        evt.clipboardData.setData("text/plain", text.trim());
+      };
+      document.addEventListener("copy", setClipboardData, true);
+      document.execCommand("copy");
+    }
   };
 
   /**
@@ -181,6 +182,7 @@
             break;
           default:
         }
+        titleText = titleText.trim();
       }
       text = template.replace(/%content%/g, contentText)
                .replace(/%title%/g, titleText).replace(/%url%/g, urlText);
