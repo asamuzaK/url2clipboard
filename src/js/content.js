@@ -175,7 +175,7 @@
         switch (menuItemId) {
           case `${COPY_LINK}${HTML}`:
           case `${COPY_PAGE}${HTML}`:
-            titleText = titleText.replace(/"/g, "&quote;");
+            titleText = titleText.replace(/"/g, "&quot;");
             break;
           case `${COPY_LINK}${MARKDOWN}`:
           case `${COPY_PAGE}${MARKDOWN}`:
