@@ -141,7 +141,8 @@
    * @returns {void}
    */
   const copyToClipboard = async text => {
-    if (isString(text)) {
+    const clipText = isString(text) && text.trim() || "";
+    if (clipText) {
       /**
        * set clipboard data
        * @param {!Object} evt - Event
@@ -151,7 +152,7 @@
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();
         evt.preventDefault();
-        evt.clipboardData.setData("text/plain", text.trim());
+        evt.clipboardData.setData("text/plain", clipText);
       };
       document.addEventListener("copy", setClipboardData, true);
       document.execCommand("copy");
