@@ -1,0 +1,23 @@
+{
+  "extensionDescription": {
+   "message": "复制 URL 到剪贴板，支持 HTML, Markdown, 纯文本等多种格式。"
+  },
+  "extensionName": {
+    "message": "复制链接到剪贴板"
+  },
+  "extensionShortName": {
+    "message": "url2clipboard"
+  },
+  "extensionLocale": {
+    "message": "zh-CN"
+  },
+  "copyLinkURL": {
+    "message": "复制链接 URL"
+  },
+  "copyPageURL": {
+    "message": "复制页面 URL"
+  },
+  "userInput": {
+    "message": "编辑链接信息"
+  }
+}
