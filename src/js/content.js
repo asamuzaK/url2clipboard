@@ -25,7 +25,7 @@
   const MARKDOWN = "Markdown";
   const MARKDOWN_TEMPLATE = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
-  const TEXT_TEMPLATE = "%content% <%url%>";
+  const TEXT_TEMPLATE = "%content% %url%";
 
   /**
    * log error
