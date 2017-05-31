@@ -45,6 +45,27 @@
   const isString = o => typeof o === "string" || o instanceof String;
 
   /**
+   * escape matching char
+   * @param {string} str - string
+   * @param {RegExp} re - RegExp
+   * @returns {?string} - string
+   */
+  const escapeChar = (str, re) =>
+    isString(str) && re && re.global &&
+    str.replace(re, (m, c) => `\\${c}`) || null;
+
+  /**
+   * encode HTML specific char
+   * @param {string} str - string
+   * @returns {?string} - string
+   */
+  const encodeHtmlChar = str =>
+    isString(str) &&
+    str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
+    null;
+
+  /**
    * send message
    * @param {*} msg - message
    * @returns {?AsyncFunction} - send message to runtime
@@ -168,22 +189,35 @@
     const {content, menuItemId, template, title, url} = data;
     let text;
     if (isString(menuItemId) && isString(template)) {
-      const contentText = isString(content) && content.trim() || "";
       const urlText = isString(url) && url.trim() || "";
-      let titleText = isString(title) && title || "";
-      if (titleText) {
-        switch (menuItemId) {
-          case `${COPY_LINK}${HTML}`:
-          case `${COPY_PAGE}${HTML}`:
-            titleText = titleText.replace(/"/g, "&quot;");
-            break;
-          case `${COPY_LINK}${MARKDOWN}`:
-          case `${COPY_PAGE}${MARKDOWN}`:
-            titleText = titleText.replace(/"/g, "\\\"");
-            break;
-          default:
-        }
-        titleText = titleText.trim();
+      let contentText, titleText;
+      switch (menuItemId) {
+        case `${COPY_LINK}${BBCODE_TEXT}`:
+        case `${COPY_LINK}${BBCODE_URL}`:
+        case `${COPY_PAGE}${BBCODE_TEXT}`:
+        case `${COPY_PAGE}${BBCODE_URL}`:
+          contentText = isString(content) &&
+                        content.trim()
+                          .replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "") ||
+                        "";
+          titleText = "";
+          break;
+        case `${COPY_LINK}${HTML}`:
+        case `${COPY_PAGE}${HTML}`:
+          contentText = isString(content) && encodeHtmlChar(content.trim()) ||
+                        "";
+          titleText = isString(title) && encodeHtmlChar(title.trim()) || "";
+          break;
+        case `${COPY_LINK}${MARKDOWN}`:
+        case `${COPY_PAGE}${MARKDOWN}`:
+          contentText = isString(content) &&
+                        escapeChar(content.trim(), /([[\]])/g) || "";
+          titleText = isString(title) &&
+                      escapeChar(title.trim(), /(")/g) || "";
+          break;
+        default:
+          contentText = isString(content) && content.trim() || "";
+          titleText = isString(title) && title.trim() || "";
       }
       text = template.replace(/%content%/g, contentText)
                .replace(/%title%/g, titleText).replace(/%url%/g, urlText);
