@@ -127,7 +127,7 @@
       if (anchor) {
         const {textContent, href, title} = anchor;
         if (href) {
-          const content = textContent.trim().replace(/\s+/g, " ");
+          const content = textContent.replace(/\s+/g, " ").trim();
           const url = href instanceof SVGAnimatedString && href.baseVal || href;
           contextInfo.isLink = true;
           contextInfo.content = content;
@@ -181,51 +181,6 @@
   };
 
   /**
-   * create link text
-   * @param {Object} data - link data
-   * @returns {?string} - link text
-   */
-  const createLink = async (data = {}) => {
-    const {content, menuItemId, template, title, url} = data;
-    let text;
-    if (isString(menuItemId) && isString(template)) {
-      const urlText = isString(url) && url.trim() || "";
-      let contentText, titleText;
-      switch (menuItemId) {
-        case `${COPY_LINK}${BBCODE_TEXT}`:
-        case `${COPY_LINK}${BBCODE_URL}`:
-        case `${COPY_PAGE}${BBCODE_TEXT}`:
-        case `${COPY_PAGE}${BBCODE_URL}`:
-          contentText = isString(content) &&
-                        content.trim()
-                          .replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "") ||
-                        "";
-          titleText = "";
-          break;
-        case `${COPY_LINK}${HTML}`:
-        case `${COPY_PAGE}${HTML}`:
-          contentText = isString(content) && encodeHtmlChar(content.trim()) ||
-                        "";
-          titleText = isString(title) && encodeHtmlChar(title.trim()) || "";
-          break;
-        case `${COPY_LINK}${MARKDOWN}`:
-        case `${COPY_PAGE}${MARKDOWN}`:
-          contentText = isString(content) &&
-                        escapeChar(content.trim(), /([[\]])/g) || "";
-          titleText = isString(title) &&
-                      escapeChar(title.trim(), /(")/g) || "";
-          break;
-        default:
-          contentText = isString(content) && content.trim() || "";
-          titleText = isString(title) && title.trim() || "";
-      }
-      text = template.replace(/%content%/g, contentText)
-               .replace(/%title%/g, titleText).replace(/%url%/g, urlText);
-    }
-    return text || null;
-  };
-
-  /**
    * create user input link
    * @param {Object} data - copy data
    * @returns {?string} - text
@@ -233,43 +188,39 @@
   const createUserInputLink = async (data = {}) => {
     const {content: contentText, menuItemId, title, url} = data;
     const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
-    const content = await window.prompt(msg, contentText || "");
-    let text;
+    let content = await window.prompt(msg, contentText || "") || "";
+    let text, titleText;
     switch (menuItemId) {
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
-        text = await createLink({
-          content, menuItemId, url,
-          template: BBCODE_TEXT_TEMPLATE,
-        });
+        content = content.replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "").trim();
+        text = BBCODE_TEXT_TEMPLATE.replace(/%content%/g, content)
+                 .replace(/%url%/g, url);
         break;
       case `${COPY_LINK}${BBCODE_URL}`:
       case `${COPY_PAGE}${BBCODE_URL}`:
-        text = await createLink({
-          content, menuItemId,
-          template: BBCODE_URL_TEMPLATE,
-        });
+        content = content.replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "").trim();
+        text = BBCODE_URL_TEMPLATE.replace(/%content%/g, content);
         break;
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
-        text = await createLink({
-          content, menuItemId, title, url,
-          template: HTML_TEMPLATE,
-        });
+        content = encodeHtmlChar(content) || "";
+        titleText = encodeHtmlChar(title) || "";
+        text = HTML_TEMPLATE.replace(/%content%/g, content.trim())
+                 .replace(/%title%/g, titleText.trim()).replace(/%url%/g, url);
         break;
       case `${COPY_LINK}${MARKDOWN}`:
       case `${COPY_PAGE}${MARKDOWN}`:
-        text = await createLink({
-          content, menuItemId, title, url,
-          template: MARKDOWN_TEMPLATE,
-        });
+        content = escapeChar(content, /([[\]])/g) || "";
+        titleText = escapeChar(title, /(")/g) || "";
+        text = MARKDOWN_TEMPLATE.replace(/%content%/g, content.trim())
+                 .replace(/%title%/g, titleText.trim()).replace(/%url%/g, url);
         break;
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
-        text = await createLink({
-          content, menuItemId, url,
-          template: TEXT_TEMPLATE,
-        });
+        content = content.trim() || "";
+        text = TEXT_TEMPLATE.replace(/%content%/g, content)
+                 .replace(/%url%/g, url);
         break;
       default:
     }
