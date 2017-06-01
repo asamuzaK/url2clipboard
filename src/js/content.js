@@ -17,15 +17,15 @@
   const USER_INPUT_DEFAULT = "Input Title";
 
   const BBCODE_TEXT = "BBCodeText";
-  const BBCODE_TEXT_TEMPLATE = "[url=%url%]%content%[/url]";
+  const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
-  const BBCODE_URL_TEMPLATE = "[url]%content%[/url]";
+  const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
-  const HTML_TEMPLATE = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
+  const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
   const MARKDOWN = "Markdown";
-  const MARKDOWN_TEMPLATE = "[%content%](%url% \"%title%\")";
+  const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
-  const TEXT_TEMPLATE = "%content% %url%";
+  const TEXT_TMPL = "%content% %url%";
 
   /**
    * log error
@@ -190,48 +190,50 @@
   };
 
   /**
-   * create user input link
+   * create link text
    * @param {Object} data - copy data
-   * @returns {?string} - text
+   * @returns {?string} - link text
    */
-  const createUserInputLink = async (data = {}) => {
+  const createLinkText = async (data = {}) => {
     const {content: contentText, menuItemId, title, url} = data;
     const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
     let content = await window.prompt(msg, contentText || "") || "";
-    let text, titleText;
+    let template, text, titleText;
     switch (menuItemId) {
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        text = BBCODE_TEXT_TEMPLATE.replace(/%content%/g, content.trim())
-                 .replace(/%url%/g, url);
+        template = BBCODE_TEXT_TMPL;
         break;
       case `${COPY_LINK}${BBCODE_URL}`:
       case `${COPY_PAGE}${BBCODE_URL}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        text = BBCODE_URL_TEMPLATE.replace(/%content%/g, content.trim());
+        template = BBCODE_URL_TMPL;
         break;
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
         content = encodeHtmlChar(content) || "";
         titleText = encodeHtmlChar(title) || "";
-        text = HTML_TEMPLATE.replace(/%content%/g, content.trim())
-                 .replace(/%title%/g, titleText.trim()).replace(/%url%/g, url);
+        template = HTML_TMPL;
         break;
       case `${COPY_LINK}${MARKDOWN}`:
       case `${COPY_PAGE}${MARKDOWN}`:
         content = escapeChar(content, /([[\]])/g) || "";
         titleText = escapeChar(title, /(")/g) || "";
-        text = MARKDOWN_TEMPLATE.replace(/%content%/g, content.trim())
-                 .replace(/%title%/g, titleText.trim()).replace(/%url%/g, url);
+        template = MARKDOWN_TMPL;
         break;
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
-        content = content.trim() || "";
-        text = TEXT_TEMPLATE.replace(/%content%/g, content)
-                 .replace(/%url%/g, url);
+        template = TEXT_TMPL;
         break;
       default:
+    }
+    if (template) {
+      const c = content.trim();
+      const t = titleText && titleText.trim() || title && title.trim() || "";
+      const u = url.trim();
+      text = template.replace(/%content%/g, c).replace(/%title%/g, t)
+               .replace(/%url%/g, u);
     }
     return text || null;
   };
@@ -247,7 +249,7 @@
     const content = (menuItemId === `${COPY_LINK}${BBCODE_URL}` ||
                      menuItemId === `${COPY_PAGE}${BBCODE_URL}`) && url ||
                     selectionText || contentText || title;
-    const text = await createUserInputLink({
+    const text = await createLinkText({
       content, menuItemId, title, url,
     });
     const func = [];
