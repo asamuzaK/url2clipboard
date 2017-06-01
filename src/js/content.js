@@ -64,11 +64,11 @@
     str.replace(re, (m, c) => `\\${c}`) || null;
 
   /**
-   * encode HTML specific char
+   * convert HTML specific character to character reference
    * @param {string} str - string
    * @returns {?string} - string
    */
-  const encodeHtmlChar = str =>
+  const convertHtmlChar = str =>
     isString(str) &&
     str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
       .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
@@ -212,8 +212,8 @@
         break;
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
-        content = encodeHtmlChar(content) || "";
-        titleText = encodeHtmlChar(title) || "";
+        content = convertHtmlChar(content) || "";
+        titleText = convertHtmlChar(title) || "";
         template = HTML_TMPL;
         break;
       case `${COPY_LINK}${MARKDOWN}`:
