@@ -45,6 +45,15 @@
   const isString = o => typeof o === "string" || o instanceof String;
 
   /**
+   * strip matching char
+   * @param {string} str - string
+   * @param {RegExp} re - RegExp
+   * @returns {?string} - string
+   */
+  const stripChar = (str, re) =>
+    isString(str) && re && re.global && str.replace(re, "") || null;
+
+  /**
    * escape matching char
    * @param {string} str - string
    * @param {RegExp} re - RegExp
@@ -193,14 +202,14 @@
     switch (menuItemId) {
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
-        content = content.replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "").trim();
-        text = BBCODE_TEXT_TEMPLATE.replace(/%content%/g, content)
+        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+        text = BBCODE_TEXT_TEMPLATE.replace(/%content%/g, content.trim())
                  .replace(/%url%/g, url);
         break;
       case `${COPY_LINK}${BBCODE_URL}`:
       case `${COPY_PAGE}${BBCODE_URL}`:
-        content = content.replace(/\[(?:url(?:=.*)?|\/url)\]/ig, "").trim();
-        text = BBCODE_URL_TEMPLATE.replace(/%content%/g, content);
+        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+        text = BBCODE_URL_TEMPLATE.replace(/%content%/g, content.trim());
         break;
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
