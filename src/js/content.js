@@ -240,11 +240,11 @@
   };
 
   /**
-   * extract copy data
-   * @param {Object} data - copy data
-   * @returns {Promise.<Array>} - results of each handler
+   * create copy data
+   * @param {Object} data - menu item data
+   * @returns {Object} - copy data
    */
-  const extractCopyData = async (data = {}) => {
+  const createCopyData = async (data = {}) => {
     const {menuItemId, selectionText} = data;
     const {title: documentTitle, URL: documentUrl} = document;
     const {
@@ -276,10 +276,17 @@
         break;
       default:
     }
-    const text = await createLinkText({
-      content, menuItemId, title, url,
-    });
+    return {content, menuItemId, title, url};
+  };
+
+  /**
+   * handle menu item data
+   * @param {Object} data - menu item data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleCopyData = async (data = {}) => {
     const func = [];
+    const text = await createCopyData(data).then(createLinkText);
     text && func.push(copyToClipboard(text));
     func.push(initContextInfo());
     return Promise.all(func);
@@ -298,7 +305,7 @@
         const obj = msg[item];
         switch (item) {
           case EXEC_COPY:
-            func.push(extractCopyData(obj));
+            func.push(handleCopyData(obj));
             break;
           case CONTEXT_INFO_GET:
             func.push(sendMsg({
