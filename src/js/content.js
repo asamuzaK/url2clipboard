@@ -280,7 +280,7 @@
   };
 
   /**
-   * handle menu item data
+   * handle copy data
    * @param {Object} data - menu item data
    * @returns {Promise.<Array>} - results of each handler
    */
