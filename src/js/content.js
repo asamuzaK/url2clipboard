@@ -13,6 +13,7 @@
   const COPY_PAGE = "copyPageURL";
   const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
+  const NS_HTML = "http://www.w3.org/1999/xhtml";
   const USER_INPUT = "userInput";
   const USER_INPUT_DEFAULT = "Input Title";
 
@@ -155,7 +156,7 @@
    */
   const sendStatus = async evt => {
     const {target, type} = evt;
-    const enabled = /^(?:(?:(?:application\/(?:[\w\-.]+\+)?|image\/[\w\-.]+\+)x|text\/(?:ht|x))ml)$/.test(document.contentType);
+    const enabled = document.documentElement.namespaceURI === NS_HTML;
     const info = await createContextInfo(target);
     const msg = {
       [type]: {
