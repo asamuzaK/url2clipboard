@@ -1,4 +1,4 @@
-EN | [JA](./README.ja.md)
+EN | [JA](./README.ja.md) | [ZH](./README.zh.md)
 
 # Copy URL To Clipboard
 
