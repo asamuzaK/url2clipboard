@@ -119,9 +119,9 @@
    */
   const initContextInfo = async () => {
     contextInfo.isLink = false;
-    contextInfo.content = document.title;
-    contextInfo.title = document.title;
-    contextInfo.url = document.URL;
+    contextInfo.content = null;
+    contextInfo.title = null;
+    contextInfo.url = null;
     return contextInfo;
   };
 
@@ -246,10 +246,36 @@
    */
   const extractCopyData = async (data = {}) => {
     const {menuItemId, selectionText} = data;
-    const {content: contentText, title, url} = contextInfo;
-    const content = (menuItemId === `${COPY_LINK}${BBCODE_URL}` ||
-                     menuItemId === `${COPY_PAGE}${BBCODE_URL}`) && url ||
-                    selectionText || contentText || title;
+    const {title: documentTitle, URL: documentUrl} = document;
+    const {
+      content: contextContent, title: contextTitle, url: contextUrl,
+    } = contextInfo;
+    let content, title, url;
+    switch (menuItemId) {
+      case `${COPY_LINK}${BBCODE_TEXT}`:
+      case `${COPY_LINK}${HTML}`:
+      case `${COPY_LINK}${MARKDOWN}`:
+        content = selectionText || contextContent || contextTitle;
+        title = contextTitle;
+        url = contextUrl;
+        break;
+      case `${COPY_LINK}${BBCODE_URL}`:
+        content = contextUrl;
+        url = contextUrl;
+        break;
+      case `${COPY_PAGE}${BBCODE_TEXT}`:
+      case `${COPY_PAGE}${HTML}`:
+      case `${COPY_PAGE}${MARKDOWN}`:
+        content = selectionText || documentTitle;
+        title = documentTitle;
+        url = documentUrl;
+        break;
+      case `${COPY_PAGE}${BBCODE_URL}`:
+        content = documentUrl;
+        url = documentUrl;
+        break;
+      default:
+    }
     const text = await createLinkText({
       content, menuItemId, title, url,
     });
