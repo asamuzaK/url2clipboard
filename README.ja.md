@@ -1,4 +1,4 @@
-[EN](./README.md) | JA
+[EN](./README.md) | JA | [ZH](./README.zh.md)
 
 # URLをクリップボードにコピー
 
