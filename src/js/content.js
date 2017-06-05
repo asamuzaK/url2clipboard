@@ -255,6 +255,7 @@
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_LINK}${HTML}`:
       case `${COPY_LINK}${MARKDOWN}`:
+      case `${COPY_LINK}${TEXT}`:
         content = selectionText || contextContent || contextTitle;
         title = contextTitle;
         url = contextUrl;
@@ -266,6 +267,7 @@
       case `${COPY_PAGE}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${HTML}`:
       case `${COPY_PAGE}${MARKDOWN}`:
+      case `${COPY_PAGE}${TEXT}`:
         content = selectionText || documentTitle;
         title = documentTitle;
         url = documentUrl;
