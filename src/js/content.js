@@ -234,7 +234,7 @@
       const t = titleText && titleText.trim() || title && title.trim() || "";
       const u = url.trim();
       text = template.replace(/%content%/g, c).replace(/%title%/g, t)
-               .replace(/%url%/g, u);
+        .replace(/%url%/g, u);
     }
     return text || null;
   };
