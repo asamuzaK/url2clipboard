@@ -107,7 +107,8 @@
     const info = await createContextInfo(target);
     const msg = {
       [type]: {
-        enabled, info,
+        enabled,
+        contextInfo: info,
       },
     };
     return sendMsg(msg);

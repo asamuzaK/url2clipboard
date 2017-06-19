@@ -107,9 +107,9 @@
    * @returns {void}
    */
   const updateMenu = async (data = {}) => {
-    const {info} = data;
-    if (info) {
-      const {isLink} = info;
+    const {contextInfo} = data;
+    if (contextInfo) {
+      const {isLink} = contextInfo;
       const nodes = document.querySelectorAll(MENU_ITEMS_LINK);
       if (nodes instanceof NodeList) {
         for (const node of nodes) {

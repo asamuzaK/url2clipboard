@@ -431,6 +431,24 @@
   };
 
   /**
+   * update context info
+   * @param {Object} data - context info
+   * @returns context info
+   */
+  const updateContextInfo = async (data = {}) => {
+    await initContextInfo();
+    const {contextInfo: info} = data;
+    const items = Object.keys(info);
+    if (items && items.length) {
+      for (const item of items) {
+        const obj = info[item];
+        contextInfo[item] = obj;
+      }
+    }
+    return contextInfo;
+  };
+
+  /**
    * create link text
    * @param {Object} data - copy data
    * @returns {?string} - link text
@@ -595,11 +613,15 @@
         switch (item) {
           case "keydown":
           case "mousedown":
-            func.push(updateContextMenu(obj));
+            func.push(
+              updateContextInfo(obj),
+              updateContextMenu(obj)
+            );
             break;
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
+              updateContextInfo(obj),
               updateContextMenu(obj)
             );
             break;
