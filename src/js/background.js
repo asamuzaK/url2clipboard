@@ -194,6 +194,17 @@
    */
   const execScriptInTab = async (tabId, opt = {}) => {
     let func;
+    if (!enabledTabs[stringifyPositiveInt(tabId)]) {
+      const items = Object.keys(enabledTabs);
+      for (let item of items) {
+        const obj = enabledTabs[item];
+        item = item * 1;
+        if (obj && Number.isInteger(item)) {
+          tabId = item;
+          break;
+        }
+      }
+    }
     if (await isTab(tabId)) {
       const {arg, name} = opt;
       if (isString(name)) {
