@@ -121,6 +121,25 @@
   const enabledTabs = {};
 
   /**
+   * toggle enabled
+   * @param {boolean} enabled - enabled
+   * @returns {void}
+   */
+  const toggleEnabled = async (enabled = false) => {
+    enabled && (vars.enabled = !!enabled);
+    if (!vars.enabled) {
+      const items = Object.keys(enabledTabs);
+      for (const item of items) {
+        const obj = enabledTabs[item];
+        obj && (vars.enabled = !!obj);
+        if (vars.enabled) {
+          break;
+        }
+      }
+    }
+  };
+
+  /**
    * set enabled tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
@@ -133,6 +152,7 @@
     if (tab || await isTab(tabId)) {
       const id = stringifyPositiveInt(tabId);
       id && (enabledTabs[id] = !!enabled);
+      await toggleEnabled(!!enabled);
     }
     return info;
   };
@@ -147,6 +167,7 @@
     tabId = stringifyPositiveInt(tabId);
     if (tabId && enabledTabs[tabId]) {
       bool = delete enabledTabs[tabId];
+      await toggleEnabled();
     }
     return bool || false;
   };
@@ -375,11 +396,10 @@
 
   /**
    * update context menu
-   * @param {Object} data - context data
    * @returns {Promise.<Array>} - results of each handler
    */
-  const updateContextMenu = async (data = {}) => {
-    const {enabled} = data;
+  const updateContextMenu = async () => {
+    const {enabled} = vars;
     const items = Object.keys(menuItems);
     const func = [];
     for (const item of items) {
@@ -396,10 +416,10 @@
 
   /**
    * show icon
-   * @param {boolean} enabled - enabled
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (enabled = false) => {
+  const showIcon = async () => {
+    const {enabled} = vars;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
     const path = enabled && `${icon}#gray` || `${icon}#off`;
@@ -569,14 +589,11 @@
     const {tabId} = info;
     const func = [];
     if (await isTab(tabId)) {
-      const enabledTab = await stringifyPositiveInt(tabId);
-      const enabled = enabledTab && enabledTabs[enabledTab] || false;
-      func.push(
-        showIcon(enabled),
-        updateContextMenu({enabled})
-      );
-      enabled && func.push(browserAction.enable(tabId)) ||
-      func.push(browserAction.disable(tabId));
+      const {enabled} = vars;
+      enabled ?
+        func.push(browserAction.enable(tabId)) :
+        func.push(browserAction.disable(tabId));
+      func.push(showIcon(), updateContextMenu());
     }
     return Promise.all(func);
   };
@@ -610,16 +627,13 @@
         switch (item) {
           case "keydown":
           case "mousedown":
-            func.push(
-              updateContextInfo(obj),
-              updateContextMenu(obj)
-            );
+            func.push(updateContextInfo(obj), updateContextMenu());
             break;
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
               updateContextInfo(obj),
-              updateContextMenu(obj)
+              updateContextMenu()
             );
             break;
           case "menuItemId":
