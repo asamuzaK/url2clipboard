@@ -127,26 +127,28 @@
   };
 
   /**
-   * exec copy to clipboard
+   * exec script in tab
    * @param {number} tabId - tab ID
-   * @param {Object} text - text to copy
-   * @returns {?AsyncFunction} - copy to clipboard
+   * @param {Object} opt - options
+   * @returns {?AsyncFunction} - executed function
    */
-  const execCopyToClipboard = async (tabId, text) => {
+  const execScriptInTab = async (tabId, opt = {}) => {
     let func;
-    if (await isTab(tabId) && isString(text)) {
-      const [defined] = await tabs.executeScript(tabId, {
-        code: `typeof ${FUNC_CLIPBOARD} === "function";`,
-      });
-      if (!defined) {
-        const file = await extension.getURL(CLIPBOARD);
-        await tabs.executeScript(tabId, {file});
+    if (await isTab(tabId)) {
+      const {arg, name} = opt;
+      if (isString(name)) {
+        const [defined] = await tabs.executeScript(tabId, {
+          code: `typeof ${name} === "function";`,
+        });
+        if (!defined) {
+          let {file} = opt;
+          file = await extension.getURL(file);
+          await tabs.executeScript(tabId, {file});
+        }
+        func = tabs.executeScript(tabId, {
+          code: `${name}(${JSON.stringify({arg})});`,
+        });
       }
-      text = JSON.stringify({text});
-      console.log(text);
-      func = tabs.executeScript(tabId, {
-        code: `${FUNC_CLIPBOARD}(${text});`,
-      });
     }
     return func || null;
   };

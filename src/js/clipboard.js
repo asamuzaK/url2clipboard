@@ -32,12 +32,12 @@ const isString = o => typeof o === "string" || o instanceof String;
  * @returns {void}
  */
 const copyToClipboard = async (data = {}) => {
-  const {text} = data;
-  if (!isString(text)) {
+  const {arg} = data;
+  if (!isString(arg)) {
     throw new TypeError(`Expected String but got ${getType(text)}.`);
   }
-  const clipText = text.trim() || "";
-  if (clipText) {
+  const text = arg.trim() || "";
+  if (text) {
     /**
      * set clipboard data
      * @param {!Object} evt - Event
@@ -47,7 +47,7 @@ const copyToClipboard = async (data = {}) => {
       document.removeEventListener("copy", setClipboardData, true);
       evt.stopImmediatePropagation();
       evt.preventDefault();
-      evt.clipboardData.setData("text/plain", clipText);
+      evt.clipboardData.setData("text/plain", text);
     };
 
     if (typeof document.execCommand === "function") {
@@ -65,11 +65,11 @@ const copyToClipboard = async (data = {}) => {
  * @returns {?string} - edited content
  */
 const editContent = async (data ={}) => {
-  const {content} = data;
-  if (!isString(content)) {
-    throw new TypeError(`Expected String but got ${getType(content)}.`);
+  const {arg} = data;
+  if (!isString(arg)) {
+    throw new TypeError(`Expected String but got ${getType(arg)}.`);
   }
   const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
-  content = window.prompt(msg, content);
+  const content = window.prompt(msg, arg.trim());
   return content;
 };
