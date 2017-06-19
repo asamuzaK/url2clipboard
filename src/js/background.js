@@ -382,21 +382,18 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const createContextMenu = async () => {
-    const items = Object.keys(menuItems);
     const func = [];
+    const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id, subItems, title} = menuItems[item];
-      const itemData = {
-        contexts,
-        enabled: false,
-      };
+      const enabled = false;
+      const itemData = {contexts, enabled};
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
       for (const subItem of subMenuItems) {
         const {id: subItemId, title: subItemTitle} = subItems[subItem];
         const subItemData = {
-          contexts,
-          enabled: false,
+          contexts, enabled,
           parentId: id,
         };
         func.push(createMenuItem(subItemId, subItemTitle, subItemData));
@@ -407,19 +404,35 @@
 
   /**
    * update context menu
+   * @param {number} tabId - tab ID
    * @returns {Promise.<Array>} - results of each handler
    */
-  const updateContextMenu = async () => {
+  const updateContextMenu = async tabId => {
     const {enabled} = vars;
+    const isHtml = Number.isInteger(tabId) &&
+      enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
     const func = [];
     for (const item of items) {
       const {id, subItems} = menuItems[item];
       const subMenuItems = Object.keys(subItems);
-      func.push(contextMenus.update(id, {enabled: !!enabled}));
+      if (id === COPY_LINK) {
+        func.push(contextMenus.update(id, {enabled: !!isHtml}));
+      } else {
+        func.push(contextMenus.update(id, {enabled: !!enabled}));
+      }
       for (const subItem of subMenuItems) {
         const {id: subItemId} = subItems[subItem];
-        func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+        switch (subItemId) {
+          case `${COPY_LINK}${BBCODE_TEXT}`:
+          case `${COPY_LINK}${BBCODE_URL}`:
+          case `${COPY_LINK}${HTML}`:
+          case `${COPY_LINK}${MARKDOWN}`:
+            func.push(contextMenus.update(subItemId, {enabled: !!isHtml}));
+            break;
+          default:
+            func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+        }
       }
     }
     return Promise.all(func);
@@ -604,7 +617,7 @@
       enabled ?
         func.push(browserAction.enable(tabId)) :
         func.push(browserAction.disable(tabId));
-      func.push(showIcon(), updateContextMenu());
+      func.push(showIcon(), updateContextMenu(tabId));
     }
     return Promise.all(func);
   };
@@ -638,13 +651,12 @@
         switch (item) {
           case "keydown":
           case "mousedown":
-            func.push(updateContextInfo(obj), updateContextMenu());
+            func.push(updateContextInfo(obj));
             break;
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
-              updateContextInfo(obj),
-              updateContextMenu()
+              updateContextInfo(obj)
             );
             break;
           case "menuItemId":
