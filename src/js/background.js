@@ -142,7 +142,8 @@
    */
   const execScriptInTab = async (tabId, opt = {}) => {
     let func;
-    if (!enabledTabs[stringifyPositiveInt(tabId)]) {
+    const id = stringifyPositiveInt(tabId);
+    if (id && !enabledTabs[id]) {
       const items = Object.keys(enabledTabs);
       for (let item of items) {
         const obj = enabledTabs[item];
@@ -450,7 +451,7 @@
       const bool = delete enabledTabs[tabId];
       if (bool) {
         const tab = await getActiveTab();
-        const [id] = tab;
+        const {id} = tab;
         vars.enabled = false;
         await toggleEnabled();
         func.push(showIcon(), updateContextMenu(id));
