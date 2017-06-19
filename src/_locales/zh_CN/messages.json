@@ -17,6 +17,9 @@
   "copyPageURL": {
     "message": "复制页面 URL"
   },
+  "copyTabsURL": {
+    "message": "Copy All Tabs URLs"
+  },
   "userInput": {
     "message": "编辑链接标题"
   }

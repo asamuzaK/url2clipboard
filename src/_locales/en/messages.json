@@ -17,6 +17,9 @@
   "copyPageURL": {
     "message": "Copy Page URL"
   },
+  "copyTabsURL": {
+    "message": "Copy All Tabs URLs"
+  },
   "userInput": {
     "message": "Edit content text of the link"
   }

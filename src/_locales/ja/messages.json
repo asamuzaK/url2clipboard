@@ -17,6 +17,9 @@
   "copyPageURL": {
     "message": "ページの URL をコピー"
   },
+  "copyTabsURL": {
+    "message": "すべてのタブの URL をコピー"
+  },
   "userInput": {
     "message": "リンクのテキストを編集してください"
   }

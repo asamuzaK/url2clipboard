@@ -7,10 +7,14 @@
   const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
 
   /* constants */
+  const CLIPBOARD = "js/clipboard.js";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
+  const COPY_TABS = "copyTabsURL";
   const EXEC_COPY = "executeCopy";
   const EXT_NAME = "extensionName";
+  const FUNC_CLIPBOARD = "copyToClipboard";
+  const FUNC_PROMPT = "editContent";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
   const MENU_ITEM_ID = "menuItemId";
@@ -109,6 +113,45 @@
   };
 
   /**
+   * get all tabs info
+   * @returns {Object} - tabs info
+   */
+  const getAllTabsInfo = async () => {
+    const tabsInfo = [];
+    const arr = await tabs.query({currentWindow: true});
+    arr.length && arr.forEach(tab => {
+      const {id, title, url} = tab;
+      tabsInfo.push({id, title, url});
+    });
+    return tabsInfo;
+  };
+
+  /**
+   * exec copy to clipboard
+   * @param {number} tabId - tab ID
+   * @param {Object} text - text to copy
+   * @returns {?AsyncFunction} - copy to clipboard
+   */
+  const execCopyToClipboard = async (tabId, text) => {
+    let func;
+    if (await isTab(tabId) && isString(text)) {
+      const [defined] = await tabs.executeScript(tabId, {
+        code: `typeof ${FUNC_CLIPBOARD} === "function";`,
+      });
+      if (!defined) {
+        const file = await extension.getURL(CLIPBOARD);
+        await tabs.executeScript(tabId, {file});
+      }
+      text = JSON.stringify({text});
+      console.log(text);
+      func = tabs.executeScript(tabId, {
+        code: `${FUNC_CLIPBOARD}(${text});`,
+      });
+    }
+    return func || null;
+  };
+
+  /**
    * send exec copy message
    * @param {Object} data - tab data
    * @returns {?AsyncFunction} - send message
@@ -192,6 +235,33 @@
         },
         [TEXT]: {
           id: `${COPY_LINK}${TEXT}`,
+          title: TEXT,
+        },
+      },
+    },
+    [COPY_TABS]: {
+      id: COPY_TABS,
+      contexts: ["tab"],
+      title: i18n.getMessage(COPY_TABS),
+      subItems: {
+        [HTML]: {
+          id: `${COPY_TABS}${HTML}`,
+          title: HTML,
+        },
+        [MARKDOWN]: {
+          id: `${COPY_TABS}${MARKDOWN}`,
+          title: MARKDOWN,
+        },
+        [BBCODE_TEXT]: {
+          id: `${COPY_TABS}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
+        },
+        [BBCODE_URL]: {
+          id: `${COPY_TABS}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [TEXT]: {
+          id: `${COPY_TABS}${TEXT}`,
           title: TEXT,
         },
       },
