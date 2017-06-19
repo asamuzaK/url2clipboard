@@ -117,61 +117,6 @@
     return tab || null;
   };
 
-  /* enabled tabs collection */
-  const enabledTabs = {};
-
-  /**
-   * toggle enabled
-   * @param {boolean} enabled - enabled
-   * @returns {void}
-   */
-  const toggleEnabled = async (enabled = false) => {
-    enabled && (vars.enabled = !!enabled);
-    if (!vars.enabled) {
-      const items = Object.keys(enabledTabs);
-      for (const item of items) {
-        const obj = enabledTabs[item];
-        obj && (vars.enabled = !!obj);
-        if (vars.enabled) {
-          break;
-        }
-      }
-    }
-  };
-
-  /**
-   * set enabled tab
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tabs.Tab
-   * @param {Object} data - context info
-   * @returns {Object} - tab ID info
-   */
-  const setEnabledTab = async (tabId, tab, data = {}) => {
-    const {enabled} = data;
-    const info = {tabId, enabled};
-    if (tab || await isTab(tabId)) {
-      const id = stringifyPositiveInt(tabId);
-      id && (enabledTabs[id] = !!enabled);
-      await toggleEnabled(!!enabled);
-    }
-    return info;
-  };
-
-  /**
-   * remove enabled tab
-   * @param {number} tabId - tab ID
-   * @returns {boolean} - result
-   */
-  const removeEnabledTab = async tabId => {
-    let bool;
-    tabId = stringifyPositiveInt(tabId);
-    if (tabId && enabledTabs[tabId]) {
-      bool = delete enabledTabs[tabId];
-      await toggleEnabled();
-    }
-    return bool || false;
-  };
-
   /**
    * get all tabs info
    * @returns {Object} - tabs info
@@ -185,6 +130,9 @@
     });
     return tabsInfo;
   };
+
+  /* enabled tabs collection */
+  const enabledTabs = {};
 
   /**
    * exec script in tab
@@ -452,6 +400,63 @@
       browserAction.setIcon({path}),
       browserAction.setTitle({title}),
     ]);
+  };
+
+  /**
+   * toggle enabled
+   * @param {boolean} enabled - enabled
+   * @returns {void}
+   */
+  const toggleEnabled = async (enabled = false) => {
+    enabled && (vars.enabled = !!enabled);
+    if (!vars.enabled) {
+      const items = Object.keys(enabledTabs);
+      for (const item of items) {
+        const obj = enabledTabs[item];
+        obj && (vars.enabled = !!obj);
+        if (vars.enabled) {
+          break;
+        }
+      }
+    }
+  };
+
+  /**
+   * set enabled tab
+   * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
+   * @param {Object} data - context info
+   * @returns {Object} - tab ID info
+   */
+  const setEnabledTab = async (tabId, tab, data = {}) => {
+    const {enabled} = data;
+    const info = {tabId, enabled};
+    if (tab || await isTab(tabId)) {
+      const id = stringifyPositiveInt(tabId);
+      id && (enabledTabs[id] = !!enabled);
+      await toggleEnabled(!!enabled);
+    }
+    return info;
+  };
+
+  /**
+   * remove enabled tab
+   * @param {number} tabId - tab ID
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const removeEnabledTab = async tabId => {
+    const func = [];
+    if ((tabId = stringifyPositiveInt(tabId)) && enabledTabs[tabId]) {
+      const bool = delete enabledTabs[tabId];
+      if (bool) {
+        const tab = await getActiveTab();
+        const [id] = tab;
+        vars.enabled = false;
+        await toggleEnabled();
+        func.push(showIcon(), updateContextMenu(id));
+      }
+    }
+    return Promise.all(func);
   };
 
   /* context info */
