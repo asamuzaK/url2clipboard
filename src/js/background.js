@@ -129,7 +129,7 @@
    */
   const setEnabledTab = async (tabId, tab, data = {}) => {
     const {enabled} = data;
-    const info = {tabId};
+    const info = {tabId, enabled};
     if (tab || await isTab(tabId)) {
       const id = stringifyPositiveInt(tabId);
       id && (enabledTabs[id] = !!enabled);
@@ -432,8 +432,8 @@
 
   /**
    * update context info
-   * @param {Object} data - context info
-   * @returns context info
+   * @param {Object} data - context info data
+   * @returns {Object} - context info
    */
   const updateContextInfo = async (data = {}) => {
     await initContextInfo();
@@ -512,9 +512,9 @@
    */
   const extractClickedData = async (data = {}) => {
     const {info, tab} = data;
-    const {id, title: documentTitle, url: documentUrl} = tab;
+    const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     const func = [];
-    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
+    if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
       const {menuItemId, selectionText} = info;
       const {usePrompt} = vars;
       const {
@@ -530,22 +530,19 @@
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${TEXT}`:
-          content = selectionText || contextContent || contextTitle ||
-            documentTitle;
-          title = contextTitle || documentTitle;
-          url = contextUrl || documentUrl;
+          content = selectionText || contextContent || contextTitle || tabTitle;
+          title = contextTitle || tabTitle;
+          url = contextUrl || tabUrl;
           text = await createLinkText({
-            content, menuItemId, title, url, usePrompt,
-            tabId: id,
+            content, menuItemId, tabId, title, url, usePrompt,
           });
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
         case `${COPY_PAGE}${BBCODE_URL}`:
-          content = contextUrl || documentUrl;
-          url = contextUrl || documentUrl;
+          content = contextUrl || tabUrl;
+          url = contextUrl || tabUrl;
           text = await createLinkText({
-            content, menuItemId, url, usePrompt,
-            tabId: id,
+            content, menuItemId, tabId, url, usePrompt,
           });
           break;
         case `${COPY_TABS}${BBCODE_TEXT}`:
@@ -557,7 +554,7 @@
           break;
         default:
       }
-      text && func.push(execCopyToClipboard(id, text));
+      text && func.push(execCopyToClipboard(tabId, text));
       func.push(initContextInfo());
     }
     return Promise.all(func);
