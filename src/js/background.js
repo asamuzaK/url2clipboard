@@ -198,7 +198,7 @@
       const items = Object.keys(enabledTabs);
       for (let item of items) {
         const obj = enabledTabs[item];
-        item = item * 1;
+        item *= 1;
         if (obj && Number.isInteger(item)) {
           tabId = item;
           break;
