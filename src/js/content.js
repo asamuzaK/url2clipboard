@@ -128,7 +128,7 @@
           case CONTEXT_INFO_GET:
             func.push(sendMsg({
               [CONTEXT_INFO]: {
-                info: contextInfo,
+                contextInfo,
               },
             }));
             break;
