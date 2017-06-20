@@ -14,6 +14,7 @@
   const COPY_PAGE = "copyPageURL";
   const DATA_I18N = "data-i18n";
   const EXEC_COPY = "executeCopy";
+  const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXT_LOCALE = "extensionLocale";
   const LINK_DETAILS = "copyLinkDetails";
   const LINK_CONTENT = "copyLinkContent";
@@ -49,6 +50,24 @@
       [tab] = arr;
     }
     return tab || null;
+  };
+
+  /**
+   * get all tabs info
+   * @param {string} menuItemId - menu item ID
+   * @returns {Object} - tabs info
+   */
+  const getAllTabsInfo = async menuItemId => {
+    const tabsInfo = [];
+    const arr = await tabs.query({currentWindow: true});
+    arr.length && arr.forEach(tab => {
+      const {id, title, url} = tab;
+      tabsInfo.push({
+        id, menuItemId, title, url,
+        content: title,
+      });
+    });
+    return tabsInfo;
   };
 
   /* tab info */
@@ -120,7 +139,7 @@
       const {id: menuItemId} = target;
       const {title: tabTitle, url: tabUrl} = tabInfo;
       const {title: contextTitle, url: contextUrl} = contextInfo;
-      let content, title, url;
+      let allTabs, content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
@@ -151,15 +170,21 @@
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
-          console.log(menuItemId);
+          allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:
       }
-      func.push(runtime.sendMessage({
-        [EXEC_COPY]: {
-          content, menuItemId, title, url,
-        },
-      }));
+      if (allTabs) {
+        func.push(runtime.sendMessage({
+          [EXEC_COPY_TABS]: {allTabs},
+        }));
+      } else {
+        func.push(runtime.sendMessage({
+          [EXEC_COPY]: {
+            content, menuItemId, title, url,
+          },
+        }));
+      }
       func.push(initContextInfo());
     }
     return Promise.all(func);

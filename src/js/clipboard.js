@@ -12,8 +12,9 @@
   const COPY_PAGE = "copyPageURL";
   const COPY_TAB = "copyTabURL";
   const EXEC_COPY = "executeCopy";
-  const EXEC_COPY_ALL_TABS = "executeCopyAllTabs";
   const EXEC_COPY_POPUP = "executeCopyPopup";
+  const EXEC_COPY_TABS = "executeCopyAllTabs";
+  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabs";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
@@ -89,7 +90,7 @@
    * close window
    * @returns {void}
    */
-  const closeWin = () => {
+  const closeWindow = () => {
     window.close();
   };
 
@@ -116,12 +117,8 @@
         evt.clipboardData.setData("text/plain", text);
       };
 
-      if (typeof document.execCommand === "function") {
-        document.addEventListener("copy", setClipboardData, true);
-        document.execCommand("copy");
-      } else {
-        // FIXME: throw?
-      }
+      document.addEventListener("copy", setClipboardData, true);
+      document.execCommand("copy");
     }
   };
 
@@ -210,8 +207,12 @@
   const extractCopyData = async (data = {}) => {
     const {allTabs} = data;
     let text;
-    if (allTabs) {
-      // FIXME: create link text for each tab, then join with "\n"
+    if (Array.isArray(allTabs)) {
+      const func = [];
+      for (const tab of allTabs) {
+        func.push(createLinkText(tab));
+      }
+      text = await Promise.all(func).then(arr => arr.join("\n"));
     } else {
       text = await createLinkText(data);
     }
@@ -224,22 +225,21 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg = {}) => {
-    console.log(msg);
     const items = msg && Object.keys(msg);
     const func = [];
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
-          case EXEC_COPY_ALL_TABS:
+          case EXEC_COPY:
+          case EXEC_COPY_TABS:
             func.push(extractCopyData(obj).then(copyToClipboard));
             break;
-          case EXEC_COPY:
-            func.push(createLinkText(obj).then(copyToClipboard));
-            break;
           case EXEC_COPY_POPUP:
-            console.log(item);
-            func.push(createLinkText(obj).then(copyToClipboard).then(closeWin));
+          case EXEC_COPY_TABS_POPUP:
+            func.push(
+              extractCopyData(obj).then(copyToClipboard).then(closeWindow)
+            );
             break;
           default:
         }

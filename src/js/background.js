@@ -13,6 +13,8 @@
   const COPY_ALL_TABS = "copyAllTabsURL";
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_POPUP = "executeCopyPopup";
+  const EXEC_COPY_TABS = "executeCopyAllTabs";
+  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabs";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
@@ -84,14 +86,18 @@
 
   /**
    * get all tabs info
+   * @param {string} menuItemId - menu item ID
    * @returns {Object} - tabs info
    */
-  const getAllTabsInfo = async () => {
+  const getAllTabsInfo = async menuItemId => {
     const tabsInfo = [];
     const arr = await tabs.query({currentWindow: true});
     arr.length && arr.forEach(tab => {
       const {id, title, url} = tab;
-      tabsInfo.push({id, title, url});
+      tabsInfo.push({
+        id, menuItemId, title, url,
+        content: title,
+      });
     });
     return tabsInfo;
   };
@@ -403,7 +409,7 @@
       const {
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
-      let content, title, url;
+      let allTabs, content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
@@ -439,15 +445,21 @@
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
-          console.log(menuItemId);
+          allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:
       }
-      func.push(tabs.sendMessage(tabId, {
-        [EXEC_COPY]: {
-          content, menuItemId, title, url, promptContent,
-        },
-      }));
+      if (allTabs) {
+        func.push(tabs.sendMessage(tabId, {
+          [EXEC_COPY_TABS]: {allTabs},
+        }));
+      } else {
+        func.push(tabs.sendMessage(tabId, {
+          [EXEC_COPY]: {
+            content, menuItemId, title, url, promptContent,
+          },
+        }));
+      }
       func.push(initContextInfo());
     }
     return Promise.all(func);
@@ -501,6 +513,11 @@
           case EXEC_COPY:
             func.push(runtime.sendMessage({
               [EXEC_COPY_POPUP]: obj,
+            }));
+            break;
+          case EXEC_COPY_TABS:
+            func.push(runtime.sendMessage({
+              [EXEC_COPY_TABS_POPUP]: obj,
             }));
             break;
           case "keydown":
