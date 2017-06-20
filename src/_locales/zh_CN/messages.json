@@ -11,11 +11,17 @@
   "extensionLocale": {
     "message": "zh-CN"
   },
+  "copyAllTabsURL": {
+    "message": "Copy All Tabs URLs"
+  },
   "copyLinkURL": {
     "message": "复制链接 URL"
   },
   "copyPageURL": {
     "message": "复制页面 URL"
+  },
+  "copyTabURL": {
+    "message": "Copy Tab URL"
   },
   "userInput": {
     "message": "编辑链接标题"

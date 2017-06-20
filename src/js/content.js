@@ -4,29 +4,13 @@
 "use strict";
 {
   /* api */
-  const {i18n, runtime} = browser;
+  const {runtime} = browser;
 
   /* constants */
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
-  const COPY_LINK = "copyLinkURL";
-  const COPY_PAGE = "copyPageURL";
-  const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
   const NS_HTML = "http://www.w3.org/1999/xhtml";
-  const USER_INPUT = "userInput";
-  const USER_INPUT_DEFAULT = "Input Title";
-
-  const BBCODE_TEXT = "BBCodeText";
-  const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
-  const BBCODE_URL = "BBCodeURL";
-  const BBCODE_URL_TMPL = "[url]%content%[/url]";
-  const HTML = "HTML";
-  const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
-  const MARKDOWN = "Markdown";
-  const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
-  const TEXT = "Text";
-  const TEXT_TMPL = "%content% %url%";
 
   /**
    * log error
@@ -37,43 +21,6 @@
     console.error(e);
     return false;
   };
-
-  /**
-   * is string
-   * @param {*} o - object to check
-   * @returns {boolean} - result
-   */
-  const isString = o => typeof o === "string" || o instanceof String;
-
-  /**
-   * strip matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const stripChar = (str, re) =>
-    isString(str) && re && re.global && str.replace(re, "") || null;
-
-  /**
-   * escape matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const escapeChar = (str, re) =>
-    isString(str) && re && re.global &&
-    str.replace(re, (m, c) => `\\${c}`) || null;
-
-  /**
-   * convert HTML specific character to character reference
-   * @param {string} str - string
-   * @returns {?string} - string
-   */
-  const convertHtmlChar = str =>
-    isString(str) &&
-    str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
-      .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
-    null;
 
   /**
    * send message
@@ -160,138 +107,11 @@
     const info = await createContextInfo(target);
     const msg = {
       [type]: {
-        enabled, info,
+        enabled,
+        contextInfo: info,
       },
     };
     return sendMsg(msg);
-  };
-
-  /**
-   * copy to clipboard
-   * @param {string} text - text to copy
-   * @returns {void}
-   */
-  const copyToClipboard = async text => {
-    const clipText = isString(text) && text.trim() || "";
-    if (clipText) {
-      /**
-       * set clipboard data
-       * @param {!Object} evt - Event
-       * @returns {void}
-       */
-      const setClipboardData = evt => {
-        document.removeEventListener("copy", setClipboardData, true);
-        evt.stopImmediatePropagation();
-        evt.preventDefault();
-        evt.clipboardData.setData("text/plain", clipText);
-      };
-      document.addEventListener("copy", setClipboardData, true);
-      document.execCommand("copy");
-    }
-  };
-
-  /**
-   * create link text
-   * @param {Object} data - copy data
-   * @returns {?string} - link text
-   */
-  const createLinkText = async (data = {}) => {
-    const {content: contentText, menuItemId, title, url} = data;
-    const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
-    let content = await window.prompt(msg, contentText || "") || "";
-    let template, text, titleText;
-    switch (menuItemId) {
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_TEXT_TMPL;
-        break;
-      case `${COPY_LINK}${BBCODE_URL}`:
-      case `${COPY_PAGE}${BBCODE_URL}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_URL_TMPL;
-        break;
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_PAGE}${HTML}`:
-        content = convertHtmlChar(content) || "";
-        titleText = convertHtmlChar(title) || "";
-        template = HTML_TMPL;
-        break;
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-        content = escapeChar(content, /([[\]])/g) || "";
-        titleText = escapeChar(title, /(")/g) || "";
-        template = MARKDOWN_TMPL;
-        break;
-      case `${COPY_LINK}${TEXT}`:
-      case `${COPY_PAGE}${TEXT}`:
-        template = TEXT_TMPL;
-        break;
-      default:
-    }
-    if (template) {
-      const c = content.trim();
-      const t = titleText && titleText.trim() || title && title.trim() || "";
-      const u = url.trim();
-      text = template.replace(/%content%/g, c).replace(/%title%/g, t)
-        .replace(/%url%/g, u);
-    }
-    return text || null;
-  };
-
-  /**
-   * create copy data
-   * @param {Object} data - menu item data
-   * @returns {Object} - copy data
-   */
-  const createCopyData = async (data = {}) => {
-    const {menuItemId, selectionText} = data;
-    const {title: documentTitle, URL: documentUrl} = document;
-    const {
-      content: contextContent, title: contextTitle, url: contextUrl,
-    } = contextInfo;
-    let content, title, url;
-    switch (menuItemId) {
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_LINK}${TEXT}`:
-        content = selectionText || contextContent || contextTitle;
-        title = contextTitle;
-        url = contextUrl;
-        break;
-      case `${COPY_LINK}${BBCODE_URL}`:
-        content = contextUrl;
-        url = contextUrl;
-        break;
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${HTML}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_PAGE}${TEXT}`:
-        content = selectionText || documentTitle;
-        title = documentTitle;
-        url = documentUrl;
-        break;
-      case `${COPY_PAGE}${BBCODE_URL}`:
-        content = documentUrl;
-        url = documentUrl;
-        break;
-      default:
-    }
-    return {content, menuItemId, title, url};
-  };
-
-  /**
-   * handle copy data
-   * @param {Object} data - menu item data
-   * @returns {Promise.<Array>} - results of each handler
-   */
-  const handleCopyData = async (data = {}) => {
-    const func = [];
-    const text = await createCopyData(data).then(createLinkText);
-    text && func.push(copyToClipboard(text));
-    func.push(initContextInfo());
-    return Promise.all(func);
   };
 
   /**
@@ -304,15 +124,11 @@
     const func = [];
     if (items && items.length) {
       for (const item of items) {
-        const obj = msg[item];
         switch (item) {
-          case EXEC_COPY:
-            func.push(handleCopyData(obj));
-            break;
           case CONTEXT_INFO_GET:
             func.push(sendMsg({
               [CONTEXT_INFO]: {
-                info: contextInfo,
+                contextInfo,
               },
             }));
             break;

@@ -9,11 +9,15 @@
   /* constants */
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
+  const COPY_TAB = "copyTabURL";
+  const COPY_ALL_TABS = "copyAllTabsURL";
   const EXEC_COPY = "executeCopy";
+  const EXEC_COPY_POPUP = "executeCopyPopup";
+  const EXEC_COPY_TABS = "executeCopyAllTabs";
+  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabs";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
-  const MENU_ITEM_ID = "menuItemId";
 
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
@@ -21,6 +25,12 @@
   const HTML = "HTML";
   const MARKDOWN = "Markdown";
   const TEXT = "Text";
+
+  /* variables */
+  const vars = {
+    enabled: false,
+    promptContent: true,
+  };
 
   /**
    * log error
@@ -74,71 +84,26 @@
     return tab || null;
   };
 
+  /**
+   * get all tabs info
+   * @param {string} menuItemId - menu item ID
+   * @returns {Object} - tabs info
+   */
+  const getAllTabsInfo = async menuItemId => {
+    const tabsInfo = [];
+    const arr = await tabs.query({currentWindow: true});
+    arr.length && arr.forEach(tab => {
+      const {id, title, url} = tab;
+      tabsInfo.push({
+        id, menuItemId, title, url,
+        content: title,
+      });
+    });
+    return tabsInfo;
+  };
+
   /* enabled tabs collection */
   const enabledTabs = {};
-
-  /**
-   * set enabled tab
-   * @param {number} tabId - tab ID
-   * @param {Object} tab - tabs.Tab
-   * @param {Object} data - context info
-   * @returns {Object} - tab ID info
-   */
-  const setEnabledTab = async (tabId, tab, data = {}) => {
-    const {enabled} = data;
-    const info = {tabId};
-    if (tab || await isTab(tabId)) {
-      const id = stringifyPositiveInt(tabId);
-      id && (enabledTabs[id] = !!enabled);
-    }
-    return info;
-  };
-
-  /**
-   * remove enabled tab
-   * @param {number} tabId - tab ID
-   * @returns {boolean} - result
-   */
-  const removeEnabledTab = async tabId => {
-    let bool;
-    tabId = stringifyPositiveInt(tabId);
-    if (tabId && enabledTabs[tabId]) {
-      bool = delete enabledTabs[tabId];
-    }
-    return bool || false;
-  };
-
-  /**
-   * send exec copy message
-   * @param {Object} data - tab data
-   * @returns {?AsyncFunction} - send message
-   */
-  const sendExecCopy = async (data = {}) => {
-    const {info, tab} = data;
-    const {id} = tab;
-    let func;
-    if (Number.isInteger(id) && id !== tabs.TAB_ID_NONE) {
-      const {menuItemId, selectionText} = info;
-      const msg = {
-        [EXEC_COPY]: {
-          menuItemId, selectionText,
-        },
-      };
-      func = tabs.sendMessage(id, msg);
-    }
-    return func || null;
-  };
-
-  /**
-   * create tab data
-   * @param {Object} menuItemId - menuItemId
-   * @returns {Object} - tab data
-   */
-  const createTabData = async menuItemId => {
-    const info = isString(menuItemId) && {menuItemId};
-    const tab = await getActiveTab();
-    return info && tab && {info, tab} || null;
-  };
 
   /* context menu items */
   const menuItems = {
@@ -196,6 +161,60 @@
         },
       },
     },
+    [COPY_TAB]: {
+      id: COPY_TAB,
+      contexts: ["tab"],
+      title: i18n.getMessage(COPY_TAB),
+      subItems: {
+        [HTML]: {
+          id: `${COPY_TAB}${HTML}`,
+          title: HTML,
+        },
+        [MARKDOWN]: {
+          id: `${COPY_TAB}${MARKDOWN}`,
+          title: MARKDOWN,
+        },
+        [BBCODE_TEXT]: {
+          id: `${COPY_TAB}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
+        },
+        [BBCODE_URL]: {
+          id: `${COPY_TAB}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [TEXT]: {
+          id: `${COPY_TAB}${TEXT}`,
+          title: TEXT,
+        },
+      },
+    },
+    [COPY_ALL_TABS]: {
+      id: COPY_ALL_TABS,
+      contexts: ["tab"],
+      title: i18n.getMessage(COPY_ALL_TABS),
+      subItems: {
+        [HTML]: {
+          id: `${COPY_ALL_TABS}${HTML}`,
+          title: HTML,
+        },
+        [MARKDOWN]: {
+          id: `${COPY_ALL_TABS}${MARKDOWN}`,
+          title: MARKDOWN,
+        },
+        [BBCODE_TEXT]: {
+          id: `${COPY_ALL_TABS}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
+        },
+        [BBCODE_URL]: {
+          id: `${COPY_ALL_TABS}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [TEXT]: {
+          id: `${COPY_ALL_TABS}${TEXT}`,
+          title: TEXT,
+        },
+      },
+    },
   };
 
   /**
@@ -222,21 +241,18 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const createContextMenu = async () => {
-    const items = Object.keys(menuItems);
     const func = [];
+    const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id, subItems, title} = menuItems[item];
-      const itemData = {
-        contexts,
-        enabled: false,
-      };
+      const enabled = false;
+      const itemData = {contexts, enabled};
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
       for (const subItem of subMenuItems) {
         const {id: subItemId, title: subItemTitle} = subItems[subItem];
         const subItemData = {
-          contexts,
-          enabled: false,
+          contexts, enabled,
           parentId: id,
         };
         func.push(createMenuItem(subItemId, subItemTitle, subItemData));
@@ -247,11 +263,12 @@
 
   /**
    * update context menu
-   * @param {Object} data - context data
+   * @param {number} tabId - tab ID
    * @returns {Promise.<Array>} - results of each handler
    */
-  const updateContextMenu = async (data = {}) => {
-    const {enabled} = data;
+  const updateContextMenu = async tabId => {
+    const enabled = Number.isInteger(tabId) &&
+      enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
     const func = [];
     for (const item of items) {
@@ -268,10 +285,10 @@
 
   /**
    * show icon
-   * @param {boolean} enabled - enabled
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async (enabled = false) => {
+  const showIcon = async () => {
+    const {enabled} = vars;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
     const path = enabled && `${icon}#gray` || `${icon}#off`;
@@ -283,6 +300,172 @@
   };
 
   /**
+   * toggle enabled
+   * @param {boolean} enabled - enabled
+   * @returns {void}
+   */
+  const toggleEnabled = async (enabled = false) => {
+    enabled && (vars.enabled = !!enabled);
+    if (!vars.enabled) {
+      const items = Object.keys(enabledTabs);
+      for (const item of items) {
+        const obj = enabledTabs[item];
+        obj && (vars.enabled = !!obj);
+        if (vars.enabled) {
+          break;
+        }
+      }
+    }
+  };
+
+  /**
+   * set enabled tab
+   * @param {number} tabId - tab ID
+   * @param {Object} tab - tabs.Tab
+   * @param {Object} data - context info
+   * @returns {Object} - tab ID info
+   */
+  const setEnabledTab = async (tabId, tab, data = {}) => {
+    const {enabled} = data;
+    const info = {tabId, enabled};
+    if (tab || await isTab(tabId)) {
+      const id = stringifyPositiveInt(tabId);
+      id && (enabledTabs[id] = !!enabled);
+      await toggleEnabled(!!enabled);
+    }
+    return info;
+  };
+
+  /**
+   * remove enabled tab
+   * @param {number} tabId - tab ID
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const removeEnabledTab = async tabId => {
+    const func = [];
+    if ((tabId = stringifyPositiveInt(tabId)) && enabledTabs[tabId]) {
+      const bool = delete enabledTabs[tabId];
+      if (bool) {
+        const tab = await getActiveTab();
+        const {id} = tab;
+        vars.enabled = false;
+        await toggleEnabled();
+        func.push(showIcon(), updateContextMenu(id));
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /* context info */
+  const contextInfo = {
+    isLink: false,
+    content: null,
+    title: null,
+    url: null,
+  };
+
+  /**
+   * init context info
+   * @returns {Object} - context info
+   */
+  const initContextInfo = async () => {
+    contextInfo.isLink = false;
+    contextInfo.content = null;
+    contextInfo.title = null;
+    contextInfo.url = null;
+    return contextInfo;
+  };
+
+  /**
+   * update context info
+   * @param {Object} data - context info data
+   * @returns {Object} - context info
+   */
+  const updateContextInfo = async (data = {}) => {
+    await initContextInfo();
+    const {contextInfo: info} = data;
+    const items = Object.keys(info);
+    if (items && items.length) {
+      for (const item of items) {
+        const obj = info[item];
+        contextInfo[item] = obj;
+      }
+    }
+    return contextInfo;
+  };
+
+  /**
+   * extract clicked data
+   * @param {Object} data - clicked data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const extractClickedData = async (data = {}) => {
+    const {info, tab} = data;
+    const {id: tabId, title: tabTitle, url: tabUrl} = tab;
+    const func = [];
+    if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
+      const {menuItemId, selectionText} = info;
+      const {promptContent} = vars;
+      const {
+        content: contextContent, title: contextTitle, url: contextUrl,
+      } = contextInfo;
+      let allTabs, content, title, url;
+      switch (menuItemId) {
+        case `${COPY_LINK}${BBCODE_TEXT}`:
+        case `${COPY_LINK}${HTML}`:
+        case `${COPY_LINK}${MARKDOWN}`:
+        case `${COPY_LINK}${TEXT}`:
+          content = selectionText || contextContent || contextTitle;
+          title = contextTitle;
+          url = contextUrl;
+          break;
+        case `${COPY_PAGE}${BBCODE_TEXT}`:
+        case `${COPY_PAGE}${HTML}`:
+        case `${COPY_PAGE}${MARKDOWN}`:
+        case `${COPY_PAGE}${TEXT}`:
+        case `${COPY_TAB}${BBCODE_TEXT}`:
+        case `${COPY_TAB}${HTML}`:
+        case `${COPY_TAB}${MARKDOWN}`:
+        case `${COPY_TAB}${TEXT}`:
+          content = selectionText || tabTitle;
+          title = tabTitle;
+          url = tabUrl;
+          break;
+        case `${COPY_LINK}${BBCODE_URL}`:
+          content = contextUrl;
+          url = contextUrl;
+          break;
+        case `${COPY_PAGE}${BBCODE_URL}`:
+        case `${COPY_TAB}${BBCODE_URL}`:
+          content = tabUrl;
+          url = tabUrl;
+          break;
+        case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+        case `${COPY_ALL_TABS}${HTML}`:
+        case `${COPY_ALL_TABS}${MARKDOWN}`:
+        case `${COPY_ALL_TABS}${TEXT}`:
+        case `${COPY_ALL_TABS}${BBCODE_URL}`:
+          allTabs = await getAllTabsInfo(menuItemId);
+          break;
+        default:
+      }
+      if (allTabs) {
+        func.push(tabs.sendMessage(tabId, {
+          [EXEC_COPY_TABS]: {allTabs},
+        }));
+      } else {
+        func.push(tabs.sendMessage(tabId, {
+          [EXEC_COPY]: {
+            content, menuItemId, title, url, promptContent,
+          },
+        }));
+      }
+      func.push(initContextInfo());
+    }
+    return Promise.all(func);
+  };
+
+  /**
    * handle active tab
    * @param {Object} info - active tab info
    * @returns {Promise.<Array>} - results of each handler
@@ -291,14 +474,11 @@
     const {tabId} = info;
     const func = [];
     if (await isTab(tabId)) {
-      const enabledTab = await stringifyPositiveInt(tabId);
-      const enabled = enabledTab && enabledTabs[enabledTab] || false;
-      func.push(
-        showIcon(enabled),
-        updateContextMenu({enabled})
-      );
-      enabled && func.push(browserAction.enable(tabId)) ||
-      func.push(browserAction.disable(tabId));
+      const {enabled} = vars;
+      enabled ?
+        func.push(browserAction.enable(tabId)) :
+        func.push(browserAction.disable(tabId));
+      func.push(showIcon(), updateContextMenu(tabId));
     }
     return Promise.all(func);
   };
@@ -330,18 +510,25 @@
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
+          case EXEC_COPY:
+            func.push(runtime.sendMessage({
+              [EXEC_COPY_POPUP]: obj,
+            }));
+            break;
+          case EXEC_COPY_TABS:
+            func.push(runtime.sendMessage({
+              [EXEC_COPY_TABS_POPUP]: obj,
+            }));
+            break;
           case "keydown":
           case "mousedown":
-            func.push(updateContextMenu(obj));
+            func.push(updateContextInfo(obj));
             break;
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
-              updateContextMenu(obj)
+              updateContextInfo(obj)
             );
-            break;
-          case MENU_ITEM_ID:
-            func.push(createTabData(obj).then(sendExecCopy));
             break;
           default:
         }
@@ -352,7 +539,7 @@
 
   /* listeners */
   contextMenus.onClicked.addListener((info, tab) =>
-    sendExecCopy({info, tab}).catch(logError)
+    extractClickedData({info, tab}).catch(logError)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)

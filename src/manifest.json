@@ -29,9 +29,12 @@
       "all_frames": false,
       "js": [
         "js/browser-polyfill.js",
+        "js/clipboard.js",
         "js/content.js"
       ],
-      "matches": ["<all_urls>"],
+      "matches": [
+        "<all_urls>"
+      ],
       "run_at": "document_start"
     }
   ],
