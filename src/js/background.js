@@ -408,6 +408,10 @@
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${TEXT}`:
+          content = selectionText || contextContent || contextTitle;
+          title = contextTitle;
+          url = contextUrl;
+          break;
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
@@ -416,15 +420,18 @@
         case `${COPY_TAB}${HTML}`:
         case `${COPY_TAB}${MARKDOWN}`:
         case `${COPY_TAB}${TEXT}`:
-          content = selectionText || contextContent || contextTitle || tabTitle;
-          title = contextTitle || tabTitle;
-          url = contextUrl || tabUrl;
+          content = selectionText || tabTitle;
+          title = tabTitle;
+          url = tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
+          content = contextUrl;
+          url = contextUrl;
+          break;
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
-          content = contextUrl || tabUrl;
-          url = contextUrl || tabUrl;
+          content = tabUrl;
+          url = tabUrl;
           break;
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
         case `${COPY_ALL_TABS}${HTML}`:
