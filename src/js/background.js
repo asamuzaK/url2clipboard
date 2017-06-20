@@ -200,17 +200,6 @@
     return func || null;
   };
 
-  /**
-   * create tab data
-   * @param {Object} menuItemId - menuItemId
-   * @returns {Object} - tab data
-   */
-  const createTabData = async menuItemId => {
-    const info = isString(menuItemId) && {menuItemId};
-    const tab = await getActiveTab();
-    return info && tab && {info, tab} || null;
-  };
-
   /* context menu items */
   const menuItems = {
     [COPY_PAGE]: {
@@ -639,9 +628,6 @@
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
               updateContextInfo(obj)
             );
-            break;
-          case "menuItemId":
-            func.push(createTabData(obj).then(extractClickedData));
             break;
           default:
         }

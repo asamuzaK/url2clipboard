@@ -9,9 +9,15 @@
   </head>
   <body>
     <main>
-      <section id="copyPageContainer">
-        <h1 data-i18n="copyPageURL">Copy Page URL</h1>
+      <details id="copyPageDetails">
+        <summary data-i18n="copyPageURL">Copy Page URL</summary>
         <ul>
+          <li>
+            <label for="copyPageContent" data-i18n="userInput">
+              Input Title
+            </label>
+            <input type="text" id="copyPageContent" value="" />
+          </li>
           <li>
             <button id="copyPageURLHTML">
               HTML
@@ -28,20 +34,32 @@
             </button>
           </li>
           <li>
-            <button id="copyPageURLBBCodeURL">
-              BBCode (URL)
-            </button>
-          </li>
-          <li>
             <button id="copyPageURLText">
               Text
             </button>
           </li>
         </ul>
-      </section>
-      <section id="copyLinkContainer">
-        <h1 data-i18n="copyLinkURL">Copy Link URL</h1>
         <ul>
+          <li>
+            <label for="copyPageBBCodeURLContent" data-i18n="userInput">
+              Input Title
+            </label>
+            <input type="text" id="copyPageBBCodeURLContent" value="" />
+            <button id="copyPageURLBBCodeURL">
+              BBCode (URL)
+            </button>
+          </li>
+        </ul>
+      </details>
+      <details id="copyLinkDetails">
+        <summary data-i18n="copyLinkURL">Copy Link URL</summary>
+        <ul>
+          <li>
+            <label for="copyLinkContent" data-i18n="userInput">
+              Input Title
+            </label>
+            <input type="text" id="copyLinkContent" value="" />
+          </li>
           <li>
             <button id="copyLinkURLHTML">
               HTML
@@ -58,17 +76,53 @@
             </button>
           </li>
           <li>
-            <button id="copyLinkURLBBCodeURL">
-              BBCode (URL)
-            </button>
-          </li>
-          <li>
             <button id="copyLinkURLText">
               Text
             </button>
           </li>
         </ul>
-      </section>
+        <ul>
+          <li>
+            <label for="copyLinkBBCodeURLContent" data-i18n="userInput">
+              Input Title
+            </label>
+            <input type="text" id="copyLinkBBCodeURLContent" value="" />
+            <button id="copyLinkURLBBCodeURL">
+              BBCode (URL)
+            </button>
+          </li>
+        </ul>
+      </details>
+      <details id="copyTabsDetails">
+        <summary data-i18n="copyTabsURL">Copy Tabs URL</summary>
+        <ul>
+          <li>
+            <button id="copyTabsURLHTML">
+              HTML
+            </button>
+          </li>
+          <li>
+            <button id="copyTabsURLMarkdown">
+              Markdown
+            </button>
+          </li>
+          <li>
+            <button id="copyTabsURLBBCodeText">
+              BBCode (Text)
+            </button>
+          </li>
+          <li>
+            <button id="copyTabsURLBBCodeURL">
+              BBCode (URL)
+            </button>
+          </li>
+          <li>
+            <button id="copyTabsURLText">
+              Text
+            </button>
+          </li>
+        </ul>
+      </details>
     </main>
   </body>
 </html>
