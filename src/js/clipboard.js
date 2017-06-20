@@ -7,9 +7,10 @@
   const {i18n, runtime} = browser;
 
   /* constants */
+  const COPY_ALL_TABS = "copyAllTabsURL";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
-  const COPY_TABS = "copyTabsURL";
+  const COPY_TAB = "copyTabURL";
   const EXEC_COPY = "executeCopy";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -142,35 +143,40 @@
       contentText || "";
     let template, text, titleText;
     switch (menuItemId) {
+      case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_TABS}${BBCODE_TEXT}`:
+      case `${COPY_TAB}${BBCODE_TEXT}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_TEXT_TMPL;
         break;
+      case `${COPY_ALL_TABS}${BBCODE_URL}`:
       case `${COPY_LINK}${BBCODE_URL}`:
       case `${COPY_PAGE}${BBCODE_URL}`:
-      case `${COPY_TABS}${BBCODE_URL}`:
+      case `${COPY_TAB}${BBCODE_URL}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_URL_TMPL;
         break;
+      case `${COPY_ALL_TABS}${HTML}`:
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TABS}${HTML}`:
+      case `${COPY_TAB}${HTML}`:
         content = convertHtmlChar(content) || "";
         titleText = convertHtmlChar(title) || "";
         template = HTML_TMPL;
         break;
+      case `${COPY_ALL_TABS}${MARKDOWN}`:
       case `${COPY_LINK}${MARKDOWN}`:
       case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_TABS}${MARKDOWN}`:
+      case `${COPY_TAB}${MARKDOWN}`:
         content = escapeChar(content, /([[\]])/g) || "";
         titleText = escapeChar(title, /(")/g) || "";
         template = MARKDOWN_TMPL;
         break;
+      case `${COPY_ALL_TABS}${TEXT}`:
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
-      case `${COPY_TABS}${TEXT}`:
+      case `${COPY_TAB}${TEXT}`:
         template = TEXT_TMPL;
         break;
       default:

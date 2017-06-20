@@ -11,14 +11,17 @@
   "extensionLocale": {
     "message": "ja"
   },
+  "copyAllTabsURL": {
+    "message": "すべてのタブの URL をコピー"
+  },
   "copyLinkURL": {
     "message": "リンクの URL をコピー"
   },
   "copyPageURL": {
     "message": "ページの URL をコピー"
   },
-  "copyTabsURL": {
-    "message": "すべてのタブの URL をコピー"
+  "copyTabURL": {
+    "message": "タブの URL をコピー"
   },
   "userInput": {
     "message": "リンクのテキストを編集してください"

@@ -154,6 +154,33 @@
         },
       },
     },
+    [COPY_TAB]: {
+      id: COPY_TAB,
+      contexts: ["tab"],
+      title: i18n.getMessage(COPY_TAB),
+      subItems: {
+        [HTML]: {
+          id: `${COPY_TAB}${HTML}`,
+          title: HTML,
+        },
+        [MARKDOWN]: {
+          id: `${COPY_TAB}${MARKDOWN}`,
+          title: MARKDOWN,
+        },
+        [BBCODE_TEXT]: {
+          id: `${COPY_TAB}${BBCODE_TEXT}`,
+          title: `${BBCODE} (${TEXT})`,
+        },
+        [BBCODE_URL]: {
+          id: `${COPY_TAB}${BBCODE_URL}`,
+          title: `${BBCODE} (URL)`,
+        },
+        [TEXT]: {
+          id: `${COPY_TAB}${TEXT}`,
+          title: TEXT,
+        },
+      },
+    },
     [COPY_ALL_TABS]: {
       id: COPY_ALL_TABS,
       contexts: ["tab"],
@@ -385,12 +412,17 @@
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${TEXT}`:
+        case `${COPY_TAB}${BBCODE_TEXT}`:
+        case `${COPY_TAB}${HTML}`:
+        case `${COPY_TAB}${MARKDOWN}`:
+        case `${COPY_TAB}${TEXT}`:
           content = selectionText || contextContent || contextTitle || tabTitle;
           title = contextTitle || tabTitle;
           url = contextUrl || tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
         case `${COPY_PAGE}${BBCODE_URL}`:
+        case `${COPY_TAB}${BBCODE_URL}`:
           content = contextUrl || tabUrl;
           url = contextUrl || tabUrl;
           break;

@@ -11,14 +11,17 @@
   "extensionLocale": {
     "message": "en"
   },
+  "copyAllTabsURL": {
+    "message": "Copy All Tabs URLs"
+  },
   "copyLinkURL": {
     "message": "Copy Link URL"
   },
   "copyPageURL": {
     "message": "Copy Page URL"
   },
-  "copyTabsURL": {
-    "message": "Copy All Tabs URLs"
+  "copyTabURL": {
+    "message": "Copy Tab URL"
   },
   "userInput": {
     "message": "Edit content text of the link"
