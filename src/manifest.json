@@ -29,6 +29,7 @@
       "all_frames": false,
       "js": [
         "js/browser-polyfill.js",
+        "js/clipboard.js",
         "js/content.js"
       ],
       "matches": [

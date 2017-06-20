@@ -7,32 +7,26 @@
   const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
 
   /* constants */
-  const CLIPBOARD = "js/clipboard.js";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
-  const COPY_TABS = "copyTabsURL";
+  const COPY_TAB = "copyTabURL";
+  const COPY_ALL_TABS = "copyAllTabsURL";
+  const EXEC_COPY = "executeCopy";
   const EXT_NAME = "extensionName";
-  const FUNC_COPY = "copyToClipboard";
-  const FUNC_PROMPT = "editContent";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
 
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
-  const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
-  const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
-  const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
   const MARKDOWN = "Markdown";
-  const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
-  const TEXT_TMPL = "%content% %url%";
 
   /* variables */
   const vars = {
     enabled: false,
-    usePrompt: true,
+    promptContent: true,
   };
 
   /**
@@ -60,36 +54,6 @@
    */
   const stringifyPositiveInt = (i, zero = false) =>
     Number.isSafeInteger(i) && (zero && i >= 0 || i > 0) && `${i}` || null;
-
-  /**
-   * strip matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const stripChar = (str, re) =>
-    isString(str) && re && re.global && str.replace(re, "") || null;
-
-  /**
-   * escape matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const escapeChar = (str, re) =>
-    isString(str) && re && re.global &&
-    str.replace(re, (m, c) => `\\${c}`) || null;
-
-  /**
-   * convert HTML specific character to character reference
-   * @param {string} str - string
-   * @returns {?string} - string
-   */
-  const convertHtmlChar = str =>
-    isString(str) &&
-    str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
-      .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
-    null;
 
   /**
    * is tab
@@ -133,72 +97,6 @@
 
   /* enabled tabs collection */
   const enabledTabs = {};
-
-  /**
-   * exec script in tab
-   * @param {number} tabId - tab ID
-   * @param {Object} opt - options
-   * @returns {?AsyncFunction} - executed function
-   */
-  const execScriptInTab = async (tabId, opt = {}) => {
-    let func;
-    const id = stringifyPositiveInt(tabId);
-    if (id && enabledTabs[id]) {
-      const {arg, name} = opt;
-      if (isString(name)) {
-        const [defined] = await tabs.executeScript(tabId, {
-          code: `typeof ${name} === "function";`,
-        });
-        if (!defined) {
-          let {file} = opt;
-          file = await extension.getURL(file);
-          await tabs.executeScript(tabId, {file});
-        }
-        func = tabs.executeScript(tabId, {
-          code: `${name}(${JSON.stringify({arg})});`,
-        });
-      }
-    }
-    return func || null;
-  };
-
-  /**
-   * exec copy to clipboard
-   * @param {number} tabId - tab ID
-   * @param {string} text - text to copy
-   * @returns {?AsyncFunction} - execScriptInTab;
-   */
-  const execCopyToClipboard = async (tabId, text) => {
-    let func;
-    if (isString(text)) {
-      const opt = {
-        arg: text,
-        name: FUNC_COPY,
-        file: CLIPBOARD,
-      };
-      func = execScriptInTab(tabId, opt);
-    }
-    return func || null;
-  };
-
-  /**
-   * exec edit content
-   * @param {number} tabId - tab ID
-   * @param {string} content - content to edit
-   * @returns {?AsyncFunction} - execScriptInTab
-   */
-  const execEditContent = async (tabId, content) => {
-    let func;
-    if (isString(content)) {
-      const opt = {
-        arg: content,
-        name: FUNC_PROMPT,
-        file: CLIPBOARD,
-      };
-      func = execScriptInTab(tabId, opt);
-    }
-    return func || null;
-  };
 
   /* context menu items */
   const menuItems = {
@@ -256,29 +154,29 @@
         },
       },
     },
-    [COPY_TABS]: {
-      id: COPY_TABS,
+    [COPY_ALL_TABS]: {
+      id: COPY_ALL_TABS,
       contexts: ["tab"],
-      title: i18n.getMessage(COPY_TABS),
+      title: i18n.getMessage(COPY_ALL_TABS),
       subItems: {
         [HTML]: {
-          id: `${COPY_TABS}${HTML}`,
+          id: `${COPY_ALL_TABS}${HTML}`,
           title: HTML,
         },
         [MARKDOWN]: {
-          id: `${COPY_TABS}${MARKDOWN}`,
+          id: `${COPY_ALL_TABS}${MARKDOWN}`,
           title: MARKDOWN,
         },
         [BBCODE_TEXT]: {
-          id: `${COPY_TABS}${BBCODE_TEXT}`,
+          id: `${COPY_ALL_TABS}${BBCODE_TEXT}`,
           title: `${BBCODE} (${TEXT})`,
         },
         [BBCODE_URL]: {
-          id: `${COPY_TABS}${BBCODE_URL}`,
+          id: `${COPY_ALL_TABS}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
         [TEXT]: {
-          id: `${COPY_TABS}${TEXT}`,
+          id: `${COPY_ALL_TABS}${TEXT}`,
           title: TEXT,
         },
       },
@@ -463,63 +361,6 @@
   };
 
   /**
-   * create link text
-   * @param {Object} data - copy data
-   * @returns {?string} - link text
-   */
-  const createLinkText = async (data = {}) => {
-    const {
-      content: contentText, menuItemId, tabId, title, url, usePrompt,
-    } = data;
-    let [content] = usePrompt ?
-      await execEditContent(tabId, contentText || "") || [""] :
-      [contentText || ""];
-    let template, text, titleText;
-    switch (menuItemId) {
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_TABS}${BBCODE_TEXT}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_TEXT_TMPL;
-        break;
-      case `${COPY_LINK}${BBCODE_URL}`:
-      case `${COPY_PAGE}${BBCODE_URL}`:
-      case `${COPY_TABS}${BBCODE_URL}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_URL_TMPL;
-        break;
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TABS}${HTML}`:
-        content = convertHtmlChar(content) || "";
-        titleText = convertHtmlChar(title) || "";
-        template = HTML_TMPL;
-        break;
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_TABS}${MARKDOWN}`:
-        content = escapeChar(content, /([[\]])/g) || "";
-        titleText = escapeChar(title, /(")/g) || "";
-        template = MARKDOWN_TMPL;
-        break;
-      case `${COPY_LINK}${TEXT}`:
-      case `${COPY_PAGE}${TEXT}`:
-      case `${COPY_TABS}${TEXT}`:
-        template = TEXT_TMPL;
-        break;
-      default:
-    }
-    if (template) {
-      const c = content.trim();
-      const t = titleText && titleText.trim() || title && title.trim() || "";
-      const u = url.trim();
-      text = template.replace(/%content%/g, c).replace(/%title%/g, t)
-        .replace(/%url%/g, u);
-    }
-    return text || null;
-  };
-
-  /**
    * extract clicked data
    * @param {Object} data - clicked data
    * @returns {Promise.<Array>} - results of each handler
@@ -530,11 +371,11 @@
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
       const {menuItemId, selectionText} = info;
-      const {usePrompt} = vars;
+      const {promptContent} = vars;
       const {
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
-      let content, text, title, url;
+      let content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
@@ -547,28 +388,26 @@
           content = selectionText || contextContent || contextTitle || tabTitle;
           title = contextTitle || tabTitle;
           url = contextUrl || tabUrl;
-          text = await createLinkText({
-            content, menuItemId, tabId, title, url, usePrompt,
-          });
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
         case `${COPY_PAGE}${BBCODE_URL}`:
           content = contextUrl || tabUrl;
           url = contextUrl || tabUrl;
-          text = await createLinkText({
-            content, menuItemId, tabId, url, usePrompt,
-          });
           break;
-        case `${COPY_TABS}${BBCODE_TEXT}`:
-        case `${COPY_TABS}${HTML}`:
-        case `${COPY_TABS}${MARKDOWN}`:
-        case `${COPY_TABS}${TEXT}`:
-        case `${COPY_TABS}${BBCODE_URL}`:
+        case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+        case `${COPY_ALL_TABS}${HTML}`:
+        case `${COPY_ALL_TABS}${MARKDOWN}`:
+        case `${COPY_ALL_TABS}${TEXT}`:
+        case `${COPY_ALL_TABS}${BBCODE_URL}`:
           console.log(menuItemId);
           break;
         default:
       }
-      text && func.push(execCopyToClipboard(tabId, text));
+      func.push(tabs.sendMessage(tabId, {
+        [EXEC_COPY]: {
+          content, menuItemId, title, url, promptContent,
+        },
+      }));
       func.push(initContextInfo());
     }
     return Promise.all(func);
