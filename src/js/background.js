@@ -143,18 +143,7 @@
   const execScriptInTab = async (tabId, opt = {}) => {
     let func;
     const id = stringifyPositiveInt(tabId);
-    if (id && !enabledTabs[id]) {
-      const items = Object.keys(enabledTabs);
-      for (let item of items) {
-        const obj = enabledTabs[item];
-        item *= 1;
-        if (obj && Number.isInteger(item)) {
-          tabId = item;
-          break;
-        }
-      }
-    }
-    if (await isTab(tabId)) {
+    if (id && enabledTabs[id]) {
       const {arg, name} = opt;
       if (isString(name)) {
         const [defined] = await tabs.executeScript(tabId, {
@@ -357,31 +346,17 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const updateContextMenu = async tabId => {
-    const {enabled} = vars;
-    const isHtml = Number.isInteger(tabId) &&
+    const enabled = Number.isInteger(tabId) &&
       enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
     const func = [];
     for (const item of items) {
       const {id, subItems} = menuItems[item];
       const subMenuItems = Object.keys(subItems);
-      if (id === COPY_LINK) {
-        func.push(contextMenus.update(id, {enabled: !!isHtml}));
-      } else {
-        func.push(contextMenus.update(id, {enabled: !!enabled}));
-      }
+      func.push(contextMenus.update(id, {enabled: !!enabled}));
       for (const subItem of subMenuItems) {
         const {id: subItemId} = subItems[subItem];
-        switch (subItemId) {
-          case `${COPY_LINK}${BBCODE_TEXT}`:
-          case `${COPY_LINK}${BBCODE_URL}`:
-          case `${COPY_LINK}${HTML}`:
-          case `${COPY_LINK}${MARKDOWN}`:
-            func.push(contextMenus.update(subItemId, {enabled: !!isHtml}));
-            break;
-          default:
-            func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
-        }
+        func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
       }
     }
     return Promise.all(func);
