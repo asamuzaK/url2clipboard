@@ -34,7 +34,7 @@ const isString = o => typeof o === "string" || o instanceof String;
 const copyToClipboard = async (data = {}) => {
   const {arg} = data;
   if (!isString(arg)) {
-    throw new TypeError(`Expected String but got ${getType(text)}.`);
+    throw new TypeError(`Expected String but got ${getType(arg)}.`);
   }
   const text = arg.trim() || "";
   if (text) {
@@ -64,7 +64,7 @@ const copyToClipboard = async (data = {}) => {
  * @param {Object} data - content data
  * @returns {?string} - edited content
  */
-const editContent = async (data ={}) => {
+const editContent = async (data = {}) => {
   const {arg} = data;
   if (!isString(arg)) {
     throw new TypeError(`Expected String but got ${getType(arg)}.`);
