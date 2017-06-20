@@ -9,10 +9,11 @@
   /* constants */
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
+  const COPY_ALL_TABS = "copyAllTabsURL";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
-  const COPY_TABS = "copyTabsURL";
   const DATA_I18N = "data-i18n";
+  const EXEC_COPY = "executeCopy";
   const EXT_LOCALE = "extensionLocale";
   const LINK_DETAILS = "copyLinkDetails";
   const LINK_CONTENT = "copyLinkContent";
@@ -20,19 +21,12 @@
   const LINK_MENU = `#${LINK_DETAILS} button,#${LINK_CONTENT},#${LINK_BBCODE}`;
   const PAGE_CONTENT = "copyPageContent";
   const PAGE_BBCODE = "copyPageBBCodeURLContent";
-  const TYPE_FROM = 8;
-  const TYPE_TO = -1;
 
   const BBCODE_TEXT = "BBCodeText";
-  const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
-  const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
-  const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
   const MARKDOWN = "Markdown";
-  const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
-  const TEXT_TMPL = "%content% %url%";
 
   /**
    * log error
@@ -43,51 +37,6 @@
     console.error(e);
     return false;
   };
-
-  /**
-   * get type
-   * @param {*} o - object to check
-   * @returns {string} - type of object
-   */
-  const getType = o =>
-    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
-
-  /**
-   * is string
-   * @param {*} o - object to check
-   * @returns {boolean} - result
-   */
-  const isString = o => typeof o === "string" || o instanceof String;
-
-  /**
-   * strip matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const stripChar = (str, re) =>
-    isString(str) && re && re.global && str.replace(re, "") || null;
-
-  /**
-   * escape matching char
-   * @param {string} str - string
-   * @param {RegExp} re - RegExp
-   * @returns {?string} - string
-   */
-  const escapeChar = (str, re) =>
-    isString(str) && re && re.global &&
-    str.replace(re, (m, c) => `\\${c}`) || null;
-
-  /**
-   * convert HTML specific character to character reference
-   * @param {string} str - string
-   * @returns {?string} - string
-   */
-  const convertHtmlChar = str =>
-    isString(str) &&
-    str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
-      .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
-    null;
 
   /**
    * get active tab
@@ -160,93 +109,6 @@
   };
 
   /**
-   * copy to clipboard
-   * @param {Object} data - copy data
-   * @returns {void}
-   */
-  const copyToClipboard = async (data = {}) => {
-    const {arg} = data;
-    if (!isString(arg)) {
-      throw new TypeError(`Expected String but got ${getType(arg)}.`);
-    }
-    const text = arg.trim() || "";
-    if (text) {
-      /**
-       * set clipboard data
-       * @param {!Object} evt - Event
-       * @returns {void}
-       */
-      const setClipboardData = evt => {
-        document.removeEventListener("copy", setClipboardData, true);
-        evt.stopImmediatePropagation();
-        evt.preventDefault();
-        evt.clipboardData.setData("text/plain", text);
-      };
-
-      if (typeof document.execCommand === "function") {
-        document.addEventListener("copy", setClipboardData, true);
-        document.execCommand("copy");
-      } else {
-        // FIXME: throw?
-      }
-    }
-    window.close();
-  };
-
-  /**
-   * create link text
-   * @param {Object} data - copy data
-   * @returns {?string} - link text
-   */
-  const createLinkText = async (data = {}) => {
-    const {content: contentText, menuItemId, title, url} = data;
-    let content = contentText || "";
-    let template, text, titleText;
-    switch (menuItemId) {
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_TABS}${BBCODE_TEXT}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_TEXT_TMPL;
-        break;
-      case `${COPY_LINK}${BBCODE_URL}`:
-      case `${COPY_PAGE}${BBCODE_URL}`:
-      case `${COPY_TABS}${BBCODE_URL}`:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_URL_TMPL;
-        break;
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TABS}${HTML}`:
-        content = convertHtmlChar(content) || "";
-        titleText = convertHtmlChar(title) || "";
-        template = HTML_TMPL;
-        break;
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_TABS}${MARKDOWN}`:
-        content = escapeChar(content, /([[\]])/g) || "";
-        titleText = escapeChar(title, /(")/g) || "";
-        template = MARKDOWN_TMPL;
-        break;
-      case `${COPY_LINK}${TEXT}`:
-      case `${COPY_PAGE}${TEXT}`:
-      case `${COPY_TABS}${TEXT}`:
-        template = TEXT_TMPL;
-        break;
-      default:
-    }
-    if (template) {
-      const c = content.trim();
-      const t = titleText && titleText.trim() || title && title.trim() || "";
-      const u = url.trim();
-      text = template.replace(/%content%/g, c).replace(/%title%/g, t)
-        .replace(/%url%/g, u);
-    }
-    return text || null;
-  };
-
-  /**
    * create copy data
    * @param {!Object} evt - Event
    * @returns {void}
@@ -258,7 +120,7 @@
       const {id: menuItemId} = target;
       const {title: tabTitle, url: tabUrl} = tabInfo;
       const {title: contextTitle, url: contextUrl} = contextInfo;
-      let content, text, title, url;
+      let content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
@@ -267,12 +129,10 @@
           content = document.getElementById(LINK_CONTENT).value || "";
           title = contextTitle;
           url = contextUrl;
-          text = await createLinkText({content, menuItemId, title, url});
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
           content = document.getElementById(LINK_BBCODE).value || "";
           url = contextUrl;
-          text = await createLinkText({content, menuItemId, url});
           break;
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
@@ -281,23 +141,25 @@
           content = document.getElementById(PAGE_CONTENT).value || "";
           title = tabTitle;
           url = tabUrl;
-          text = await createLinkText({content, menuItemId, title, url});
           break;
         case `${COPY_PAGE}${BBCODE_URL}`:
           content = document.getElementById(PAGE_BBCODE).value || "";
           url = tabUrl;
-          text = await createLinkText({content, menuItemId, url});
           break;
-        case `${COPY_TABS}${BBCODE_TEXT}`:
-        case `${COPY_TABS}${HTML}`:
-        case `${COPY_TABS}${MARKDOWN}`:
-        case `${COPY_TABS}${TEXT}`:
-        case `${COPY_TABS}${BBCODE_URL}`:
+        case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+        case `${COPY_ALL_TABS}${HTML}`:
+        case `${COPY_ALL_TABS}${MARKDOWN}`:
+        case `${COPY_ALL_TABS}${TEXT}`:
+        case `${COPY_ALL_TABS}${BBCODE_URL}`:
           console.log(menuItemId);
           break;
         default:
       }
-      text && func.push(copyToClipboard({arg: text}));
+      func.push(runtime.sendMessage({
+        [EXEC_COPY]: {
+          content, menuItemId, title, url,
+        },
+      }));
       func.push(initContextInfo());
     }
     return Promise.all(func);
@@ -361,7 +223,6 @@
     if (info) {
       const {content, isLink, title, url} = info;
       const nodes = document.querySelectorAll(LINK_MENU);
-      console.log(nodes);
       const contentLink = document.getElementById(LINK_CONTENT);
       const contentBBCode = document.getElementById(LINK_BBCODE);
       contextInfo.isLink = isLink;

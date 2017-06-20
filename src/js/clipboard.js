@@ -12,6 +12,8 @@
   const COPY_PAGE = "copyPageURL";
   const COPY_TAB = "copyTabURL";
   const EXEC_COPY = "executeCopy";
+  const EXEC_COPY_ALL_TABS = "executeCopyAllTabs";
+  const EXEC_COPY_POPUP = "executeCopyPopup";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
@@ -84,6 +86,14 @@
     null;
 
   /**
+   * close window
+   * @returns {void}
+   */
+  const closeWin = () => {
+    window.close();
+  };
+
+  /**
    * copy to clipboard
    * @param {string} text - text to copy
    * @returns {void}
@@ -136,12 +146,13 @@
    */
   const createLinkText = async (data = {}) => {
     const {
-      allTabs, content: contentText, menuItemId, title, url, promptContent,
+      content: contentText, menuItemId, url, promptContent,
     } = data;
+    let {title} = data;
     let content = promptContent ?
       await editContent(contentText || "") || "" :
       contentText || "";
-    let template, text, titleText;
+    let template, text;
     switch (menuItemId) {
       case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
       case `${COPY_LINK}${BBCODE_TEXT}`:
@@ -162,7 +173,7 @@
       case `${COPY_PAGE}${HTML}`:
       case `${COPY_TAB}${HTML}`:
         content = convertHtmlChar(content) || "";
-        titleText = convertHtmlChar(title) || "";
+        title = convertHtmlChar(title) || "";
         template = HTML_TMPL;
         break;
       case `${COPY_ALL_TABS}${MARKDOWN}`:
@@ -170,7 +181,7 @@
       case `${COPY_PAGE}${MARKDOWN}`:
       case `${COPY_TAB}${MARKDOWN}`:
         content = escapeChar(content, /([[\]])/g) || "";
-        titleText = escapeChar(title, /(")/g) || "";
+        title = escapeChar(title, /(")/g) || "";
         template = MARKDOWN_TMPL;
         break;
       case `${COPY_ALL_TABS}${TEXT}`:
@@ -183,10 +194,26 @@
     }
     if (template) {
       const c = content.trim();
-      const t = titleText && titleText.trim() || title && title.trim() || "";
+      const t = title && title.trim() || "";
       const u = url.trim();
       text = template.replace(/%content%/g, c).replace(/%title%/g, t)
         .replace(/%url%/g, u);
+    }
+    return text || null;
+  };
+
+  /**
+   * extract copy data
+   * @param {Object} data - copy data
+   * @returns {?string} - link text
+   */
+  const extractCopyData = async (data = {}) => {
+    const {allTabs} = data;
+    let text;
+    if (allTabs) {
+      // FIXME: create link text for each tab, then join with "\n"
+    } else {
+      text = await createLinkText(data);
     }
     return text || null;
   };
@@ -197,14 +224,22 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg = {}) => {
+    console.log(msg);
     const items = msg && Object.keys(msg);
     const func = [];
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
+          case EXEC_COPY_ALL_TABS:
+            func.push(extractCopyData(obj).then(copyToClipboard));
+            break;
           case EXEC_COPY:
             func.push(createLinkText(obj).then(copyToClipboard));
+            break;
+          case EXEC_COPY_POPUP:
+            console.log(item);
+            func.push(createLinkText(obj).then(copyToClipboard).then(closeWin));
             break;
           default:
         }

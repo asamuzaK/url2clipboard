@@ -12,6 +12,7 @@
   const COPY_TAB = "copyTabURL";
   const COPY_ALL_TABS = "copyAllTabsURL";
   const EXEC_COPY = "executeCopy";
+  const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
   const KEY = "Alt+Shift+C";
@@ -497,6 +498,11 @@
       for (const item of items) {
         const obj = msg[item];
         switch (item) {
+          case EXEC_COPY:
+            func.push(runtime.sendMessage({
+              [EXEC_COPY_POPUP]: obj,
+            }));
+            break;
           case "keydown":
           case "mousedown":
             func.push(updateContextInfo(obj));
