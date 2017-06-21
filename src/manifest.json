@@ -47,10 +47,15 @@
   },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
+  "options_ui": {
+    "open_in_tab": true,
+    "page": "options/options.html"
+  },
   "permissions": [
     "activeTab",
     "clipboardWrite",
     "contextMenus",
+    "storage",
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",

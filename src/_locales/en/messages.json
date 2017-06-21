@@ -23,6 +23,72 @@
   "copyTabURL": {
     "message": "Copy Tab URL"
   },
+  "optionsIconBlack": {
+    "message": ""
+  },
+  "optionsIconBlack_alt": {
+    "message": "Black"
+  },
+  "optionsIconBlackLabel": {
+    "message": ""
+  },
+  "optionsIconBlackLabel_ariaLabel": {
+    "message": "Black Icon"
+  },
+  "optionsIconColor": {
+    "message": ""
+  },
+  "optionsIconColor_alt": {
+    "message": "Color"
+  },
+  "optionsIconColorLabel": {
+    "message": ""
+  },
+  "optionsIconColorLabel_ariaLabel": {
+    "message": "Color Icon"
+  },
+  "optionsIconDetail": {
+    "message": "Choose the icon."
+  },
+  "optionsIconGray": {
+    "message": ""
+  },
+  "optionsIconGray_alt": {
+    "message": "Gray"
+  },
+  "optionsIconGrayLabel": {
+    "message": ""
+  },
+  "optionsIconGrayLabel_ariaLabel": {
+    "message": "Gray Icon"
+  },
+  "optionsIconWhite": {
+    "message": ""
+  },
+  "optionsIconWhite_alt": {
+    "message": "White"
+  },
+  "optionsIconWhiteLabel": {
+    "message": ""
+  },
+  "optionsIconWhiteLabel_ariaLabel": {
+    "message": "White Icon"
+  },
+  "optionsPromptContent": {
+    "message": "Enable prompt to edit content"
+  },
+  "optionsPromptContentDetail": {
+    "message": "Opens prompt window to edit content text of the link."
+  },
+  "optionsTitle": {
+    "message": "Copy URL To Clipboard Options"
+  },
+  "optionsToolbarIcon": {
+    "message": "Toolbar Button Icon"
+  },
+  "settings": {
+    "message": "Settings"
+  },
   "userInput": {
     "message": "Edit content text of the link"
   }

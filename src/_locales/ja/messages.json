@@ -23,6 +23,72 @@
   "copyTabURL": {
     "message": "タブの URL をコピー"
   },
+  "optionsIconBlack": {
+    "message": ""
+  },
+  "optionsIconBlack_alt": {
+    "message": "ブラック"
+  },
+  "optionsIconBlackLabel": {
+    "message": ""
+  },
+  "optionsIconBlackLabel_ariaLabel": {
+    "message": "ブラックアイコン"
+  },
+  "optionsIconColor": {
+    "message": ""
+  },
+  "optionsIconColor_alt": {
+    "message": "カラー"
+  },
+  "optionsIconColorLabel": {
+    "message": ""
+  },
+  "optionsIconColorLabel_ariaLabel": {
+    "message": "カラーアイコン"
+  },
+  "optionsIconDetail": {
+    "message": "アイコンを選択してください。"
+  },
+  "optionsIconGray": {
+    "message": ""
+  },
+  "optionsIconGray_alt": {
+    "message": "グレー"
+  },
+  "optionsIconGrayLabel": {
+    "message": ""
+  },
+  "optionsIconGrayLabel_ariaLabel": {
+    "message": "グレーアイコン"
+  },
+  "optionsIconWhite": {
+    "message": ""
+  },
+  "optionsIconWhite_alt": {
+    "message": "ホワイト"
+  },
+  "optionsIconWhiteLabel": {
+    "message": ""
+  },
+  "optionsIconWhiteLabel_ariaLabel": {
+    "message": "ホワイトアイコン"
+  },
+  "optionsPromptContent": {
+    "message": "コンテンツを編集するためのプロンプトを有効化"
+  },
+  "optionsPromptContentDetail": {
+    "message": "プロンプトウィンドウを開き、リンクのコンテンツテキストを編集します。"
+  },
+  "optionsTitle": {
+    "message": "URL をクリップボードにコピー 設定"
+  },
+  "optionsToolbarIcon": {
+    "message": "ツールバーボタンアイコン"
+  },
+  "settings": {
+    "message": "設定項目"
+  },
   "userInput": {
     "message": "リンクのテキストを編集してください"
   }

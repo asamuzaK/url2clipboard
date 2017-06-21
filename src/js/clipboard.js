@@ -18,7 +18,7 @@
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
-  const USER_INPUT_DEFAULT = "Input Title";
+  const USER_INPUT_DEFAULT = "Edit content text of the link";
 
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
