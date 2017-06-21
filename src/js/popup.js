@@ -55,7 +55,7 @@
   /**
    * get all tabs info
    * @param {string} menuItemId - menu item ID
-   * @returns {Object} - tabs info
+   * @returns {Array} - tabs info
    */
   const getAllTabsInfo = async menuItemId => {
     const tabsInfo = [];
