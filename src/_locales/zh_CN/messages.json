@@ -12,7 +12,7 @@
     "message": "zh-CN"
   },
   "copyAllTabsURL": {
-    "message": "Copy All Tabs URLs"
+    "message": "复制所有标签页 URL"
   },
   "copyLinkURL": {
     "message": "复制链接 URL"
@@ -27,67 +27,67 @@
     "message": ""
   },
   "optionsIconBlack_alt": {
-    "message": "Black"
+    "message": "黑色"
   },
   "optionsIconBlackLabel": {
     "message": ""
   },
   "optionsIconBlackLabel_ariaLabel": {
-    "message": "Black Icon"
+    "message": "黑色图标"
   },
   "optionsIconColor": {
     "message": ""
   },
   "optionsIconColor_alt": {
-    "message": "Color"
+    "message": "彩色"
   },
   "optionsIconColorLabel": {
     "message": ""
   },
   "optionsIconColorLabel_ariaLabel": {
-    "message": "Color Icon"
+    "message": "彩色图标"
   },
   "optionsIconDetail": {
-    "message": "Choose the icon."
+    "message": "选择图标。"
   },
   "optionsIconGray": {
     "message": ""
   },
   "optionsIconGray_alt": {
-    "message": "Gray"
+    "message": "灰色"
   },
   "optionsIconGrayLabel": {
     "message": ""
   },
   "optionsIconGrayLabel_ariaLabel": {
-    "message": "Gray Icon"
+    "message": "灰色图标"
   },
   "optionsIconWhite": {
     "message": ""
   },
   "optionsIconWhite_alt": {
-    "message": "White"
+    "message": "白色"
   },
   "optionsIconWhiteLabel": {
     "message": ""
   },
   "optionsIconWhiteLabel_ariaLabel": {
-    "message": "White Icon"
+    "message": "白色图标"
   },
   "optionsPromptContent": {
-    "message": "Enable prompt to edit content"
+    "message": "复制时提示编辑链接标题"
   },
   "optionsPromptContentDetail": {
-    "message": "Opens prompt window to edit content text of the link."
+    "message": "允许从右键菜单复制链接时修改链接信息"
   },
   "optionsTitle": {
-    "message": "Copy URL To Clipboard Options"
+    "message": "复制链接到剪切板 - 设置"
   },
   "optionsToolbarIcon": {
-    "message": "Toolbar Button Icon"
+    "message": "工具栏图标"
   },
   "settings": {
-    "message": "Settings"
+    "message": "设置"
   },
   "userInput": {
     "message": "编辑链接标题"
