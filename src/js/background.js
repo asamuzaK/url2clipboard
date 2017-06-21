@@ -4,7 +4,9 @@
 "use strict";
 {
   /* api */
-  const {browserAction, contextMenus, extension, i18n, runtime, tabs} = browser;
+  const {
+    browserAction, contextMenus, extension, i18n, runtime, storage, tabs,
+  } = browser;
 
   /* constants */
   const COPY_LINK = "copyLinkURL";
@@ -14,10 +16,15 @@
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
-  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabs";
+  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
+  const ICON_BLACK = "buttonIconBlack";
+  const ICON_COLOR = "buttonIconColor";
+  const ICON_GRAY = "buttonIconGray";
+  const ICON_WHITE = "buttonIconWhite";
   const KEY = "Alt+Shift+C";
+  const PROMPT = "promptContent";
 
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
@@ -29,6 +36,7 @@
   /* variables */
   const vars = {
     enabled: false,
+    iconId: "#gray",
     promptContent: true,
   };
 
@@ -284,14 +292,14 @@
   };
 
   /**
-   * show icon
+   * set icon
    * @returns {Promise.<Array>} - results of each handler
    */
-  const showIcon = async () => {
-    const {enabled} = vars;
+  const setIcon = async () => {
+    const {enabled, iconId} = vars;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await extension.getURL(ICON);
-    const path = enabled && `${icon}#gray` || `${icon}#off`;
+    const path = enabled && `${icon}${iconId}` || `${icon}#off`;
     const title = `${name} (${KEY})`;
     return Promise.all([
       browserAction.setIcon({path}),
@@ -350,7 +358,7 @@
         const {id} = tab;
         vars.enabled = false;
         await toggleEnabled();
-        func.push(showIcon(), updateContextMenu(id));
+        func.push(setIcon(), updateContextMenu(id));
       }
     }
     return Promise.all(func);
@@ -478,7 +486,7 @@
       enabled ?
         func.push(browserAction.enable(tabId)) :
         func.push(browserAction.disable(tabId));
-      func.push(showIcon(), updateContextMenu(tabId));
+      func.push(setIcon(), updateContextMenu(tabId));
     }
     return Promise.all(func);
   };
@@ -537,7 +545,58 @@
     return Promise.all(func);
   };
 
+  /**
+   * set variable
+   * @param {string} item - item
+   * @param {Object} obj - value object
+   * @param {boolean} changed - changed
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setVar = async (item, obj, changed = false) => {
+    const func = [];
+    if (item && obj) {
+      const {checked, value} = obj;
+      switch (item) {
+        case ICON_BLACK:
+        case ICON_COLOR:
+        case ICON_GRAY:
+        case ICON_WHITE:
+          if (obj.checked) {
+            vars.iconId = value;
+            changed && func.push(setIcon());
+          }
+          break;
+        case PROMPT:
+          vars[item] = !!checked;
+          break;
+        default:
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * set variables
+   * @param {Object} data - storage data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setVars = async (data = {}) => {
+    const func = [];
+    const items = Object.keys(data);
+    if (items.length) {
+      for (const item of items) {
+        const obj = data[item];
+        const {newValue} = obj;
+        func.push(setVar(item, newValue || obj, !!newValue));
+      }
+    }
+    return Promise.all(func);
+  };
+
   /* listeners */
+  storage.onChanged.addListener(data =>
+    setVars(data).then(setIcon).catch(logError)
+  );
   contextMenus.onClicked.addListener((info, tab) =>
     extractClickedData({info, tab}).catch(logError)
   );
@@ -555,5 +614,8 @@
   );
 
   /* startup */
-  createContextMenu().catch(logError);
+  Promise.all([
+    storage.local.get().then(setVars).then(setIcon),
+    createContextMenu(),
+  ]).catch(logError);
 }
