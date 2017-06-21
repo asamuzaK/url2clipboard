@@ -75,10 +75,10 @@
     "message": "ホワイトアイコン"
   },
   "optionsPromptContent": {
-    "message": "コンテンツを編集するためのプロンプトを有効化"
+    "message": "コピー時にコンテンツを編集する"
   },
   "optionsPromptContentDetail": {
-    "message": "プロンプトウィンドウを開き、リンクのコンテンツテキストを編集します。"
+    "message": "有効化すると、コピー時にプロンプ​​トウィンドウが表示されて、リンクのコンテンツテキストを編集できます。"
   },
   "optionsTitle": {
     "message": "URL をクリップボードにコピー 設定"

@@ -75,10 +75,10 @@
     "message": "White Icon"
   },
   "optionsPromptContent": {
-    "message": "Enable prompt to edit content"
+    "message": "Edit contents when copying"
   },
   "optionsPromptContentDetail": {
-    "message": "Opens prompt window to edit content text of the link."
+    "message": "If enabled, prompt window will appear when copying and you can edit content text of the link."
   },
   "optionsTitle": {
     "message": "Copy URL To Clipboard Options"
