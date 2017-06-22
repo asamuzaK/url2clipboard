@@ -212,7 +212,7 @@
       for (const tab of allTabs) {
         func.push(createLinkText(tab));
       }
-      text = await Promise.all(func).then(arr => arr.join("\n"));
+      text = await Promise.all(func).then(arr => arr.filter(i => i).join("\n"));
     } else {
       text = await createLinkText(data);
     }
