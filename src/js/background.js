@@ -9,10 +9,10 @@
   } = browser;
 
   /* constants */
+  const COPY_ALL_TABS = "copyAllTabsURL";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
   const COPY_TAB = "copyTabURL";
-  const COPY_ALL_TABS = "copyAllTabsURL";
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
@@ -449,10 +449,10 @@
           url = tabUrl;
           break;
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+        case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
-        case `${COPY_ALL_TABS}${BBCODE_URL}`:
           allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:

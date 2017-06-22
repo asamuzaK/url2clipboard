@@ -49,7 +49,7 @@
   "name": "__MSG_extensionName__",
   "options_ui": {
     "open_in_tab": true,
-    "page": "options/options.html"
+    "page": "html/options.html"
   },
   "permissions": [
     "activeTab",

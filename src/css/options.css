@@ -136,17 +136,3 @@ img {
   width: 1.728rem;
   height: 1.728rem;
 }
-figure {
-  margin: 1rem;
-}
-pre {
-  border: 1px solid rgb(128, 128, 128);
-  border-radius: 8px;
-  overflow-x: auto;
-}
-code {
-  display: inline-block;
-}
-pre > code {
-  margin: 0 1rem;
-}

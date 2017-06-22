@@ -16,12 +16,12 @@
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXT_LOCALE = "extensionLocale";
-  const LINK_DETAILS = "copyLinkDetails";
-  const LINK_CONTENT = "copyLinkContent";
   const LINK_BBCODE = "copyLinkBBCodeURLContent";
+  const LINK_CONTENT = "copyLinkContent";
+  const LINK_DETAILS = "copyLinkDetails";
   const LINK_MENU = `#${LINK_DETAILS} button,#${LINK_CONTENT},#${LINK_BBCODE}`;
-  const PAGE_CONTENT = "copyPageContent";
   const PAGE_BBCODE = "copyPageBBCodeURLContent";
+  const PAGE_CONTENT = "copyPageContent";
 
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
@@ -166,10 +166,10 @@
           url = tabUrl;
           break;
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+        case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
-        case `${COPY_ALL_TABS}${BBCODE_URL}`:
           allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:
