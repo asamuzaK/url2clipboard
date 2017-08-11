@@ -177,8 +177,8 @@
       case `${COPY_LINK}${MARKDOWN}`:
       case `${COPY_PAGE}${MARKDOWN}`:
       case `${COPY_TAB}${MARKDOWN}`:
-        content = escapeChar(content, /([[\]])/g) || "";
-        title = escapeChar(title, /(")/g) || "";
+        content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
+        title = escapeChar(convertHtmlChar(title), /(")/g) || "";
         template = MARKDOWN_TMPL;
         break;
       case `${COPY_ALL_TABS}${TEXT}`:
