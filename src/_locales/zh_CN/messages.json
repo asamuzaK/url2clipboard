@@ -23,6 +23,15 @@
   "copyTabURL": {
     "message": "Copy Tab URL"
   },
+  "optionsIconAuto": {
+    "message": "Auto"
+  },
+  "optionsIconAuto_alt": {
+    "message": ""
+  },
+  "optionsIconAutoLabel": {
+    "message": "Auto"
+  },
   "optionsIconBlack": {
     "message": ""
   },
@@ -49,6 +58,9 @@
   },
   "optionsIconDetail": {
     "message": "选择图标。"
+  },
+  "optionsIconDetail2": {
+    "message": "\"Auto\" only applies to Gecko (57.0 and later), and you need to set \"svg.context-properties.content.enabled\" to \"true\" from \"about:config\"."
   },
   "optionsIconGray": {
     "message": ""

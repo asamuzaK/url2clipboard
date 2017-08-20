@@ -95,7 +95,7 @@ details > div > p {
 label[for^=buttonIcon] {
   display: inline-block;
   position: relative;
-  margin-right: 2.4rem;
+  margin-right: 1.2rem;
   border: 1px solid rgba(192,192,192,0.5);
   border-radius: 4px;
   width: 2.4rem;
@@ -109,6 +109,12 @@ label[for=buttonIconGray] {
 }
 label[for=buttonIconWhite] {
   background-color: rgb(64,64,64);
+}
+label[for=buttonIconAuto] {
+  border: none;
+  background-color: transparent;
+  height: auto;
+  vertical-align: baseline;
 }
 .label {
   box-sizing: border-box;

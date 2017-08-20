@@ -23,6 +23,15 @@
   "copyTabURL": {
     "message": "タブの URL をコピー"
   },
+  "optionsIconAuto": {
+    "message": "自動"
+  },
+  "optionsIconAuto_alt": {
+    "message": ""
+  },
+  "optionsIconAutoLabel": {
+    "message": "自動"
+  },
   "optionsIconBlack": {
     "message": ""
   },
@@ -49,6 +58,9 @@
   },
   "optionsIconDetail": {
     "message": "アイコンを選択してください。"
+  },
+  "optionsIconDetail2": {
+    "message": "「自動」はGecko（57.0以降）しか適用されません。また「about:config」から「svg.context-properties.content.enabled」の値を「true」に変更する必要があります。"
   },
   "optionsIconGray": {
     "message": ""

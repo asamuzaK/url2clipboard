@@ -19,6 +19,7 @@
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
   const ICON = "img/icon.svg";
+  const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
   const ICON_COLOR = "buttonIconColor";
   const ICON_GRAY = "buttonIconGray";
@@ -557,6 +558,7 @@
     if (item && obj) {
       const {checked, value} = obj;
       switch (item) {
+        case ICON_AUTO:
         case ICON_BLACK:
         case ICON_COLOR:
         case ICON_GRAY:
