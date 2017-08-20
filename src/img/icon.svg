@@ -29,7 +29,7 @@
   </symbol>
   <g id="context">
     <use href="#board" stroke="context-fill"/>
-    <use href="#clip" fill="context-fill #4C4C4C"/>
+    <use href="#clip" fill="context-fill"/>
   </g>
   <g id="black">
     <use href="#board" stroke="#000"/>
