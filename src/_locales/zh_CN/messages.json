@@ -24,13 +24,13 @@
     "message": "Copy Tab URL"
   },
   "optionsIconAuto": {
-    "message": "Auto"
+    "message": "自动"
   },
   "optionsIconAuto_alt": {
     "message": ""
   },
   "optionsIconAutoLabel": {
-    "message": "Auto"
+    "message": "自动"
   },
   "optionsIconBlack": {
     "message": ""
@@ -60,7 +60,7 @@
     "message": "选择图标。"
   },
   "optionsIconDetail2": {
-    "message": "\"Auto\" only applies to Gecko (57.0 and later), and you need to set \"svg.context-properties.content.enabled\" to \"true\" from \"about:config\"."
+    "message": "“自动” 只适用 Firefox 57 或更新版本，同时需要在 \"about:config\" 中手动将 \"svg.context-properties.content.enabled\" 调整为 \"true\"。"
   },
   "optionsIconGray": {
     "message": ""
