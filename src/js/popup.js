@@ -44,7 +44,10 @@
    * @returns {Object} - tabs.Tab
    */
   const getActiveTab = async () => {
-    const arr = await tabs.query({active: true});
+    const arr = await tabs.query({
+      active: true,
+      currentWindow: true,
+    });
     let tab;
     if (arr.length) {
       [tab] = arr;
