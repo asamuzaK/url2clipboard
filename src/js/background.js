@@ -18,6 +18,7 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
+  const EXT_WEBEXT = "url2clipboard@asamuzak.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -234,11 +235,12 @@
    * @returns {void}
    */
   const createMenuItem = async (id, title, data = {}) => {
+    const {id: extId} = runtime;
     const {contexts, enabled, parentId} = data;
     if (isString(id) && isString(title) && Array.isArray(contexts)) {
       const opt = {
         id, contexts, title,
-        enabled: !!enabled,
+        enabled: extId === EXT_WEBEXT || !!enabled,
       };
       parentId && (opt.parentId = parentId);
       contextMenus.create(opt);
@@ -250,11 +252,12 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const createContextMenu = async () => {
+    const {id: extId} = runtime;
     const func = [];
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id, subItems, title} = menuItems[item];
-      const enabled = false;
+      const enabled = extId === EXT_WEBEXT || false;
       const itemData = {contexts, enabled};
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
@@ -335,7 +338,9 @@
    * @returns {Object} - tab ID info
    */
   const setEnabledTab = async (tabId, tab, data = {}) => {
+    const {id: extId} = runtime;
     const {enabled} = data;
+    const isEnabled = extId === EXT_WEBEXT || !!enabled;
     const info = {tabId, enabled};
     if (tab || await isTab(tabId)) {
       const id = stringifyPositiveInt(tabId);
