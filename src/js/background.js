@@ -235,12 +235,11 @@
    * @returns {void}
    */
   const createMenuItem = async (id, title, data = {}) => {
-    const {id: extId} = runtime;
     const {contexts, enabled, parentId} = data;
     if (isString(id) && isString(title) && Array.isArray(contexts)) {
       const opt = {
         id, contexts, title,
-        enabled: extId === EXT_WEBEXT || !!enabled,
+        enabled: !!enabled,
       };
       parentId && (opt.parentId = parentId);
       contextMenus.create(opt);
@@ -338,9 +337,7 @@
    * @returns {Object} - tab ID info
    */
   const setEnabledTab = async (tabId, tab, data = {}) => {
-    const {id: extId} = runtime;
     const {enabled} = data;
-    const isEnabled = extId === EXT_WEBEXT || !!enabled;
     const info = {tabId, enabled};
     if (tab || await isTab(tabId)) {
       const id = stringifyPositiveInt(tabId);
