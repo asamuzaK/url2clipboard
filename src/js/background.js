@@ -18,6 +18,7 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
+  const EXT_WEBEXT = "url2clipboard@asamuzak.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -250,11 +251,12 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const createContextMenu = async () => {
+    const {id: extId} = runtime;
     const func = [];
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id, subItems, title} = menuItems[item];
-      const enabled = false;
+      const enabled = extId === EXT_WEBEXT || false;
       const itemData = {contexts, enabled};
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
@@ -413,7 +415,7 @@
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-      const {menuItemId, selectionText} = info;
+      const {linkText, linkUrl, menuItemId, selectionText} = info;
       const {promptContent} = vars;
       const {
         content: contextContent, title: contextTitle, url: contextUrl,
@@ -424,9 +426,9 @@
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${TEXT}`:
-          content = selectionText || contextContent || contextTitle;
-          title = contextTitle;
-          url = contextUrl;
+          content = selectionText || linkText || contextContent || contextTitle;
+          title = linkText || contextTitle;
+          url = linkUrl || contextUrl;
           break;
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
@@ -441,8 +443,8 @@
           url = tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
-          content = contextUrl;
-          url = contextUrl;
+          content = linkUrl || contextUrl;
+          url = linkUrl || contextUrl;
           break;
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
