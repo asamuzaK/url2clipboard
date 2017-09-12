@@ -18,7 +18,6 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
-  const EXT_WEBEXT = "url2clipboard@asamuzak.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -251,12 +250,11 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const createContextMenu = async () => {
-    const {id: extId} = runtime;
     const func = [];
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id, subItems, title} = menuItems[item];
-      const enabled = extId === EXT_WEBEXT || false;
+      const enabled = false;
       const itemData = {contexts, enabled};
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
