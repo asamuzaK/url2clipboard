@@ -28,8 +28,10 @@
              A 12 12 0 0 0 64 4 z"/>
   </symbol>
   <g id="context">
-    <use href="#board" stroke="context-fill"/>
-    <use href="#clip" fill="context-fill"/>
+    <use href="#board" stroke="context-fill"
+         stroke-opacity="context-fill-opacity"/>
+    <use href="#clip" fill="context-fill"
+         fill-opacity="context-fill-opacity"/>
   </g>
   <g id="black">
     <use href="#board" stroke="#000"/>
