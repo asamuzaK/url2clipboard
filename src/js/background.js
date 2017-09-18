@@ -37,7 +37,7 @@
   /* variables */
   const vars = {
     enabled: false,
-    iconId: "#gray",
+    iconId: "#context",
     promptContent: true,
   };
 
