@@ -34,12 +34,12 @@
          fill-opacity="context-fill-opacity"/>
   </g>
   <g id="photon_gray_90">
-    <use href="#board" stroke="#0C0C0D"/>
-    <use href="#clip" fill="#0C0C0D"/>
+    <use href="#board" stroke="#0C0C0D" stroke-opacity="0.8"/>
+    <use href="#clip" fill="#0C0C0D" fill-opacity="0.8"/>
   </g>
   <g id="photon_gray_10">
-    <use href="#board" stroke="#F9F9FA"/>
-    <use href="#clip" fill="#F9F9FA"/>
+    <use href="#board" stroke="#F9F9FA" stroke-opacity="0.8"/>
+    <use href="#clip" fill="#F9F9FA" fill-opacity="0.8"/>
   </g>
   <g id="black">
     <use href="#board" stroke="#000"/>
