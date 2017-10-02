@@ -413,7 +413,7 @@
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-      const {linkText, linkUrl, menuItemId, selectionText} = info;
+      const {menuItemId, selectionText} = info;
       const {promptContent} = vars;
       const {
         content: contextContent, title: contextTitle, url: contextUrl,
@@ -424,9 +424,9 @@
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${TEXT}`:
-          content = selectionText || linkText || contextContent || contextTitle;
-          title = linkText || contextTitle;
-          url = linkUrl || contextUrl;
+          content = selectionText || contextContent || contextTitle;
+          title = contextTitle;
+          url = contextUrl;
           break;
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
@@ -441,8 +441,8 @@
           url = tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
-          content = linkUrl || contextUrl;
-          url = linkUrl || contextUrl;
+          content = contextUrl;
+          url = contextUrl;
           break;
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
