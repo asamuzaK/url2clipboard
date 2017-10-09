@@ -26,6 +26,7 @@
   const ICON_WHITE = "buttonIconWhite";
   const KEY = "Alt+Shift+C";
   const PROMPT = "promptContent";
+  const WEBEXT_ID = "url2clipboard@asamuzak.jp";
 
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
@@ -38,6 +39,7 @@
   const vars = {
     enabled: false,
     iconId: "#context",
+    isWebExt: runtime.id === WEBEXT_ID,
     promptContent: true,
   };
 
@@ -235,13 +237,18 @@
    */
   const createMenuItem = async (id, title, data = {}) => {
     const {contexts, enabled, parentId} = data;
+    const {isWebExt} = vars;
     if (isString(id) && isString(title) && Array.isArray(contexts)) {
       const opt = {
         id, contexts, title,
         enabled: !!enabled,
       };
       parentId && (opt.parentId = parentId);
-      contextMenus.create(opt);
+      if (contexts.includes("tab")) {
+        isWebExt && contextMenus.create(opt);
+      } else {
+        contextMenus.create(opt);
+      }
     }
   };
 
@@ -276,17 +283,27 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const updateContextMenu = async tabId => {
+    const {isWebExt} = vars;
     const enabled = Number.isInteger(tabId) &&
       enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
     const func = [];
     for (const item of items) {
-      const {id, subItems} = menuItems[item];
+      const {contexts, id, subItems} = menuItems[item];
       const subMenuItems = Object.keys(subItems);
-      func.push(contextMenus.update(id, {enabled: !!enabled}));
+      if (contexts.includes("tab")) {
+        isWebExt && func.push(contextMenus.update(id, {enabled: !!enabled}));
+      } else {
+        func.push(contextMenus.update(id, {enabled: !!enabled}));
+      }
       for (const subItem of subMenuItems) {
         const {id: subItemId} = subItems[subItem];
-        func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+        if (contexts.includes("tab")) {
+          isWebExt &&
+            func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+        } else {
+          func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+        }
       }
     }
     return Promise.all(func);
