@@ -30,6 +30,8 @@
   const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const TEXT = "Text";
   const TEXT_TMPL = "%content% %url%";
+  const TEXTILE = "Textile";
+  const TEXTILE_TMPL = "\"%content%\":%url%";
 
   /**
    * log error
@@ -82,8 +84,18 @@
    */
   const convertHtmlChar = str =>
     isString(str) &&
-    str.replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
+    str.replace(/&(?!(?:(?:(?:[gl]|quo)t|amp)|[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
       .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
+    null;
+
+  /**
+   * convert paren to numeric character reference
+   * @param {string} str - string
+   * @returns {?string} - string
+   */
+  const convertParen = str =>
+    isString(str) &&
+    str.replace(/(\()|(\))/g, (m, a, b) => a && "&#x28;" || b && "&#x29;") ||
     null;
 
   /**
@@ -186,6 +198,13 @@
       case `${COPY_PAGE}${TEXT}`:
       case `${COPY_TAB}${TEXT}`:
         template = TEXT_TMPL;
+        break;
+      case `${COPY_ALL_TABS}${TEXTILE}`:
+      case `${COPY_LINK}${TEXTILE}`:
+      case `${COPY_PAGE}${TEXTILE}`:
+      case `${COPY_TAB}${TEXTILE}`:
+        content = convertHtmlChar(convertParen(content)) || "";
+        template = TEXTILE_TMPL;
         break;
       default:
     }

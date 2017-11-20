@@ -28,6 +28,7 @@
   const HTML = "HTML";
   const MARKDOWN = "Markdown";
   const TEXT = "Text";
+  const TEXTILE = "Textile";
 
   /**
    * log error
@@ -148,6 +149,7 @@
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${TEXT}`:
+        case `${COPY_LINK}${TEXTILE}`:
           content = document.getElementById(LINK_CONTENT).value || "";
           title = contextTitle;
           url = contextUrl;
@@ -160,6 +162,7 @@
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${TEXT}`:
+        case `${COPY_PAGE}${TEXTILE}`:
           content = document.getElementById(PAGE_CONTENT).value || "";
           title = tabTitle;
           url = tabUrl;
@@ -173,6 +176,7 @@
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
+        case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:

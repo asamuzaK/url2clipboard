@@ -34,6 +34,7 @@
   const HTML = "HTML";
   const MARKDOWN = "Markdown";
   const TEXT = "Text";
+  const TEXTILE = "Textile";
 
   /* variables */
   const vars = {
@@ -139,6 +140,10 @@
           id: `${COPY_PAGE}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
+        [TEXTILE]: {
+          id: `${COPY_PAGE}${TEXTILE}`,
+          title: TEXTILE,
+        },
         [TEXT]: {
           id: `${COPY_PAGE}${TEXT}`,
           title: TEXT,
@@ -165,6 +170,10 @@
         [BBCODE_URL]: {
           id: `${COPY_LINK}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
+        },
+        [TEXTILE]: {
+          id: `${COPY_LINK}${TEXTILE}`,
+          title: TEXTILE,
         },
         [TEXT]: {
           id: `${COPY_LINK}${TEXT}`,
@@ -193,6 +202,10 @@
           id: `${COPY_TAB}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
         },
+        [TEXTILE]: {
+          id: `${COPY_TAB}${TEXTILE}`,
+          title: TEXTILE,
+        },
         [TEXT]: {
           id: `${COPY_TAB}${TEXT}`,
           title: TEXT,
@@ -219,6 +232,10 @@
         [BBCODE_URL]: {
           id: `${COPY_ALL_TABS}${BBCODE_URL}`,
           title: `${BBCODE} (URL)`,
+        },
+        [TEXTILE]: {
+          id: `${COPY_ALL_TABS}${TEXTILE}`,
+          title: TEXTILE,
         },
         [TEXT]: {
           id: `${COPY_ALL_TABS}${TEXT}`,
@@ -441,6 +458,7 @@
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${TEXT}`:
+        case `${COPY_LINK}${TEXTILE}`:
           content = selectionText || contextContent || contextTitle;
           title = contextTitle;
           url = contextUrl;
@@ -449,10 +467,12 @@
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${TEXT}`:
+        case `${COPY_PAGE}${TEXTILE}`:
         case `${COPY_TAB}${BBCODE_TEXT}`:
         case `${COPY_TAB}${HTML}`:
         case `${COPY_TAB}${MARKDOWN}`:
         case `${COPY_TAB}${TEXT}`:
+        case `${COPY_TAB}${TEXTILE}`:
           content = selectionText || tabTitle;
           title = tabTitle;
           url = tabUrl;
@@ -471,6 +491,7 @@
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${TEXT}`:
+        case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
           break;
         default:
