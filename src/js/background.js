@@ -711,8 +711,8 @@
   );
 
   /* startup */
-  Promise.all([
-    storage.local.get().then(setVars).then(setIcon),
+  storage.local.get().then(setVars).then(() => Promise.all([
+    setIcon(),
     createContextMenu(),
-  ]).catch(logError);
+  ])).catch(logError);
 }
