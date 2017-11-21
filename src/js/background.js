@@ -25,6 +25,8 @@
   const ICON_GRAY = "buttonIconGray";
   const ICON_WHITE = "buttonIconWhite";
   const KEY = "Alt+Shift+C";
+  const OUTPUT_HYPER = "outputTextHtml";
+  const OUTPUT_PLAIN = "outputTextPlain";
   const PROMPT = "promptContent";
   const WEBEXT_ID = "url2clipboard@asamuzak.jp";
 
@@ -42,6 +44,7 @@
     enabled: false,
     iconId: "#context",
     isWebExt: runtime.id === WEBEXT_ID,
+    mimeType: "text/plain",
     promptContent: true,
   };
 
@@ -105,10 +108,11 @@
   const getAllTabsInfo = async menuItemId => {
     const tabsInfo = [];
     const arr = await tabs.query({currentWindow: true});
+    const {mimeType} = vars;
     arr.length && arr.forEach(tab => {
       const {id, title, url} = tab;
       tabsInfo.push({
-        id, menuItemId, title, url,
+        id, menuItemId, mimeType, title, url,
         content: title,
       });
     });
@@ -117,6 +121,17 @@
 
   /* enabled tabs collection */
   const enabledTabs = {};
+
+  /* formats */
+  const formats = {
+    [ASCIIDOC]: true,
+    [BBCODE_TEXT]: true,
+    [BBCODE_URL]: true,
+    [HTML]: true,
+    [MARKDOWN]: true,
+    [TEXT]: true,
+    [TEXTILE]: true,
+  };
 
   /* context menu items */
   const menuItems = {
@@ -300,12 +315,14 @@
       const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
       for (const subItem of subMenuItems) {
-        const {id: subItemId, title: subItemTitle} = subItems[subItem];
-        const subItemData = {
-          contexts, enabled,
-          parentId: id,
-        };
-        func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+        if (formats[subItem]) {
+          const {id: subItemId, title: subItemTitle} = subItems[subItem];
+          const subItemData = {
+            contexts, enabled,
+            parentId: id,
+          };
+          func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+        }
       }
     }
     return Promise.all(func);
@@ -331,12 +348,14 @@
         func.push(contextMenus.update(id, {enabled: !!enabled}));
       }
       for (const subItem of subMenuItems) {
-        const {id: subItemId} = subItems[subItem];
-        if (contexts.includes("tab")) {
-          isWebExt &&
+        if (formats[subItem]) {
+          const {id: subItemId} = subItems[subItem];
+          if (contexts.includes("tab")) {
+            isWebExt &&
+              func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+          } else {
             func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
-        } else {
-          func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+          }
         }
       }
     }
@@ -465,7 +484,7 @@
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
       const {menuItemId, selectionText} = info;
-      const {promptContent} = vars;
+      const {mimeType, promptContent} = vars;
       const {
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
@@ -524,7 +543,7 @@
       } else {
         func.push(tabs.sendMessage(tabId, {
           [EXEC_COPY]: {
-            content, menuItemId, title, url, promptContent,
+            content, menuItemId, mimeType, promptContent, title, url,
           },
         }));
       }
@@ -617,14 +636,31 @@
     if (item && obj) {
       const {checked, value} = obj;
       switch (item) {
+        case ASCIIDOC:
+        case BBCODE_TEXT:
+        case BBCODE_URL:
+        case HTML:
+        case MARKDOWN:
+        case TEXT:
+        case TEXTILE:
+          formats[item] = !!checked;
+          changed &&
+            func.push(contextMenus.removeAll().then(createContextMenu));
+          break;
         case ICON_AUTO:
         case ICON_BLACK:
         case ICON_COLOR:
         case ICON_GRAY:
         case ICON_WHITE:
-          if (obj.checked) {
+          if (checked) {
             vars.iconId = value;
             changed && func.push(setIcon());
+          }
+          break;
+        case OUTPUT_HYPER:
+        case OUTPUT_PLAIN:
+          if (checked) {
+            vars.mimeType = value;
           }
           break;
         case PROMPT:

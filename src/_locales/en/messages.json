@@ -23,6 +23,39 @@
   "copyTabURL": {
     "message": "Copy Tab URL"
   },
+  "formats": {
+    "message": "Formats"
+  },
+  "onCopySettings": {
+    "message": "Settings On Copy"
+  },
+  "optionsEnableAsciiDocDetail": {
+    "message": "Show AsciiDoc menu item in the context menu."
+  },
+  "optionsEnableBBCodeTextDetail": {
+    "message": "Show BBCode (Text) menu item in the context menu."
+  },
+  "optionsEnableBBCodeURLDetail": {
+    "message": "Show BBCode (URL) menu item in the context menu."
+  },
+  "optionsEnableHtmlDetail": {
+    "message": "Show HTML menu item in the context menu."
+  },
+  "optionsEnableMarkdownDetail": {
+    "message": "Show Markdown menu item in the context menu."
+  },
+  "optionsEnableTextDetail": {
+    "message": "Show Text menu item in the context menu."
+  },
+  "optionsEnableTextileDetail": {
+    "message": "Show Textile menu item in the context menu."
+  },
+  "optionsHtmlOutputDetail": {
+    "message": "Choose whether to paste as plain text or as a hyperlink."
+  },
+  "optionsHtmlOutputLabel": {
+    "message": "When creating an HTML formatted URL, paste it as:"
+  },
   "optionsIconAuto": {
     "message": "Auto"
   },
@@ -97,9 +130,6 @@
   },
   "optionsToolbarIcon": {
     "message": "Toolbar Button Icon"
-  },
-  "settings": {
-    "message": "Settings"
   },
   "userInput": {
     "message": "Edit content text of the link"

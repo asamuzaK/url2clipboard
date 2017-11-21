@@ -23,6 +23,39 @@
   "copyTabURL": {
     "message": "タブの URL をコピー"
   },
+  "formats": {
+    "message": "フォーマット"
+  },
+  "onCopySettings": {
+    "message": "コピー時の設定"
+  },
+  "optionsEnableAsciiDocDetail": {
+    "message": "コンテキストメニューに AsciiDoc のメニュー項目を表示します。"
+  },
+  "optionsEnableBBCodeTextDetail": {
+    "message": "コンテキストメニューに BBCode (Text) のメニュー項目を表示します。"
+  },
+  "optionsEnableBBCodeURLDetail": {
+    "message": "コンテキストメニューに BBCode (URL) のメニュー項目を表示します。"
+  },
+  "optionsEnableHtmlDetail": {
+    "message": "コンテキストメニューに HTML のメニュー項目を表示します。"
+  },
+  "optionsEnableMarkdownDetail": {
+    "message": "コンテキストメニューに Markdown のメニュー項目を表示します。"
+  },
+  "optionsEnableTextDetail": {
+    "message": "コンテキストメニューに Text のメニュー項目を表示します。"
+  },
+  "optionsEnableTextileDetail": {
+    "message": "コンテキストメニューに Textile のメニュー項目を表示します。"
+  },
+  "optionsHtmlOutputDetail": {
+    "message": "プレーンテキストとしてペーストするかハイパーリンクとしてペーストするか選択してください。"
+  },
+  "optionsHtmlOutputLabel": {
+    "message": "HTML フォーマットで URL を生成した時の出力形式："
+  },
   "optionsIconAuto": {
     "message": "自動"
   },
@@ -93,13 +126,10 @@
     "message": "有効化すると、コピー時にプロンプ​​トウィンドウが表示されて、リンクのコンテンツテキストを編集できます。"
   },
   "optionsTitle": {
-    "message": "URL をクリップボードにコピー 設定"
+    "message": "URL をクリップボードにコピー - 設定"
   },
   "optionsToolbarIcon": {
     "message": "ツールバーボタンアイコン"
-  },
-  "settings": {
-    "message": "設定項目"
   },
   "userInput": {
     "message": "リンクのテキストを編集してください"

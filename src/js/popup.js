@@ -4,7 +4,7 @@
 "use strict";
 {
   /* api */
-  const {i18n, runtime, tabs} = browser;
+  const {i18n, runtime, storage, tabs} = browser;
 
   /* constants */
   const CONTEXT_INFO = "contextInfo";
@@ -20,6 +20,8 @@
   const LINK_CONTENT = "copyLinkContent";
   const LINK_DETAILS = "copyLinkDetails";
   const LINK_MENU = `#${LINK_DETAILS} button,#${LINK_CONTENT},#${LINK_BBCODE}`;
+  const OUTPUT_HYPER = "outputTextHtml";
+  const OUTPUT_PLAIN = "outputTextPlain";
   const PAGE_BBCODE = "copyPageBBCodeURLContent";
   const PAGE_CONTENT = "copyPageContent";
 
@@ -30,6 +32,11 @@
   const MARKDOWN = "Markdown";
   const TEXT = "Text";
   const TEXTILE = "Textile";
+
+  /* variables */
+  const vars = {
+    mimeType: "text/plain",
+  };
 
   /**
    * log error
@@ -65,10 +72,11 @@
   const getAllTabsInfo = async menuItemId => {
     const tabsInfo = [];
     const arr = await tabs.query({currentWindow: true});
+    const {mimeType} = vars;
     arr.length && arr.forEach(tab => {
       const {id, title, url} = tab;
       tabsInfo.push({
-        id, menuItemId, title, url,
+        id, menuItemId, mimeType, title, url,
         content: title,
       });
     });
@@ -330,7 +338,52 @@
     return Promise.all(func);
   };
 
+  /**
+   * set variable
+   * @param {string} item - item
+   * @param {Object} obj - value object
+   * @param {boolean} changed - changed
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setVar = async (item, obj) => {
+    const func = [];
+    if (item && obj) {
+      const {checked, value} = obj;
+      switch (item) {
+        case OUTPUT_HYPER:
+        case OUTPUT_PLAIN:
+          if (checked) {
+            vars.mimeType = value;
+          }
+          break;
+        default:
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * set variables
+   * @param {Object} data - storage data
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setVars = async (data = {}) => {
+    const func = [];
+    const items = Object.keys(data);
+    if (items.length) {
+      for (const item of items) {
+        const obj = data[item];
+        const {newValue} = obj;
+        func.push(setVar(item, newValue || obj, !!newValue));
+      }
+    }
+    return Promise.all(func);
+  };
+
   /* listeners */
+  storage.onChanged.addListener(data =>
+    setVars(data).catch(logError)
+  );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(logError)
   );
@@ -342,5 +395,6 @@
       requestContextInfo(tab),
       setTabInfo(tab),
     ])),
+    storage.local.get().then(setVars),
   ]).catch(logError), false);
 }

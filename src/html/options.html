@@ -49,7 +49,7 @@
               </label>
               <input type="radio" id="buttonIconAuto" name="buttonIconRadio"
                      value="#context" />
-              <label for="buttonIconAuto" data-i18n="optionsIconAutoLabel"
+              <label for="buttonIconAuto"
                      aria-label="Auto">
                 <span id="iconAuto" data-i18n="optionsIconAuto">
                   Auto
@@ -69,8 +69,139 @@
           </div>
         </fieldset>
         <fieldset>
-          <legend data-i18n="settings">
-            Settings
+          <legend data-i18n="formats">
+            Formats
+          </legend>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="HTML" checked="checked" />
+                <label for="HTML" class="checkboxLabel"
+                       aria-details="enableHtmlDetail">
+                  HTML
+                </label>
+              </span>
+            </p>
+            <details id="enableHtmlDetail">
+              <div>
+                <p data-i18n="optionsEnableHtmlDetail">
+                  Show HTML menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Markdown" checked="checked" />
+                <label for="Markdown" class="checkboxLabel"
+                       aria-details="enableMarkdownDetail">
+                  Markdown
+                </label>
+              </span>
+            </p>
+            <details id="enableMarkdownDetail">
+              <div>
+                <p data-i18n="optionsEnableMarkdownDetail">
+                  Show Markdown menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="BBCodeText" checked="checked" />
+                <label for="BBCodeText" class="checkboxLabel"
+                       aria-details="enableBBCodeTextDetail">
+                  BBCode (Text)
+                </label>
+              </span>
+            </p>
+            <details id="enableBBCodeTextDetail">
+              <div>
+                <p data-i18n="optionsEnableBBCodeTextDetail">
+                  Show BBCode (Text) menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="BBCodeURL" checked="checked" />
+                <label for="BBCodeURL" class="checkboxLabel"
+                       aria-details="enableBBCodeURLDetail">
+                  BBCode (URL)
+                </label>
+              </span>
+            </p>
+            <details id="enableBBCodeURLDetail">
+              <div>
+                <p data-i18n="optionsEnableBBCodeURLDetail">
+                  Show BBCode (URL) menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Textile" checked="checked" />
+                <label for="Textile" class="checkboxLabel"
+                       aria-details="enableTextileDetail">
+                  Textile
+                </label>
+              </span>
+            </p>
+            <details id="enableTextileDetail">
+              <div>
+                <p data-i18n="optionsEnableBBCodeURLDetail">
+                  Show Textile menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="AsciiDoc" checked="checked" />
+                <label for="AsciiDoc" class="checkboxLabel"
+                       aria-details="enableAsciiDocDetail">
+                  AsciiDoc
+                </label>
+              </span>
+            </p>
+            <details id="enableAsciiDocDetail">
+              <div>
+                <p data-i18n="optionsEnableAsciiDocDetail">
+                  Show AsciiDoc menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="Text" checked="checked" />
+                <label for="Text" class="checkboxLabel"
+                       aria-details="enableTextDetail">
+                  Text
+                </label>
+              </span>
+            </p>
+            <details id="enableTextDetail">
+              <div>
+                <p data-i18n="optionsEnableTextDetail">
+                  Show Text menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend data-i18n="onCopySettings">
+            On Copy
           </legend>
           <div>
             <p>
@@ -87,6 +218,32 @@
               <div>
                 <p data-i18n="optionsPromptContentDetail">
                   If enabled, prompt window will appear when copying and you can edit content text of the link.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <span data-i18n="optionsHtmlOutputLabel">
+                  When creating an HTML formatted URL, paste it as:
+                </span>
+                <label for="outputTextPlain" aria-details="htmlOutputDetail">
+                  <input type="radio" checked="checked" id="outputTextPlain"
+                         name="mimeType" value="text/plain" />
+                  text/plain
+                </label>
+                <label for="outputTextHtml" aria-details="htmlOutputDetail">
+                  <input type="radio" id="outputTextHtml" name="mimeType"
+                         value="text/html" />
+                  text/html
+                </label>
+              </span>
+            </p>
+            <details id="htmlOutputDetail">
+              <div>
+                <p data-i18n="optionsHtmlOutputDetail">
+                  Choose whether to paste as plain text or as a hyperlink.
                 </p>
               </div>
             </details>

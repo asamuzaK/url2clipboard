@@ -35,6 +35,11 @@
   const TEXTILE = "Textile";
   const TEXTILE_TMPL = "\"%content%\":%url%";
 
+  /* variables */
+  const vars = {
+    mimeType: "text/plain",
+  };
+
   /**
    * log error
    * @param {!Object} e - Error
@@ -158,10 +163,14 @@
        * @returns {void}
        */
       const setClipboardData = evt => {
+        let {mimeType: type} = vars;
+        if (!isString(type) || !/^text\/(?:plain|html)$/.test(type)) {
+          type = "text/plain";
+        }
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();
         evt.preventDefault();
-        evt.clipboardData.setData("text/plain", text);
+        evt.clipboardData.setData(type, text);
       };
 
       document.addEventListener("copy", setClipboardData, true);
@@ -189,7 +198,7 @@
    * @returns {?string} - link text
    */
   const createLinkText = async (data = {}) => {
-    const {content: contentText, menuItemId, promptContent} = data;
+    const {content: contentText, menuItemId, mimeType, promptContent} = data;
     let {title, url} = data;
     let content = promptContent ?
       await editContent(contentText || "") || "" :
@@ -203,6 +212,7 @@
         content = escapeChar(content, /\[[\]]/g) || "";
         url = encodeSpecialChar(url);
         template = ASCIIDOC_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
       case `${COPY_LINK}${BBCODE_TEXT}`:
@@ -210,6 +220,7 @@
       case `${COPY_TAB}${BBCODE_TEXT}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_TEXT_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${BBCODE_URL}`:
       case `${COPY_LINK}${BBCODE_URL}`:
@@ -217,6 +228,7 @@
       case `${COPY_TAB}${BBCODE_URL}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_URL_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${HTML}`:
       case `${COPY_LINK}${HTML}`:
@@ -225,6 +237,7 @@
         content = convertHtmlChar(content) || "";
         title = convertHtmlChar(title) || "";
         template = HTML_TMPL;
+        vars.mimeType = mimeType;
         break;
       case `${COPY_ALL_TABS}${MARKDOWN}`:
       case `${COPY_LINK}${MARKDOWN}`:
@@ -233,12 +246,14 @@
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
         title = escapeChar(convertHtmlChar(title), /(")/g) || "";
         template = MARKDOWN_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${TEXT}`:
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
       case `${COPY_TAB}${TEXT}`:
         template = TEXT_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${TEXTILE}`:
       case `${COPY_LINK}${TEXTILE}`:
@@ -246,6 +261,7 @@
       case `${COPY_TAB}${TEXTILE}`:
         content = convertHtmlChar(convertParen(content)) || "";
         template = TEXTILE_TMPL;
+        vars.mimeType = "text/plain";
         break;
       default:
     }
@@ -267,8 +283,8 @@
     let text;
     if (Array.isArray(allTabs)) {
       const func = [];
-      for (const tab of allTabs) {
-        func.push(createLinkText(tab));
+      for (const tabData of allTabs) {
+        func.push(createLinkText(tabData));
       }
       text = await Promise.all(func).then(arr => arr.filter(i => i).join("\n"));
     } else {
