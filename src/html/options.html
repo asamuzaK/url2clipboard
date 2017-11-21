@@ -225,19 +225,21 @@
           <div>
             <p>
               <span>
-                <span data-i18n="optionsHtmlOutputLabel">
+                <span class="label" data-i18n="optionsHtmlOutputLabel">
                   When creating an HTML formatted URL, paste it as:
                 </span>
-                <label for="outputTextPlain" aria-details="htmlOutputDetail">
-                  <input type="radio" checked="checked" id="outputTextPlain"
-                         name="mimeType" value="text/plain" />
-                  text/plain
-                </label>
-                <label for="outputTextHtml" aria-details="htmlOutputDetail">
-                  <input type="radio" id="outputTextHtml" name="mimeType"
-                         value="text/html" />
-                  text/html
-                </label>
+                <span class="htmlOutput">
+                  <label for="outputTextPlain" aria-details="htmlOutputDetail">
+                    <input type="radio" checked="checked" id="outputTextPlain"
+                           name="mimeType" value="text/plain" />
+                    text/plain
+                  </label>
+                  <label for="outputTextHtml" aria-details="htmlOutputDetail">
+                    <input type="radio" id="outputTextHtml" name="mimeType"
+                           value="text/html" />
+                    text/html
+                  </label>
+                </span>
               </span>
             </p>
             <details id="htmlOutputDetail">

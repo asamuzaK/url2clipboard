@@ -116,11 +116,19 @@ label[for=buttonIconAuto] {
   height: auto;
   vertical-align: baseline;
 }
+label[for=outputTextHtml] {
+  margin-left: 2rem;
+}
 .label {
   box-sizing: border-box;
   display: inline-block;
   padding-left: 0.2rem;
   min-width: 15rem;
+}
+.htmlOutput {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 15.2rem;
 }
 label + input[type=radio] {
   margin-left: 1rem;
