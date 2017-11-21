@@ -24,37 +24,37 @@
     "message": "Copy Tab URL"
   },
   "formats": {
-    "message": "Formats"
+    "message": "格式"
   },
   "onCopySettings": {
-    "message": "Settings On Copy"
+    "message": "复制时"
   },
   "optionsEnableAsciiDocDetail": {
-    "message": "Show AsciiDoc menu item in the context menu."
+    "message": "在右键菜单中显示 AsciiDoc。"
   },
   "optionsEnableBBCodeTextDetail": {
-    "message": "Show BBCode (Text) menu item in the context menu."
+    "message": "在右键菜单中显示 BBCode (Text)。"
   },
   "optionsEnableBBCodeURLDetail": {
-    "message": "Show BBCode (URL) menu item in the context menu."
+    "message": "在右键菜单中显示 BBCode (URL)。"
   },
   "optionsEnableHtmlDetail": {
-    "message": "Show HTML menu item in the context menu."
+    "message": "在右键菜单中显示 HTML。"
   },
   "optionsEnableMarkdownDetail": {
-    "message": "Show Markdown menu item in the context menu."
+    "message": "在右键菜单中显示 Markdown。"
   },
   "optionsEnableTextDetail": {
-    "message": "Show Text menu item in the context menu."
+    "message": "在右键菜单中显示 Text。"
   },
   "optionsEnableTextileDetail": {
-    "message": "Show Textile menu item in the context menu."
+    "message": "在右键菜单中显示 Textile。"
   },
   "optionsHtmlOutputDetail": {
-    "message": "Choose whether to paste as plain text or as a hyperlink."
+    "message": "选择复制为纯文本或超链接。"
   },
   "optionsHtmlOutputLabel": {
-    "message": "When creating an HTML formatted URL, paste it as:"
+    "message": "格式化 HTML 为："
   },
   "optionsIconAuto": {
     "message": "自动"
@@ -120,10 +120,10 @@
     "message": "白色图标"
   },
   "optionsPromptContent": {
-    "message": "复制时提示编辑链接标题"
+    "message": "编辑链接标题"
   },
   "optionsPromptContentDetail": {
-    "message": "允许从右键菜单复制链接时修改链接信息"
+    "message": "从右键菜单复制链接时提示修改链接信息"
   },
   "optionsTitle": {
     "message": "复制链接到剪切板 - 设置"
