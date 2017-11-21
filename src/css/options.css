@@ -116,9 +116,6 @@ label[for=buttonIconAuto] {
   height: auto;
   vertical-align: baseline;
 }
-label[for=outputTextHtml] {
-  margin-left: 2rem;
-}
 .label {
   box-sizing: border-box;
   display: inline-block;
@@ -127,8 +124,16 @@ label[for=outputTextHtml] {
 }
 .htmlOutput {
   box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  min-width: min-content;
+  width: fit-content;
+}
+.htmlOutput > label {
+  flex: 1 1 min-content;
   display: inline-block;
-  min-width: 15.2rem;
+  margin-right: 2rem;
 }
 label + input[type=radio] {
   margin-left: 1rem;
