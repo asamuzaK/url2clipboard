@@ -28,6 +28,7 @@
   const PROMPT = "promptContent";
   const WEBEXT_ID = "url2clipboard@asamuzak.jp";
 
+  const ASCIIDOC = "AsciiDoc";
   const BBCODE = "BBCode";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
@@ -144,6 +145,10 @@
           id: `${COPY_PAGE}${TEXTILE}`,
           title: TEXTILE,
         },
+        [ASCIIDOC]: {
+          id: `${COPY_PAGE}${ASCIIDOC}`,
+          title: ASCIIDOC,
+        },
         [TEXT]: {
           id: `${COPY_PAGE}${TEXT}`,
           title: TEXT,
@@ -174,6 +179,10 @@
         [TEXTILE]: {
           id: `${COPY_LINK}${TEXTILE}`,
           title: TEXTILE,
+        },
+        [ASCIIDOC]: {
+          id: `${COPY_LINK}${ASCIIDOC}`,
+          title: ASCIIDOC,
         },
         [TEXT]: {
           id: `${COPY_LINK}${TEXT}`,
@@ -206,6 +215,10 @@
           id: `${COPY_TAB}${TEXTILE}`,
           title: TEXTILE,
         },
+        [ASCIIDOC]: {
+          id: `${COPY_TAB}${ASCIIDOC}`,
+          title: ASCIIDOC,
+        },
         [TEXT]: {
           id: `${COPY_TAB}${TEXT}`,
           title: TEXT,
@@ -236,6 +249,10 @@
         [TEXTILE]: {
           id: `${COPY_ALL_TABS}${TEXTILE}`,
           title: TEXTILE,
+        },
+        [ASCIIDOC]: {
+          id: `${COPY_ALL_TABS}${ASCIIDOC}`,
+          title: ASCIIDOC,
         },
         [TEXT]: {
           id: `${COPY_ALL_TABS}${TEXT}`,
@@ -454,6 +471,7 @@
       } = contextInfo;
       let allTabs, content, title, url;
       switch (menuItemId) {
+        case `${COPY_LINK}${ASCIIDOC}`:
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
@@ -463,11 +481,13 @@
           title = contextTitle;
           url = contextUrl;
           break;
+        case `${COPY_PAGE}${ASCIIDOC}`:
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${TEXT}`:
         case `${COPY_PAGE}${TEXTILE}`:
+        case `${COPY_TAB}${ASCIIDOC}`:
         case `${COPY_TAB}${BBCODE_TEXT}`:
         case `${COPY_TAB}${HTML}`:
         case `${COPY_TAB}${MARKDOWN}`:
@@ -486,6 +506,7 @@
           content = tabUrl;
           url = tabUrl;
           break;
+        case `${COPY_ALL_TABS}${ASCIIDOC}`:
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:

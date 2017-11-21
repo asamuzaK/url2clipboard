@@ -20,6 +20,8 @@
   const USER_INPUT = "userInput";
   const USER_INPUT_DEFAULT = "Edit content text of the link";
 
+  const ASCIIDOC = "AsciiDoc";
+  const ASCIIDOC_TMPL = "link:%url%[%content%]";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
@@ -99,6 +101,39 @@
     null;
 
   /**
+   * encode URL component part
+   * @param {string} part - component part
+   * @returns {string} - encoded component part
+   */
+  const encodeUrlPart = part =>
+    isString(part) &&
+    part.replace(/([\s<>[\]'^`{|}])/g, (m, c) => encodeURIComponent(c))
+      .replace(/(')/g, (m, c) => escape(c)) || "";
+
+  /**
+   * encode special char
+   * @param {string} str - URL string
+   * @returns {?string} - encoded URL
+   */
+  const encodeSpecialChar = str => {
+    let encodedUrl;
+    if (isString(str)) {
+      const url = new URL(str);
+      if (url) {
+        const {
+          hash: frag, origin, pathname: path, protocol, search: query,
+        } = url;
+        const base = protocol === "file:" && `${protocol}//` || origin;
+        encodedUrl = new URL(
+          `${encodeUrlPart(path)}${encodeUrlPart(query)}${encodeUrlPart(frag)}`,
+          base
+        );
+      }
+    }
+    return encodedUrl && encodedUrl.href || null;
+  };
+
+  /**
    * close window
    * @returns {void}
    */
@@ -154,15 +189,21 @@
    * @returns {?string} - link text
    */
   const createLinkText = async (data = {}) => {
-    const {
-      content: contentText, menuItemId, url, promptContent,
-    } = data;
-    let {title} = data;
+    const {content: contentText, menuItemId, promptContent} = data;
+    let {title, url} = data;
     let content = promptContent ?
       await editContent(contentText || "") || "" :
       contentText || "";
     let template, text;
     switch (menuItemId) {
+      case `${COPY_ALL_TABS}${ASCIIDOC}`:
+      case `${COPY_LINK}${ASCIIDOC}`:
+      case `${COPY_PAGE}${ASCIIDOC}`:
+      case `${COPY_TAB}${ASCIIDOC}`:
+        content = escapeChar(content, /\[[\]]/g) || "";
+        url = encodeSpecialChar(url);
+        template = ASCIIDOC_TMPL;
+        break;
       case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
       case `${COPY_LINK}${BBCODE_TEXT}`:
       case `${COPY_PAGE}${BBCODE_TEXT}`:
@@ -209,11 +250,9 @@
       default:
     }
     if (template) {
-      const c = content.trim();
-      const t = title && title.trim() || "";
-      const u = url.trim();
-      text = template.replace(/%content%/g, c).replace(/%title%/g, t)
-        .replace(/%url%/g, u);
+      text = template.replace(/%content%/g, content.trim())
+        .replace(/%title%/g, title && title.trim() || "")
+        .replace(/%url%/g, url.trim());
     }
     return text || null;
   };

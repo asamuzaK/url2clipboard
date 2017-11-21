@@ -23,6 +23,7 @@
   const PAGE_BBCODE = "copyPageBBCodeURLContent";
   const PAGE_CONTENT = "copyPageContent";
 
+  const ASCIIDOC = "AsciiDoc";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
@@ -145,6 +146,7 @@
       const {title: contextTitle, url: contextUrl} = contextInfo;
       let allTabs, content, title, url;
       switch (menuItemId) {
+        case `${COPY_LINK}${ASCIIDOC}`:
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
@@ -158,6 +160,7 @@
           content = document.getElementById(LINK_BBCODE).value || "";
           url = contextUrl;
           break;
+        case `${COPY_PAGE}${ASCIIDOC}`:
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
@@ -171,6 +174,7 @@
           content = document.getElementById(PAGE_BBCODE).value || "";
           url = tabUrl;
           break;
+        case `${COPY_ALL_TABS}${ASCIIDOC}`:
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
