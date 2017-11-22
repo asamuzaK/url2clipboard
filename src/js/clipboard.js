@@ -85,6 +85,16 @@
     str.replace(re, (m, c) => `\\${c}`) || null;
 
   /**
+   * convert matching character to numeric character reference
+   * @param {string} str - string
+   * @param {RegExp} re - RegExp
+   * @returns {?string} - string
+   */
+  const convertNumCharRef = (str, re) =>
+    isString(str) && re && re.global &&
+    str.replace(re, (m, c) => `&#${c.charCodeAt(0)};`) || null;
+
+  /**
    * convert HTML specific character to character reference
    * @param {string} str - string
    * @returns {?string} - string
@@ -93,16 +103,6 @@
     isString(str) &&
     str.replace(/&(?!(?:(?:(?:[gl]|quo)t|amp)|[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
       .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
-    null;
-
-  /**
-   * convert paren to numeric character reference
-   * @param {string} str - string
-   * @returns {?string} - string
-   */
-  const convertParen = str =>
-    isString(str) &&
-    str.replace(/(\()|(\))/g, (m, a, b) => a && "&#x28;" || b && "&#x29;") ||
     null;
 
   /**
@@ -259,7 +259,7 @@
       case `${COPY_LINK}${TEXTILE}`:
       case `${COPY_PAGE}${TEXTILE}`:
       case `${COPY_TAB}${TEXTILE}`:
-        content = convertHtmlChar(convertParen(content)) || "";
+        content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
         template = TEXTILE_TMPL;
         vars.mimeType = "text/plain";
         break;
