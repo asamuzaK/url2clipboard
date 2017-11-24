@@ -200,10 +200,12 @@
   const createLinkText = async (data = {}) => {
     const {content: contentText, menuItemId, mimeType, promptContent} = data;
     let {title, url} = data;
-    let content = promptContent ?
-      await editContent(contentText || "") || "" :
-      contentText || "";
+    let content =
+      isString(contentText) && contentText.replace(/\s+/g, " ") || "";
     let template, text;
+    if (promptContent) {
+      content = await editContent(content) || "";
+    }
     switch (menuItemId) {
       case `${COPY_ALL_TABS}${ASCIIDOC}`:
       case `${COPY_LINK}${ASCIIDOC}`:
