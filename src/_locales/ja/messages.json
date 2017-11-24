@@ -29,26 +29,14 @@
   "onCopySettings": {
     "message": "コピー時の設定"
   },
-  "optionsEnableAsciiDocDetail": {
-    "message": "コンテキストメニューに AsciiDoc のメニュー項目を表示します。"
-  },
-  "optionsEnableBBCodeTextDetail": {
-    "message": "コンテキストメニューに BBCode (Text) のメニュー項目を表示します。"
-  },
-  "optionsEnableBBCodeURLDetail": {
-    "message": "コンテキストメニューに BBCode (URL) のメニュー項目を表示します。"
-  },
-  "optionsEnableHtmlDetail": {
-    "message": "コンテキストメニューに HTML のメニュー項目を表示します。"
-  },
-  "optionsEnableMarkdownDetail": {
-    "message": "コンテキストメニューに Markdown のメニュー項目を表示します。"
-  },
-  "optionsEnableTextDetail": {
-    "message": "コンテキストメニューに Text のメニュー項目を表示します。"
-  },
-  "optionsEnableTextileDetail": {
-    "message": "コンテキストメニューに Textile のメニュー項目を表示します。"
+  "optionsEnableFormatDetail": {
+    "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "optionsHtmlOutputDetail": {
     "message": "プレーンテキストとしてペーストするかハイパーリンクとしてペーストするか選択してください。"

@@ -30,6 +30,7 @@
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
   const MARKDOWN = "Markdown";
+  const MEDIAWIKI = "MediaWiki";
   const TEXT = "Text";
   const TEXTILE = "Textile";
 
@@ -158,6 +159,7 @@
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
+        case `${COPY_LINK}${MEDIAWIKI}`:
         case `${COPY_LINK}${TEXT}`:
         case `${COPY_LINK}${TEXTILE}`:
           content = document.getElementById(LINK_CONTENT).value || "";
@@ -172,6 +174,7 @@
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
+        case `${COPY_PAGE}${MEDIAWIKI}`:
         case `${COPY_PAGE}${TEXT}`:
         case `${COPY_PAGE}${TEXTILE}`:
           content = document.getElementById(PAGE_CONTENT).value || "";
@@ -187,6 +190,7 @@
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
+        case `${COPY_ALL_TABS}${MEDIAWIKI}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
@@ -232,7 +236,8 @@
    * @returns {void}
    */
   const localizeNode = async node => {
-    const data = await i18n.getMessage(node.getAttribute(DATA_I18N));
+    const [id, ph] = node.getAttribute(DATA_I18N).split(/\s*,\s*/);
+    const data = await i18n.getMessage(id, ph);
     data && node.nodeType === Node.ELEMENT_NODE && (node.textContent = data);
     return node;
   };

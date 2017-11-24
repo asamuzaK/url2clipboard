@@ -2,14 +2,14 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title data-i18n="optionsTitle">Copy URL To Clipboard Options</title>
+    <title data-i18n="optionsTitle">Copy URL To Clipboard - Options</title>
     <link rel="stylesheet" href="../css/options.css" />
     <script src="../js/browser-polyfill.min.js"></script>
     <script src="../js/options.js"></script>
   </head>
   <body>
     <header>
-      <h1 data-i18n="optionsTitle">Copy URL To Clipboard Options</h1>
+      <h1 data-i18n="optionsTitle">Copy URL To Clipboard - Options</h1>
     </header>
     <main>
       <form id="optionsForm">
@@ -84,7 +84,7 @@
             </p>
             <details id="enableHtmlDetail">
               <div>
-                <p data-i18n="optionsEnableHtmlDetail">
+                <p data-i18n="optionsEnableFormatDetail,HTML">
                   Show HTML menu item in the context menu.
                 </p>
               </div>
@@ -102,7 +102,7 @@
             </p>
             <details id="enableMarkdownDetail">
               <div>
-                <p data-i18n="optionsEnableMarkdownDetail">
+                <p data-i18n="optionsEnableFormatDetail,Markdown">
                   Show Markdown menu item in the context menu.
                 </p>
               </div>
@@ -120,7 +120,7 @@
             </p>
             <details id="enableBBCodeTextDetail">
               <div>
-                <p data-i18n="optionsEnableBBCodeTextDetail">
+                <p data-i18n="optionsEnableFormatDetail,BBCode (Text)">
                   Show BBCode (Text) menu item in the context menu.
                 </p>
               </div>
@@ -138,7 +138,7 @@
             </p>
             <details id="enableBBCodeURLDetail">
               <div>
-                <p data-i18n="optionsEnableBBCodeURLDetail">
+                <p data-i18n="optionsEnableFormatDetail,BBCode (URL)">
                   Show BBCode (URL) menu item in the context menu.
                 </p>
               </div>
@@ -156,7 +156,7 @@
             </p>
             <details id="enableTextileDetail">
               <div>
-                <p data-i18n="optionsEnableBBCodeURLDetail">
+                <p data-i18n="optionsEnableFormatDetail,Textile">
                   Show Textile menu item in the context menu.
                 </p>
               </div>
@@ -174,8 +174,26 @@
             </p>
             <details id="enableAsciiDocDetail">
               <div>
-                <p data-i18n="optionsEnableAsciiDocDetail">
+                <p data-i18n="optionsEnableFormatDetail,AsciiDoc">
                   Show AsciiDoc menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p>
+              <span>
+                <input type="checkbox" id="MediaWiki" checked="checked" />
+                <label for="MediaWiki" class="checkboxLabel"
+                       aria-details="enableMediaWikiDetail">
+                  MediaWiki
+                </label>
+              </span>
+            </p>
+            <details id="enableMediaWikiDetail">
+              <div>
+                <p data-i18n="optionsEnableFormatDetail,MediaWiki">
+                  Show MediaWiki menu item in the context menu.
                 </p>
               </div>
             </details>
@@ -192,7 +210,7 @@
             </p>
             <details id="enableTextDetail">
               <div>
-                <p data-i18n="optionsEnableTextDetail">
+                <p data-i18n="optionsEnableFormatDetail,Text">
                   Show Text menu item in the context menu.
                 </p>
               </div>

@@ -36,6 +36,7 @@
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
   const MARKDOWN = "Markdown";
+  const MEDIAWIKI = "MediaWiki";
   const TEXT = "Text";
   const TEXTILE = "Textile";
 
@@ -129,6 +130,7 @@
     [BBCODE_URL]: true,
     [HTML]: true,
     [MARKDOWN]: true,
+    [MEDIAWIKI]: true,
     [TEXT]: true,
     [TEXTILE]: true,
   };
@@ -163,6 +165,10 @@
         [ASCIIDOC]: {
           id: `${COPY_PAGE}${ASCIIDOC}`,
           title: ASCIIDOC,
+        },
+        [MEDIAWIKI]: {
+          id: `${COPY_PAGE}${MEDIAWIKI}`,
+          title: MEDIAWIKI,
         },
         [TEXT]: {
           id: `${COPY_PAGE}${TEXT}`,
@@ -199,6 +205,10 @@
           id: `${COPY_LINK}${ASCIIDOC}`,
           title: ASCIIDOC,
         },
+        [MEDIAWIKI]: {
+          id: `${COPY_LINK}${MEDIAWIKI}`,
+          title: MEDIAWIKI,
+        },
         [TEXT]: {
           id: `${COPY_LINK}${TEXT}`,
           title: TEXT,
@@ -234,6 +244,10 @@
           id: `${COPY_TAB}${ASCIIDOC}`,
           title: ASCIIDOC,
         },
+        [MEDIAWIKI]: {
+          id: `${COPY_TAB}${MEDIAWIKI}`,
+          title: MEDIAWIKI,
+        },
         [TEXT]: {
           id: `${COPY_TAB}${TEXT}`,
           title: TEXT,
@@ -268,6 +282,10 @@
         [ASCIIDOC]: {
           id: `${COPY_ALL_TABS}${ASCIIDOC}`,
           title: ASCIIDOC,
+        },
+        [MEDIAWIKI]: {
+          id: `${COPY_ALL_TABS}${MEDIAWIKI}`,
+          title: MEDIAWIKI,
         },
         [TEXT]: {
           id: `${COPY_ALL_TABS}${TEXT}`,
@@ -494,6 +512,7 @@
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
         case `${COPY_LINK}${MARKDOWN}`:
+        case `${COPY_LINK}${MEDIAWIKI}`:
         case `${COPY_LINK}${TEXT}`:
         case `${COPY_LINK}${TEXTILE}`:
           content = selectionText || contextContent || contextTitle;
@@ -504,12 +523,14 @@
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
         case `${COPY_PAGE}${MARKDOWN}`:
+        case `${COPY_PAGE}${MEDIAWIKI}`:
         case `${COPY_PAGE}${TEXT}`:
         case `${COPY_PAGE}${TEXTILE}`:
         case `${COPY_TAB}${ASCIIDOC}`:
         case `${COPY_TAB}${BBCODE_TEXT}`:
         case `${COPY_TAB}${HTML}`:
         case `${COPY_TAB}${MARKDOWN}`:
+        case `${COPY_TAB}${MEDIAWIKI}`:
         case `${COPY_TAB}${TEXT}`:
         case `${COPY_TAB}${TEXTILE}`:
           content = selectionText || tabTitle;
@@ -530,6 +551,7 @@
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
+        case `${COPY_ALL_TABS}${MEDIAWIKI}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
@@ -641,6 +663,7 @@
         case BBCODE_URL:
         case HTML:
         case MARKDOWN:
+        case MEDIAWIKI:
         case TEXT:
         case TEXTILE:
           formats[item] = !!checked;

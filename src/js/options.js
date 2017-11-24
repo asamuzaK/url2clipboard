@@ -4,12 +4,7 @@
 "use strict";
 {
   /* api */
-  const {
-    i18n,
-    storage: {
-      local: storage,
-    },
-  } = browser;
+  const {i18n, storage} = browser;
 
   /* constants */
   const DATA_ATTR_I18N = "data-i18n";
@@ -37,7 +32,7 @@
    * @param {Object} obj - object to store
    * @returns {?AsyncFunction} - store object
    */
-  const setStorage = async obj => obj && storage.set(obj) || null;
+  const setStorage = async obj => obj && storage.local.set(obj) || null;
 
   /**
    * create pref
@@ -111,8 +106,9 @@
       const items = Object.keys(attrs);
       for (const item of items) {
         const attr = attrs[item];
+        const [id] = dataAttr.split(/\s*,\s*/);
         elm.hasAttribute(attr) &&
-          elm.setAttribute(attr, i18n.getMessage(`${dataAttr}_${item}`));
+          elm.setAttribute(attr, i18n.getMessage(`${id}_${item}`));
       }
     }
   };
@@ -128,7 +124,8 @@
       const nodes = document.querySelectorAll(`[${DATA_ATTR_I18N}]`);
       if (nodes instanceof NodeList) {
         for (const node of nodes) {
-          const data = i18n.getMessage(node.getAttribute(DATA_ATTR_I18N));
+          const [id, ph] = node.getAttribute(DATA_ATTR_I18N).split(/\s*,\s*/);
+          const data = i18n.getMessage(id, ph);
           data && (node.textContent = data);
           node.hasAttributes() && localizeAttr(node);
         }
@@ -164,7 +161,7 @@
    */
   const setValuesFromStorage = async () => {
     const func = [];
-    const pref = await storage.get();
+    const pref = await storage.local.get();
     const items = pref && Object.keys(pref);
     if (items && items.length) {
       for (const item of items) {

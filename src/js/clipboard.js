@@ -30,6 +30,8 @@
   const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
   const MARKDOWN = "Markdown";
   const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
+  const MEDIAWIKI = "MediaWiki";
+  const MEDIAWIKI_TMPL = "[%url% %content%]";
   const TEXT = "Text";
   const TEXT_TMPL = "%content% %url%";
   const TEXTILE = "Textile";
@@ -248,6 +250,14 @@
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
         title = escapeChar(convertHtmlChar(title), /(")/g) || "";
         template = MARKDOWN_TMPL;
+        vars.mimeType = "text/plain";
+        break;
+      case `${COPY_ALL_TABS}${MEDIAWIKI}`:
+      case `${COPY_LINK}${MEDIAWIKI}`:
+      case `${COPY_PAGE}${MEDIAWIKI}`:
+      case `${COPY_TAB}${MEDIAWIKI}`:
+        content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
+        template = MEDIAWIKI_TMPL;
         vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${TEXT}`:

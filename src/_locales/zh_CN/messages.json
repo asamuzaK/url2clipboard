@@ -29,26 +29,14 @@
   "onCopySettings": {
     "message": "复制时"
   },
-  "optionsEnableAsciiDocDetail": {
-    "message": "在右键菜单中显示 AsciiDoc。"
-  },
-  "optionsEnableBBCodeTextDetail": {
-    "message": "在右键菜单中显示 BBCode (Text)。"
-  },
-  "optionsEnableBBCodeURLDetail": {
-    "message": "在右键菜单中显示 BBCode (URL)。"
-  },
-  "optionsEnableHtmlDetail": {
-    "message": "在右键菜单中显示 HTML。"
-  },
-  "optionsEnableMarkdownDetail": {
-    "message": "在右键菜单中显示 Markdown。"
-  },
-  "optionsEnableTextDetail": {
-    "message": "在右键菜单中显示 Text。"
-  },
-  "optionsEnableTextileDetail": {
-    "message": "在右键菜单中显示 Textile。"
+  "optionsEnableFormatDetail": {
+    "message": "在右键菜单中显示 $FORMAT$。",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "optionsHtmlOutputDetail": {
     "message": "选择复制为纯文本或超链接。"
