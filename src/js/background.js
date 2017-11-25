@@ -67,15 +67,6 @@
   const isString = o => typeof o === "string" || o instanceof String;
 
   /**
-   * stringify positive integer
-   * @param {number} i - integer
-   * @param {boolean} zero - treat 0 as a positive integer
-   * @returns {?string} - stringified integer
-   */
-  const stringifyPositiveInt = (i, zero = false) =>
-    Number.isSafeInteger(i) && (zero && i >= 0 || i > 0) && `${i}` || null;
-
-  /**
    * is tab
    * @param {*} tabId - tab ID
    * @returns {boolean} - result
@@ -121,7 +112,7 @@
   };
 
   /* enabled tabs collection */
-  const enabledTabs = {};
+  const enabledTabs = new Map();
 
   /* formats */
   const formats = {
@@ -224,26 +215,24 @@
    */
   const updateContextMenu = async tabId => {
     const {isWebExt} = vars;
-    const enabled = Number.isInteger(tabId) &&
-      enabledTabs[stringifyPositiveInt(tabId)] || false;
+    const enabled = enabledTabs.get(tabId) || false;
     const items = Object.keys(menuItems);
     const formatItems = Object.keys(formats);
     const func = [];
     for (const item of items) {
       const {contexts, id} = menuItems[item];
       if (contexts.includes("tab")) {
-        isWebExt && func.push(contextMenus.update(id, {enabled: !!enabled}));
+        isWebExt && func.push(contextMenus.update(id, {enabled}));
       } else {
-        func.push(contextMenus.update(id, {enabled: !!enabled}));
+        func.push(contextMenus.update(id, {enabled}));
       }
       for (const format of formatItems) {
         if (formats[format]) {
           const subItemId = `${id}${format}`;
           if (contexts.includes("tab")) {
-            isWebExt &&
-              func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+            isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
           } else {
-            func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
+            func.push(contextMenus.update(subItemId, {enabled}));
           }
         }
       }
@@ -275,10 +264,8 @@
   const toggleEnabled = async (enabled = false) => {
     enabled && (vars.enabled = !!enabled);
     if (!vars.enabled) {
-      const items = Object.keys(enabledTabs);
-      for (const item of items) {
-        const obj = enabledTabs[item];
-        obj && (vars.enabled = !!obj);
+      for (const [, value] of enabledTabs) {
+        vars.enabled = !!value;
         if (vars.enabled) {
           break;
         }
@@ -297,9 +284,8 @@
     const {enabled} = data;
     const info = {tabId, enabled};
     if (tab || await isTab(tabId)) {
-      const id = stringifyPositiveInt(tabId);
-      id && (enabledTabs[id] = !!enabled);
-      await toggleEnabled(!!enabled);
+      enabledTabs.set(tabId, !!enabled);
+      await toggleEnabled(enabled);
     }
     return info;
   };
@@ -311,8 +297,8 @@
    */
   const removeEnabledTab = async tabId => {
     const func = [];
-    if ((tabId = stringifyPositiveInt(tabId)) && enabledTabs[tabId]) {
-      const bool = delete enabledTabs[tabId];
+    if (tabId && enabledTabs.has(tabId)) {
+      const bool = enabledTabs.delete(tabId);
       if (bool) {
         const tab = await getActiveTab();
         const {id} = tab;
