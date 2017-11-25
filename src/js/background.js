@@ -125,14 +125,20 @@
 
   /* formats */
   const formats = {
-    [ASCIIDOC]: true,
-    [BBCODE_TEXT]: true,
-    [BBCODE_URL]: true,
     [HTML]: true,
     [MARKDOWN]: true,
+    [BBCODE_TEXT]: true,
+    [BBCODE_URL]: true,
+    [TEXTILE]: true,
+    [ASCIIDOC]: true,
     [MEDIAWIKI]: true,
     [TEXT]: true,
-    [TEXTILE]: true,
+  };
+
+  /* format title */
+  const formatTitle = {
+    [BBCODE_TEXT]: `${BBCODE} (${TEXT})`,
+    [BBCODE_URL]: `${BBCODE} (URL)`,
   };
 
   /* context menu items */
@@ -141,157 +147,21 @@
       id: COPY_PAGE,
       contexts: ["all"],
       title: i18n.getMessage(COPY_PAGE),
-      subItems: {
-        [HTML]: {
-          id: `${COPY_PAGE}${HTML}`,
-          title: HTML,
-        },
-        [MARKDOWN]: {
-          id: `${COPY_PAGE}${MARKDOWN}`,
-          title: MARKDOWN,
-        },
-        [BBCODE_TEXT]: {
-          id: `${COPY_PAGE}${BBCODE_TEXT}`,
-          title: `${BBCODE} (${TEXT})`,
-        },
-        [BBCODE_URL]: {
-          id: `${COPY_PAGE}${BBCODE_URL}`,
-          title: `${BBCODE} (URL)`,
-        },
-        [TEXTILE]: {
-          id: `${COPY_PAGE}${TEXTILE}`,
-          title: TEXTILE,
-        },
-        [ASCIIDOC]: {
-          id: `${COPY_PAGE}${ASCIIDOC}`,
-          title: ASCIIDOC,
-        },
-        [MEDIAWIKI]: {
-          id: `${COPY_PAGE}${MEDIAWIKI}`,
-          title: MEDIAWIKI,
-        },
-        [TEXT]: {
-          id: `${COPY_PAGE}${TEXT}`,
-          title: TEXT,
-        },
-      },
     },
     [COPY_LINK]: {
       id: COPY_LINK,
       contexts: ["link"],
       title: i18n.getMessage(COPY_LINK),
-      subItems: {
-        [HTML]: {
-          id: `${COPY_LINK}${HTML}`,
-          title: HTML,
-        },
-        [MARKDOWN]: {
-          id: `${COPY_LINK}${MARKDOWN}`,
-          title: MARKDOWN,
-        },
-        [BBCODE_TEXT]: {
-          id: `${COPY_LINK}${BBCODE_TEXT}`,
-          title: `${BBCODE} (${TEXT})`,
-        },
-        [BBCODE_URL]: {
-          id: `${COPY_LINK}${BBCODE_URL}`,
-          title: `${BBCODE} (URL)`,
-        },
-        [TEXTILE]: {
-          id: `${COPY_LINK}${TEXTILE}`,
-          title: TEXTILE,
-        },
-        [ASCIIDOC]: {
-          id: `${COPY_LINK}${ASCIIDOC}`,
-          title: ASCIIDOC,
-        },
-        [MEDIAWIKI]: {
-          id: `${COPY_LINK}${MEDIAWIKI}`,
-          title: MEDIAWIKI,
-        },
-        [TEXT]: {
-          id: `${COPY_LINK}${TEXT}`,
-          title: TEXT,
-        },
-      },
     },
     [COPY_TAB]: {
       id: COPY_TAB,
       contexts: ["tab"],
       title: i18n.getMessage(COPY_TAB),
-      subItems: {
-        [HTML]: {
-          id: `${COPY_TAB}${HTML}`,
-          title: HTML,
-        },
-        [MARKDOWN]: {
-          id: `${COPY_TAB}${MARKDOWN}`,
-          title: MARKDOWN,
-        },
-        [BBCODE_TEXT]: {
-          id: `${COPY_TAB}${BBCODE_TEXT}`,
-          title: `${BBCODE} (${TEXT})`,
-        },
-        [BBCODE_URL]: {
-          id: `${COPY_TAB}${BBCODE_URL}`,
-          title: `${BBCODE} (URL)`,
-        },
-        [TEXTILE]: {
-          id: `${COPY_TAB}${TEXTILE}`,
-          title: TEXTILE,
-        },
-        [ASCIIDOC]: {
-          id: `${COPY_TAB}${ASCIIDOC}`,
-          title: ASCIIDOC,
-        },
-        [MEDIAWIKI]: {
-          id: `${COPY_TAB}${MEDIAWIKI}`,
-          title: MEDIAWIKI,
-        },
-        [TEXT]: {
-          id: `${COPY_TAB}${TEXT}`,
-          title: TEXT,
-        },
-      },
     },
     [COPY_ALL_TABS]: {
       id: COPY_ALL_TABS,
       contexts: ["tab"],
       title: i18n.getMessage(COPY_ALL_TABS),
-      subItems: {
-        [HTML]: {
-          id: `${COPY_ALL_TABS}${HTML}`,
-          title: HTML,
-        },
-        [MARKDOWN]: {
-          id: `${COPY_ALL_TABS}${MARKDOWN}`,
-          title: MARKDOWN,
-        },
-        [BBCODE_TEXT]: {
-          id: `${COPY_ALL_TABS}${BBCODE_TEXT}`,
-          title: `${BBCODE} (${TEXT})`,
-        },
-        [BBCODE_URL]: {
-          id: `${COPY_ALL_TABS}${BBCODE_URL}`,
-          title: `${BBCODE} (URL)`,
-        },
-        [TEXTILE]: {
-          id: `${COPY_ALL_TABS}${TEXTILE}`,
-          title: TEXTILE,
-        },
-        [ASCIIDOC]: {
-          id: `${COPY_ALL_TABS}${ASCIIDOC}`,
-          title: ASCIIDOC,
-        },
-        [MEDIAWIKI]: {
-          id: `${COPY_ALL_TABS}${MEDIAWIKI}`,
-          title: MEDIAWIKI,
-        },
-        [TEXT]: {
-          id: `${COPY_ALL_TABS}${TEXT}`,
-          title: TEXT,
-        },
-      },
     },
   };
 
@@ -326,15 +196,16 @@
   const createContextMenu = async () => {
     const func = [];
     const items = Object.keys(menuItems);
+    const subItems = Object.keys(formats);
     for (const item of items) {
-      const {contexts, id, subItems, title} = menuItems[item];
+      const {contexts, id, title} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
-      const subMenuItems = Object.keys(subItems);
       func.push(createMenuItem(id, title, itemData));
-      for (const subItem of subMenuItems) {
-        if (formats[subItem]) {
-          const {id: subItemId, title: subItemTitle} = subItems[subItem];
+      for (const format of subItems) {
+        if (formats[format]) {
+          const subItemId = `${id}${format}`;
+          const subItemTitle = formatTitle[format] || format;
           const subItemData = {
             contexts, enabled,
             parentId: id,
@@ -356,18 +227,18 @@
     const enabled = Number.isInteger(tabId) &&
       enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
+    const subItems = Object.keys(formats);
     const func = [];
     for (const item of items) {
-      const {contexts, id, subItems} = menuItems[item];
-      const subMenuItems = Object.keys(subItems);
+      const {contexts, id} = menuItems[item];
       if (contexts.includes("tab")) {
         isWebExt && func.push(contextMenus.update(id, {enabled: !!enabled}));
       } else {
         func.push(contextMenus.update(id, {enabled: !!enabled}));
       }
-      for (const subItem of subMenuItems) {
-        if (formats[subItem]) {
-          const {id: subItemId} = subItems[subItem];
+      for (const format of subItems) {
+        if (formats[format]) {
+          const subItemId = `${id}${format}`;
           if (contexts.includes("tab")) {
             isWebExt &&
               func.push(contextMenus.update(subItemId, {enabled: !!enabled}));
