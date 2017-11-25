@@ -196,13 +196,13 @@
   const createContextMenu = async () => {
     const func = [];
     const items = Object.keys(menuItems);
-    const subItems = Object.keys(formats);
+    const formatItems = Object.keys(formats);
     for (const item of items) {
       const {contexts, id, title} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
       func.push(createMenuItem(id, title, itemData));
-      for (const format of subItems) {
+      for (const format of formatItems) {
         if (formats[format]) {
           const subItemId = `${id}${format}`;
           const subItemTitle = formatTitle[format] || format;
@@ -227,7 +227,7 @@
     const enabled = Number.isInteger(tabId) &&
       enabledTabs[stringifyPositiveInt(tabId)] || false;
     const items = Object.keys(menuItems);
-    const subItems = Object.keys(formats);
+    const formatItems = Object.keys(formats);
     const func = [];
     for (const item of items) {
       const {contexts, id} = menuItems[item];
@@ -236,7 +236,7 @@
       } else {
         func.push(contextMenus.update(id, {enabled: !!enabled}));
       }
-      for (const format of subItems) {
+      for (const format of formatItems) {
         if (formats[format]) {
           const subItemId = `${id}${format}`;
           if (contexts.includes("tab")) {
