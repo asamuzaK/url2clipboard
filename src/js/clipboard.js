@@ -118,11 +118,11 @@
       .replace(/(')/g, (m, c) => escape(c)) || "";
 
   /**
-   * encode special char
+   * encode special char in URL
    * @param {string} str - URL string
    * @returns {?string} - encoded URL
    */
-  const encodeSpecialChar = str => {
+  const encodeUrlSpecialChar = str => {
     let encodedUrl;
     if (isString(str)) {
       const url = new URL(str);
@@ -214,7 +214,7 @@
       case `${COPY_PAGE}${ASCIIDOC}`:
       case `${COPY_TAB}${ASCIIDOC}`:
         content = escapeChar(content, /\[[\]]/g) || "";
-        url = encodeSpecialChar(url);
+        url = encodeUrlSpecialChar(url);
         template = ASCIIDOC_TMPL;
         vars.mimeType = "text/plain";
         break;
