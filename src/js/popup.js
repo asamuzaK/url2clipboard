@@ -127,6 +127,7 @@
     content: null,
     title: null,
     url: null,
+    canonicalUrl: null,
   };
 
   /**
@@ -138,6 +139,7 @@
     contextInfo.content = null;
     contextInfo.title = null;
     contextInfo.url = null;
+    contextInfo.canonicalUrl = null;
     return contextInfo;
   };
 
@@ -152,7 +154,9 @@
     if (target) {
       const {id: menuItemId} = target;
       const {title: tabTitle, url: tabUrl} = tabInfo;
-      const {title: contextTitle, url: contextUrl} = contextInfo;
+      const {
+        canonicalUrl, title: contextTitle, url: contextUrl,
+      } = contextInfo;
       let allTabs, content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${ASCIIDOC}`:
@@ -179,11 +183,11 @@
         case `${COPY_PAGE}${TEXTILE}`:
           content = document.getElementById(PAGE_CONTENT).value || "";
           title = tabTitle;
-          url = tabUrl;
+          url = canonicalUrl || tabUrl;
           break;
         case `${COPY_PAGE}${BBCODE_URL}`:
           content = document.getElementById(PAGE_BBCODE).value || "";
-          url = tabUrl;
+          url = canonicalUrl || tabUrl;
           break;
         case `${COPY_ALL_TABS}${ASCIIDOC}`:
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
@@ -270,11 +274,12 @@
     const {contextInfo: info} = data;
     await initContextInfo();
     if (info) {
-      const {content, isLink, title, url} = info;
+      const {canonicalUrl, content, isLink, title, url} = info;
       const nodes = document.querySelectorAll(LINK_MENU);
       const contentLink = document.getElementById(LINK_CONTENT);
       const contentBBCode = document.getElementById(LINK_BBCODE);
       contextInfo.isLink = isLink;
+      contextInfo.canonicalUrl = canonicalUrl;
       contextInfo.content = content;
       contextInfo.title = title;
       contextInfo.url = url;
@@ -313,6 +318,7 @@
             content: null,
             title: null,
             url: null,
+            canonicalUrl: null,
           },
         });
       }

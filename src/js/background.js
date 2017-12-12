@@ -316,6 +316,7 @@
     content: null,
     title: null,
     url: null,
+    canonicalUrl: null,
   };
 
   /**
@@ -327,6 +328,7 @@
     contextInfo.content = null;
     contextInfo.title = null;
     contextInfo.url = null;
+    contextInfo.canonicalUrl = null;
     return contextInfo;
   };
 
@@ -361,6 +363,7 @@
       const {menuItemId, selectionText} = info;
       const {mimeType, promptContent} = vars;
       const {
+        canonicalUrl,
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
       let allTabs, content, title, url;
@@ -392,7 +395,7 @@
         case `${COPY_TAB}${TEXTILE}`:
           content = selectionText || tabTitle;
           title = tabTitle;
-          url = tabUrl;
+          url = canonicalUrl || tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
           content = contextUrl;
@@ -401,7 +404,7 @@
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
           content = tabUrl;
-          url = tabUrl;
+          url = canonicalUrl || tabUrl;
           break;
         case `${COPY_ALL_TABS}${ASCIIDOC}`:
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:

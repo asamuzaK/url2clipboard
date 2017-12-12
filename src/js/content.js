@@ -91,6 +91,7 @@
     content: null,
     title: null,
     url: null,
+    canonicalUrl: null,
   };
 
   /**
@@ -102,6 +103,7 @@
     contextInfo.content = null;
     contextInfo.title = null;
     contextInfo.url = null;
+    contextInfo.canonicalUrl = null;
     return contextInfo;
   };
 
@@ -114,6 +116,7 @@
     await initContextInfo();
     if (node.nodeType === Node.ELEMENT_NODE) {
       const anchor = await getAnchorElm(node);
+      const canonical = document.querySelector("link[rel=canonical][href]");
       if (anchor) {
         const {textContent, href, title} = anchor;
         if (href) {
@@ -124,6 +127,9 @@
           contextInfo.title = title || content;
           contextInfo.url = url;
         }
+      }
+      if (canonical) {
+        contextInfo.canonicalUrl = canonical.getAttribute("href");
       }
     }
     return contextInfo;
