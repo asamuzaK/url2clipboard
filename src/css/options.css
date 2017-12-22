@@ -66,16 +66,15 @@ fieldset > div {
   vertical-align: middle;
 }
 fieldset > div > p {
-  flex: 1 1 50%;
+  flex: 1 1 calc(100% / 13 * 8);
   margin: 0.5rem 0;
   min-width: 15rem;
-  max-width: calc(100% / 3 * 2);
+  max-width: ;
 }
 details {
   position: relative;
-  flex: 1 1 calc(100% / 3);
+  flex: 1 1 calc(100% / 13 * 5);
   margin: 0.5rem 0;
-  font-size: smaller;
 }
 details > div {
   position: absolute;
