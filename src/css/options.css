@@ -69,7 +69,6 @@ fieldset > div > p {
   flex: 1 1 calc(100% / 13 * 8);
   margin: 0.5rem 0;
   min-width: 15rem;
-  max-width: ;
 }
 details {
   position: relative;
