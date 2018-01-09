@@ -28,6 +28,8 @@
   const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
   const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
+  const JIRA = "Jira";
+  const JIRA_TMPL = "[%content%|%url%]";
   const MARKDOWN = "Markdown";
   const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const MEDIAWIKI = "MediaWiki";
@@ -242,6 +244,13 @@
         title = convertHtmlChar(title) || "";
         template = HTML_TMPL;
         vars.mimeType = mimeType;
+        break;
+      case `${COPY_ALL_TABS}${JIRA}`:
+      case `${COPY_LINK}${JIRA}`:
+      case `${COPY_PAGE}${JIRA}`:
+      case `${COPY_TAB}${JIRA}`:
+        template = JIRA_TMPL;
+        vars.mimeType = "text/plain";
         break;
       case `${COPY_ALL_TABS}${MARKDOWN}`:
       case `${COPY_LINK}${MARKDOWN}`:

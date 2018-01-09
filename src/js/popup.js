@@ -29,6 +29,7 @@
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
+  const JIRA = "Jira";
   const MARKDOWN = "Markdown";
   const MEDIAWIKI = "MediaWiki";
   const TEXT = "Text";
@@ -162,6 +163,7 @@
         case `${COPY_LINK}${ASCIIDOC}`:
         case `${COPY_LINK}${BBCODE_TEXT}`:
         case `${COPY_LINK}${HTML}`:
+        case `${COPY_LINK}${JIRA}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${MEDIAWIKI}`:
         case `${COPY_LINK}${TEXT}`:
@@ -177,6 +179,7 @@
         case `${COPY_PAGE}${ASCIIDOC}`:
         case `${COPY_PAGE}${BBCODE_TEXT}`:
         case `${COPY_PAGE}${HTML}`:
+        case `${COPY_PAGE}${JIRA}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${MEDIAWIKI}`:
         case `${COPY_PAGE}${TEXT}`:
@@ -193,6 +196,7 @@
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
         case `${COPY_ALL_TABS}${BBCODE_URL}`:
         case `${COPY_ALL_TABS}${HTML}`:
+        case `${COPY_ALL_TABS}${JIRA}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${MEDIAWIKI}`:
         case `${COPY_ALL_TABS}${TEXT}`:
