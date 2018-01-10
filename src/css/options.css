@@ -74,6 +74,7 @@ details {
   position: relative;
   flex: 1 1 calc(100% / 13 * 5);
   margin: 0.5rem 0;
+  font-size: smaller;
 }
 details > div {
   position: absolute;
