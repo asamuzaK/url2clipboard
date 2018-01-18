@@ -368,6 +368,7 @@
         canonicalUrl,
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
+      const {hash: tabUrlHash} = new URL(tabUrl);
       let allTabs, content, title, url;
       switch (menuItemId) {
         case `${COPY_LINK}${ASCIIDOC}`:
@@ -400,7 +401,7 @@
         case `${COPY_TAB}${TEXTILE}`:
           content = selectionText || tabTitle;
           title = tabTitle;
-          url = canonicalUrl || tabUrl;
+          url = !tabUrlHash && canonicalUrl || tabUrl;
           break;
         case `${COPY_LINK}${BBCODE_URL}`:
           content = contextUrl;
@@ -409,7 +410,7 @@
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
           content = tabUrl;
-          url = canonicalUrl || tabUrl;
+          url = !tabUrlHash && canonicalUrl || tabUrl;
           break;
         case `${COPY_ALL_TABS}${ASCIIDOC}`:
         case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
