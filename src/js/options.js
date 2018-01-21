@@ -175,5 +175,5 @@
     localizeHtml(),
     setValuesFromStorage(),
     addInputChangeListener(),
-  ]).catch(logError), false);
+  ]).catch(logError));
 }

@@ -411,5 +411,5 @@
       setTabInfo(tab),
     ])),
     storage.local.get().then(setVars),
-  ]).catch(logError), false);
+  ]).catch(logError));
 }

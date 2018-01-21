@@ -189,24 +189,35 @@
     return Promise.all(func);
   };
 
+  /**
+   * handle key / mouse event
+   * @param {!Object} evt - Event
+   * @returns {?AsyncFunction} - send status
+   */
+  const handleKeyMouseEvt = evt => {
+    const {altKey, button, key, shiftKey, type} = evt;
+    let func;
+    switch (type) {
+      case "keydown":
+        if (altKey && shiftKey && key === "C" ||
+            shiftKey && key === "F10" || key === "ContextMenu") {
+          func = sendStatus(evt).catch(logError);
+        }
+        break;
+      case "mousedown":
+        if (button === MOUSE_BUTTON_RIGHT) {
+          func = sendStatus(evt).catch(logError);
+        }
+        break;
+      default:
+    }
+    return func || null;
+  };
+
   /* listeners */
   runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
 
-  window.addEventListener(
-    "load",
-    evt => sendStatus(evt).catch(logError),
-    false
-  );
-  window.addEventListener(
-    "keydown",
-    evt => (evt.altKey && evt.shiftKey && evt.key === "C" ||
-            evt.shiftKey && evt.key === "F10" ||
-            evt.key === "ContextMenu") && sendStatus(evt).catch(logError),
-    true
-  );
-  window.addEventListener(
-    "mousedown",
-    evt => evt.button === MOUSE_BUTTON_RIGHT && sendStatus(evt).catch(logError),
-    true
-  );
+  window.addEventListener("load", evt => sendStatus(evt).catch(logError));
+  window.addEventListener("keydown", handleKeyMouseEvt, true);
+  window.addEventListener("mousedown", handleKeyMouseEvt, true);
 }
