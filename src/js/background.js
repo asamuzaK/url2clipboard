@@ -409,7 +409,7 @@
           break;
         case `${COPY_PAGE}${BBCODE_URL}`:
         case `${COPY_TAB}${BBCODE_URL}`:
-          content = tabUrl;
+          content = !tabUrlHash && canonicalUrl || tabUrl;
           url = !tabUrlHash && canonicalUrl || tabUrl;
           break;
         case `${COPY_ALL_TABS}${ASCIIDOC}`:
