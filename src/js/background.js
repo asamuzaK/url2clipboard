@@ -5,7 +5,7 @@
 {
   /* api */
   const {
-    browserAction, contextMenus, extension, i18n, runtime, storage, tabs,
+    browserAction, contextMenus, i18n, runtime, storage, tabs,
   } = browser;
 
   /* constants */
@@ -249,7 +249,7 @@
   const setIcon = async () => {
     const {enabled, iconId} = vars;
     const name = await i18n.getMessage(EXT_NAME);
-    const icon = await extension.getURL(ICON);
+    const icon = await runtime.getURL(ICON);
     const path = enabled && `${icon}${iconId}` || `${icon}#off`;
     const title = `${name} (${KEY})`;
     return Promise.all([
