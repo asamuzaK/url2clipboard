@@ -240,7 +240,7 @@
 
   /**
    * localize node
-   * @param {Object} node - Element
+   * @param {Object} node - element
    * @returns {void}
    */
   const localizeNode = async node => {
