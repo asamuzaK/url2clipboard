@@ -15,6 +15,8 @@
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
+  const MIME_PLAIN = "text/plain";
+  const MIME_HTML = "text/html";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
@@ -41,7 +43,7 @@
 
   /* variables */
   const vars = {
-    mimeType: "text/plain",
+    mimeType: MIME_PLAIN,
   };
 
   /**
@@ -169,7 +171,7 @@
       const setClipboardData = evt => {
         let {mimeType: type} = vars;
         if (!isString(type) || !/^text\/(?:plain|html)$/.test(type)) {
-          type = "text/plain";
+          type = MIME_PLAIN;
         }
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();
@@ -218,7 +220,7 @@
         content = escapeChar(content, /\[[\]]/g) || "";
         url = encodeUrlSpecialChar(url);
         template = ASCIIDOC_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
       case `${COPY_LINK}${BBCODE_TEXT}`:
@@ -226,7 +228,7 @@
       case `${COPY_TAB}${BBCODE_TEXT}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_TEXT_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${BBCODE_URL}`:
       case `${COPY_LINK}${BBCODE_URL}`:
@@ -234,7 +236,7 @@
       case `${COPY_TAB}${BBCODE_URL}`:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_URL_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${HTML}`:
       case `${COPY_LINK}${HTML}`:
@@ -242,7 +244,11 @@
       case `${COPY_TAB}${HTML}`:
         content = convertHtmlChar(content) || "";
         title = convertHtmlChar(title) || "";
-        template = HTML_TMPL;
+        if (mimeType === MIME_HTML) {
+          template = `${HTML_TMPL}<br />`;
+        } else {
+          template = HTML_TMPL;
+        }
         vars.mimeType = mimeType;
         break;
       case `${COPY_ALL_TABS}${JIRA}`:
@@ -250,7 +256,7 @@
       case `${COPY_PAGE}${JIRA}`:
       case `${COPY_TAB}${JIRA}`:
         template = JIRA_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${MARKDOWN}`:
       case `${COPY_LINK}${MARKDOWN}`:
@@ -259,7 +265,7 @@
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
         title = escapeChar(convertHtmlChar(title), /(")/g) || "";
         template = MARKDOWN_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${MEDIAWIKI}`:
       case `${COPY_LINK}${MEDIAWIKI}`:
@@ -267,14 +273,14 @@
       case `${COPY_TAB}${MEDIAWIKI}`:
         content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
         template = MEDIAWIKI_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${TEXT}`:
       case `${COPY_LINK}${TEXT}`:
       case `${COPY_PAGE}${TEXT}`:
       case `${COPY_TAB}${TEXT}`:
         template = TEXT_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${TEXTILE}`:
       case `${COPY_LINK}${TEXTILE}`:
@@ -282,7 +288,7 @@
       case `${COPY_TAB}${TEXTILE}`:
         content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
         template = TEXTILE_TMPL;
-        vars.mimeType = "text/plain";
+        vars.mimeType = MIME_PLAIN;
         break;
       default:
     }
