@@ -39,10 +39,10 @@
     }
   },
   "optionsHideOnLink": {
-    "message": "Do not show \"Copy Page URL\" context menu on anchor element"
+    "message": "不在锚点元素上显示 \"复制页面 URL\" 右键菜单"
   },
   "optionsHideOnLinkDetail": {
-    "message": "If enabled, \"Copy Page URL\" context menu will be hidden on anchor element."
+    "message": "选中后会在锚点元素上隐藏 \"复制页面 URL\" 右键菜单."
   },
   "optionsHtmlOutputDetail": {
     "message": "选择复制为纯文本或超链接。"
