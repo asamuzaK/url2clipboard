@@ -1,0 +1,24 @@
+{
+  "name": "url2clipboard",
+  "description": "Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Text, etc.",
+  "author": "asamuzaK",
+  "homepage": "https://github.com/asamuzaK/url2clipboard",
+  "bugs": {
+    "url": "https://github.com/asamuzaK/url2clipboard/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/asamuzaK/url2clipboard.git"
+  },
+  "license": "MPL-2.0",
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1"
+  },
+  "version": "1.1.5"
+}
