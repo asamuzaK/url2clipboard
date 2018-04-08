@@ -1,5 +1,8 @@
 EN | [JA](./README.ja.md) | [ZH](./README.zh.md)
 
+[![Build Status](https://travis-ci.org/asamuzaK/url2clipboard.svg?branch=master)](https://travis-ci.org/asamuzaK/url2clipboard)
+[![devDependency Status](https://david-dm.org/asamuzaK/url2clipboard/dev-status.svg)](https://david-dm.org/asamuzaK/url2clipboard?type=dev)
+
 # Copy URL To Clipboard
 
 Extension for Gecko based browsers and Blink based browsers.
