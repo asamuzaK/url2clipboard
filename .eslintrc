@@ -38,7 +38,7 @@
       }
     ],
     "comma-style": ["error", "last"],
-    "complexity": ["error", 40],
+    "complexity": ["error", 60],
     "computed-property-spacing": [2, "never"],
     "consistent-return": "error",
     "consistent-this": ["error", "that"],
