@@ -38,6 +38,12 @@
       }
     }
   },
+  "optionsHideOnLink": {
+    "message": "Do not show \"Copy Page URL\" context menu on anchor element"
+  },
+  "optionsHideOnLinkDetail": {
+    "message": "If enabled, \"Copy Page URL\" context menu will be hidden on anchor element."
+  },
   "optionsHtmlOutputDetail": {
     "message": "Choose whether to paste as plain text or as a hyperlink."
   },

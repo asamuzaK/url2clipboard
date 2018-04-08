@@ -18,6 +18,7 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
+  const HIDE_ON_LINK = "hideOnLink";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -44,6 +45,7 @@
   /* variables */
   const vars = {
     enabled: false,
+    hideOnLink: false,
     iconId: "#context",
     isWebExt: runtime.id === WEBEXT_ID,
     mimeType: "text/plain",
@@ -91,6 +93,19 @@
       [tab] = arr;
     }
     return tab || null;
+  };
+
+  /**
+   * get active tab ID
+   * @returns {number} - tab ID
+   */
+  const getActiveTabId = async () => {
+    let tabId;
+    const tab = await getActiveTab();
+    if (tab) {
+      tabId = tab.id;
+    }
+    return tabId;
   };
 
   /**
@@ -156,6 +171,21 @@
       contexts: ["tab"],
       title: i18n.getMessage(COPY_ALL_TABS),
     },
+  };
+
+  /**
+   * toggle page contexts
+   * @returns {void}
+   */
+  const togglePageContexts = async () => {
+    const {hideOnLink} = vars;
+    let contexts = ["all"];
+    if (hideOnLink) {
+      contexts = ["page"];
+    } else {
+      contexts = ["all"];
+    }
+    menuItems[COPY_PAGE].contexts = contexts;
   };
 
   /**
@@ -226,7 +256,7 @@
       if (contexts.includes("tab")) {
         isWebExt && func.push(contextMenus.update(id, {enabled}));
       } else {
-        func.push(contextMenus.update(id, {enabled}));
+        func.push(contextMenus.update(id, {contexts, enabled}));
       }
       for (const format of formatItems) {
         if (formats[format]) {
@@ -302,8 +332,7 @@
     if (tabId && enabledTabs.has(tabId)) {
       const bool = enabledTabs.delete(tabId);
       if (bool) {
-        const tab = await getActiveTab();
-        const {id} = tab;
+        const id = await getActiveTabId();
         vars.enabled = false;
         await toggleEnabled();
         func.push(setIcon(), updateContextMenu(id));
@@ -537,6 +566,16 @@
           formats[item] = !!checked;
           changed &&
             func.push(contextMenus.removeAll().then(createContextMenu));
+          break;
+        case HIDE_ON_LINK:
+          vars[item] = !!checked;
+          if (changed) {
+            func.push(
+              togglePageContexts().then(getActiveTabId).then(updateContextMenu)
+            );
+          } else {
+            func.push(togglePageContexts());
+          }
           break;
         case ICON_AUTO:
         case ICON_BLACK:

@@ -38,6 +38,12 @@
       }
     }
   },
+  "optionsHideOnLink": {
+    "message": "アンカー要素では「ページのURLをコピー」のコンテキストメニューを表示しない"
+  },
+  "optionsHideOnLinkDetail": {
+    "message": "有効化すると、アンカー要素上では「ページのURLをコピー」のコンテキストメニューを非表示にします。"
+  },
   "optionsHtmlOutputDetail": {
     "message": "プレーンテキストとしてペーストするかハイパーリンクとしてペーストするか選択してください。"
   },
