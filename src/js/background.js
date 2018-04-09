@@ -179,13 +179,7 @@
    */
   const togglePageContexts = async () => {
     const {hideOnLink} = vars;
-    let contexts = ["all"];
-    if (hideOnLink) {
-      contexts = ["page"];
-    } else {
-      contexts = ["all"];
-    }
-    menuItems[COPY_PAGE].contexts = contexts;
+    menuItems[COPY_PAGE].contexts = hideOnLink && ["page"] || ["all"];
   };
 
   /**
