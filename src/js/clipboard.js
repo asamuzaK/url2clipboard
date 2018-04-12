@@ -36,6 +36,8 @@
   const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
   const MEDIAWIKI = "MediaWiki";
   const MEDIAWIKI_TMPL = "[%url% %content%]";
+  const REST = "reStructuredText";
+  const REST_TMPL = "`%content% <%url%>`_";
   const TEXT = "Text";
   const TEXT_TMPL = "%content% %url%";
   const TEXTILE = "Textile";
@@ -273,6 +275,14 @@
       case `${COPY_TAB}${MEDIAWIKI}`:
         content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
         template = MEDIAWIKI_TMPL;
+        vars.mimeType = MIME_PLAIN;
+        break;
+      case `${COPY_ALL_TABS}${REST}`:
+      case `${COPY_LINK}${REST}`:
+      case `${COPY_PAGE}${REST}`:
+      case `${COPY_TAB}${REST}`:
+        content = escapeChar(content, /([`<>_])/g) || "";
+        template = REST_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${TEXT}`:

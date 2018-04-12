@@ -39,6 +39,7 @@
   const JIRA = "Jira";
   const MARKDOWN = "Markdown";
   const MEDIAWIKI = "MediaWiki";
+  const REST = "reStructuredText";
   const TEXT = "Text";
   const TEXTILE = "Textile";
 
@@ -140,6 +141,7 @@
     [ASCIIDOC]: true,
     [MEDIAWIKI]: true,
     [JIRA]: true,
+    [REST]: true,
     [TEXT]: true,
   };
 
@@ -400,6 +402,7 @@
         case `${COPY_LINK}${JIRA}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${MEDIAWIKI}`:
+        case `${COPY_LINK}${REST}`:
         case `${COPY_LINK}${TEXT}`:
         case `${COPY_LINK}${TEXTILE}`:
           content = selectionText || contextContent || contextTitle;
@@ -412,6 +415,7 @@
         case `${COPY_PAGE}${JIRA}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${MEDIAWIKI}`:
+        case `${COPY_PAGE}${REST}`:
         case `${COPY_PAGE}${TEXT}`:
         case `${COPY_PAGE}${TEXTILE}`:
         case `${COPY_TAB}${ASCIIDOC}`:
@@ -420,6 +424,7 @@
         case `${COPY_TAB}${JIRA}`:
         case `${COPY_TAB}${MARKDOWN}`:
         case `${COPY_TAB}${MEDIAWIKI}`:
+        case `${COPY_TAB}${REST}`:
         case `${COPY_TAB}${TEXT}`:
         case `${COPY_TAB}${TEXTILE}`:
           content = selectionText || tabTitle;
@@ -442,6 +447,7 @@
         case `${COPY_ALL_TABS}${JIRA}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${MEDIAWIKI}`:
+        case `${COPY_ALL_TABS}${REST}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
@@ -555,6 +561,7 @@
         case JIRA:
         case MARKDOWN:
         case MEDIAWIKI:
+        case REST:
         case TEXT:
         case TEXTILE:
           formats[item] = !!checked;
