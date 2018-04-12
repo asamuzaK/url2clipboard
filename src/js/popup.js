@@ -32,6 +32,7 @@
   const JIRA = "Jira";
   const MARKDOWN = "Markdown";
   const MEDIAWIKI = "MediaWiki";
+  const REST = "reStructuredText";
   const TEXT = "Text";
   const TEXTILE = "Textile";
 
@@ -166,6 +167,7 @@
         case `${COPY_LINK}${JIRA}`:
         case `${COPY_LINK}${MARKDOWN}`:
         case `${COPY_LINK}${MEDIAWIKI}`:
+        case `${COPY_LINK}${REST}`:
         case `${COPY_LINK}${TEXT}`:
         case `${COPY_LINK}${TEXTILE}`:
           content = document.getElementById(LINK_CONTENT).value || "";
@@ -182,6 +184,7 @@
         case `${COPY_PAGE}${JIRA}`:
         case `${COPY_PAGE}${MARKDOWN}`:
         case `${COPY_PAGE}${MEDIAWIKI}`:
+        case `${COPY_PAGE}${REST}`:
         case `${COPY_PAGE}${TEXT}`:
         case `${COPY_PAGE}${TEXTILE}`:
           content = document.getElementById(PAGE_CONTENT).value || "";
@@ -199,6 +202,7 @@
         case `${COPY_ALL_TABS}${JIRA}`:
         case `${COPY_ALL_TABS}${MARKDOWN}`:
         case `${COPY_ALL_TABS}${MEDIAWIKI}`:
+        case `${COPY_ALL_TABS}${REST}`:
         case `${COPY_ALL_TABS}${TEXT}`:
         case `${COPY_ALL_TABS}${TEXTILE}`:
           allTabs = await getAllTabsInfo(menuItemId);
