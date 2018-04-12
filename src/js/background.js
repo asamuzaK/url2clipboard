@@ -53,13 +53,12 @@ const vars = {
 };
 
 /**
- * log error
+ * throw error
  * @param {!Object} e - Error
  * @returns {boolean} - false
  */
-const logError = e => {
-  console.error(e);
-  return false;
+const throwErr = e => {
+  throw e;
 };
 
 /**
@@ -77,7 +76,7 @@ const isString = o => typeof o === "string" || o instanceof String;
 const isTab = async tabId => {
   let tab;
   if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
-    tab = await tabs.get(tabId).catch(logError);
+    tab = await tabs.get(tabId).catch(throwErr);
   }
   return !!tab;
 };
@@ -622,26 +621,26 @@ const setVars = async (data = {}) => {
 
 /* listeners */
 storage.onChanged.addListener(data =>
-  setVars(data).then(setIcon).catch(logError)
+  setVars(data).then(setIcon).catch(throwErr)
 );
 contextMenus.onClicked.addListener((info, tab) =>
-  extractClickedData({info, tab}).catch(logError)
+  extractClickedData({info, tab}).catch(throwErr)
 );
 runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(logError)
+  handleMsg(msg, sender).catch(throwErr)
 );
 tabs.onActivated.addListener(info =>
-  handleActiveTab(info).catch(logError)
+  handleActiveTab(info).catch(throwErr)
 );
 tabs.onRemoved.addListener(tabId =>
-  removeEnabledTab(tabId).catch(logError)
+  removeEnabledTab(tabId).catch(throwErr)
 );
 tabs.onUpdated.addListener((tabId, info, tab) =>
-  handleUpdatedTab(tabId, tab).catch(logError)
+  handleUpdatedTab(tabId, tab).catch(throwErr)
 );
 
 /* startup */
 storage.local.get().then(setVars).then(() => Promise.all([
   setIcon(),
   createContextMenu(),
-])).catch(logError);
+])).catch(throwErr);

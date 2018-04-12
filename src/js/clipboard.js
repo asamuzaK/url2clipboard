@@ -48,13 +48,12 @@ const vars = {
 };
 
 /**
- * log error
+ * throw error
  * @param {!Object} e - Error
  * @returns {boolean} - false
  */
-const logError = e => {
-  console.error(e);
-  return false;
+const throwErr = e => {
+  throw e;
 };
 
 /**
@@ -359,4 +358,4 @@ const handleMsg = async (msg = {}) => {
 };
 
 /* listener */
-runtime.onMessage.addListener(msg => handleMsg(msg).catch(logError));
+runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));

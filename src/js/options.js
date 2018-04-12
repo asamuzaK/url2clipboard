@@ -10,13 +10,12 @@ const DATA_ATTR_I18N = "data-i18n";
 const LANG = "extensionLocale";
 
 /**
- * log error
+ * throw error
  * @param {!Object} e - Error
  * @returns {boolean} - false
  */
-const logError = e => {
-  console.error(e);
-  return false;
+const throwErr = e => {
+  throw e;
 };
 
 /**
@@ -81,7 +80,7 @@ const addInputChangeListener = async () => {
   if (nodes instanceof NodeList) {
     for (const node of nodes) {
       node.addEventListener(
-        "change", evt => storePref(evt).catch(logError), false
+        "change", evt => storePref(evt).catch(throwErr), false
       );
     }
   }
@@ -174,4 +173,4 @@ document.addEventListener("DOMContentLoaded", () => Promise.all([
   localizeHtml(),
   setValuesFromStorage(),
   addInputChangeListener(),
-]).catch(logError));
+]).catch(throwErr));

@@ -41,13 +41,12 @@ const vars = {
 };
 
 /**
- * log error
+ * throw error
  * @param {!Object} e - Error
  * @returns {boolean} - false
  */
-const logError = e => {
-  console.error(e);
-  return false;
+const throwErr = e => {
+  throw e;
 };
 
 /**
@@ -234,7 +233,7 @@ const addListenerToMenu = async () => {
     for (const node of nodes) {
       node.addEventListener(
         "click",
-        evt => createCopyData(evt).catch(logError),
+        evt => createCopyData(evt).catch(throwErr),
         false
       );
     }
@@ -400,10 +399,10 @@ const setVars = async (data = {}) => {
 
 /* listeners */
 storage.onChanged.addListener(data =>
-  setVars(data).catch(logError)
+  setVars(data).catch(throwErr)
 );
 runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(logError)
+  handleMsg(msg, sender).catch(throwErr)
 );
 
 document.addEventListener("DOMContentLoaded", () => Promise.all([
@@ -414,4 +413,4 @@ document.addEventListener("DOMContentLoaded", () => Promise.all([
     setTabInfo(tab),
   ])),
   storage.local.get().then(setVars),
-]).catch(logError));
+]).catch(throwErr));
