@@ -14,7 +14,7 @@ const NS_HTML = "http://www.w3.org/1999/xhtml";
 /**
  * throw error
  * @param {!Object} e - Error
- * @returns {boolean} - false
+ * @throws
  */
 const throwErr = e => {
   throw e;

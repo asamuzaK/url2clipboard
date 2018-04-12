@@ -43,7 +43,7 @@ const vars = {
 /**
  * throw error
  * @param {!Object} e - Error
- * @returns {boolean} - false
+ * @throws
  */
 const throwErr = e => {
   throw e;
