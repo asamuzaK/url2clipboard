@@ -281,7 +281,7 @@
       case `${COPY_LINK}${REST}`:
       case `${COPY_PAGE}${REST}`:
       case `${COPY_TAB}${REST}`:
-        content = escapeChar(content, /([`<>_])/g) || "";
+        content = escapeChar(content, /([`<>])/g) || "";
         template = REST_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
