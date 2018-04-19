@@ -6,10 +6,7 @@
     }
   },
   "background": {
-    "scripts": [
-      "lib/browser-polyfill.min.js",
-      "js/background.js"
-    ]
+    "page": "html/background.html"
   },
   "browser_action": {
     "browser_style": true,

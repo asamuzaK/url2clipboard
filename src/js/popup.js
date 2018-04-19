@@ -406,7 +406,8 @@
     handleMsg(msg, sender).catch(throwErr)
   );
 
-  document.addEventListener("DOMContentLoaded", () => Promise.all([
+  /* startup */
+  Promise.all([
     localizeHtml(),
     addListenerToMenu(),
     getActiveTab().then(tab => Promise.all([
@@ -414,5 +415,5 @@
       setTabInfo(tab),
     ])),
     storage.local.get().then(setVars),
-  ]).catch(throwErr));
+  ]).catch(throwErr);
 }
