@@ -480,9 +480,11 @@
     const func = [];
     if (await isTab(tabId)) {
       const {enabled} = vars;
-      enabled ?
-        func.push(browserAction.enable(tabId)) :
+      if (enabled) {
+        func.push(browserAction.enable(tabId));
+      } else {
         func.push(browserAction.disable(tabId));
+      }
       func.push(setIcon(), updateContextMenu(tabId));
     }
     return Promise.all(func);
