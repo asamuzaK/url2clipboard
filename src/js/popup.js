@@ -16,6 +16,8 @@
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXT_LOCALE = "extensionLocale";
+  const INCLUDE_TITLE_HTML = "includeTitleHtml";
+  const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
   const LINK_BBCODE = "copyLinkBBCodeURLContent";
   const LINK_CONTENT = "copyLinkContent";
   const LINK_DETAILS = "copyLinkDetails";
@@ -39,6 +41,8 @@
   /* variables */
   const vars = {
     mimeType: "text/plain",
+    includeTitleHtml: true,
+    includeTitleMarkdown: true,
   };
 
   /**
@@ -155,6 +159,7 @@
     if (target) {
       const {id: menuItemId} = target;
       const {title: tabTitle, url: tabUrl} = tabInfo;
+      const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
       const {
         canonicalUrl, title: contextTitle, url: contextUrl,
       } = contextInfo;
@@ -210,12 +215,15 @@
       }
       if (allTabs) {
         func.push(runtime.sendMessage({
-          [EXEC_COPY_TABS]: {allTabs},
+          [EXEC_COPY_TABS]: {
+            allTabs, includeTitleHtml, includeTitleMarkdown,
+          },
         }));
       } else {
         func.push(runtime.sendMessage({
           [EXEC_COPY]: {
-            content, menuItemId, title, url,
+            content, includeTitleHtml, includeTitleMarkdown, menuItemId,
+            mimeType, title, url,
           },
         }));
       }
@@ -368,6 +376,10 @@
     if (item && obj) {
       const {checked, value} = obj;
       switch (item) {
+        case INCLUDE_TITLE_HTML:
+        case INCLUDE_TITLE_MARKDOWN:
+          vars[item] = !!checked;
+          break;
         case OUTPUT_HYPER:
         case OUTPUT_PLAIN:
           if (checked) {
