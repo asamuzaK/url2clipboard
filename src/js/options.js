@@ -39,12 +39,13 @@
    * @returns {Object} - pref data
    */
   const createPref = async (elm = {}) => {
-    const {id} = elm;
+    const {dataset, id} = elm;
     return id && {
       [id]: {
         id,
         checked: !!elm.checked,
         value: elm.value || "",
+        subItemOf: dataset && dataset.subItemOf || null,
       },
     } || null;
   };

@@ -25,6 +25,8 @@
   const ICON_COLOR = "buttonIconColor";
   const ICON_GRAY = "buttonIconGray";
   const ICON_WHITE = "buttonIconWhite";
+  const INCLUDE_TITLE_HTML = "includeTitleHtml";
+  const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
   const KEY = "Alt+Shift+C";
   const OUTPUT_HYPER = "outputTextHtml";
   const OUTPUT_PLAIN = "outputTextPlain";
@@ -48,6 +50,8 @@
     enabled: false,
     hideOnLink: false,
     iconId: "#context",
+    includeTitleHtml: true,
+    includeTitleMarkdown: true,
     isWebExt: runtime.id === WEBEXT_ID,
     mimeType: "text/plain",
     promptContent: true,
@@ -388,7 +392,9 @@
     const func = [];
     if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
       const {menuItemId, selectionText} = info;
-      const {mimeType, promptContent} = vars;
+      const {
+        includeTitleHtml, includeTitleMarkdown, mimeType, promptContent,
+      } = vars;
       const {
         canonicalUrl,
         content: contextContent, title: contextTitle, url: contextUrl,
@@ -456,12 +462,15 @@
       }
       if (allTabs) {
         func.push(tabs.sendMessage(tabId, {
-          [EXEC_COPY_TABS]: {allTabs},
+          [EXEC_COPY_TABS]: {
+            allTabs, includeTitleHtml, includeTitleMarkdown,
+          },
         }));
       } else {
         func.push(tabs.sendMessage(tabId, {
           [EXEC_COPY]: {
-            content, menuItemId, mimeType, promptContent, title, url,
+            content, includeTitleHtml, includeTitleMarkdown, menuItemId,
+            mimeType, promptContent, title, url,
           },
         }));
       }
@@ -590,14 +599,16 @@
             changed && func.push(setIcon());
           }
           break;
+        case INCLUDE_TITLE_HTML:
+        case INCLUDE_TITLE_MARKDOWN:
+        case PROMPT:
+          vars[item] = !!checked;
+          break;
         case OUTPUT_HYPER:
         case OUTPUT_PLAIN:
           if (checked) {
             vars.mimeType = value;
           }
-          break;
-        case PROMPT:
-          vars[item] = !!checked;
           break;
         default:
       }
@@ -624,11 +635,11 @@
   };
 
   /* listeners */
-  storage.onChanged.addListener(data =>
-    setVars(data).then(setIcon).catch(throwErr)
-  );
   contextMenus.onClicked.addListener((info, tab) =>
     extractClickedData({info, tab}).catch(throwErr)
+  );
+  storage.onChanged.addListener(data =>
+    setVars(data).then(setIcon).catch(throwErr)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(throwErr)

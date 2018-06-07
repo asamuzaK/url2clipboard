@@ -121,6 +121,14 @@ label[for=buttonIconAuto] {
   padding-left: 0.2rem;
   min-width: 15rem;
 }
+.subItem {
+  display: block;
+  margin-left: 1.5rem;
+}
+.subItem > .label {
+  margin-right: 1rem;
+  min-width: auto;
+}
 .htmlOutput {
   box-sizing: border-box;
   display: flex;
@@ -137,7 +145,8 @@ label[for=buttonIconAuto] {
 label + input[type=radio] {
   margin-left: 1rem;
 }
-input[type=text] {
+input[type=text],
+input[type=url] {
   min-width: 15rem;
   max-width: calc(100% - 1rem);
 }

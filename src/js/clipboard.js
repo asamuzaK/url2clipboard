@@ -30,10 +30,12 @@
   const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
   const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
+  const HTML_WO_TITLE_TMPL = "<a href=\"%url%\">%content%</a>";
   const JIRA = "Jira";
   const JIRA_TMPL = "[%content%|%url%]";
   const MARKDOWN = "Markdown";
   const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
+  const MARKDOWN_WO_TITLE_TMPL = "[%content%](%url%)";
   const MEDIAWIKI = "MediaWiki";
   const MEDIAWIKI_TMPL = "[%url% %content%]";
   const REST = "reStructuredText";
@@ -46,6 +48,8 @@
   /* variables */
   const vars = {
     mimeType: MIME_PLAIN,
+    includeTitleHtml: true,
+    includeTitleMarkdown: true,
   };
 
   /**
@@ -242,16 +246,18 @@
       case `${COPY_ALL_TABS}${HTML}`:
       case `${COPY_LINK}${HTML}`:
       case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TAB}${HTML}`:
+      case `${COPY_TAB}${HTML}`: {
+        const tmpl = vars.includeTitleHtml && HTML_TMPL || HTML_WO_TITLE_TMPL;
         content = convertHtmlChar(content) || "";
         title = convertHtmlChar(title) || "";
         if (mimeType === MIME_HTML) {
-          template = `${HTML_TMPL}<br />`;
+          template = `${tmpl}<br />`;
         } else {
-          template = HTML_TMPL;
+          template = tmpl;
         }
         vars.mimeType = mimeType;
         break;
+      }
       case `${COPY_ALL_TABS}${JIRA}`:
       case `${COPY_LINK}${JIRA}`:
       case `${COPY_PAGE}${JIRA}`:
@@ -265,7 +271,8 @@
       case `${COPY_TAB}${MARKDOWN}`:
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
         title = escapeChar(convertHtmlChar(title), /(")/g) || "";
-        template = MARKDOWN_TMPL;
+        template = vars.includeTitleMarkdown && MARKDOWN_TMPL ||
+                   MARKDOWN_WO_TITLE_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
       case `${COPY_ALL_TABS}${MEDIAWIKI}`:
@@ -315,8 +322,10 @@
    * @returns {?string} - link text
    */
   const extractCopyData = async (data = {}) => {
-    const {allTabs} = data;
+    const {allTabs, includeTitleHtml, includeTitleMarkdown} = data;
     let text;
+    vars.includeTitleHtml = !!includeTitleHtml;
+    vars.includeTitleMarkdown = !!includeTitleMarkdown;
     if (Array.isArray(allTabs)) {
       const func = [];
       for (const tabData of allTabs) {

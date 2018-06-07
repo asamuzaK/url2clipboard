@@ -113,6 +113,9 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "ホワイトアイコン"
   },
+  "optionsIncludeTitle": {
+    "message": "タイトルを含ませる"
+  },
   "optionsPromptContent": {
     "message": "コピー時にコンテンツを編集する"
   },

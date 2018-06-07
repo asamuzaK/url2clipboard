@@ -116,6 +116,9 @@
   "optionsPromptContent": {
     "message": "编辑链接标题"
   },
+  "optionsIncludeTitle": {
+    "message": "Include Title"
+  },
   "optionsPromptContentDetail": {
     "message": "从右键菜单复制链接时提示修改链接信息"
   },

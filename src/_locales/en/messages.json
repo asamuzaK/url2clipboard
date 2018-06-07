@@ -113,6 +113,9 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "White Icon"
   },
+  "optionsIncludeTitle": {
+    "message": "Include Title"
+  },
   "optionsPromptContent": {
     "message": "Edit contents when copying"
   },
