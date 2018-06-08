@@ -204,12 +204,89 @@
   };
 
   /**
+   * get format from menu item ID
+   * @param {string} id - menu item ID
+   * @returns {?string} - format
+   */
+  const getFormatFromMenuItemId = async id => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    let format;
+    switch (id) {
+      case `${COPY_ALL_TABS}${ASCIIDOC}`:
+      case `${COPY_LINK}${ASCIIDOC}`:
+      case `${COPY_PAGE}${ASCIIDOC}`:
+      case `${COPY_TAB}${ASCIIDOC}`:
+        format = ASCIIDOC;
+        break;
+      case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
+      case `${COPY_LINK}${BBCODE_TEXT}`:
+      case `${COPY_PAGE}${BBCODE_TEXT}`:
+      case `${COPY_TAB}${BBCODE_TEXT}`:
+        format = BBCODE_TEXT;
+        break;
+      case `${COPY_ALL_TABS}${BBCODE_URL}`:
+      case `${COPY_LINK}${BBCODE_URL}`:
+      case `${COPY_PAGE}${BBCODE_URL}`:
+      case `${COPY_TAB}${BBCODE_URL}`:
+        format = BBCODE_URL;
+        break;
+      case `${COPY_ALL_TABS}${HTML}`:
+      case `${COPY_LINK}${HTML}`:
+      case `${COPY_PAGE}${HTML}`:
+      case `${COPY_TAB}${HTML}`:
+        format = HTML;
+        break;
+      case `${COPY_ALL_TABS}${JIRA}`:
+      case `${COPY_LINK}${JIRA}`:
+      case `${COPY_PAGE}${JIRA}`:
+      case `${COPY_TAB}${JIRA}`:
+        format = JIRA_TMPL;
+        break;
+      case `${COPY_ALL_TABS}${MARKDOWN}`:
+      case `${COPY_LINK}${MARKDOWN}`:
+      case `${COPY_PAGE}${MARKDOWN}`:
+      case `${COPY_TAB}${MARKDOWN}`:
+        format = MARKDOWN;
+        break;
+      case `${COPY_ALL_TABS}${MEDIAWIKI}`:
+      case `${COPY_LINK}${MEDIAWIKI}`:
+      case `${COPY_PAGE}${MEDIAWIKI}`:
+      case `${COPY_TAB}${MEDIAWIKI}`:
+        format = MEDIAWIKI;
+        break;
+      case `${COPY_ALL_TABS}${REST}`:
+      case `${COPY_LINK}${REST}`:
+      case `${COPY_PAGE}${REST}`:
+      case `${COPY_TAB}${REST}`:
+        format = REST;
+        break;
+      case `${COPY_ALL_TABS}${TEXT}`:
+      case `${COPY_LINK}${TEXT}`:
+      case `${COPY_PAGE}${TEXT}`:
+      case `${COPY_TAB}${TEXT}`:
+        format = TEXT;
+        break;
+      case `${COPY_ALL_TABS}${TEXTILE}`:
+      case `${COPY_LINK}${TEXTILE}`:
+      case `${COPY_PAGE}${TEXTILE}`:
+      case `${COPY_TAB}${TEXTILE}`:
+        format = TEXTILE;
+        break;
+      default:
+    }
+    return format || null;
+  };
+
+  /**
    * create link text
    * @param {Object} data - copy data
    * @returns {?string} - link text
    */
   const createLinkText = async (data = {}) => {
     const {content: contentText, menuItemId, mimeType, promptContent} = data;
+    const format = await getFormatFromMenuItemId(menuItemId);
     let {title, url} = data;
     let content =
       isString(contentText) && contentText.replace(/\s+/g, " ") || "";
@@ -217,36 +294,24 @@
     if (promptContent) {
       content = await editContent(content) || "";
     }
-    switch (menuItemId) {
-      case `${COPY_ALL_TABS}${ASCIIDOC}`:
-      case `${COPY_LINK}${ASCIIDOC}`:
-      case `${COPY_PAGE}${ASCIIDOC}`:
-      case `${COPY_TAB}${ASCIIDOC}`:
+    switch (format) {
+      case ASCIIDOC:
         content = escapeChar(content, /\[[\]]/g) || "";
         url = encodeUrlSpecialChar(url);
         template = ASCIIDOC_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_TAB}${BBCODE_TEXT}`:
+      case BBCODE_TEXT:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_TEXT_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${BBCODE_URL}`:
-      case `${COPY_LINK}${BBCODE_URL}`:
-      case `${COPY_PAGE}${BBCODE_URL}`:
-      case `${COPY_TAB}${BBCODE_URL}`:
+      case BBCODE_URL:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         template = BBCODE_URL_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${HTML}`:
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TAB}${HTML}`: {
+      case HTML: {
         const tmpl = vars.includeTitleHtml && HTML_TMPL || HTML_WO_TITLE_TMPL;
         content = convertHtmlChar(content) || "";
         title = convertHtmlChar(title) || "";
@@ -258,50 +323,32 @@
         vars.mimeType = mimeType;
         break;
       }
-      case `${COPY_ALL_TABS}${JIRA}`:
-      case `${COPY_LINK}${JIRA}`:
-      case `${COPY_PAGE}${JIRA}`:
-      case `${COPY_TAB}${JIRA}`:
+      case JIRA:
         template = JIRA_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${MARKDOWN}`:
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_TAB}${MARKDOWN}`:
+      case MARKDOWN:
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
         title = escapeChar(convertHtmlChar(title), /(")/g) || "";
         template = vars.includeTitleMarkdown && MARKDOWN_TMPL ||
                    MARKDOWN_WO_TITLE_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${MEDIAWIKI}`:
-      case `${COPY_LINK}${MEDIAWIKI}`:
-      case `${COPY_PAGE}${MEDIAWIKI}`:
-      case `${COPY_TAB}${MEDIAWIKI}`:
+      case MEDIAWIKI:
         content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
         template = MEDIAWIKI_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${REST}`:
-      case `${COPY_LINK}${REST}`:
-      case `${COPY_PAGE}${REST}`:
-      case `${COPY_TAB}${REST}`:
+      case REST:
         content = escapeChar(content, /([`<>])/g) || "";
         template = REST_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${TEXT}`:
-      case `${COPY_LINK}${TEXT}`:
-      case `${COPY_PAGE}${TEXT}`:
-      case `${COPY_TAB}${TEXT}`:
+      case TEXT:
         template = TEXT_TMPL;
         vars.mimeType = MIME_PLAIN;
         break;
-      case `${COPY_ALL_TABS}${TEXTILE}`:
-      case `${COPY_LINK}${TEXTILE}`:
-      case `${COPY_PAGE}${TEXTILE}`:
-      case `${COPY_TAB}${TEXTILE}`:
+      case TEXTILE:
         content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
         template = TEXTILE_TMPL;
         vars.mimeType = MIME_PLAIN;

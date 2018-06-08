@@ -400,73 +400,62 @@
         content: contextContent, title: contextTitle, url: contextUrl,
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
-      let allTabs, content, title, url;
-      switch (menuItemId) {
-        case `${COPY_LINK}${ASCIIDOC}`:
-        case `${COPY_LINK}${BBCODE_TEXT}`:
-        case `${COPY_LINK}${HTML}`:
-        case `${COPY_LINK}${JIRA}`:
-        case `${COPY_LINK}${MARKDOWN}`:
-        case `${COPY_LINK}${MEDIAWIKI}`:
-        case `${COPY_LINK}${REST}`:
-        case `${COPY_LINK}${TEXT}`:
-        case `${COPY_LINK}${TEXTILE}`:
-          content = selectionText || contextContent || contextTitle;
-          title = contextTitle;
-          url = contextUrl;
-          break;
-        case `${COPY_PAGE}${ASCIIDOC}`:
-        case `${COPY_PAGE}${BBCODE_TEXT}`:
-        case `${COPY_PAGE}${HTML}`:
-        case `${COPY_PAGE}${JIRA}`:
-        case `${COPY_PAGE}${MARKDOWN}`:
-        case `${COPY_PAGE}${MEDIAWIKI}`:
-        case `${COPY_PAGE}${REST}`:
-        case `${COPY_PAGE}${TEXT}`:
-        case `${COPY_PAGE}${TEXTILE}`:
-        case `${COPY_TAB}${ASCIIDOC}`:
-        case `${COPY_TAB}${BBCODE_TEXT}`:
-        case `${COPY_TAB}${HTML}`:
-        case `${COPY_TAB}${JIRA}`:
-        case `${COPY_TAB}${MARKDOWN}`:
-        case `${COPY_TAB}${MEDIAWIKI}`:
-        case `${COPY_TAB}${REST}`:
-        case `${COPY_TAB}${TEXT}`:
-        case `${COPY_TAB}${TEXTILE}`:
-          content = selectionText || tabTitle;
-          title = tabTitle;
-          url = !tabUrlHash && canonicalUrl || tabUrl;
-          break;
-        case `${COPY_LINK}${BBCODE_URL}`:
-          content = contextUrl;
-          url = contextUrl;
-          break;
-        case `${COPY_PAGE}${BBCODE_URL}`:
-        case `${COPY_TAB}${BBCODE_URL}`:
-          content = !tabUrlHash && canonicalUrl || tabUrl;
-          url = !tabUrlHash && canonicalUrl || tabUrl;
-          break;
-        case `${COPY_ALL_TABS}${ASCIIDOC}`:
-        case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
-        case `${COPY_ALL_TABS}${BBCODE_URL}`:
-        case `${COPY_ALL_TABS}${HTML}`:
-        case `${COPY_ALL_TABS}${JIRA}`:
-        case `${COPY_ALL_TABS}${MARKDOWN}`:
-        case `${COPY_ALL_TABS}${MEDIAWIKI}`:
-        case `${COPY_ALL_TABS}${REST}`:
-        case `${COPY_ALL_TABS}${TEXT}`:
-        case `${COPY_ALL_TABS}${TEXTILE}`:
-          allTabs = await getAllTabsInfo(menuItemId);
-          break;
-        default:
-      }
-      if (allTabs) {
+      if (isString(menuItemId) && menuItemId.startsWith(COPY_ALL_TABS)) {
+        const allTabs = await getAllTabsInfo(menuItemId);
         func.push(tabs.sendMessage(tabId, {
           [EXEC_COPY_TABS]: {
             allTabs, includeTitleHtml, includeTitleMarkdown,
           },
         }));
       } else {
+        let content, title, url;
+        switch (menuItemId) {
+          case `${COPY_LINK}${ASCIIDOC}`:
+          case `${COPY_LINK}${BBCODE_TEXT}`:
+          case `${COPY_LINK}${HTML}`:
+          case `${COPY_LINK}${JIRA}`:
+          case `${COPY_LINK}${MARKDOWN}`:
+          case `${COPY_LINK}${MEDIAWIKI}`:
+          case `${COPY_LINK}${REST}`:
+          case `${COPY_LINK}${TEXT}`:
+          case `${COPY_LINK}${TEXTILE}`:
+            content = selectionText || contextContent || contextTitle;
+            title = contextTitle;
+            url = contextUrl;
+            break;
+          case `${COPY_PAGE}${ASCIIDOC}`:
+          case `${COPY_PAGE}${BBCODE_TEXT}`:
+          case `${COPY_PAGE}${HTML}`:
+          case `${COPY_PAGE}${JIRA}`:
+          case `${COPY_PAGE}${MARKDOWN}`:
+          case `${COPY_PAGE}${MEDIAWIKI}`:
+          case `${COPY_PAGE}${REST}`:
+          case `${COPY_PAGE}${TEXT}`:
+          case `${COPY_PAGE}${TEXTILE}`:
+          case `${COPY_TAB}${ASCIIDOC}`:
+          case `${COPY_TAB}${BBCODE_TEXT}`:
+          case `${COPY_TAB}${HTML}`:
+          case `${COPY_TAB}${JIRA}`:
+          case `${COPY_TAB}${MARKDOWN}`:
+          case `${COPY_TAB}${MEDIAWIKI}`:
+          case `${COPY_TAB}${REST}`:
+          case `${COPY_TAB}${TEXT}`:
+          case `${COPY_TAB}${TEXTILE}`:
+            content = selectionText || tabTitle;
+            title = tabTitle;
+            url = !tabUrlHash && canonicalUrl || tabUrl;
+            break;
+          case `${COPY_LINK}${BBCODE_URL}`:
+            content = contextUrl;
+            url = contextUrl;
+            break;
+          case `${COPY_PAGE}${BBCODE_URL}`:
+          case `${COPY_TAB}${BBCODE_URL}`:
+            content = !tabUrlHash && canonicalUrl || tabUrl;
+            url = !tabUrlHash && canonicalUrl || tabUrl;
+            break;
+          default:
+        }
         func.push(tabs.sendMessage(tabId, {
           [EXEC_COPY]: {
             content, includeTitleHtml, includeTitleMarkdown, menuItemId,
