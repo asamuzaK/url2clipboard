@@ -81,9 +81,7 @@
     const nodes = document.querySelectorAll("input");
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
-        node.addEventListener(
-          "change", evt => storePref(evt).catch(throwErr), false
-        );
+        node.addEventListener("change", evt => storePref(evt).catch(throwErr));
       }
     }
   };

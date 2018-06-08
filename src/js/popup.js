@@ -240,10 +240,8 @@
     const nodes = document.querySelectorAll("button");
     if (nodes instanceof NodeList) {
       for (const node of nodes) {
-        node.addEventListener(
-          "click",
-          evt => createCopyData(evt).catch(throwErr),
-          false
+        node.addEventListener("click", evt =>
+          createCopyData(evt).catch(throwErr)
         );
       }
     }
