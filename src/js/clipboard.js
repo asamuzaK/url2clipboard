@@ -242,7 +242,7 @@
       case `${COPY_LINK}${JIRA}`:
       case `${COPY_PAGE}${JIRA}`:
       case `${COPY_TAB}${JIRA}`:
-        format = JIRA_TMPL;
+        format = JIRA;
         break;
       case `${COPY_ALL_TABS}${MARKDOWN}`:
       case `${COPY_LINK}${MARKDOWN}`:
