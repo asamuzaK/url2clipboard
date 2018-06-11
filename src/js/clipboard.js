@@ -15,7 +15,6 @@
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
-  const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -23,33 +22,17 @@
   const USER_INPUT_DEFAULT = "Edit content text of the link";
 
   const ASCIIDOC = "AsciiDoc";
-  const ASCIIDOC_TMPL = "link:%url%[%content%]";
   const BBCODE_TEXT = "BBCodeText";
-  const BBCODE_TEXT_TMPL = "[url=%url%]%content%[/url]";
   const BBCODE_URL = "BBCodeURL";
-  const BBCODE_URL_TMPL = "[url]%content%[/url]";
   const HTML = "HTML";
-  const HTML_TMPL = "<a href=\"%url%\" title=\"%title%\">%content%</a>";
-  const HTML_WO_TITLE_TMPL = "<a href=\"%url%\">%content%</a>";
-  const JIRA = "Jira";
-  const JIRA_TMPL = "[%content%|%url%]";
   const MARKDOWN = "Markdown";
-  const MARKDOWN_TMPL = "[%content%](%url% \"%title%\")";
-  const MARKDOWN_WO_TITLE_TMPL = "[%content%](%url%)";
   const MEDIAWIKI = "MediaWiki";
-  const MEDIAWIKI_TMPL = "[%url% %content%]";
   const REST = "reStructuredText";
-  const REST_TMPL = "`%content% <%url%>`_";
-  const TEXT = "Text";
-  const TEXT_TMPL = "%content% %url%";
   const TEXTILE = "Textile";
-  const TEXTILE_TMPL = "\"%content%\":%url%";
 
   /* variables */
   const vars = {
     mimeType: MIME_PLAIN,
-    includeTitleHtml: true,
-    includeTitleMarkdown: true,
   };
 
   /**
@@ -204,79 +187,22 @@
   };
 
   /**
-   * get format from menu item ID
-   * @param {string} id - menu item ID
-   * @returns {?string} - format
+   * get format ID from menu item ID
+   * @param {string} menuItemId - menu item ID
+   * @returns {?string} - ID
    */
-  const getFormatFromMenuItemId = async id => {
-    if (!isString(id)) {
-      throw new TypeError(`Expected String but got ${getType(id)}.`);
+  const getFormatIdFromMenuItemId = async menuItemId => {
+    let id;
+    if (menuItemId.startsWith(COPY_ALL_TABS)) {
+      id = menuItemId.replace(COPY_ALL_TABS, "");
+    } else if (menuItemId.startsWith(COPY_LINK)) {
+      id = menuItemId.replace(COPY_LINK, "");
+    } else if (menuItemId.startsWith(COPY_PAGE)) {
+      id = menuItemId.replace(COPY_PAGE, "");
+    } else if (menuItemId.startsWith(COPY_TAB)) {
+      id = menuItemId.replace(COPY_TAB, "");
     }
-    let format;
-    switch (id) {
-      case `${COPY_ALL_TABS}${ASCIIDOC}`:
-      case `${COPY_LINK}${ASCIIDOC}`:
-      case `${COPY_PAGE}${ASCIIDOC}`:
-      case `${COPY_TAB}${ASCIIDOC}`:
-        format = ASCIIDOC;
-        break;
-      case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
-      case `${COPY_LINK}${BBCODE_TEXT}`:
-      case `${COPY_PAGE}${BBCODE_TEXT}`:
-      case `${COPY_TAB}${BBCODE_TEXT}`:
-        format = BBCODE_TEXT;
-        break;
-      case `${COPY_ALL_TABS}${BBCODE_URL}`:
-      case `${COPY_LINK}${BBCODE_URL}`:
-      case `${COPY_PAGE}${BBCODE_URL}`:
-      case `${COPY_TAB}${BBCODE_URL}`:
-        format = BBCODE_URL;
-        break;
-      case `${COPY_ALL_TABS}${HTML}`:
-      case `${COPY_LINK}${HTML}`:
-      case `${COPY_PAGE}${HTML}`:
-      case `${COPY_TAB}${HTML}`:
-        format = HTML;
-        break;
-      case `${COPY_ALL_TABS}${JIRA}`:
-      case `${COPY_LINK}${JIRA}`:
-      case `${COPY_PAGE}${JIRA}`:
-      case `${COPY_TAB}${JIRA}`:
-        format = JIRA;
-        break;
-      case `${COPY_ALL_TABS}${MARKDOWN}`:
-      case `${COPY_LINK}${MARKDOWN}`:
-      case `${COPY_PAGE}${MARKDOWN}`:
-      case `${COPY_TAB}${MARKDOWN}`:
-        format = MARKDOWN;
-        break;
-      case `${COPY_ALL_TABS}${MEDIAWIKI}`:
-      case `${COPY_LINK}${MEDIAWIKI}`:
-      case `${COPY_PAGE}${MEDIAWIKI}`:
-      case `${COPY_TAB}${MEDIAWIKI}`:
-        format = MEDIAWIKI;
-        break;
-      case `${COPY_ALL_TABS}${REST}`:
-      case `${COPY_LINK}${REST}`:
-      case `${COPY_PAGE}${REST}`:
-      case `${COPY_TAB}${REST}`:
-        format = REST;
-        break;
-      case `${COPY_ALL_TABS}${TEXT}`:
-      case `${COPY_LINK}${TEXT}`:
-      case `${COPY_PAGE}${TEXT}`:
-      case `${COPY_TAB}${TEXT}`:
-        format = TEXT;
-        break;
-      case `${COPY_ALL_TABS}${TEXTILE}`:
-      case `${COPY_LINK}${TEXTILE}`:
-      case `${COPY_PAGE}${TEXTILE}`:
-      case `${COPY_TAB}${TEXTILE}`:
-        format = TEXTILE;
-        break;
-      default:
-    }
-    return format || null;
+    return id || null;
   };
 
   /**
@@ -285,82 +211,53 @@
    * @returns {?string} - link text
    */
   const createLinkText = async (data = {}) => {
-    const {content: contentText, menuItemId, mimeType, promptContent} = data;
-    const format = await getFormatFromMenuItemId(menuItemId);
-    let {title, url} = data;
-    let content =
-      isString(contentText) && contentText.replace(/\s+/g, " ") || "";
-    let template, text;
+    const {
+      content: contentText, menuItemId, mimeType, promptContent, template,
+      title, url,
+    } = data;
+    if (!isString(template)) {
+      throw new TypeError(`Expected String but got ${getType(template)}.`);
+    }
+    const format = await getFormatIdFromMenuItemId(menuItemId);
+    let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
+                  "";
+    let linkTitle = title || "";
+    let linkUrl = url;
     if (promptContent) {
       content = await editContent(content) || "";
     }
     switch (format) {
       case ASCIIDOC:
         content = escapeChar(content, /\[[\]]/g) || "";
-        url = encodeUrlSpecialChar(url);
-        template = ASCIIDOC_TMPL;
-        vars.mimeType = MIME_PLAIN;
+        linkUrl = encodeUrlSpecialChar(url);
         break;
       case BBCODE_TEXT:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_TEXT_TMPL;
-        vars.mimeType = MIME_PLAIN;
-        break;
       case BBCODE_URL:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        template = BBCODE_URL_TMPL;
-        vars.mimeType = MIME_PLAIN;
         break;
-      case HTML: {
-        const tmpl = vars.includeTitleHtml && HTML_TMPL || HTML_WO_TITLE_TMPL;
+      case HTML:
         content = convertHtmlChar(content) || "";
-        title = convertHtmlChar(title) || "";
-        if (mimeType === MIME_HTML) {
-          template = `${tmpl}<br />`;
-        } else {
-          template = tmpl;
-        }
-        vars.mimeType = mimeType;
-        break;
-      }
-      case JIRA:
-        template = JIRA_TMPL;
-        vars.mimeType = MIME_PLAIN;
+        linkTitle = convertHtmlChar(title) || "";
         break;
       case MARKDOWN:
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
-        title = escapeChar(convertHtmlChar(title), /(")/g) || "";
-        template = vars.includeTitleMarkdown && MARKDOWN_TMPL ||
-                   MARKDOWN_WO_TITLE_TMPL;
-        vars.mimeType = MIME_PLAIN;
+        linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
         break;
       case MEDIAWIKI:
         content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
-        template = MEDIAWIKI_TMPL;
-        vars.mimeType = MIME_PLAIN;
         break;
       case REST:
         content = escapeChar(content, /([`<>])/g) || "";
-        template = REST_TMPL;
-        vars.mimeType = MIME_PLAIN;
-        break;
-      case TEXT:
-        template = TEXT_TMPL;
-        vars.mimeType = MIME_PLAIN;
         break;
       case TEXTILE:
         content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
-        template = TEXTILE_TMPL;
-        vars.mimeType = MIME_PLAIN;
         break;
       default:
     }
-    if (template) {
-      text = template.replace(/%content%/g, content.trim())
-        .replace(/%title%/g, title && title.trim() || "")
-        .replace(/%url%/g, url.trim());
-    }
-    return text || null;
+    vars.mimeType = format === HTML && mimeType || MIME_PLAIN;
+    return template.replace(/%content%/g, content.trim())
+      .replace(/%title%/g, linkTitle.trim())
+      .replace(/%url%/g, linkUrl.trim());
   };
 
   /**
@@ -369,10 +266,8 @@
    * @returns {?string} - link text
    */
   const extractCopyData = async (data = {}) => {
-    const {allTabs, includeTitleHtml, includeTitleMarkdown} = data;
+    const {allTabs} = data;
     let text;
-    vars.includeTitleHtml = !!includeTitleHtml;
-    vars.includeTitleMarkdown = !!includeTitleMarkdown;
     if (Array.isArray(allTabs)) {
       const func = [];
       for (const tabData of allTabs) {

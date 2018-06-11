@@ -28,22 +28,19 @@
   const INCLUDE_TITLE_HTML = "includeTitleHtml";
   const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
   const KEY = "Alt+Shift+C";
+  const MIME_HTML = "text/html";
+  const MIME_PLAIN = "text/plain";
   const OUTPUT_HYPER = "outputTextHtml";
   const OUTPUT_PLAIN = "outputTextPlain";
+  const PATH_FORMAT_DATA = "data/format.json";
   const PROMPT = "promptContent";
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
   const WEBEXT_ID = "url2clipboard@asamuzak.jp";
 
-  const ASCIIDOC = "AsciiDoc";
-  const BBCODE = "BBCode";
-  const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
-  const JIRA = "Jira";
   const MARKDOWN = "Markdown";
-  const MEDIAWIKI = "MediaWiki";
-  const REST = "reStructuredText";
-  const TEXT = "Text";
-  const TEXTILE = "Textile";
 
   /* variables */
   const vars = {
@@ -53,7 +50,7 @@
     includeTitleHtml: true,
     includeTitleMarkdown: true,
     isWebExt: runtime.id === WEBEXT_ID,
-    mimeType: "text/plain",
+    mimeType: MIME_PLAIN,
     promptContent: true,
   };
 
@@ -67,11 +64,94 @@
   };
 
   /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
    * is string
    * @param {*} o - object to check
    * @returns {boolean} - result
    */
   const isString = o => typeof o === "string" || o instanceof String;
+
+  /* formats */
+  const formats = new Map();
+
+  /**
+   * fetch format data
+   * @returns {void}
+   */
+  const fetchFormatData = async () => {
+    const path = await runtime.getURL(PATH_FORMAT_DATA);
+    const data = await fetch(path).then(res => res && res.json());
+    if (data) {
+      const items = Object.entries(data);
+      for (const item of items) {
+        const [key, value] = item;
+        formats.set(key, value);
+      }
+    }
+  };
+
+  /**
+   * get format item from menu item ID
+   * @param {string} id - menu item id
+   * @returns {Object} - format item
+   */
+  const getFormatItemFromId = async id => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    let item;
+    if (id.startsWith(COPY_ALL_TABS)) {
+      item = formats.get(id.replace(COPY_ALL_TABS, ""));
+    } else if (id.startsWith(COPY_LINK)) {
+      item = formats.get(id.replace(COPY_LINK, ""));
+    } else if (id.startsWith(COPY_PAGE)) {
+      item = formats.get(id.replace(COPY_PAGE, ""));
+    } else if (id.startsWith(COPY_TAB)) {
+      item = formats.get(id.replace(COPY_TAB, ""));
+    }
+    return item || null;
+  };
+
+  /**
+   * get format template
+   * @param {string} id - menu item ID
+   * @returns {string} - template
+   */
+  const getFormatTemplate = async id => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    const item = await getFormatItemFromId(id);
+    let template;
+    if (item) {
+      const {
+        id: itemId, template: itemTmpl,
+        templateWithoutTitle: itemTmplWoTitle,
+      } = item;
+      const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
+      switch (itemId) {
+        case HTML:
+          template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
+          if (mimeType === MIME_HTML) {
+            template = `${template}<br />`;
+          }
+          break;
+        case MARKDOWN:
+          template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
+          break;
+        default:
+          template = itemTmpl;
+      }
+    }
+    return template || null;
+  };
 
   /**
    * is tab
@@ -121,10 +201,11 @@
     const tabsInfo = [];
     const arr = await tabs.query({currentWindow: true});
     const {mimeType} = vars;
+    const template = await getFormatTemplate(menuItemId);
     arr.length && arr.forEach(tab => {
       const {id, title, url} = tab;
       tabsInfo.push({
-        id, menuItemId, mimeType, title, url,
+        id, menuItemId, mimeType, template, title, url,
         content: title,
       });
     });
@@ -133,26 +214,6 @@
 
   /* enabled tabs collection */
   const enabledTabs = new Map();
-
-  /* formats */
-  const formats = {
-    [HTML]: true,
-    [MARKDOWN]: true,
-    [BBCODE_TEXT]: true,
-    [BBCODE_URL]: true,
-    [TEXTILE]: true,
-    [ASCIIDOC]: true,
-    [MEDIAWIKI]: true,
-    [JIRA]: true,
-    [REST]: true,
-    [TEXT]: true,
-  };
-
-  /* format title */
-  const formatTitle = {
-    [BBCODE_TEXT]: `${BBCODE} (${TEXT})`,
-    [BBCODE_URL]: `${BBCODE} (URL)`,
-  };
 
   /* context menu items */
   const menuItems = {
@@ -219,23 +280,26 @@
   const createContextMenu = async () => {
     const func = [];
     const items = Object.keys(menuItems);
-    const formatItems = Object.keys(formats);
     for (const item of items) {
-      const {contexts, id, title} = menuItems[item];
+      const {contexts, id: itemId, title: itemTitle} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
-      func.push(createMenuItem(id, title, itemData));
-      for (const format of formatItems) {
-        if (formats[format]) {
-          const subItemId = `${id}${format}`;
-          const subItemTitle = formatTitle[format] || format;
+      func.push(createMenuItem(itemId, itemTitle, itemData));
+      formats.forEach((value, key) => {
+        const {
+          enabled: formatEnabled, id: formatId, title: formatTitle,
+        } = value;
+        if (formatEnabled) {
+          const subItemId = `${itemId}${key}`;
+          const subItemTitle = formatTitle || formatId;
           const subItemData = {
-            contexts, enabled,
-            parentId: id,
+            contexts,
+            enabled: formatEnabled,
+            parentId: itemId,
           };
           func.push(createMenuItem(subItemId, subItemTitle, subItemData));
         }
-      }
+      });
     }
     return Promise.all(func);
   };
@@ -249,25 +313,25 @@
     const {isWebExt} = vars;
     const enabled = enabledTabs.get(tabId) || false;
     const items = Object.keys(menuItems);
-    const formatItems = Object.keys(formats);
     const func = [];
     for (const item of items) {
-      const {contexts, id} = menuItems[item];
+      const {contexts, id: itemId} = menuItems[item];
       if (contexts.includes("tab")) {
-        isWebExt && func.push(contextMenus.update(id, {enabled}));
+        isWebExt && func.push(contextMenus.update(itemId, {enabled}));
       } else {
-        func.push(contextMenus.update(id, {contexts, enabled}));
+        func.push(contextMenus.update(itemId, {contexts, enabled}));
       }
-      for (const format of formatItems) {
-        if (formats[format]) {
-          const subItemId = `${id}${format}`;
+      formats.forEach((value, key) => {
+        const {enabled: formatEnabled} = value;
+        if (formatEnabled) {
+          const subItemId = `${itemId}${key}`;
           if (contexts.includes("tab")) {
             isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
           } else {
             func.push(contextMenus.update(subItemId, {enabled}));
           }
         }
-      }
+      });
     }
     return Promise.all(func);
   };
@@ -408,58 +472,33 @@
           },
         }));
       } else {
+        const template = await getFormatTemplate(menuItemId);
         let content, title, url;
-        switch (menuItemId) {
-          case `${COPY_LINK}${ASCIIDOC}`:
-          case `${COPY_LINK}${BBCODE_TEXT}`:
-          case `${COPY_LINK}${HTML}`:
-          case `${COPY_LINK}${JIRA}`:
-          case `${COPY_LINK}${MARKDOWN}`:
-          case `${COPY_LINK}${MEDIAWIKI}`:
-          case `${COPY_LINK}${REST}`:
-          case `${COPY_LINK}${TEXT}`:
-          case `${COPY_LINK}${TEXTILE}`:
+        if (menuItemId.startsWith(COPY_LINK)) {
+          if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+            content = contextUrl;
+            url = contextUrl;
+          } else {
             content = selectionText || contextContent || contextTitle;
             title = contextTitle;
             url = contextUrl;
-            break;
-          case `${COPY_PAGE}${ASCIIDOC}`:
-          case `${COPY_PAGE}${BBCODE_TEXT}`:
-          case `${COPY_PAGE}${HTML}`:
-          case `${COPY_PAGE}${JIRA}`:
-          case `${COPY_PAGE}${MARKDOWN}`:
-          case `${COPY_PAGE}${MEDIAWIKI}`:
-          case `${COPY_PAGE}${REST}`:
-          case `${COPY_PAGE}${TEXT}`:
-          case `${COPY_PAGE}${TEXTILE}`:
-          case `${COPY_TAB}${ASCIIDOC}`:
-          case `${COPY_TAB}${BBCODE_TEXT}`:
-          case `${COPY_TAB}${HTML}`:
-          case `${COPY_TAB}${JIRA}`:
-          case `${COPY_TAB}${MARKDOWN}`:
-          case `${COPY_TAB}${MEDIAWIKI}`:
-          case `${COPY_TAB}${REST}`:
-          case `${COPY_TAB}${TEXT}`:
-          case `${COPY_TAB}${TEXTILE}`:
+          }
+        } else if (menuItemId.startsWith(COPY_PAGE) ||
+                   menuItemId.startsWith(COPY_TAB)) {
+          if (menuItemId === `${COPY_PAGE}${BBCODE_URL}` ||
+              menuItemId === `${COPY_TAB}${BBCODE_URL}`) {
+            content = !tabUrlHash && canonicalUrl || tabUrl;
+            url = !tabUrlHash && canonicalUrl || tabUrl;
+          } else {
             content = selectionText || tabTitle;
             title = tabTitle;
             url = !tabUrlHash && canonicalUrl || tabUrl;
-            break;
-          case `${COPY_LINK}${BBCODE_URL}`:
-            content = contextUrl;
-            url = contextUrl;
-            break;
-          case `${COPY_PAGE}${BBCODE_URL}`:
-          case `${COPY_TAB}${BBCODE_URL}`:
-            content = !tabUrlHash && canonicalUrl || tabUrl;
-            url = !tabUrlHash && canonicalUrl || tabUrl;
-            break;
-          default:
+          }
         }
         func.push(tabs.sendMessage(tabId, {
           [EXEC_COPY]: {
             content, includeTitleHtml, includeTitleMarkdown, menuItemId,
-            mimeType, promptContent, title, url,
+            mimeType, promptContent, template, title, url,
           },
         }));
       }
@@ -554,20 +593,6 @@
     if (item && obj) {
       const {checked, value} = obj;
       switch (item) {
-        case ASCIIDOC:
-        case BBCODE_TEXT:
-        case BBCODE_URL:
-        case HTML:
-        case JIRA:
-        case MARKDOWN:
-        case MEDIAWIKI:
-        case REST:
-        case TEXT:
-        case TEXTILE:
-          formats[item] = !!checked;
-          changed &&
-            func.push(contextMenus.removeAll().then(createContextMenu));
-          break;
         case HIDE_ON_LINK:
           vars[item] = !!checked;
           if (changed) {
@@ -599,7 +624,16 @@
             vars.mimeType = value;
           }
           break;
-        default:
+        default: {
+          if (formats.has(item)) {
+            const formatItem = formats.get(item);
+            formatItem.enabled = !!checked;
+            formats.set(item, formatItem);
+          }
+          changed &&
+            func.push(contextMenus.removeAll().then(createContextMenu));
+          break;
+        }
       }
     }
     return Promise.all(func);
@@ -644,8 +678,10 @@
   );
 
   /* startup */
-  storage.local.get().then(setVars).then(() => Promise.all([
-    setIcon(),
-    createContextMenu(),
-  ])).catch(throwErr);
+  fetchFormatData().then(() => storage.local.get()).then(setVars).then(() =>
+    Promise.all([
+      setIcon(),
+      createContextMenu(),
+    ])
+  ).catch(throwErr);
 }

@@ -7,6 +7,10 @@
   const {i18n, runtime, storage, tabs} = browser;
 
   /* constants */
+  const CONTENT_LINK = "copyLinkContent";
+  const CONTENT_LINK_BBCODE = "copyLinkBBCodeURLContent";
+  const CONTENT_PAGE = "copyPageContent";
+  const CONTENT_PAGE_BBCODE = "copyPageBBCodeURLContent";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
   const COPY_ALL_TABS = "copyAllTabsURL";
@@ -18,29 +22,24 @@
   const EXT_LOCALE = "extensionLocale";
   const INCLUDE_TITLE_HTML = "includeTitleHtml";
   const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
-  const LINK_BBCODE = "copyLinkBBCodeURLContent";
-  const LINK_CONTENT = "copyLinkContent";
   const LINK_DETAILS = "copyLinkDetails";
-  const LINK_MENU = `#${LINK_DETAILS} button,#${LINK_CONTENT},#${LINK_BBCODE}`;
+  const LINK_MENU =
+    `#${LINK_DETAILS} button,#${CONTENT_LINK},#${CONTENT_LINK_BBCODE}`;
+  const MIME_HTML = "text/html";
+  const MIME_PLAIN = "text/plain";
   const OUTPUT_HYPER = "outputTextHtml";
   const OUTPUT_PLAIN = "outputTextPlain";
-  const PAGE_BBCODE = "copyPageBBCodeURLContent";
-  const PAGE_CONTENT = "copyPageContent";
+  const PATH_FORMAT_DATA = "data/format.json";
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
 
-  const ASCIIDOC = "AsciiDoc";
-  const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
-  const JIRA = "Jira";
   const MARKDOWN = "Markdown";
-  const MEDIAWIKI = "MediaWiki";
-  const REST = "reStructuredText";
-  const TEXT = "Text";
-  const TEXTILE = "Textile";
 
   /* variables */
   const vars = {
-    mimeType: "text/plain",
+    mimeType: MIME_PLAIN,
     includeTitleHtml: true,
     includeTitleMarkdown: true,
   };
@@ -52,6 +51,94 @@
    */
   const throwErr = e => {
     throw e;
+  };
+
+  /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
+   * is string
+   * @param {*} o - object to check
+   * @returns {boolean} - result
+   */
+  const isString = o => typeof o === "string" || o instanceof String;
+
+  /* formats */
+  const formats = new Map();
+
+  /**
+   * fetch format data
+   * @returns {void}
+   */
+  const fetchFormatData = async () => {
+    const path = await runtime.getURL(PATH_FORMAT_DATA);
+    const data = await fetch(path).then(res => res && res.json());
+    if (data) {
+      const items = Object.entries(data);
+      for (const item of items) {
+        const [key, value] = item;
+        formats.set(key, value);
+      }
+    }
+  };
+
+  /**
+   * get format item from menu item ID
+   * @param {string} id - menu item id
+   * @returns {Object} - format item
+   */
+  const getFormatItemFromId = async id => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    let item;
+    if (id.startsWith(COPY_ALL_TABS)) {
+      item = formats.get(id.replace(COPY_ALL_TABS, ""));
+    } else if (id.startsWith(COPY_LINK)) {
+      item = formats.get(id.replace(COPY_LINK, ""));
+    } else if (id.startsWith(COPY_PAGE)) {
+      item = formats.get(id.replace(COPY_PAGE, ""));
+    }
+    return item || null;
+  };
+
+  /**
+   * get format template
+   * @param {string} id - menu item ID
+   * @returns {string} - template
+   */
+  const getFormatTemplate = async id => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    const item = await getFormatItemFromId(id);
+    let template;
+    if (item) {
+      const {
+        id: itemId, template: itemTmpl,
+        templateWithoutTitle: itemTmplWoTitle,
+      } = item;
+      const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
+      switch (itemId) {
+        case HTML:
+          template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
+          if (mimeType === MIME_HTML) {
+            template = `${template}<br />`;
+          }
+          break;
+        case MARKDOWN:
+          template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
+          break;
+        default:
+          template = itemTmpl;
+      }
+    }
+    return template || null;
   };
 
   /**
@@ -79,10 +166,11 @@
     const tabsInfo = [];
     const arr = await tabs.query({currentWindow: true});
     const {mimeType} = vars;
+    const template = await getFormatTemplate(menuItemId);
     arr.length && arr.forEach(tab => {
       const {id, title, url} = tab;
       tabsInfo.push({
-        id, menuItemId, mimeType, title, url,
+        id, menuItemId, mimeType, template, title, url,
         content: title,
       });
     });
@@ -113,8 +201,8 @@
    * @returns {void}
    */
   const setTabInfo = async tab => {
-    const contentPage = document.getElementById(PAGE_CONTENT);
-    const contentBBCode = document.getElementById(PAGE_BBCODE);
+    const contentPage = document.getElementById(CONTENT_PAGE);
+    const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
     await initTabInfo();
     if (tab) {
       const {id, title, url} = tab;
@@ -163,67 +251,39 @@
       const {
         canonicalUrl, title: contextTitle, url: contextUrl,
       } = contextInfo;
-      let allTabs, content, title, url;
-      switch (menuItemId) {
-        case `${COPY_LINK}${ASCIIDOC}`:
-        case `${COPY_LINK}${BBCODE_TEXT}`:
-        case `${COPY_LINK}${HTML}`:
-        case `${COPY_LINK}${JIRA}`:
-        case `${COPY_LINK}${MARKDOWN}`:
-        case `${COPY_LINK}${MEDIAWIKI}`:
-        case `${COPY_LINK}${REST}`:
-        case `${COPY_LINK}${TEXT}`:
-        case `${COPY_LINK}${TEXTILE}`:
-          content = document.getElementById(LINK_CONTENT).value || "";
-          title = contextTitle;
-          url = contextUrl;
-          break;
-        case `${COPY_LINK}${BBCODE_URL}`:
-          content = document.getElementById(LINK_BBCODE).value || "";
-          url = contextUrl;
-          break;
-        case `${COPY_PAGE}${ASCIIDOC}`:
-        case `${COPY_PAGE}${BBCODE_TEXT}`:
-        case `${COPY_PAGE}${HTML}`:
-        case `${COPY_PAGE}${JIRA}`:
-        case `${COPY_PAGE}${MARKDOWN}`:
-        case `${COPY_PAGE}${MEDIAWIKI}`:
-        case `${COPY_PAGE}${REST}`:
-        case `${COPY_PAGE}${TEXT}`:
-        case `${COPY_PAGE}${TEXTILE}`:
-          content = document.getElementById(PAGE_CONTENT).value || "";
-          title = tabTitle;
-          url = canonicalUrl || tabUrl;
-          break;
-        case `${COPY_PAGE}${BBCODE_URL}`:
-          content = document.getElementById(PAGE_BBCODE).value || "";
-          url = canonicalUrl || tabUrl;
-          break;
-        case `${COPY_ALL_TABS}${ASCIIDOC}`:
-        case `${COPY_ALL_TABS}${BBCODE_TEXT}`:
-        case `${COPY_ALL_TABS}${BBCODE_URL}`:
-        case `${COPY_ALL_TABS}${HTML}`:
-        case `${COPY_ALL_TABS}${JIRA}`:
-        case `${COPY_ALL_TABS}${MARKDOWN}`:
-        case `${COPY_ALL_TABS}${MEDIAWIKI}`:
-        case `${COPY_ALL_TABS}${REST}`:
-        case `${COPY_ALL_TABS}${TEXT}`:
-        case `${COPY_ALL_TABS}${TEXTILE}`:
-          allTabs = await getAllTabsInfo(menuItemId);
-          break;
-        default:
-      }
-      if (allTabs) {
+      if (menuItemId.startsWith(COPY_ALL_TABS)) {
+        const allTabs = await getAllTabsInfo(menuItemId);
         func.push(runtime.sendMessage({
           [EXEC_COPY_TABS]: {
             allTabs, includeTitleHtml, includeTitleMarkdown,
           },
         }));
       } else {
+        const template = await getFormatTemplate(menuItemId);
+        let content, title, url;
+        if (menuItemId.startsWith(COPY_LINK)) {
+          if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+            content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
+            url = contextUrl;
+          } else {
+            content = document.getElementById(CONTENT_LINK).value || "";
+            title = contextTitle;
+            url = contextUrl;
+          }
+        } else if (menuItemId.startsWith(COPY_PAGE)) {
+          if (menuItemId === `${COPY_PAGE}${BBCODE_URL}`) {
+            content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
+            url = canonicalUrl || tabUrl;
+          } else {
+            content = document.getElementById(CONTENT_PAGE).value || "";
+            title = tabTitle;
+            url = canonicalUrl || tabUrl;
+          }
+        }
         func.push(runtime.sendMessage({
           [EXEC_COPY]: {
             content, includeTitleHtml, includeTitleMarkdown, menuItemId,
-            mimeType, title, url,
+            mimeType, template, title, url,
           },
         }));
       }
@@ -289,8 +349,8 @@
     if (info) {
       const {canonicalUrl, content, isLink, title, url} = info;
       const nodes = document.querySelectorAll(LINK_MENU);
-      const contentLink = document.getElementById(LINK_CONTENT);
-      const contentBBCode = document.getElementById(LINK_BBCODE);
+      const contentLink = document.getElementById(CONTENT_LINK);
+      const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
       contextInfo.isLink = isLink;
       contextInfo.canonicalUrl = canonicalUrl;
       contextInfo.content = content;
@@ -409,9 +469,7 @@
   };
 
   /* listeners */
-  storage.onChanged.addListener(data =>
-    setVars(data).catch(throwErr)
-  );
+  storage.onChanged.addListener(data => setVars(data).catch(throwErr));
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(throwErr)
   );
@@ -424,6 +482,6 @@
       requestContextInfo(tab),
       setTabInfo(tab),
     ])),
-    storage.local.get().then(setVars),
+    fetchFormatData().then(() => storage.local.get()).then(setVars),
   ]).catch(throwErr);
 }
