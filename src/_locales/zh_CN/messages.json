@@ -1,4 +1,7 @@
 {
+  "extensionLocale": {
+    "message": "zh-CN"
+  },
   "extensionDescription": {
    "message": "复制 URL 到剪贴板，支持 HTML, Markdown, 纯文本等多种格式。"
   },
@@ -7,9 +10,6 @@
   },
   "extensionShortName": {
     "message": "url2clipboard"
-  },
-  "extensionLocale": {
-    "message": "zh-CN"
   },
   "copyAllTabsURL": {
     "message": "复制所有标签页 URL"

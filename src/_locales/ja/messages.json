@@ -1,4 +1,7 @@
 {
+  "extensionLocale": {
+    "message": "ja"
+  },
   "extensionDescription": {
    "message": "ドキュメントのURLやリンクのURLを、HTML、Markdown、BBCode、Text形式でクリップボードにコピー"
   },
@@ -7,9 +10,6 @@
   },
   "extensionShortName": {
     "message": "url2clipboard"
-  },
-  "extensionLocale": {
-    "message": "ja"
   },
   "copyAllTabsURL": {
     "message": "すべてのタブの URL をコピー"

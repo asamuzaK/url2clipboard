@@ -1,4 +1,7 @@
 {
+  "extensionLocale": {
+    "message": "en"
+  },
   "extensionDescription": {
    "message": "Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Text."
   },
@@ -7,9 +10,6 @@
   },
   "extensionShortName": {
     "message": "url2clipboard"
-  },
-  "extensionLocale": {
-    "message": "en"
   },
   "copyAllTabsURL": {
     "message": "Copy All Tabs URLs"
