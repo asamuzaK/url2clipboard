@@ -20,7 +20,7 @@
     "lint:eslint": "eslint ."
   },
   "devDependencies": {
-    "addons-linter": "^1.2.2",
+    "addons-linter": "^1.2.4",
     "eslint": "^5.1.0",
     "npm-run-all": "^4.1.3"
   },
