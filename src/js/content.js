@@ -128,7 +128,7 @@
         }
       }
       if (canonical) {
-        const origin = (new URL(document.URL)).origin;
+        const {origin} = new URL(document.URL);
         const url = new URL(canonical.getAttribute("href"), origin);
         if (url) {
           contextInfo.canonicalUrl = url.href;
