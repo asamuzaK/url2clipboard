@@ -14,14 +14,50 @@
   "copyAllTabsURL": {
     "message": "すべてのタブの URL をコピー"
   },
+  "copyAllTabsURL_format": {
+    "message": "すべてのタブの URL を $FORMAT$ でコピー",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
+  },
   "copyLinkURL": {
     "message": "リンクの URL をコピー"
+  },
+  "copyLinkURL_format": {
+    "message": "リンクの URL を $FORMAT$ でコピー",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "copyPageURL": {
     "message": "ページの URL をコピー"
   },
+  "copyPageURL_format": {
+    "message": "ページの URL を $FORMAT$ でコピー",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "タブの URL をコピー"
+  },
+  "copyTabURL_format": {
+    "message": "タブの URL を $FORMAT$ でコピー",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "formats": {
     "message": "フォーマット"
