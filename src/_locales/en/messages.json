@@ -14,14 +14,50 @@
   "copyAllTabsURL": {
     "message": "Copy All Tabs URLs"
   },
+  "copyAllTabsURL_format": {
+    "message": "Copy All Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
+  },
   "copyLinkURL": {
     "message": "Copy Link URL"
+  },
+  "copyLinkURL_format": {
+    "message": "Copy Link URL as $FORMAT$",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "copyPageURL": {
     "message": "Copy Page URL"
   },
+  "copyPageURL_format": {
+    "message": "Copy Page URL as $FORMAT$",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "Copy Tab URL"
+  },
+  "copyTabURL_format": {
+    "message": "Copy Tab URL as $FORMAT$",
+    "placeholders": {
+      "format" : {
+        "content" : "$1",
+        "example" : "Markdown"
+      }
+    }
   },
   "formats": {
     "message": "Formats"

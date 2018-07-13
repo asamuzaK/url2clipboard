@@ -81,20 +81,55 @@
   /* formats */
   const formats = new Map();
 
+  /* enabled formats */
+  const enabledFormats = new Set();
+
+  /**
+   * toggle enabled formats
+   * @param {string} id - format id
+   * @param {boolean} enabled - format is enabled
+   * @returns {void}
+   */
+  const toggleEnabledFormats = async (id, enabled) => {
+    if (!isString(id)) {
+      throw new TypeError(`Expected String but got ${getType(id)}.`);
+    }
+    if (id.startsWith(COPY_ALL_TABS)) {
+      id = id.replace(COPY_ALL_TABS, "");
+    } else if (id.startsWith(COPY_LINK)) {
+      id = id.replace(COPY_LINK, "");
+    } else if (id.startsWith(COPY_PAGE)) {
+      id = id.replace(COPY_PAGE, "");
+    } else if (id.startsWith(COPY_TAB)) {
+      id = id.replace(COPY_TAB, "");
+    }
+    if (formats.has(id)) {
+      if (enabled) {
+        enabledFormats.add(id);
+      } else {
+        enabledFormats.delete(id);
+      }
+    }
+  };
+
   /**
    * fetch format data
-   * @returns {void}
+   * @returns {Promise.<Array>} - result of each handler
    */
   const fetchFormatData = async () => {
     const path = await runtime.getURL(PATH_FORMAT_DATA);
     const data = await fetch(path).then(res => res && res.json());
+    const func = [];
     if (data) {
       const items = Object.entries(data);
       for (const item of items) {
         const [key, value] = item;
+        const {enabled} = value;
         formats.set(key, value);
+        func.push(toggleEnabledFormats(key, enabled));
       }
     }
+    return Promise.all(func);
   };
 
   /**
@@ -279,27 +314,37 @@
    */
   const createContextMenu = async () => {
     const func = [];
-    const items = Object.keys(menuItems);
-    for (const item of items) {
-      const {contexts, id: itemId, title: itemTitle} = menuItems[item];
-      const enabled = false;
-      const itemData = {contexts, enabled};
-      func.push(createMenuItem(itemId, itemTitle, itemData));
-      formats.forEach((value, key) => {
-        const {
-          enabled: formatEnabled, id: formatId, title: formatTitle,
-        } = value;
-        if (formatEnabled) {
-          const subItemId = `${itemId}${key}`;
-          const subItemTitle = formatTitle || formatId;
-          const subItemData = {
-            contexts,
-            enabled: formatEnabled,
-            parentId: itemId,
-          };
-          func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+    if (enabledFormats.size) {
+      const items = Object.keys(menuItems);
+      for (const item of items) {
+        const {contexts, id: itemId, title: itemTitle} = menuItems[item];
+        const enabled = false;
+        const itemData = {contexts, enabled};
+        if (enabledFormats.size === 1) {
+          const [key] = enabledFormats.keys();
+          const {id: keyId, title: keyTitle} = formats.get(key);
+          const formatTitle =
+            i18n.getMessage(`${itemId}_format`, keyTitle || keyId);
+          func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
+        } else {
+          func.push(createMenuItem(itemId, itemTitle, itemData));
+          formats.forEach((value, key) => {
+            const {
+              enabled: formatEnabled, id: formatId, title: formatTitle,
+            } = value;
+            if (formatEnabled) {
+              const subItemId = `${itemId}${key}`;
+              const subItemTitle = formatTitle || formatId;
+              const subItemData = {
+                contexts,
+                enabled: formatEnabled,
+                parentId: itemId,
+              };
+              func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+            }
+          });
         }
-      });
+      }
     }
     return Promise.all(func);
   };
@@ -310,28 +355,30 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const updateContextMenu = async tabId => {
-    const {isWebExt} = vars;
-    const enabled = enabledTabs.get(tabId) || false;
-    const items = Object.keys(menuItems);
     const func = [];
-    for (const item of items) {
-      const {contexts, id: itemId} = menuItems[item];
-      if (contexts.includes("tab")) {
-        isWebExt && func.push(contextMenus.update(itemId, {enabled}));
-      } else {
-        func.push(contextMenus.update(itemId, {contexts, enabled}));
-      }
-      formats.forEach((value, key) => {
-        const {enabled: formatEnabled} = value;
-        if (formatEnabled) {
-          const subItemId = `${itemId}${key}`;
-          if (contexts.includes("tab")) {
-            isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
-          } else {
-            func.push(contextMenus.update(subItemId, {enabled}));
-          }
+    if (enabledFormats.size) {
+      const {isWebExt} = vars;
+      const enabled = enabledTabs.get(tabId) || false;
+      const items = Object.keys(menuItems);
+      for (const item of items) {
+        const {contexts, id: itemId} = menuItems[item];
+        if (contexts.includes("tab")) {
+          isWebExt && func.push(contextMenus.update(itemId, {enabled}));
+        } else {
+          func.push(contextMenus.update(itemId, {contexts, enabled}));
         }
-      });
+        formats.forEach((value, key) => {
+          const {enabled: formatEnabled} = value;
+          if (formatEnabled) {
+            const subItemId = `${itemId}${key}`;
+            if (contexts.includes("tab")) {
+              isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
+            } else {
+              func.push(contextMenus.update(subItemId, {enabled}));
+            }
+          }
+        });
+      }
     }
     return Promise.all(func);
   };
@@ -629,9 +676,16 @@
             const formatItem = formats.get(item);
             formatItem.enabled = !!checked;
             formats.set(item, formatItem);
+            if (changed) {
+              func.push(
+                toggleEnabledFormats(item, !!checked)
+                  .then(() => contextMenus.removeAll())
+                  .then(createContextMenu)
+              );
+            } else {
+              func.push(toggleEnabledFormats(item, !!checked));
+            }
           }
-          changed &&
-            func.push(contextMenus.removeAll().then(createContextMenu));
           break;
         }
       }
