@@ -19,50 +19,51 @@
     }
   </style>
   <symbol id="board">
-    <path stroke-width="16" fill="none"
-          d="m 34,28 h 60 c 4.432,0 8,3.568 8,8 v 72 c 0,4.432 -3.568,8 -8,8
-             H 34 c -4.432,0 -8,-3.568 -8,-8 V 36 c 0,-4.432 3.568,-8 8,-8 z"/>
+    <path d="M 34 20 C 25.136 20 18 27.136 18 36
+             L 18 108 C 18 116.864 25.136 124 34 124
+             L 94 124 C 102.864 124 110 116.864 110 108
+             L 110 36 C 110 27.136 102.864 20 94 20 L 34 20 z
+             M 34 36 L 94 36 L 94 108 L 34 108 L 34 36 z"/>
   </symbol>
   <symbol id="clip">
     <path d="M 64 4 A 12 12 0 0 0 52 16 L 42 16 L 42 44 L 86 44 L 86 16 L 76 16
              A 12 12 0 0 0 64 4 z"/>
   </symbol>
+  <symbol id="outline">
+    <path d="M 64,4 A 12,12 0 0 0 52,16 H 42 V 44 H 86 V 16 H 76
+             A 12,12 0 0 0 64,4 Z
+             M 34,20 c -8.864,0 -16,7.136 -16,16
+             v 72 c 0,8.864 7.136,16 16,16 h 60 c 8.864,0 16,-7.136 16,-16
+             V 36 c 0,-8.864 -7.136,-16 -16,-16 z
+             m 0,16 h 60 v 72 H 34 Z"/>
+  </symbol>
   <g id="context">
-    <use href="#board" stroke="context-fill"
-         stroke-opacity="context-fill-opacity"/>
-    <use href="#clip" fill="context-fill"
+    <use href="#outline" fill="context-fill"
          fill-opacity="context-fill-opacity"/>
   </g>
-  <g id="photon_gray_90">
-    <use href="#board" stroke="#0C0C0D" stroke-opacity="0.8"/>
-    <use href="#clip" fill="#0C0C0D" fill-opacity="0.8"/>
+  <g id="dark">
+    <use href="#outline" fill="#0C0C0D" fill-opacity="0.8"/>
   </g>
-  <g id="photon_gray_10">
-    <use href="#board" stroke="#F9F9FA" stroke-opacity="0.8"/>
-    <use href="#clip" fill="#F9F9FA" fill-opacity="0.8"/>
+  <g id="light">
+    <use href="#outline" fill="#F9F9FA" fill-opacity="0.8"/>
   </g>
   <g id="black">
-    <use href="#board" stroke="#000"/>
-    <use href="#clip" fill="#000"/>
+    <use href="#outline" fill="#000"/>
   </g>
   <g id="neutral">
-    <use href="#board" stroke="#808080"/>
-    <use href="#clip" fill="#808080"/>
+    <use href="#outline" fill="#808080"/>
   </g>
   <g id="gray">
-    <use href="#board" stroke="#4C4C4C"/>
-    <use href="#clip" fill="#4C4C4C"/>
+    <use href="#outline" fill="#4C4C4C"/>
   </g>
   <g id="white">
-    <use href="#board" stroke="#FFF"/>
-    <use href="#clip" fill="#FFF"/>
+    <use href="#outline" fill="#FFF"/>
   </g>
   <g id="off">
-    <use href="#board" stroke="ButtonShadow"/>
-    <use href="#clip" fill="ButtonShadow"/>
+    <use href="#outline" fill="ButtonShadow"/>
   </g>
   <g id="color">
-    <use href="#board" stroke="#002147"/>
+    <use href="#board" fill="#002147"/>
     <use href="#clip" fill="#E66000"/>
   </g>
 </svg>
