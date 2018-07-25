@@ -119,23 +119,35 @@
   "optionsIconColorLabel_ariaLabel": {
     "message": "カラーアイコン"
   },
+  "optionsIconDark": {
+    "message": ""
+  },
+  "optionsIconDark_alt": {
+    "message": "暗色"
+  },
+  "optionsIconDarkLabel": {
+    "message": ""
+  },
+  "optionsIconDarkLabel_ariaLabel": {
+    "message": "暗色アイコン"
+  },
   "optionsIconDetail": {
     "message": "アイコンを選択してください。"
   },
   "optionsIconDetail2": {
     "message": "「自動」はGecko（57.0以降）しか適用されません。また「about:config」から「svg.context-properties.content.enabled」の値を「true」に変更する必要があります。"
   },
-  "optionsIconGray": {
+  "optionsIconLight": {
     "message": ""
   },
-  "optionsIconGray_alt": {
-    "message": "グレー"
+  "optionsIconLight_alt": {
+    "message": "明色"
   },
-  "optionsIconGrayLabel": {
+  "optionsIconLightLabel": {
     "message": ""
   },
-  "optionsIconGrayLabel_ariaLabel": {
-    "message": "グレーアイコン"
+  "optionsIconLightLabel_ariaLabel": {
+    "message": "明色アイコン"
   },
   "optionsIconWhite": {
     "message": ""

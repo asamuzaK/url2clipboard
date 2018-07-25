@@ -119,23 +119,35 @@
   "optionsIconColorLabel_ariaLabel": {
     "message": "彩色图标"
   },
+  "optionsIconDark": {
+    "message": ""
+  },
+  "optionsIconDark_alt": {
+    "message": "Dark"
+  },
+  "optionsIconDarkLabel": {
+    "message": ""
+  },
+  "optionsIconDarkLabel_ariaLabel": {
+    "message": "Dark Icon"
+  },
   "optionsIconDetail": {
     "message": "选择图标。"
   },
   "optionsIconDetail2": {
     "message": "“自动” 只适用 Firefox 57 或更新版本，同时需要在 \"about:config\" 中手动将 \"svg.context-properties.content.enabled\" 调整为 \"true\"。"
   },
-  "optionsIconGray": {
+  "optionsIconLight": {
     "message": ""
   },
-  "optionsIconGray_alt": {
-    "message": "灰色"
+  "optionsIconLight_alt": {
+    "message": "Light"
   },
-  "optionsIconGrayLabel": {
+  "optionsIconLightLabel": {
     "message": ""
   },
-  "optionsIconGrayLabel_ariaLabel": {
-    "message": "灰色图标"
+  "optionsIconLightLabel_ariaLabel": {
+    "message": "Light Icon"
   },
   "optionsIconWhite": {
     "message": ""

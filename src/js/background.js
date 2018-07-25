@@ -23,7 +23,8 @@
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
   const ICON_COLOR = "buttonIconColor";
-  const ICON_GRAY = "buttonIconGray";
+  const ICON_DARK = "buttonIconDark";
+  const ICON_LIGHT = "buttonIconLight";
   const ICON_WHITE = "buttonIconWhite";
   const INCLUDE_TITLE_HTML = "includeTitleHtml";
   const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
@@ -46,7 +47,7 @@
   const vars = {
     enabled: false,
     hideOnLink: false,
-    iconId: "#context",
+    iconId: "",
     includeTitleHtml: true,
     includeTitleMarkdown: true,
     isWebExt: runtime.id === WEBEXT_ID,
@@ -653,7 +654,8 @@
         case ICON_AUTO:
         case ICON_BLACK:
         case ICON_COLOR:
-        case ICON_GRAY:
+        case ICON_DARK:
+        case ICON_LIGHT:
         case ICON_WHITE:
           if (checked) {
             vars.iconId = value;

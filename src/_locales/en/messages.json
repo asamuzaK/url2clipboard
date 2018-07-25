@@ -119,23 +119,35 @@
   "optionsIconColorLabel_ariaLabel": {
     "message": "Color Icon"
   },
+  "optionsIconDark": {
+    "message": ""
+  },
+  "optionsIconDark_alt": {
+    "message": "Dark"
+  },
+  "optionsIconDarkLabel": {
+    "message": ""
+  },
+  "optionsIconDarkLabel_ariaLabel": {
+    "message": "Dark Icon"
+  },
   "optionsIconDetail": {
     "message": "Choose the icon."
   },
   "optionsIconDetail2": {
     "message": "\"Auto\" only applies to Gecko (57.0 and later), and you need to set \"svg.context-properties.content.enabled\" to \"true\" from \"about:config\"."
   },
-  "optionsIconGray": {
+  "optionsIconLight": {
     "message": ""
   },
-  "optionsIconGray_alt": {
-    "message": "Gray"
+  "optionsIconLight_alt": {
+    "message": "Light"
   },
-  "optionsIconGrayLabel": {
+  "optionsIconLightLabel": {
     "message": ""
   },
-  "optionsIconGrayLabel_ariaLabel": {
-    "message": "Gray Icon"
+  "optionsIconLightLabel_ariaLabel": {
+    "message": "Light Icon"
   },
   "optionsIconWhite": {
     "message": ""
