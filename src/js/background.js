@@ -50,7 +50,7 @@
     includeTitleMarkdown: true,
     isWebExt: runtime.id === WEBEXT_ID,
     mimeType: MIME_PLAIN,
-    promptContent: true,
+    promptContent: false,
   };
 
   /**
