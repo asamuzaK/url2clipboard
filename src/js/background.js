@@ -18,7 +18,6 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
-  const HIDE_ON_LINK = "hideOnLink";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -46,7 +45,6 @@
   /* variables */
   const vars = {
     enabled: false,
-    hideOnLink: false,
     iconId: "",
     includeTitleHtml: true,
     includeTitleMarkdown: true,
@@ -255,7 +253,7 @@
   const menuItems = {
     [COPY_PAGE]: {
       id: COPY_PAGE,
-      contexts: ["all"],
+      contexts: ["page", "selection"],
       title: i18n.getMessage(COPY_PAGE),
     },
     [COPY_LINK]: {
@@ -273,16 +271,6 @@
       contexts: ["tab"],
       title: i18n.getMessage(COPY_ALL_TABS),
     },
-  };
-
-  /**
-   * toggle page contexts
-   * @returns {void}
-   */
-  const togglePageContexts = async () => {
-    const {hideOnLink} = vars;
-    menuItems[COPY_PAGE].contexts =
-      hideOnLink && ["page", "selection"] || ["all"];
   };
 
   /**
@@ -641,16 +629,6 @@
     if (item && obj) {
       const {checked, value} = obj;
       switch (item) {
-        case HIDE_ON_LINK:
-          vars[item] = !!checked;
-          if (changed) {
-            func.push(
-              togglePageContexts().then(getActiveTabId).then(updateContextMenu)
-            );
-          } else {
-            func.push(togglePageContexts());
-          }
-          break;
         case ICON_AUTO:
         case ICON_BLACK:
         case ICON_COLOR:
