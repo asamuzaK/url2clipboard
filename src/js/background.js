@@ -18,7 +18,6 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
-  const EXT_WEBEXT = "url2clipboard@asamuzak.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -423,7 +422,8 @@
             break;
           }
           default: {
-            if (runtime.id === EXT_WEBEXT) {
+            const {isWebExt} = vars;
+            if (isWebExt) {
               vars.iconId = ICON_DARK_ID;
             } else {
               vars.iconId = "";
