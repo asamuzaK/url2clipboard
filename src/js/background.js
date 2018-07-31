@@ -5,7 +5,7 @@
 {
   /* api */
   const {
-    browserAction, contextMenus, i18n, runtime, storage, tabs,
+    browserAction, contextMenus, i18n, management, runtime, storage, tabs,
   } = browser;
 
   /* constants */
@@ -18,12 +18,15 @@
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const EXT_NAME = "extensionName";
+  const EXT_WEBEXT = "url2clipboard@asamuzak.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
   const ICON_COLOR = "buttonIconColor";
   const ICON_DARK = "buttonIconDark";
+  const ICON_DARK_ID = "#dark";
   const ICON_LIGHT = "buttonIconLight";
+  const ICON_LIGHT_ID = "#light";
   const ICON_WHITE = "buttonIconWhite";
   const INCLUDE_TITLE_HTML = "includeTitleHtml";
   const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
@@ -34,6 +37,8 @@
   const OUTPUT_PLAIN = "outputTextPlain";
   const PATH_FORMAT_DATA = "data/format.json";
   const PROMPT = "promptContent";
+  const THEME_DARK = "firefox-compact-dark@mozilla.org@personas.mozilla.org";
+  const THEME_LIGHT = "firefox-compact-light@mozilla.org@personas.mozilla.org";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const WEBEXT_ID = "url2clipboard@asamuzak.jp";
@@ -389,6 +394,47 @@
   };
 
   /**
+   * get enabled theme
+   * @returns {Array} - array of management.ExtensionInfo
+   */
+  const getEnabledTheme = async () => {
+    const themes = await management.getAll().then(arr => arr.filter(info =>
+      info.type && info.type === "theme" && info.enabled && info
+    ));
+    return themes;
+  };
+
+  /**
+   * set default icon
+   * @returns {void}
+   */
+  const setDefaultIcon = async () => {
+    const items = await getEnabledTheme();
+    if (Array.isArray(items) && items.length) {
+      for (const item of items) {
+        const {id: themeId} = item;
+        switch (themeId) {
+          case THEME_DARK: {
+            vars.iconId = ICON_LIGHT_ID;
+            break;
+          }
+          case THEME_LIGHT: {
+            vars.iconId = ICON_DARK_ID;
+            break;
+          }
+          default: {
+            if (runtime.id === EXT_WEBEXT) {
+              vars.iconId = ICON_DARK_ID;
+            } else {
+              vars.iconId = "";
+            }
+          }
+        }
+      }
+    }
+  };
+
+  /**
    * toggle enabled
    * @param {boolean} enabled - enabled
    * @returns {void}
@@ -712,7 +758,10 @@
   );
 
   /* startup */
-  fetchFormatData().then(() => storage.local.get()).then(setVars).then(() =>
+  Promise.all([
+    fetchFormatData(),
+    setDefaultIcon(),
+  ]).then(() => storage.local.get()).then(setVars).then(() =>
     Promise.all([
       setIcon(),
       createContextMenu(),
