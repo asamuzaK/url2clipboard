@@ -17,9 +17,9 @@
   "copyAllTabsURL_format": {
     "message": "Copy All Tabs URLs as $FORMAT$",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -29,9 +29,9 @@
   "copyLinkURL_format": {
     "message": "Copy Link URL as $FORMAT$",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -41,9 +41,9 @@
   "copyPageURL_format": {
     "message": "Copy Page URL as $FORMAT$",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -53,9 +53,9 @@
   "copyTabURL_format": {
     "message": "Copy Tab URL as $FORMAT$",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -68,17 +68,11 @@
   "optionsEnableFormatDetail": {
     "message": "在右键菜单中显示 $FORMAT$。",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
-  },
-  "optionsHideOnLink": {
-    "message": "不在锚点元素上显示 \"复制页面 URL\" 右键菜单"
-  },
-  "optionsHideOnLinkDetail": {
-    "message": "选中后会在锚点元素上隐藏 \"复制页面 URL\" 右键菜单."
   },
   "optionsHtmlOutputDetail": {
     "message": "选择复制为纯文本或超链接。"

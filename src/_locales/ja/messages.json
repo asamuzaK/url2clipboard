@@ -3,7 +3,7 @@
     "message": "ja"
   },
   "extensionDescription": {
-   "message": "ドキュメントのURLやリンクのURLを、HTML、Markdown、BBCode、Text形式でクリップボードにコピー"
+   "message": "ドキュメントのURLやリンクのURLを、HTML、Markdown、Text形式などでクリップボードにコピー"
   },
   "extensionName": {
     "message": "URL をクリップボードにコピー"
@@ -17,9 +17,9 @@
   "copyAllTabsURL_format": {
     "message": "すべてのタブの URL を $FORMAT$ でコピー",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -29,9 +29,9 @@
   "copyLinkURL_format": {
     "message": "リンクの URL を $FORMAT$ でコピー",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -41,9 +41,9 @@
   "copyPageURL_format": {
     "message": "ページの URL を $FORMAT$ でコピー",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -53,9 +53,9 @@
   "copyTabURL_format": {
     "message": "タブの URL を $FORMAT$ でコピー",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
   },
@@ -68,17 +68,11 @@
   "optionsEnableFormatDetail": {
     "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
     "placeholders": {
-      "format" : {
-        "content" : "$1",
-        "example" : "Markdown"
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
       }
     }
-  },
-  "optionsHideOnLink": {
-    "message": "アンカー要素では「ページのURLをコピー」のコンテキストメニューを表示しない"
-  },
-  "optionsHideOnLinkDetail": {
-    "message": "有効化すると、アンカー要素上では「ページのURLをコピー」のコンテキストメニューを非表示にします。"
   },
   "optionsHtmlOutputDetail": {
     "message": "プレーンテキストとしてペーストするかハイパーリンクとしてペーストするか選択してください。"
