@@ -37,30 +37,26 @@
              c 0,-8.864 -7.136,-16 -16,-16 z
              m 0,16 h 60 v 72 H 34 Z"/>
   </symbol>
-  <g id="context">
-    <use href="#outline" fill="context-fill"
-         fill-opacity="context-fill-opacity"/>
+  <g id="black" fill="#000">
+    <use href="#outline"/>
   </g>
-  <g id="dark">
-    <use href="#outline" fill="#0C0C0D" fill-opacity="0.8"/>
+  <g id="white" fill="#FFF">
+    <use href="#outline"/>
   </g>
-  <g id="light">
-    <use href="#outline" fill="#F9F9FA" fill-opacity="0.8"/>
+  <g id="dark" fill="#0C0C0D" fill-opacity="0.8">
+    <use href="#outline"/>
   </g>
-  <g id="black">
-    <use href="#outline" fill="#000"/>
+  <g id="light" fill="#F9F9FA" fill-opacity="0.8">
+    <use href="#outline"/>
   </g>
-  <g id="neutral">
-    <use href="#outline" fill="#808080"/>
+  <g id="context" fill="context-fill" fill-opacity="context-fill-opacity">
+    <use href="#outline"/>
   </g>
-  <g id="gray">
-    <use href="#outline" fill="#4C4C4C"/>
+  <g id="current" fill="currentColor">
+    <use href="#outline"/>
   </g>
-  <g id="white">
-    <use href="#outline" fill="#FFF"/>
-  </g>
-  <g id="off">
-    <use href="#outline" fill="ButtonShadow"/>
+  <g id="off" fill="ButtonShadow">
+    <use href="#outline"/>
   </g>
   <g id="color">
     <use href="#board" fill="#002147"/>
