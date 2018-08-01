@@ -90,12 +90,29 @@
               </span>
               <span class="subItem">
                 <input type="checkbox" id="includeTitleHtml" checked="checked"
-                       data-sub-item-of="HTML"/>
+                       data-sub-item-of="HTML" />
                 <label for="includeTitleHtml" class="label"
-                       data-i18n="optionsIncludeTitle"
-                       aria-details="enableHtmlDetail">
-                  Include Title
+                       data-i18n="optionsIncludeTitle">
+                  Include title
                 </label>
+              </span>
+              <span class="subItem">
+                <span class="label" data-i18n="optionsHtmlOutputLabel">
+                  Paste as:
+                </span>
+                <span class="htmlOutput">
+                  <label for="outputTextPlain">
+                    <input type="radio" checked="checked" id="outputTextPlain"
+                           name="mimeType" value="text/plain"
+                           data-sub-item-of="HTML" />
+                    text/plain
+                  </label>
+                  <label for="outputTextHtml">
+                    <input type="radio" id="outputTextHtml" name="mimeType"
+                           value="text/html" data-sub-item-of="HTML" />
+                    text/html
+                  </label>
+                </span>
               </span>
             </p>
             <details id="enableHtmlDetail">
@@ -121,7 +138,7 @@
                 <label for="includeTitleMarkdown" class="label"
                        data-i18n="optionsIncludeTitle"
                        aria-details="enableMarkdownDetail">
-                  Include Title
+                  Include title
                 </label>
               </span>
             </p>
@@ -269,6 +286,35 @@
                   Text
                 </label>
               </span>
+              <span class="subItem">
+                <span class="textOutput">
+                  <span>
+                    <input type="radio" checked="checked" id="outputTextUrl"
+                           name="textOutput" value="text_url"
+                           data-sub-item-of="Text" />
+                    <label for="outputTextUrl"
+                           data-i18n="optionsTextOutputTextUrlLabel">
+                      Copy text and URL
+                    </label>
+                  </span>
+                  <span>
+                    <input type="radio" id="outputOnlyText" name="textOutput"
+                           value="text" data-sub-item-of="Text" />
+                    <label for="outputOnlyText"
+                           data-i18n="optionsTextOutputOnlyTextLabel">
+                      Copy only text
+                    </label>
+                  </span>
+                  <span>
+                    <input type="radio" id="outputOnlyUrl" name="textOutput"
+                           value="url" data-sub-item-of="Text" />
+                    <label for="outputOnlyUrl"
+                           data-i18n="optionsTextOutputOnlyUrlLabel">
+                      Copy only URL
+                    </label>
+                  </span>
+                </span>
+              </span>
             </p>
             <details id="enableTextDetail">
               <div>
@@ -298,34 +344,6 @@
               <div>
                 <p data-i18n="optionsPromptContentDetail">
                   If enabled, prompt window will appear when copying and you can edit content text of the link.
-                </p>
-              </div>
-            </details>
-          </div>
-          <div>
-            <p>
-              <span>
-                <span class="label" data-i18n="optionsHtmlOutputLabel">
-                  When creating an HTML formatted URL, paste it as:
-                </span>
-                <span class="htmlOutput">
-                  <label for="outputTextPlain" aria-details="htmlOutputDetail">
-                    <input type="radio" checked="checked" id="outputTextPlain"
-                           name="mimeType" value="text/plain" />
-                    text/plain
-                  </label>
-                  <label for="outputTextHtml" aria-details="htmlOutputDetail">
-                    <input type="radio" id="outputTextHtml" name="mimeType"
-                           value="text/html" />
-                    text/html
-                  </label>
-                </span>
-              </span>
-            </p>
-            <details id="htmlOutputDetail">
-              <div>
-                <p data-i18n="optionsHtmlOutputDetail">
-                  Choose whether to paste as plain text or as a hyperlink.
                 </p>
               </div>
             </details>

@@ -74,11 +74,8 @@
       }
     }
   },
-  "optionsHtmlOutputDetail": {
-    "message": "选择复制为纯文本或超链接。"
-  },
   "optionsHtmlOutputLabel": {
-    "message": "格式化 HTML 为："
+    "message": "Paste as:"
   },
   "optionsIconAuto": {
     "message": "自动"
@@ -155,14 +152,23 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "白色图标"
   },
-  "optionsPromptContent": {
-    "message": "编辑链接标题"
-  },
   "optionsIncludeTitle": {
     "message": "包括标题"
   },
+  "optionsPromptContent": {
+    "message": "编辑链接标题"
+  },
   "optionsPromptContentDetail": {
     "message": "从右键菜单复制链接时提示修改链接信息"
+  },
+  "optionsTextOutputOnlyTextLabel": {
+    "message": "Copy only text"
+  },
+  "optionsTextOutputOnlyUrlLabel": {
+    "message": "Copy only URL"
+  },
+  "optionsTextOutputTextUrlLabel": {
+    "message": "Copy text and URL"
   },
   "optionsTitle": {
     "message": "复制链接到剪切板 - 设置"

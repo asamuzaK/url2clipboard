@@ -27,8 +27,14 @@
     `#${LINK_DETAILS} button,#${CONTENT_LINK},#${CONTENT_LINK_BBCODE}`;
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
-  const OUTPUT_HYPER = "outputTextHtml";
-  const OUTPUT_PLAIN = "outputTextPlain";
+  const OUTPUT_HTML_HYPER = "outputTextHtml";
+  const OUTPUT_HTML_PLAIN = "outputTextPlain";
+  const OUTPUT_TEXT = "text";
+  const OUTPUT_TEXT_AND_URL = "text_url";
+  const OUTPUT_TEXT_TEXT = "outputOnlyText";
+  const OUTPUT_TEXT_TEXT_URL = "outputTextUrl";
+  const OUTPUT_TEXT_URL = "outputOnlyUrl";
+  const OUTPUT_URL = "url";
   const PATH_FORMAT_DATA = "data/format.json";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -39,9 +45,10 @@
 
   /* variables */
   const vars = {
-    mimeType: MIME_PLAIN,
     includeTitleHtml: true,
     includeTitleMarkdown: true,
+    mimeType: MIME_PLAIN,
+    textOutput: OUTPUT_TEXT_AND_URL,
   };
 
   /**
@@ -123,19 +130,30 @@
         id: itemId, template: itemTmpl,
         templateWithoutTitle: itemTmplWoTitle,
       } = item;
-      const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
+      const {
+        includeTitleHtml, includeTitleMarkdown, mimeType, textOutput,
+      } = vars;
       switch (itemId) {
-        case HTML:
+        case HTML: {
           template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
           if (mimeType === MIME_HTML) {
             template = `${template}<br />`;
           }
           break;
-        case MARKDOWN:
+        }
+        case MARKDOWN: {
           template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
           break;
-        default:
-          template = itemTmpl;
+        }
+        default: {
+          if (textOutput === OUTPUT_TEXT) {
+            template = itemTmpl.replace(/%url%/g, "").trim();
+          } else if (textOutput === OUTPUT_URL) {
+            template = itemTmpl.replace(/%content%/g, "").trim();
+          } else {
+            template = itemTmpl;
+          }
+        }
       }
     }
     return template || null;
@@ -438,12 +456,18 @@
         case INCLUDE_TITLE_MARKDOWN:
           vars[item] = !!checked;
           break;
-        case OUTPUT_HYPER:
-        case OUTPUT_PLAIN:
+        case OUTPUT_HTML_HYPER:
+        case OUTPUT_HTML_PLAIN:
           if (checked) {
             vars.mimeType = value;
           }
           break;
+        case OUTPUT_TEXT_TEXT:
+        case OUTPUT_TEXT_TEXT_URL:
+        case OUTPUT_TEXT_URL:
+          if (checked) {
+            vars.textOutput = value;
+          }
         default:
       }
     }

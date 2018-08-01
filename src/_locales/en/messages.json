@@ -74,11 +74,8 @@
       }
     }
   },
-  "optionsHtmlOutputDetail": {
-    "message": "Choose whether to paste as plain text or as a hyperlink."
-  },
   "optionsHtmlOutputLabel": {
-    "message": "When creating an HTML formatted URL, paste it as:"
+    "message": "Paste as:"
   },
   "optionsIconAuto": {
     "message": "Auto"
@@ -156,13 +153,22 @@
     "message": "White Icon"
   },
   "optionsIncludeTitle": {
-    "message": "Include Title"
+    "message": "Include title"
   },
   "optionsPromptContent": {
     "message": "Edit contents when copying"
   },
   "optionsPromptContentDetail": {
     "message": "If enabled, prompt window will appear when copying and you can edit content text of the link."
+  },
+  "optionsTextOutputOnlyTextLabel": {
+    "message": "Copy only text"
+  },
+  "optionsTextOutputOnlyUrlLabel": {
+    "message": "Copy only URL"
+  },
+  "optionsTextOutputTextUrlLabel": {
+    "message": "Copy text and URL"
   },
   "optionsTitle": {
     "message": "Copy URL To Clipboard - Options"

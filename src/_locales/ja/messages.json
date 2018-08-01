@@ -74,11 +74,8 @@
       }
     }
   },
-  "optionsHtmlOutputDetail": {
-    "message": "プレーンテキストとしてペーストするかハイパーリンクとしてペーストするか選択してください。"
-  },
   "optionsHtmlOutputLabel": {
-    "message": "HTML フォーマットで URL を生成した時の出力形式："
+    "message": "貼り付け形式："
   },
   "optionsIconAuto": {
     "message": "自動"
@@ -163,6 +160,15 @@
   },
   "optionsPromptContentDetail": {
     "message": "有効化すると、コピー時にプロンプ​​トウィンドウが表示されて、リンクのコンテンツテキストを編集できます。"
+  },
+  "optionsTextOutputOnlyTextLabel": {
+    "message": "テキストだけをコピー"
+  },
+  "optionsTextOutputOnlyUrlLabel": {
+    "message": "URL だけをコピー"
+  },
+  "optionsTextOutputTextUrlLabel": {
+    "message": "テキストと URL をコピー"
   },
   "optionsTitle": {
     "message": "URL をクリップボードにコピー - 設定"

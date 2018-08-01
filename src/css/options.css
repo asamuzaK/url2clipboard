@@ -129,9 +129,10 @@ label[for=buttonIconAuto] {
 }
 .htmlOutput {
   box-sizing: border-box;
-  display: flex;
+  display: inline-flex;
   flex-flow: row wrap;
   align-items: flex-start;
+  margin-right: 1rem;
   min-width: min-content;
   width: fit-content;
 }
@@ -139,6 +140,16 @@ label[for=buttonIconAuto] {
   flex: 1 1 min-content;
   display: inline-block;
   margin-right: 2rem;
+}
+.textOutput {
+  box-sizing: border-box;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-right: 1rem;
+  min-width: min-content;
+  width: fit-content;
 }
 label + input[type=radio] {
   margin-left: 0.5rem;
