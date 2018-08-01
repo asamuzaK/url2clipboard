@@ -465,6 +465,7 @@
           if (checked) {
             vars.textOutput = value;
           }
+          break;
         default:
       }
     }
