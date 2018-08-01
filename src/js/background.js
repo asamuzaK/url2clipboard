@@ -428,14 +428,12 @@
       for (const item of items) {
         const {id: themeId} = item;
         switch (themeId) {
-          case THEME_DARK: {
+          case THEME_DARK:
             vars.iconId = ICON_LIGHT_ID;
             break;
-          }
-          case THEME_LIGHT: {
+          case THEME_LIGHT:
             vars.iconId = ICON_DARK_ID;
             break;
-          }
           default: {
             const {isWebExt} = vars;
             if (isWebExt) {
@@ -734,7 +732,6 @@
               func.push(toggleEnabledFormats(item, !!checked));
             }
           }
-          break;
         }
       }
     }
