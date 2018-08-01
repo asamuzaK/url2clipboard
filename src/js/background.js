@@ -184,18 +184,16 @@
         includeTitleHtml, includeTitleMarkdown, mimeType, textOutput,
       } = vars;
       switch (itemId) {
-        case HTML: {
+        case HTML:
           template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
           if (mimeType === MIME_HTML) {
             template = `${template}<br />`;
           }
           break;
-        }
-        case MARKDOWN: {
+        case MARKDOWN:
           template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
           break;
-        }
-        default: {
+        default:
           if (textOutput === OUTPUT_TEXT) {
             template = itemTmpl.replace(/%url%/g, "").trim();
           } else if (textOutput === OUTPUT_URL) {
@@ -203,7 +201,6 @@
           } else {
             template = itemTmpl;
           }
-        }
       }
     }
     return template || null;
