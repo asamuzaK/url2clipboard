@@ -146,10 +146,13 @@ label[for=buttonIconAuto] {
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
-  justify-content: space-between;
   margin-right: 1rem;
   min-width: min-content;
   width: fit-content;
+}
+.textOutput > span {
+  flex: 1 1 min-content;
+  margin-right: 2rem;
 }
 label + input[type=radio] {
   margin-left: 0.5rem;
