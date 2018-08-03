@@ -55,9 +55,6 @@
   <g id="current" fill="currentColor">
     <use href="#outline"/>
   </g>
-  <g id="off" fill="ButtonShadow">
-    <use href="#outline"/>
-  </g>
   <g id="color">
     <use href="#board" fill="#002147"/>
     <use href="#clip" fill="#E66000"/>

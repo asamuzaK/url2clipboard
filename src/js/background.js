@@ -54,7 +54,6 @@
 
   /* variables */
   const vars = {
-    enabled: false,
     iconId: "",
     includeTitleHtml: true,
     includeTitleMarkdown: true,
@@ -396,10 +395,10 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const setIcon = async () => {
-    const {enabled, iconId} = vars;
+    const {iconId} = vars;
     const name = await i18n.getMessage(EXT_NAME);
     const icon = await runtime.getURL(ICON);
-    const path = enabled && `${icon}${iconId}` || `${icon}#off`;
+    const path = iconId && `${icon}${iconId}` || icon;
     const title = `${name} (${KEY})`;
     return Promise.all([
       browserAction.setIcon({path}),
@@ -448,23 +447,6 @@
   };
 
   /**
-   * toggle enabled
-   * @param {boolean} enabled - enabled
-   * @returns {void}
-   */
-  const toggleEnabled = async (enabled = false) => {
-    enabled && (vars.enabled = !!enabled);
-    if (!vars.enabled) {
-      for (const [, value] of enabledTabs) {
-        vars.enabled = !!value;
-        if (vars.enabled) {
-          break;
-        }
-      }
-    }
-  };
-
-  /**
    * set enabled tab
    * @param {number} tabId - tab ID
    * @param {Object} tab - tabs.Tab
@@ -476,7 +458,6 @@
     const info = {tabId, enabled};
     if (tab || await isTab(tabId)) {
       enabledTabs.set(tabId, !!enabled);
-      await toggleEnabled(enabled);
     }
     return info;
   };
@@ -484,20 +465,20 @@
   /**
    * remove enabled tab
    * @param {number} tabId - tab ID
-   * @returns {Promise.<Array>} - results of each handler
+   * @returns {?AsyncFunction} - updateContextMenu()
    */
   const removeEnabledTab = async tabId => {
-    const func = [];
+    let func;
     if (tabId && enabledTabs.has(tabId)) {
       const bool = enabledTabs.delete(tabId);
       if (bool) {
         const id = await getActiveTabId();
-        vars.enabled = false;
-        await toggleEnabled();
-        func.push(setIcon(), updateContextMenu(id));
+        if (Number.isInteger(id)) {
+          func = updateContextMenu(id);
+        }
       }
     }
-    return Promise.all(func);
+    return func || null;
   };
 
   /* context info */
@@ -605,21 +586,15 @@
   /**
    * handle active tab
    * @param {Object} info - active tab info
-   * @returns {Promise.<Array>} - results of each handler
+   * @returns {?AsyncFunction} - updateContextMenu()
    */
   const handleActiveTab = async (info = {}) => {
     const {tabId} = info;
-    const func = [];
+    let func;
     if (await isTab(tabId)) {
-      const {enabled} = vars;
-      if (enabled) {
-        func.push(browserAction.enable(tabId));
-      } else {
-        func.push(browserAction.disable(tabId));
-      }
-      func.push(setIcon(), updateContextMenu(tabId));
+      func = updateContextMenu(tabId);
     }
-    return Promise.all(func);
+    return func || null;
   };
 
   /**
@@ -666,7 +641,7 @@
           case "load":
             func.push(
               setEnabledTab(tabId, tab, obj).then(handleActiveTab),
-              updateContextInfo(obj)
+              updateContextInfo(obj),
             );
             break;
           default:
@@ -761,7 +736,7 @@
     extractClickedData({info, tab}).catch(throwErr)
   );
   storage.onChanged.addListener(data =>
-    setVars(data).then(setIcon).catch(throwErr)
+    setVars(data).catch(throwErr)
   );
   runtime.onMessage.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(throwErr)
