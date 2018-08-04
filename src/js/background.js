@@ -9,6 +9,7 @@
   } = browser;
 
   /* constants */
+  const {TAB_ID_NONE} = tabs;
   const COPY_ALL_TABS = "copyAllTabsURL";
   const COPY_LINK = "copyLinkURL";
   const COPY_PAGE = "copyPageURL";
@@ -17,7 +18,7 @@
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
-  const EXT_NAME = "extensionName";
+  const EXT_TST = "treestyletab@piro.sakura.ne.jp";
   const ICON = "img/icon.svg";
   const ICON_AUTO = "buttonIconAuto";
   const ICON_BLACK = "buttonIconBlack";
@@ -32,6 +33,7 @@
   const KEY = "Alt+Shift+C";
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
+  const MSG_EXT_NAME = "extensionName";
   const OUTPUT_HTML_HYPER = "outputTextHtml";
   const OUTPUT_HTML_PLAIN = "outputTextPlain";
   const OUTPUT_TEXT = "text";
@@ -86,6 +88,88 @@
    * @returns {boolean} - result
    */
   const isString = o => typeof o === "string" || o instanceof String;
+
+  /**
+   * is object, and not an empty object
+   * @param {*} o - object to check;
+   * @returns {boolean} - result
+   */
+  const isObjectNotEmpty = o => {
+    const items = /Object/i.test(getType(o)) && Object.keys(o);
+    return !!(items && items.length);
+  };
+
+  /* external extensions */
+  const externalExts = new Set();
+
+  /**
+   * remove external extension
+   * @param {string} id - extension ID
+   * @returns {void}
+   */
+  const removeExternalExt = async id => {
+    id && externalExts.has(id) && externalExts.delete(id);
+  };
+
+  /**
+   * add external extension
+   * @param {string} id - extension ID
+   * @returns {void}
+   */
+  const addExternalExt = async id => {
+    const exts = [EXT_TST];
+    id && exts.includes(id) && externalExts.add(id);
+  };
+
+  /**
+   * set external extensions
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const setExternalExts = async () => {
+    const items = await management.getAll();
+    const func = [];
+    for (const item of items) {
+      const {enabled, id} = item;
+      if (enabled) {
+        func.push(addExternalExt(id));
+      } else {
+        func.push(removeExternalExt(id));
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /** send message
+   * @param {number|string} id - tabId or extension ID
+   * @param {*} msg - message
+   * @param {Object} opt - options
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const sendMsg = async (id, msg, opt) => {
+    const func = [];
+    if (msg) {
+      opt = isObjectNotEmpty(opt) && opt || null;
+      if (Number.isInteger(id) && id !== TAB_ID_NONE) {
+        func.push(tabs.sendMessage(id, msg, opt));
+      } else if (id && isString(id)) {
+        const ext = await management.get(id);
+        if (ext) {
+          const {enabled} = ext;
+          if (enabled) {
+            func.push(runtime.sendMessage(id, msg, opt));
+            !externalExts.has(id) && func.push(addExternalExt(id));
+          } else {
+            func.push(removeExternalExt(id));
+          }
+        } else {
+          func.push(removeExternalExt(id));
+        }
+      } else {
+        func.push(runtime.sendMessage(msg, opt));
+      }
+    }
+    return Promise.all(func);
+  };
 
   /* formats */
   const formats = new Map();
@@ -212,7 +296,7 @@
    */
   const isTab = async tabId => {
     let tab;
-    if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
+    if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       tab = await tabs.get(tabId).catch(throwErr);
     }
     return !!tab;
@@ -289,6 +373,21 @@
       contexts: ["tab"],
       title: i18n.getMessage(COPY_ALL_TABS),
     },
+  };
+
+  /**
+   * remove context menu
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const removeContextMenu = async () => {
+    const func = [contextMenus.removeAll()];
+    // Tree Style Tab
+    if (externalExts.has(EXT_TST)) {
+      func.push(sendMsg(EXT_TST, {
+        type: "fake-contextMenu-removeAll",
+      }));
+    }
+    return Promise.all(func);
   };
 
   /**
@@ -370,7 +469,16 @@
       for (const item of items) {
         const {contexts, id: itemId} = menuItems[item];
         if (contexts.includes("tab")) {
-          isWebExt && func.push(contextMenus.update(itemId, {enabled}));
+          if (isWebExt) {
+            func.push(contextMenus.update(itemId, {enabled}));
+            // Tree Style Tab
+            if (externalExts.has(EXT_TST)) {
+              func.push(sendMsg(EXT_TST, {
+                type: "fake-contextMenu-update",
+                params: [itemId, {enabled}],
+              }));
+            }
+          }
         } else {
           func.push(contextMenus.update(itemId, {contexts, enabled}));
         }
@@ -379,7 +487,16 @@
           if (formatEnabled) {
             const subItemId = `${itemId}${key}`;
             if (contexts.includes("tab")) {
-              isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
+              if (isWebExt) {
+                func.push(contextMenus.update(subItemId, {enabled}));
+                // Tree Style Tab
+                if (externalExts.has(EXT_TST)) {
+                  func.push(sendMsg(EXT_TST, {
+                    type: "fake-contextMenu-update",
+                    params: [subItemId, {enabled}],
+                  }));
+                }
+              }
             } else {
               func.push(contextMenus.update(subItemId, {enabled}));
             }
@@ -396,7 +513,7 @@
    */
   const setIcon = async () => {
     const {iconId} = vars;
-    const name = await i18n.getMessage(EXT_NAME);
+    const name = await i18n.getMessage(MSG_EXT_NAME);
     const icon = await runtime.getURL(ICON);
     const path = iconId && `${icon}${iconId}` || icon;
     const title = `${name} (${KEY})`;
@@ -523,14 +640,14 @@
 
   /**
    * extract clicked data
-   * @param {Object} data - clicked data
+   * @param {Object} info - clicked info
+   * @param {Object} tab - tabs.Tab
    * @returns {Promise.<Array>} - results of each handler
    */
-  const extractClickedData = async (data = {}) => {
-    const {info, tab} = data;
+  const extractClickedData = async (info, tab) => {
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     const func = [];
-    if (Number.isInteger(tabId) && tabId !== tabs.TAB_ID_NONE) {
+    if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       const {menuItemId, selectionText} = info;
       const {
         includeTitleHtml, includeTitleMarkdown, mimeType, promptContent,
@@ -542,7 +659,7 @@
       const {hash: tabUrlHash} = new URL(tabUrl);
       if (isString(menuItemId) && menuItemId.startsWith(COPY_ALL_TABS)) {
         const allTabs = await getAllTabsInfo(menuItemId);
-        func.push(tabs.sendMessage(tabId, {
+        func.push(sendMsg(tabId, {
           [EXEC_COPY_TABS]: {
             allTabs, includeTitleHtml, includeTitleMarkdown,
           },
@@ -571,7 +688,7 @@
             url = !tabUrlHash && canonicalUrl || tabUrl;
           }
         }
-        func.push(tabs.sendMessage(tabId, {
+        func.push(sendMsg(tabId, {
           [EXEC_COPY]: {
             content, includeTitleHtml, includeTitleMarkdown, menuItemId,
             mimeType, promptContent, template, title, url,
@@ -610,41 +727,147 @@
   };
 
   /**
+   * handle external extension
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const handleExternalExts = async () => {
+    const func = [];
+    // Tree Style Tab
+    if (externalExts.has(EXT_TST)) {
+      func.push(sendMsg(EXT_TST, {
+        type: "register-self",
+        name: i18n.getMessage(MSG_EXT_NAME),
+        icons: runtime.getManifest().icons,
+        listeningTypes: ["ready", "fake-contextMenu-click"],
+      }));
+      if (enabledFormats.size) {
+        const items = Object.keys(menuItems);
+        for (const item of items) {
+          const {contexts, id: itemId, title: itemTitle} = menuItems[item];
+          const enabled = false;
+          if (contexts.includes("tab")) {
+            if (enabledFormats.size === 1) {
+              const [key] = enabledFormats.keys();
+              const {id: keyId, title: keyTitle} = formats.get(key);
+              const formatTitle =
+                i18n.getMessage(`${itemId}_format`, keyTitle || keyId);
+              func.push(sendMsg(EXT_TST, {
+                type: "fake-contextMenu-create",
+                params: {
+                  enabled,
+                  id: `${itemId}${key}`,
+                  title: formatTitle,
+                  contexts: ["tab"],
+                },
+              }));
+            } else {
+              func.push(sendMsg(EXT_TST, {
+                type: "fake-contextMenu-create",
+                params: {
+                  enabled,
+                  id: itemId,
+                  title: itemTitle,
+                  contexts: ["tab"],
+                },
+              }));
+              formats.forEach((value, key) => {
+                const {
+                  enabled: formatEnabled, id: formatId, title: formatTitle,
+                } = value;
+                if (formatEnabled) {
+                  const subItemId = `${itemId}${key}`;
+                  const subItemTitle = formatTitle || formatId;
+                  func.push(sendMsg(EXT_TST, {
+                    type: "fake-contextMenu-create",
+                    params: {
+                      enabled,
+                      id: subItemId,
+                      title: subItemTitle,
+                      contexts: ["tab"],
+                      parentId: itemId,
+                    },
+                  }));
+                }
+              });
+            }
+          }
+        }
+      }
+    }
+    return Promise.all(func);
+  };
+
+  /**
+   * prepare menu
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const prepareContextMenu = () => Promise.all([
+    createContextMenu(),
+    handleExternalExts(),
+  ]);
+
+  /**
+   * prepare UI
+   * @returns {Promise.<Array>} - results of each handler
+   */
+  const prepareUI = async () => Promise.all([
+    setIcon(),
+    prepareContextMenu(),
+  ]);
+
+  /**
    * handle message
    * @param {*} msg - message
    * @param {Object} sender - sender
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg, sender = {}) => {
+    const {id: senderId} = sender;
     const func = [];
-    const items = msg && Object.keys(msg);
-    const tab = sender && sender.tab;
-    const tabId = tab && tab.id;
-    if (items && items.length) {
-      for (const item of items) {
-        const obj = msg[item];
-        switch (item) {
-          case EXEC_COPY:
-            func.push(runtime.sendMessage({
-              [EXEC_COPY_POPUP]: obj,
-            }));
-            break;
-          case EXEC_COPY_TABS:
-            func.push(runtime.sendMessage({
-              [EXEC_COPY_TABS_POPUP]: obj,
-            }));
-            break;
-          case "keydown":
-          case "mousedown":
-            func.push(updateContextInfo(obj));
-            break;
-          case "load":
-            func.push(
-              setEnabledTab(tabId, tab, obj).then(handleActiveTab),
-              updateContextInfo(obj),
-            );
-            break;
-          default:
+    // Tree Style Tab
+    if (senderId === EXT_TST) {
+      const {info, tab, type} = msg;
+      switch (type) {
+        case "ready": {
+          func.push(addExternalExt(EXT_TST).then(handleExternalExts));
+          break;
+        }
+        case "fake-contextMenu-click": {
+          func.push(extractClickedData(info, tab));
+          break;
+        }
+        default:
+      }
+    } else {
+      const items = msg && Object.keys(msg);
+      const tab = sender && sender.tab;
+      const tabId = tab && tab.id;
+      if (items && items.length) {
+        for (const item of items) {
+          const obj = msg[item];
+          switch (item) {
+            case EXEC_COPY:
+              func.push(sendMsg(null, {
+                [EXEC_COPY_POPUP]: obj,
+              }));
+              break;
+            case EXEC_COPY_TABS:
+              func.push(sendMsg(null, {
+                [EXEC_COPY_TABS_POPUP]: obj,
+              }));
+              break;
+            case "keydown":
+            case "mousedown":
+              func.push(updateContextInfo(obj));
+              break;
+            case "load":
+              func.push(
+                setEnabledTab(tabId, tab, obj).then(handleActiveTab),
+                updateContextInfo(obj),
+              );
+              break;
+            default:
+          }
         }
       }
     }
@@ -700,8 +923,7 @@
             if (changed) {
               func.push(
                 toggleEnabledFormats(item, !!checked)
-                  .then(() => contextMenus.removeAll())
-                  .then(createContextMenu)
+                  .then(removeContextMenu).then(prepareContextMenu)
               );
             } else {
               func.push(toggleEnabledFormats(item, !!checked));
@@ -731,14 +953,23 @@
     return Promise.all(func);
   };
 
+  /**
+   * get storage
+   * @returns {Object} - storage data
+   */
+  const getStorage = async () => storage.local.get();
+
   /* listeners */
   contextMenus.onClicked.addListener((info, tab) =>
-    extractClickedData({info, tab}).catch(throwErr)
+    extractClickedData(info, tab).catch(throwErr)
   );
   storage.onChanged.addListener(data =>
     setVars(data).catch(throwErr)
   );
   runtime.onMessage.addListener((msg, sender) =>
+    handleMsg(msg, sender).catch(throwErr)
+  );
+  runtime.onMessageExternal.addListener((msg, sender) =>
     handleMsg(msg, sender).catch(throwErr)
   );
   tabs.onActivated.addListener(info =>
@@ -755,10 +986,6 @@
   Promise.all([
     fetchFormatData(),
     setDefaultIcon(),
-  ]).then(() => storage.local.get()).then(setVars).then(() =>
-    Promise.all([
-      setIcon(),
-      createContextMenu(),
-    ])
-  ).catch(throwErr);
+    setExternalExts(),
+  ]).then(getStorage).then(setVars).then(prepareUI).catch(throwErr);
 }
