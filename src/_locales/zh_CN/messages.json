@@ -15,7 +15,7 @@
     "message": "复制所有标签页 URL"
   },
   "copyAllTabsURL_format": {
-    "message": "Copy All Tabs URLs as $FORMAT$",
+    "message": "复制所有标签页 URL 为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -27,7 +27,7 @@
     "message": "复制链接 URL"
   },
   "copyLinkURL_format": {
-    "message": "Copy Link URL as $FORMAT$",
+    "message": "复制链接为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -39,7 +39,7 @@
     "message": "复制页面 URL"
   },
   "copyPageURL_format": {
-    "message": "Copy Page URL as $FORMAT$",
+    "message": "复制页面 URL 为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -48,10 +48,10 @@
     }
   },
   "copyTabURL": {
-    "message": "Copy Tab URL"
+    "message": "复制标签页 URL"
   },
   "copyTabURL_format": {
-    "message": "Copy Tab URL as $FORMAT$",
+    "message": "复制标签页 URL 为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -75,7 +75,7 @@
     }
   },
   "optionsHtmlOutputLabel": {
-    "message": "Paste as:"
+    "message": "粘贴为:"
   },
   "optionsIconAuto": {
     "message": "自动"
@@ -114,13 +114,13 @@
     "message": ""
   },
   "optionsIconDark_alt": {
-    "message": "Dark"
+    "message": "深色"
   },
   "optionsIconDarkLabel": {
     "message": ""
   },
   "optionsIconDarkLabel_ariaLabel": {
-    "message": "Dark Icon"
+    "message": "深色图标"
   },
   "optionsIconDetail": {
     "message": "选择图标。"
@@ -132,13 +132,13 @@
     "message": ""
   },
   "optionsIconLight_alt": {
-    "message": "Light"
+    "message": "浅色"
   },
   "optionsIconLightLabel": {
     "message": ""
   },
   "optionsIconLightLabel_ariaLabel": {
-    "message": "Light Icon"
+    "message": "浅色图标"
   },
   "optionsIconWhite": {
     "message": ""
@@ -162,13 +162,13 @@
     "message": "从右键菜单复制链接时提示修改链接信息"
   },
   "optionsTextOutputOnlyTextLabel": {
-    "message": "Copy only text"
+    "message": "只复制文本"
   },
   "optionsTextOutputOnlyUrlLabel": {
-    "message": "Copy only URL"
+    "message": "只复制 URL"
   },
   "optionsTextOutputTextUrlLabel": {
-    "message": "Copy text and URL"
+    "message": "复制文本和 URL"
   },
   "optionsTitle": {
     "message": "复制链接到剪切板 - 设置"
