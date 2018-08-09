@@ -14,7 +14,7 @@ import {
   THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
-import {getActiveTabId, getAllStorage, isTab, sendMessage,} from "./browser.js";
+import {getActiveTabId, getAllStorage, isTab, sendMessage} from "./browser.js";
 
 /* api */
 const {
