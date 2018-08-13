@@ -4,6 +4,10 @@
 
 import {TYPE_FROM, TYPE_TO} from "./constant.js";
 
+/* constants */
+const TYPE_FROM = 8;
+const TYPE_TO = -1;
+
 /**
  * throw error
  * @param {!Object} e - Error

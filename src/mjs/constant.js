@@ -13,7 +13,6 @@ export const COPY_ALL_TABS = "copyAllTabsURL";
 export const COPY_LINK = "copyLinkURL";
 export const COPY_PAGE = "copyPageURL";
 export const COPY_TAB = "copyTabURL";
-export const DATA_I18N = "data-i18n";
 export const EXEC_COPY = "executeCopy";
 export const EXEC_COPY_POPUP = "executeCopyPopup";
 export const EXEC_COPY_TABS = "executeCopyAllTabs";
@@ -53,6 +52,4 @@ export const THEME_DARK =
   "firefox-compact-dark@mozilla.org@personas.mozilla.org";
 export const THEME_LIGHT =
   "firefox-compact-light@mozilla.org@personas.mozilla.org";
-export const TYPE_FROM = 8;
-export const TYPE_TO = -1;
 export const WEBEXT_ID = "url2clipboard@asamuzak.jp";
