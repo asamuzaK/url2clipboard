@@ -14,7 +14,7 @@ import {
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
-  getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
+  fetchData, getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
   getManifestIcons, isTab, sendMessage,
 } from "./browser.js";
 
@@ -149,8 +149,7 @@ const toggleEnabledFormats = async (id, enabled) => {
  * @returns {Promise.<Array>} - result of each handler
  */
 const fetchFormatData = async () => {
-  const path = await runtime.getURL(PATH_FORMAT_DATA);
-  const data = await fetch(path).then(res => res && res.json());
+  const data = await fetchData(PATH_FORMAT_DATA);
   const func = [];
   if (data) {
     const items = Object.entries(data);

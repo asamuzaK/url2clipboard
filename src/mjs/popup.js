@@ -12,7 +12,9 @@ import {
   OUTPUT_TEXT_URL, OUTPUT_URL, PATH_FORMAT_DATA,
 } from "./constant.js";
 import {getType, isString, throwErr} from "./common.js";
-import {getActiveTab, getAllStorage, sendMessage} from "./browser.js";
+import {
+  fetchData, getActiveTab, getAllStorage, sendMessage,
+} from "./browser.js";
 import {localizeHtml} from "./localize.js";
 
 /* api */
@@ -37,8 +39,7 @@ const formats = new Map();
  * @returns {void}
  */
 const fetchFormatData = async () => {
-  const path = await runtime.getURL(PATH_FORMAT_DATA);
-  const data = await fetch(path).then(res => res && res.json());
+  const data = await fetchData(PATH_FORMAT_DATA);
   if (data) {
     const items = Object.entries(data);
     for (const item of items) {

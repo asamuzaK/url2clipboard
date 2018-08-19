@@ -24,6 +24,20 @@ export const getEnabledTheme = async () => {
 
 /* runtime */
 /**
+ * fetch data
+ * @param {string} path - data path
+ * @returns {?Object} - JSON data
+ */
+export const fetchData = async path => {
+  let data;
+  if (isString(path)) {
+    path = await runtime.getURL(path);
+    data = await fetch(path).then(res => res && res.json());
+  }
+  return data || null;
+};
+
+/**
  * get manifest icons
  * @returns {Object|string} - icons
  */
