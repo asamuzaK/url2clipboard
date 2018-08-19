@@ -5,7 +5,7 @@
 import {isObjectNotEmpty, isString, throwErr} from "./common.js";
 
 /* api */
-const {management, runtime, storage, tabs} = browser;
+const {management, runtime, storage, tabs, windows} = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
