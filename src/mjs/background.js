@@ -3,18 +3,20 @@
  */
 
 import {
-  BBCODE_URL, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB,
-  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, EXT_NAME,
-  HTML, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID,
-  ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML,
-  INCLUDE_TITLE_MARKDOWN, KEY, MARKDOWN,
-  MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
+  BBCODE_URL, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
+  EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, EXT_NAME, HTML,
+  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
+  ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, KEY,
+  MARKDOWN, MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
   OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
   OUTPUT_TEXT_URL, OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, THEME_DARK,
   THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
-import {getActiveTabId, getAllStorage, isTab, sendMessage} from "./browser.js";
+import {
+  getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
+  getManifestIcons, isTab, sendMessage,
+} from "./browser.js";
 
 /* api */
 const {
@@ -23,7 +25,7 @@ const {
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
-const EXTERNAL_TST = "treestyletab@piro.sakura.ne.jp";
+const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
 /* variables */
 const vars = {
@@ -54,7 +56,7 @@ const removeExternalExt = async id => {
  * @returns {void}
  */
 const addExternalExt = async id => {
-  const exts = [EXTERNAL_TST];
+  const exts = [WEBEXT_TST];
   id && exts.includes(id) && externalExts.add(id);
 };
 
@@ -259,8 +261,8 @@ const menuItems = {
 const removeContextMenu = async () => {
   const func = [contextMenus.removeAll()];
   // Tree Style Tab
-  if (externalExts.has(EXTERNAL_TST)) {
-    func.push(sendMsg(EXTERNAL_TST, {
+  if (externalExts.has(WEBEXT_TST)) {
+    func.push(sendMsg(WEBEXT_TST, {
       type: "fake-contextMenu-removeAll",
     }));
   }
@@ -349,8 +351,8 @@ const updateContextMenu = async tabId => {
         if (isWebExt) {
           func.push(contextMenus.update(itemId, {enabled}));
           // Tree Style Tab
-          if (externalExts.has(EXTERNAL_TST)) {
-            func.push(sendMsg(EXTERNAL_TST, {
+          if (externalExts.has(WEBEXT_TST)) {
+            func.push(sendMsg(WEBEXT_TST, {
               type: "fake-contextMenu-update",
               params: [itemId, {enabled}],
             }));
@@ -367,8 +369,8 @@ const updateContextMenu = async tabId => {
             if (isWebExt) {
               func.push(contextMenus.update(subItemId, {enabled}));
               // Tree Style Tab
-              if (externalExts.has(EXTERNAL_TST)) {
-                func.push(sendMsg(EXTERNAL_TST, {
+              if (externalExts.has(WEBEXT_TST)) {
+                func.push(sendMsg(WEBEXT_TST, {
                   type: "fake-contextMenu-update",
                   params: [subItemId, {enabled}],
                 }));
@@ -398,17 +400,6 @@ const setIcon = async () => {
     browserAction.setIcon({path}),
     browserAction.setTitle({title}),
   ]);
-};
-
-/**
- * get enabled theme
- * @returns {Array} - array of management.ExtensionInfo
- */
-const getEnabledTheme = async () => {
-  const themes = await management.getAll().then(arr => arr.filter(info =>
-    info.type && info.type === "theme" && info.enabled && info
-  ));
-  return themes;
 };
 
 /**
@@ -522,7 +513,7 @@ const updateContextInfo = async (data = {}) => {
  */
 const getAllTabsInfo = async menuItemId => {
   const tabsInfo = [];
-  const arr = await tabs.query({currentWindow: true});
+  const arr = await getAllTabsInWindow();
   const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
   arr.length && arr.forEach(tab => {
@@ -630,11 +621,11 @@ const handleUpdatedTab = async (tabId, tab = {}) => {
 const handleExternalExts = async () => {
   const func = [];
   // Tree Style Tab
-  if (externalExts.has(EXTERNAL_TST)) {
-    func.push(sendMsg(EXTERNAL_TST, {
+  if (externalExts.has(WEBEXT_TST)) {
+    func.push(sendMsg(WEBEXT_TST, {
       type: "register-self",
       name: i18n.getMessage(EXT_NAME),
-      icons: runtime.getManifest().icons,
+      icons: getManifestIcons(),
       listeningTypes: ["ready", "fake-contextMenu-click"],
     }));
     if (enabledFormats.size) {
@@ -648,7 +639,7 @@ const handleExternalExts = async () => {
             const {id: keyId, title: keyTitle} = formats.get(key);
             const formatTitle =
               i18n.getMessage(`${itemId}_format`, keyTitle || keyId);
-            func.push(sendMsg(EXTERNAL_TST, {
+            func.push(sendMsg(WEBEXT_TST, {
               type: "fake-contextMenu-create",
               params: {
                 enabled,
@@ -658,7 +649,7 @@ const handleExternalExts = async () => {
               },
             }));
           } else {
-            func.push(sendMsg(EXTERNAL_TST, {
+            func.push(sendMsg(WEBEXT_TST, {
               type: "fake-contextMenu-create",
               params: {
                 enabled,
@@ -674,7 +665,7 @@ const handleExternalExts = async () => {
               if (formatEnabled) {
                 const subItemId = `${itemId}${key}`;
                 const subItemTitle = formatTitle || formatId;
-                func.push(sendMsg(EXTERNAL_TST, {
+                func.push(sendMsg(WEBEXT_TST, {
                   type: "fake-contextMenu-create",
                   params: {
                     enabled,
@@ -722,11 +713,11 @@ const handleMsg = async (msg, sender = {}) => {
   const {id: senderId} = sender;
   const func = [];
   // Tree Style Tab
-  if (senderId === EXTERNAL_TST) {
+  if (senderId === WEBEXT_TST) {
     const {info, tab, type} = msg;
     switch (type) {
       case "ready": {
-        func.push(addExternalExt(EXTERNAL_TST).then(handleExternalExts));
+        func.push(addExternalExt(WEBEXT_TST).then(handleExternalExts));
         break;
       }
       case "fake-contextMenu-click": {
