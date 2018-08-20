@@ -30,8 +30,8 @@ const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 /* variables */
 const vars = {
   iconId: "",
-  includeTitleHtml: true,
-  includeTitleMarkdown: true,
+  includeTitleHtml: false,
+  includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
   mimeType: MIME_PLAIN,
   promptContent: false,
