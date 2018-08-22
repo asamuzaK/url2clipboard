@@ -2,7 +2,7 @@
  * options.js
  */
 
-import {isString, throwErr} from "./common.js";
+import {isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {getStorage, setStorage} from "./browser.js";
 import {localizeHtml} from "./localize.js";
 
@@ -65,16 +65,18 @@ const addInputChangeListener = async () => {
  * @returns {void}
  */
 const setHtmlInputValue = async (data = {}) => {
-  const {id} = data;
+  const {checked, id, value} = data;
   const elm = id && document.getElementById(id);
   if (elm) {
-    switch (elm.type) {
+    const {type} = elm;
+    switch (type) {
       case "checkbox":
       case "radio":
-        elm.checked = !!data.checked;
+        elm.checked = !!checked;
         break;
       case "text":
-        elm.value = isString(data.value) && data.value || "";
+      case "url":
+        elm.value = isString(value) && value || "";
         break;
       default:
     }
@@ -88,10 +90,10 @@ const setHtmlInputValue = async (data = {}) => {
 const setValuesFromStorage = async () => {
   const func = [];
   const pref = await getStorage();
-  const items = pref && Object.keys(pref);
-  if (items && items.length) {
+  if (isObjectNotEmpty(pref)) {
+    const items = Object.values(pref);
     for (const item of items) {
-      func.push(setHtmlInputValue(pref[item]));
+      isObjectNotEmpty(item) && func.push(setHtmlInputValue(item));
     }
   }
   return Promise.all(func);
