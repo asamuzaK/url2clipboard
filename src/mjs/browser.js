@@ -2,7 +2,7 @@
  * browser.js
  */
 
-import {isObjectNotEmpty, isString, throwErr} from "./common.js";
+import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 
 /* api */
 const {
@@ -18,34 +18,44 @@ const {TAB_ID_NONE} = tabs;
  * update command
  * @param {string} id - command ID
  * @param {string} value - key value
- * @returns {void}
+ * @returns {?AsyncFunction} - commands.update | commands.reset
  */
 export const updateCommand = async (id, value = "") => {
-  if (typeof commands.update === "function" &&
-      isString(id) && isString(value)) {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  if (!isString(value)) {
+    throw new TypeError(`Expected String but got ${getType(value)}.`);
+  }
+  let func;
+  if (commands && typeof commands.update === "function") {
     const shortcut =
       value.trim().replace(/\+([a-z])$/, (m, c) => `+${c.toUpperCase()}`);
     if (/^(?:(?:(?:Alt|Command|(?:Mac)?Ctrl)\+(?:Shift\+)?(?:[\dA-Z]|F(?:[1-9]|1[0-2])|(?:Page)?(?:Down|Up)|Left|Right|Comma|Period|Home|End|Delete|Insert|Space))|F(?:[1-9]|1[0-2]))$/.test(shortcut)) {
-      await commands.update({
+      func = commands.update({
         shortcut,
         name: id,
       });
     } else if (shortcut === "") {
-      await commands.reset(id);
+      func = commands.reset(id);
     }
   }
+  return func || null;
 };
 
 /* management */
 /**
  * get enabled theme
- * @returns {Array} - array of management.ExtensionInfo
+ * @returns {?Array} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
-  const themes = await management.getAll().then(arr => arr.filter(info =>
-    info.type && info.type === "theme" && info.enabled && info
-  ));
-  return themes;
+  let themes;
+  if (management) {
+    themes = await management.getAll().then(arr => arr.filter(info =>
+      info.type && info.type === "theme" && info.enabled && info
+    ));
+  }
+  return themes || null;
 };
 
 /* notifications */
@@ -55,8 +65,11 @@ export const getEnabledTheme = async () => {
  * @returns {?AsyncFunction} - notifications.clear()
  */
 export const clearNotification = id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
   let func;
-  if (isString(id)) {
+  if (notifications) {
     func = notifications.clear(id).catch(throwErr);
   }
   return func || null;
@@ -69,8 +82,11 @@ export const clearNotification = id => {
  * @returns {?AsyncFunction} - notifications.create
  */
 export const createNotification = async (id, opt) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
   let func;
-  if (isString(id) && notifications) {
+  if (notifications) {
     if (notifications.onClosed &&
         !notifications.onClosed.hasListener(clearNotification)) {
       notifications.onClosed.addListener(clearNotification);
@@ -87,6 +103,9 @@ export const createNotification = async (id, opt) => {
  * @returns {?AsyncFunction} - permissions.remove
  */
 export const removePermission = async perm => {
+  if (!(isString(perm) || Array.isArray(perm))) {
+    throw new TypeError(`Expected String or Array but got ${getType(perm)}.`);
+  }
   let func;
   if (isString(perm)) {
     func = permissions.remove({
@@ -106,6 +125,9 @@ export const removePermission = async perm => {
  * @returns {?AsyncFunction} - permissions.request
  */
 export const requestPermission = async perm => {
+  if (!(isString(perm) || Array.isArray(perm))) {
+    throw new TypeError(`Expected String or Array but got ${getType(perm)}.`);
+  }
   let func;
   if (isString(perm)) {
     func = permissions.request({
@@ -126,12 +148,11 @@ export const requestPermission = async perm => {
  * @returns {Object} - JSON data
  */
 export const fetchData = async path => {
-  let data;
-  if (isString(path)) {
-    path = await runtime.getURL(path);
-    data = await fetch(path).then(res => res && res.json());
+  if (!isString(path)) {
+    throw new TypeError(`Expected String but got ${getType(path)}.`);
   }
-  return data || null;
+  const data = await fetch(runtime.getURL(path)).then(res => res && res.json());
+  return data;
 };
 
 /**
@@ -167,31 +188,54 @@ export const sendMessage = async (id, msg, opt) => {
 /* storage */
 /**
  * get all storage
- * @returns {AsyncFunction} - storage.local.get
+ * @returns {?AsyncFunction} - storage.local.get
  */
-export const getAllStorage = async () => storage.local.get();
+export const getAllStorage = async () => {
+  let func;
+  if (storage) {
+    func = storage.local.get();
+  }
+  return func || null;
+};
 
 /**
  * get storage
  * @param {*} key - key
- * @returns {AsyncFunction} - storage.local.get
+ * @returns {?AsyncFunction} - storage.local.get
  */
-export const getStorage = async key => storage.local.get(key);
+export const getStorage = async key => {
+  let func;
+  if (storage) {
+    func = storage.local.get(key);
+  }
+  return func || null;
+};
 
 /**
  * remove storage
  * @param {*} key - key
- * @returns {AsyncFunction} - storage.local.remove
+ * @returns {?AsyncFunction} - storage.local.remove
  */
-export const removeStorage = async key => storage.local.remove(key);
+export const removeStorage = async key => {
+  let func;
+  if (storage) {
+    func = storage.local.remove(key);
+  }
+  return func || null;
+};
 
 /**
  * set storage
  * @param {Object} obj - object to store
  * @returns {?AsyncFunction} - storage.local.set
  */
-export const setStorage = async obj =>
-  obj && storage && storage.local.set(obj) || null;
+export const setStorage = async obj => {
+  let func;
+  if (storage && obj) {
+    func = storage.local.set(obj);
+  }
+  return func || null;
+};
 
 /* tabs */
 /**
@@ -199,19 +243,26 @@ export const setStorage = async obj =>
  * @param {Object} opt - options
  * @returns {AsyncFunction} - tabs.create
  */
-export const createTab = async (opt = {}) =>
-  tabs.create(isObjectNotEmpty(opt) && opt || null);
+export const createTab = async (opt = {}) => {
+  let func;
+  if (tabs) {
+    func = tabs.create(isObjectNotEmpty(opt) && opt || null);
+  }
+  return func || null;
+};
 
 /**
  * execute content script to existing tabs
- * @param {string} src - content script path
+ * @param {string} path - content script path
  * @param {boolean} frame - execute to all frames
  * @returns {Promise.<Array>} - results of each handler
  */
-export const execScriptToExistingTabs = async (src, frame = false) => {
+export const execScriptToExistingTabs = async (path, frame = false) => {
+  if (!isString(path)) {
+    throw new TypeError(`Expected String but got ${getType(path)}.`);
+  }
   const func = [];
-  if (isString(src)) {
-    const contentScript = runtime.getURL(src);
+  if (tabs) {
     const tabList = await tabs.query({
       windowType: "normal",
     });
@@ -219,7 +270,7 @@ export const execScriptToExistingTabs = async (src, frame = false) => {
       const {id: tabId} = tab;
       func.push(tabs.executeScript(tabId, {
         allFrames: !!frame,
-        file: contentScript,
+        file: runtime.getURL(path),
       }));
     }
   }
@@ -232,17 +283,19 @@ export const execScriptToExistingTabs = async (src, frame = false) => {
  * @returns {Object} - tabs.Tab
  */
 export const getActiveTab = async windowId => {
-  if (!Number.isInteger(windowId)) {
-    windowId = windows.WINDOW_ID_CURRENT;
-  }
-  const arr = await tabs.query({
-    windowId,
-    active: true,
-    windowType: "normal",
-  });
   let tab;
-  if (arr.length) {
-    [tab] = arr;
+  if (tabs) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    const arr = await tabs.query({
+      windowId,
+      active: true,
+      windowType: "normal",
+    });
+    if (arr.length) {
+      [tab] = arr;
+    }
   }
   return tab || null;
 };
@@ -250,34 +303,41 @@ export const getActiveTab = async windowId => {
 /**
  * get active tab ID
  * @param {number} windowId - window ID
- * @returns {number} - tab ID
+ * @returns {?number} - tab ID
  */
 export const getActiveTabId = async windowId => {
-  if (!Number.isInteger(windowId)) {
-    windowId = windows.WINDOW_ID_CURRENT;
-  }
   let tabId;
-  const tab = await getActiveTab(windowId);
-  if (tab) {
-    tabId = tab.id;
+  if (tabs) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    const tab = await getActiveTab(windowId);
+    if (tab) {
+      tabId = tab.id;
+    }
   }
-  return tabId;
+  return Number.isInteger(tabId) ?
+    tabId :
+    null;
 };
 
 /**
  * get all tabs in window
  * @param {number} windowId - window ID
- * @returns {Array} - tab list
+ * @returns {?Array} - tab list
  */
 export const getAllTabsInWindow = async windowId => {
-  if (!Number.isInteger(windowId)) {
-    windowId = windows.WINDOW_ID_CURRENT;
+  let tabList;
+  if (tabs) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    tabList = await tabs.query({
+      windowId,
+      windowType: "normal",
+    });
   }
-  const tabList = await tabs.query({
-    windowId,
-    windowType: "normal",
-  });
-  return tabList;
+  return tabList || null;
 };
 
 /**
@@ -286,8 +346,11 @@ export const getAllTabsInWindow = async windowId => {
  * @returns {boolean} - result
  */
 export const isTab = async tabId => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
   let tab;
-  if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
+  if (tabs && tabId !== TAB_ID_NONE) {
     tab = await tabs.get(tabId).catch(throwErr);
   }
   return !!tab;
