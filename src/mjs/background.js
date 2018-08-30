@@ -15,7 +15,7 @@ import {
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
   fetchData, getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
-  getManifestIcons, isTab, sendMessage,
+  getManifestIcons, isAccessKeySupported, isTab, sendMessage,
 } from "./browser.js";
 
 /* api */
@@ -234,22 +234,18 @@ const menuItems = {
   [COPY_PAGE]: {
     id: COPY_PAGE,
     contexts: ["page", "selection"],
-    title: i18n.getMessage(COPY_PAGE),
   },
   [COPY_LINK]: {
     id: COPY_LINK,
     contexts: ["link"],
-    title: i18n.getMessage(COPY_LINK),
   },
   [COPY_TAB]: {
     id: COPY_TAB,
     contexts: ["tab"],
-    title: i18n.getMessage(COPY_TAB),
   },
   [COPY_ALL_TABS]: {
     id: COPY_ALL_TABS,
     contexts: ["tab"],
-    title: i18n.getMessage(COPY_ALL_TABS),
   },
 };
 
@@ -299,26 +295,37 @@ const createMenuItem = async (id, title, data = {}) => {
 const createContextMenu = async () => {
   const func = [];
   if (enabledFormats.size) {
+    const {isWebExt} = vars;
+    const acckey = await isAccessKeySupported();
     const items = Object.keys(menuItems);
     for (const item of items) {
-      const {contexts, id: itemId, title: itemTitle} = menuItems[item];
+      const {contexts, id: itemId} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
         const {id: keyId, title: keyTitle} = formats.get(key);
-        const formatTitle =
-          i18n.getMessage(`${itemId}_format`, keyTitle || keyId);
+        const formatTitle = i18n.getMessage(
+          acckey && `${itemId}_format_key` || `${itemId}_format`,
+          keyTitle || keyId,
+          isWebExt && "(&C)" || " (&C)"
+        );
         func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
       } else {
+        const itemTitle = i18n.getMessage(
+          acckey && `${itemId}_key` || itemId,
+          isWebExt && "(&C)" || " (&C)"
+        );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         formats.forEach((value, key) => {
           const {
-            enabled: formatEnabled, id: formatId, title: formatTitle,
+            enabled: formatEnabled, id: formatId, menu: formatMenuTitle,
+            title: formatTitle,
           } = value;
           if (formatEnabled) {
             const subItemId = `${itemId}${key}`;
-            const subItemTitle = formatTitle || formatId;
+            const subItemTitle =
+              acckey && formatMenuTitle || formatTitle || formatId;
             const subItemData = {
               contexts,
               enabled: formatEnabled,
@@ -628,16 +635,20 @@ const handleExternalExts = async () => {
       listeningTypes: ["ready", "fake-contextMenu-click"],
     }));
     if (enabledFormats.size) {
+      const acckey = await isAccessKeySupported();
       const items = Object.keys(menuItems);
       for (const item of items) {
-        const {contexts, id: itemId, title: itemTitle} = menuItems[item];
+        const {contexts, id: itemId} = menuItems[item];
         const enabled = false;
         if (contexts.includes("tab")) {
           if (enabledFormats.size === 1) {
             const [key] = enabledFormats.keys();
             const {id: keyId, title: keyTitle} = formats.get(key);
-            const formatTitle =
-              i18n.getMessage(`${itemId}_format`, keyTitle || keyId);
+            const formatTitle = i18n.getMessage(
+              acckey && `${itemId}_format_key` || `${itemId}_format`,
+              keyTitle || keyId,
+              "(&C)"
+            );
             func.push(sendMsg(WEBEXT_TST, {
               type: "fake-contextMenu-create",
               params: {
@@ -648,6 +659,8 @@ const handleExternalExts = async () => {
               },
             }));
           } else {
+            const itemTitle =
+              i18n.getMessage(acckey && `${itemId}_key` || itemId, "(&C)");
             func.push(sendMsg(WEBEXT_TST, {
               type: "fake-contextMenu-create",
               params: {
@@ -659,11 +672,13 @@ const handleExternalExts = async () => {
             }));
             formats.forEach((value, key) => {
               const {
-                enabled: formatEnabled, id: formatId, title: formatTitle,
+                enabled: formatEnabled, id: formatId, menu: formatMenuTitle,
+                title: formatTitle,
               } = value;
               if (formatEnabled) {
                 const subItemId = `${itemId}${key}`;
-                const subItemTitle = formatTitle || formatId;
+                const subItemTitle =
+                  acckey && formatMenuTitle || formatTitle || formatId;
                 func.push(sendMsg(WEBEXT_TST, {
                   type: "fake-contextMenu-create",
                   params: {

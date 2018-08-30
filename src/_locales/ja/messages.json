@@ -14,6 +14,15 @@
   "copyAllTabsURL": {
     "message": "すべてのタブの URL をコピー"
   },
+  "copyAllTabsURL_key": {
+    "message": "すべてのタブの URL をコピー$KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyAllTabsURL_format": {
     "message": "すべてのタブの URL を $FORMAT$ でコピー",
     "placeholders": {
@@ -23,8 +32,30 @@
       }
     }
   },
+  "copyAllTabsURL_format_key": {
+    "message": "すべてのタブの URL を $FORMAT$ でコピー$KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyLinkURL": {
     "message": "リンクの URL をコピー"
+  },
+  "copyLinkURL_key": {
+    "message": "リンクの URL をコピー$KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyLinkURL_format": {
     "message": "リンクの URL を $FORMAT$ でコピー",
@@ -35,8 +66,30 @@
       }
     }
   },
+  "copyLinkURL_format_key": {
+    "message": "リンクの URL を $FORMAT$ でコピー$KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyPageURL": {
     "message": "ページの URL をコピー"
+  },
+  "copyPageURL_key": {
+    "message": "ページの URL をコピー$KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyPageURL_format": {
     "message": "ページの URL を $FORMAT$ でコピー",
@@ -47,8 +100,30 @@
       }
     }
   },
+  "copyPageURL_format_key": {
+    "message": "ページの URL を $FORMAT$ でコピー$KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "タブの URL をコピー"
+  },
+  "copyTabURL_key": {
+    "message": "タブの URL をコピー$KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyTabURL_format": {
     "message": "タブの URL を $FORMAT$ でコピー",
@@ -56,6 +131,19 @@
       "format": {
         "content": "$1",
         "example": "Markdown"
+      }
+    }
+  },
+  "copyTabURL_format_key": {
+    "message": "タブの URL を $FORMAT$ でコピー$KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
       }
     }
   },

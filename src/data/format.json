@@ -1,66 +1,66 @@
 {
   "HTML": {
     "id": "HTML",
-    "accesskey": "(&H)",
     "enabled": true,
+    "menu": "&HTML",
     "template": "<a href=\"%url%\" title=\"%title%\">%content%</a>",
     "templateWithoutTitle": "<a href=\"%url%\">%content%</a>"
   },
   "Markdown": {
     "id": "Markdown",
-    "accesskey": "(&M)",
     "enabled": true,
+    "menu": "&Markdown",
     "template": "[%content%](%url% \"%title%\")",
     "templateWithoutTitle": "[%content%](%url%)"
   },
   "BBCodeText": {
     "id": "BBCodeText",
-    "accesskey": "(&B)",
     "enabled": true,
+    "menu": "&BBCode (Text)",
     "template": "[url=%url%]%content%[/url]",
     "title": "BBCode (Text)"
   },
   "BBCodeURL": {
     "id": "BBCodeURL",
-    "accesskey": "(&U)",
     "enabled": true,
+    "menu": "BBCode (&URL)",
     "template": "[url]%content%[/url]",
     "title": "BBCode (URL)"
   },
   "Textile": {
     "id": "Textile",
-    "accesskey": "(&X)",
     "enabled": true,
+    "menu": "Te&xtile",
     "template": "\"%content%\":%url%"
   },
   "AsciiDoc": {
     "id": "AsciiDoc",
-    "accesskey": "(&A)",
     "enabled": true,
+    "menu": "&AsciiDoc",
     "template": "link:%url%[%content%]"
   },
   "MediaWiki": {
     "id": "MediaWiki",
-    "accesskey": "(&W)",
     "enabled": true,
+    "menu": "Media&Wiki",
     "template": "[%url% %content%]"
   },
   "Jira": {
     "id": "Jira",
-    "accesskey": "(&J)",
     "enabled": true,
+    "menu": "&Jira",
     "template": "[%content%|%url%]"
   },
   "reStructuredText": {
     "id": "reStructuredText",
-    "accesskey": "(&R)",
     "enabled": true,
+    "menu": "&reStructuredText",
     "template": "`%content% <%url%>`_"
   },
   "Text": {
     "id": "Text",
-    "accesskey": "(&T)",
     "enabled": true,
+    "menu": "&Text",
     "template": "%content% %url%"
   }
 }
