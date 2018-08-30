@@ -14,6 +14,15 @@
   "copyAllTabsURL": {
     "message": "Copy All Tabs URLs"
   },
+  "copyAllTabsURL_key": {
+    "message": "&Copy All Tabs URLs",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyAllTabsURL_format": {
     "message": "Copy All Tabs URLs as $FORMAT$",
     "placeholders": {
@@ -23,8 +32,30 @@
       }
     }
   },
+  "copyAllTabsURL_format_key": {
+    "message": "&Copy All Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyLinkURL": {
     "message": "Copy Link URL"
+  },
+  "copyLinkURL_key": {
+    "message": "&Copy Link URL",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyLinkURL_format": {
     "message": "Copy Link URL as $FORMAT$",
@@ -35,8 +66,30 @@
       }
     }
   },
+  "copyLinkURL_format_key": {
+    "message": "&Copy Link URL as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyPageURL": {
     "message": "Copy Page URL"
+  },
+  "copyPageURL_key": {
+    "message": "&Copy Page URL",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyPageURL_format": {
     "message": "Copy Page URL as $FORMAT$",
@@ -47,8 +100,30 @@
       }
     }
   },
+  "copyPageURL_format_key": {
+    "message": "&Copy Page URL as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "Copy Tab URL"
+  },
+  "copyTabURL_key": {
+    "message": "&Copy Tab URL",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyTabURL_format": {
     "message": "Copy Tab URL as $FORMAT$",
@@ -56,6 +131,19 @@
       "format": {
         "content": "$1",
         "example": "Markdown"
+      }
+    }
+  },
+  "copyTabURL_format_key": {
+    "message": "&Copy Tab URL as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
       }
     }
   },

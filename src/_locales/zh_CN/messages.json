@@ -14,6 +14,15 @@
   "copyAllTabsURL": {
     "message": "复制所有标签页 URL"
   },
+  "copyAllTabsURL_key": {
+    "message": "复制所有标签页 URL $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyAllTabsURL_format": {
     "message": "复制所有标签页 URL 为 $FORMAT$",
     "placeholders": {
@@ -23,8 +32,30 @@
       }
     }
   },
+  "copyAllTabsURL_format_key": {
+    "message": "复制所有标签页 URL 为 $FORMAT$ $KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyLinkURL": {
     "message": "复制链接 URL"
+  },
+  "copyLinkURL_key": {
+    "message": "复制链接 URL $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyLinkURL_format": {
     "message": "复制链接为 $FORMAT$",
@@ -35,8 +66,30 @@
       }
     }
   },
+  "copyLinkURL_format_key": {
+    "message": "复制链接为 $FORMAT$ $KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyPageURL": {
     "message": "复制页面 URL"
+  },
+  "copyPageURL_key": {
+    "message": "复制页面 URL $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyPageURL_format": {
     "message": "复制页面 URL 为 $FORMAT$",
@@ -47,8 +100,30 @@
       }
     }
   },
+  "copyPageURL_format_key": {
+    "message": "复制页面 URL 为 $FORMAT$ $KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "复制标签页 URL"
+  },
+  "copyTabURL_key": {
+    "message": "复制标签页 URL $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
   },
   "copyTabURL_format": {
     "message": "复制标签页 URL 为 $FORMAT$",
@@ -56,6 +131,19 @@
       "format": {
         "content": "$1",
         "example": "Markdown"
+      }
+    }
+  },
+  "copyTabURL_format_key": {
+    "message": "复制标签页 URL 为 $FORMAT$ $KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
       }
     }
   },
