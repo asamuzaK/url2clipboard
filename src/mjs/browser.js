@@ -2,18 +2,36 @@
  * browser.js
  */
 
-import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
+import {
+  getType, isObjectNotEmpty, isString, parseVersion, throwErr,
+} from "./common.js";
 
 /* api */
 const {
-  commands, management, notifications, permissions, runtime, storage, tabs,
-  windows,
+  commands, i18n, management, notifications, permissions, runtime, storage,
+  tabs, windows,
 } = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
+const IS_CHROMEEXT = typeof runtime.getPackageDirectoryEntry === "function";
+const IS_WEBEXT = typeof runtime.getBrowserInfo === "function";
+const WEBEXT_ACCKEY_MIN = 63;
 
 /* commands */
+/**
+ * is command customizable
+ * @returns {boolean} - result
+ */
+export const isCommandCustomizable = () => {
+  let bool;
+  if (commands) {
+    bool = typeof commands.update === "function" &&
+           typeof commands.reset === "function";
+  }
+  return !!bool;
+};
+
 /**
  * update command
  * @param {string} id - command ID
@@ -28,7 +46,7 @@ export const updateCommand = async (id, value = "") => {
     throw new TypeError(`Expected String but got ${getType(value)}.`);
   }
   let func;
-  if (commands && typeof commands.update === "function") {
+  if (isCommandCustomizable()) {
     const shortcut =
       value.trim().replace(/\+([a-z])$/, (m, c) => `+${c.toUpperCase()}`);
     if (/^(?:(?:(?:Alt|Command|(?:Mac)?Ctrl)\+(?:Shift\+)?(?:[\dA-Z]|F(?:[1-9]|1[0-2])|(?:Page)?(?:Down|Up)|Left|Right|Comma|Period|Home|End|Delete|Insert|Space))|F(?:[1-9]|1[0-2]))$/.test(shortcut)) {
@@ -338,6 +356,27 @@ export const getAllTabsInWindow = async windowId => {
     });
   }
   return tabList || null;
+};
+
+/**
+ * is accesskey supported in context menu
+ * @returns {boolean} - result
+ */
+export const isAccessKeySupported = async () => {
+  let bool;
+  if (IS_CHROMEEXT) {
+    bool = true;
+  } else if (IS_WEBEXT) {
+    const {version} = await runtime.getBrowserInfo();
+    const {major: majorVersion} = await parseVersion(version);
+    // FIXME: https://bugzilla.mozilla.org/show_bug.cgi?id=1484914
+    const langs = ["ja"];
+    const uiLang = i18n.getUILanguage();
+    if (majorVersion >= WEBEXT_ACCKEY_MIN && !langs.includes(uiLang)) {
+      bool = true;
+    }
+  }
+  return !!bool;
 };
 
 /**
