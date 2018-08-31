@@ -67,13 +67,13 @@ export const updateCommand = async (id, value = "") => {
  * @returns {?Array} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
-  let themes;
+  let arr;
   if (management) {
-    themes = await management.getAll().then(arr => arr.filter(info =>
+    arr = await management.getAll().then(res => res.filter(info =>
       info.type && info.type === "theme" && info.enabled && info
     ));
   }
-  return themes || null;
+  return arr || null;
 };
 
 /**
@@ -85,11 +85,11 @@ export const getExtensionInfo = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let info;
+  let ext;
   if (management) {
-    info = await management.get(id);
+    ext = await management.get(id);
   }
-  return info || null;
+  return ext || null;
 };
 
 /**
@@ -97,13 +97,13 @@ export const getExtensionInfo = async id => {
  * @returns {?Array} -array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
-  let exts;
+  let arr;
   if (management) {
-    exts = await management.getAll().then(arr => arr.filter(info =>
+    arr = await management.getAll().then(res => res.filter(info =>
       info.type && info.type === "extension" && info
     ));
   }
-  return exts || null;
+  return arr || null;
 };
 
 /* notifications */
@@ -148,45 +148,45 @@ export const createNotification = async (id, opt) => {
 /**
  * remove permission
  * @param {string|Array} perm - permission
- * @returns {?AsyncFunction} - permissions.remove
+ * @returns {boolean} - result
  */
 export const removePermission = async perm => {
   if (!(isString(perm) || Array.isArray(perm))) {
     throw new TypeError(`Expected String or Array but got ${getType(perm)}.`);
   }
-  let func;
+  let bool;
   if (isString(perm)) {
-    func = permissions.remove({
+    bool = await permissions.remove({
       permissions: [perm],
     });
   } else if (Array.isArray(perm)) {
-    func = permissions.remove({
+    bool = await permissions.remove({
       permissions: perm,
     });
   }
-  return func || null;
+  return !!bool;
 };
 
 /**
  * request permission
  * @param {string|Array} perm - permission
- * @returns {?AsyncFunction} - permissions.request
+ * @returns {boolean} - result
  */
 export const requestPermission = async perm => {
   if (!(isString(perm) || Array.isArray(perm))) {
     throw new TypeError(`Expected String or Array but got ${getType(perm)}.`);
   }
-  let func;
+  let bool;
   if (isString(perm)) {
-    func = permissions.request({
+    bool = await permissions.request({
       permissions: [perm],
     });
   } else if (Array.isArray(perm)) {
-    func = permissions.request({
+    bool = await permissions.request({
       permissions: perm,
     });
   }
-  return func || null;
+  return !!bool;
 };
 
 /* runtime */
@@ -371,17 +371,17 @@ export const getActiveTabId = async windowId => {
  * @returns {?Array} - array of tabs.Tab
  */
 export const getAllTabsInWindow = async windowId => {
-  let tabList;
+  let arr;
   if (tabs) {
     if (!Number.isInteger(windowId)) {
       windowId = windows.WINDOW_ID_CURRENT;
     }
-    tabList = await tabs.query({
+    arr = await tabs.query({
       windowId,
       windowType: "normal",
     });
   }
-  return tabList || null;
+  return arr || null;
 };
 
 /**
@@ -432,15 +432,15 @@ export const getAllNormalWindows = async () => windows.getAll({
  * @returns {boolean} - result
  */
 export const checkIncognitoWindowExists = async () => {
-  let incog;
-  const winArr = await getAllNormalWindows();
-  if (winArr && winArr.length) {
-    for (const win of winArr) {
-      incog = win.incognito;
-      if (incog) {
+  const arr = await getAllNormalWindows();
+  let bool;
+  if (arr && arr.length) {
+    for (const win of arr) {
+      bool = win.incognito;
+      if (bool) {
         break;
       }
     }
   }
-  return !!incog;
+  return !!bool;
 };
