@@ -397,8 +397,8 @@ const updateContextMenu = async tabId => {
  */
 const setIcon = async () => {
   const {iconId} = vars;
-  const name = await i18n.getMessage(EXT_NAME);
-  const icon = await runtime.getURL(ICON);
+  const name = i18n.getMessage(EXT_NAME);
+  const icon = runtime.getURL(ICON);
   const path = iconId && `${icon}${iconId}` || icon;
   const title = `${name} (${KEY})`;
   return Promise.all([
