@@ -76,6 +76,36 @@ export const getEnabledTheme = async () => {
   return themes || null;
 };
 
+/**
+ * get extension info
+ * @param {string} id - extension ID
+ * @returns {Object} - management.extensionInfo
+ */
+export const getExtensionInfo = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  let info;
+  if (management) {
+    info = await management.get(id);
+  }
+  return info || null;
+};
+
+/**
+ * get external extensions
+ * @returns {?Array} -array of management.extensionInfo
+ */
+export const getExternalExtensions = async () => {
+  let exts;
+  if (management) {
+    exts = await management.getAll().then(arr => arr.filter(info =>
+      info.type && info.type === "extension" && info
+    ));
+  }
+  return exts || null;
+};
+
 /* notifications */
 /**
  * clear notification
@@ -206,67 +236,63 @@ export const sendMessage = async (id, msg, opt) => {
 /* storage */
 /**
  * get all storage
- * @returns {?AsyncFunction} - storage.local.get
+ * @returns {Object} - stored data
  */
 export const getAllStorage = async () => {
-  let func;
+  let data;
   if (storage) {
-    func = storage.local.get();
+    data = await storage.local.get();
   }
-  return func || null;
+  return data || null;
 };
 
 /**
  * get storage
  * @param {*} key - key
- * @returns {?AsyncFunction} - storage.local.get
+ * @returns {Object} - stored data
  */
 export const getStorage = async key => {
-  let func;
+  let data;
   if (storage) {
-    func = storage.local.get(key);
+    data = await storage.local.get(key);
   }
-  return func || null;
+  return data || null;
 };
 
 /**
  * remove storage
  * @param {*} key - key
- * @returns {?AsyncFunction} - storage.local.remove
+ * @returns {void}
  */
 export const removeStorage = async key => {
-  let func;
   if (storage) {
-    func = storage.local.remove(key);
+    await storage.local.remove(key);
   }
-  return func || null;
 };
 
 /**
  * set storage
  * @param {Object} obj - object to store
- * @returns {?AsyncFunction} - storage.local.set
+ * @returns {void}
  */
 export const setStorage = async obj => {
-  let func;
   if (storage && obj) {
-    func = storage.local.set(obj);
+    await storage.local.set(obj);
   }
-  return func || null;
 };
 
 /* tabs */
 /**
  * create tab
  * @param {Object} opt - options
- * @returns {AsyncFunction} - tabs.create
+ * @returns {Object} - tabs.Tab
  */
 export const createTab = async (opt = {}) => {
-  let func;
+  let tab;
   if (tabs) {
-    func = tabs.create(isObjectNotEmpty(opt) && opt || null);
+    tab = await tabs.create(isObjectNotEmpty(opt) && opt || null);
   }
-  return func || null;
+  return tab || null;
 };
 
 /**
@@ -342,7 +368,7 @@ export const getActiveTabId = async windowId => {
 /**
  * get all tabs in window
  * @param {number} windowId - window ID
- * @returns {?Array} - tab list
+ * @returns {?Array} - array of tabs.Tab
  */
 export const getAllTabsInWindow = async windowId => {
   let tabList;
@@ -387,7 +413,7 @@ export const isTab = async tabId => {
   }
   let tab;
   if (tabs && tabId !== TAB_ID_NONE) {
-    tab = await tabs.get(tabId).catch(throwErr);
+    tab = await tabs.get(tabId).catch(() => false);
   }
   return !!tab;
 };

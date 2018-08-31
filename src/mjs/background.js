@@ -15,13 +15,12 @@ import {
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
   fetchData, getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
-  getManifestIcons, isAccessKeySupported, isTab, sendMessage,
+  getExtensionInfo, getExternalExtensions, getManifestIcons,
+  isAccessKeySupported, isTab, sendMessage,
 } from "./browser.js";
 
 /* api */
-const {
-  browserAction, contextMenus, i18n, management, runtime, storage, tabs,
-} = browser;
+const {browserAction, contextMenus, i18n, runtime, storage, tabs} = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
@@ -65,7 +64,7 @@ const addExternalExt = async id => {
  * @returns {Promise.<Array>} - results of each handler
  */
 const setExternalExts = async () => {
-  const items = await management.getAll();
+  const items = await getExternalExtensions();
   const func = [];
   for (const item of items) {
     const {enabled, id} = item;
@@ -91,7 +90,7 @@ const sendMsg = async (id, msg, opt) => {
     if (Number.isInteger(id) && id !== TAB_ID_NONE) {
       func.push(sendMessage(id, msg, opt));
     } else if (id && isString(id)) {
-      const ext = await management.get(id);
+      const ext = await getExtensionInfo(id);
       if (ext) {
         const {enabled} = ext;
         if (enabled) {
