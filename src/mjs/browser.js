@@ -8,7 +8,7 @@ import {
 
 /* api */
 const {
-  commands, i18n, management, notifications, permissions, runtime, storage,
+  commands, management, notifications, permissions, runtime, storage,
   tabs, windows,
 } = browser;
 
@@ -369,10 +369,7 @@ export const isAccessKeySupported = async () => {
   } else if (IS_WEBEXT) {
     const {version} = await runtime.getBrowserInfo();
     const {major: majorVersion} = await parseVersion(version);
-    // FIXME: https://bugzilla.mozilla.org/show_bug.cgi?id=1484914
-    const langs = ["ja"];
-    const uiLang = i18n.getUILanguage();
-    if (majorVersion >= WEBEXT_ACCKEY_MIN && !langs.includes(uiLang)) {
+    if (majorVersion >= WEBEXT_ACCKEY_MIN) {
       bool = true;
     }
   }
