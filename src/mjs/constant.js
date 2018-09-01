@@ -2,6 +2,8 @@
  * constant.js
  */
 
+export const ASCIIDOC = "AsciiDoc";
+export const BBCODE_TEXT = "BBCodeText";
 export const BBCODE_URL = "BBCodeURL";
 export const CONTENT_LINK = "copyLinkContent";
 export const CONTENT_LINK_BBCODE = "copyLinkBBCodeURLContent";
@@ -32,10 +34,12 @@ export const ICON_WHITE = "buttonIconWhite";
 export const INCLUDE_TITLE_HTML = "includeTitleHtml";
 export const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
 export const KEY = "Alt+Shift+C";
+export const LATEX = "LaTeX";
 export const LINK_DETAILS = "copyLinkDetails";
 export const LINK_MENU =
   `#${LINK_DETAILS} button,#${CONTENT_LINK},#${CONTENT_LINK_BBCODE}`;
 export const MARKDOWN = "Markdown";
+export const MEDIAWIKI = "MediaWiki";
 export const MIME_HTML = "text/html";
 export const MIME_PLAIN = "text/plain";
 export const OUTPUT_HTML_HYPER = "outputTextHtml";
@@ -48,6 +52,8 @@ export const OUTPUT_TEXT_URL = "outputOnlyUrl";
 export const OUTPUT_URL = "url";
 export const PATH_FORMAT_DATA = "data/format.json";
 export const PROMPT = "promptContent";
+export const REST = "reStructuredText";
+export const TEXTILE = "Textile";
 export const THEME_DARK =
   "firefox-compact-dark@mozilla.org@personas.mozilla.org";
 export const THEME_LIGHT =

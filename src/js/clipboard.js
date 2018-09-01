@@ -25,6 +25,7 @@
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
   const HTML = "HTML";
+  const LATEX = "LaTeX";
   const MARKDOWN = "Markdown";
   const MEDIAWIKI = "MediaWiki";
   const REST = "reStructuredText";
@@ -98,6 +99,22 @@
     str.replace(/&(?!(?:(?:(?:[gl]|quo)t|amp)|[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
       .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
     null;
+
+  /**
+   * convert LaTeX special char
+   * @param {string} str - string
+   * @returns {?string} - string
+   */
+  const convertLaTeXChar = str =>
+    isString(str) && escapeChar(
+      str.replace(/\\/g, "\\textbackslash[]")
+        .replace(/\^/g, "\\textasciicircum[]")
+        .replace(/~/g, "\\textasciitilde[]"),
+      /([%$#&_{}])/g
+    ).replace(
+      /(\\text(?:backslash|ascii(?:circum|tilde)))\[\]/g,
+      (m, c) => `${c}{}`
+    ) || null;
 
   /**
    * encode URL component part
@@ -238,6 +255,9 @@
       case HTML:
         content = convertHtmlChar(content) || "";
         linkTitle = convertHtmlChar(title) || "";
+        break;
+      case LATEX:
+        content = convertLaTeXChar(content) || "";
         break;
       case MARKDOWN:
         content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";

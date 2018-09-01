@@ -57,6 +57,12 @@
     "menu": "&reStructuredText",
     "template": "`%content% <%url%>`_"
   },
+  "LaTeX": {
+    "id": "LaTeX",
+    "enabled": true,
+    "menu": "&LaTeX",
+    "template": "\\href{%url%}{%content%}"
+  },
   "Text": {
     "id": "Text",
     "enabled": true,
