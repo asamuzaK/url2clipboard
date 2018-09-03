@@ -243,6 +243,9 @@
   "optionsIncludeTitle": {
     "message": "包括标题"
   },
+  "optionsLabel": {
+    "message": "设置"
+  },
   "optionsPromptContent": {
     "message": "编辑链接标题"
   },

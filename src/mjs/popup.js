@@ -22,6 +22,7 @@ const {runtime, storage, tabs} = browser;
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
+const OPTIONS_OPEN = "openOptions";
 
 /* variables */
 const vars = {
@@ -254,9 +255,14 @@ const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll("button");
   if (nodes instanceof NodeList) {
     for (const node of nodes) {
-      node.addEventListener("click", evt =>
-        createCopyData(evt).catch(throwErr)
-      );
+      const {id} = node;
+      if (id === OPTIONS_OPEN) {
+        node.addEventListener("click", () => runtime.openOptionsPage());
+      } else {
+        node.addEventListener("click", evt =>
+          createCopyData(evt).catch(throwErr)
+        );
+      }
     }
   }
 };

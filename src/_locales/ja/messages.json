@@ -243,6 +243,9 @@
   "optionsIncludeTitle": {
     "message": "タイトルを含ませる"
   },
+  "optionsLabel": {
+    "message": "設定"
+  },
   "optionsPromptContent": {
     "message": "コピー時にコンテンツを編集する"
   },

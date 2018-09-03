@@ -243,6 +243,9 @@
   "optionsIncludeTitle": {
     "message": "Include title"
   },
+  "optionsLabel": {
+    "message": "Options"
+  },
   "optionsPromptContent": {
     "message": "Edit contents when copying"
   },
