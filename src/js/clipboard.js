@@ -15,6 +15,7 @@
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
+  const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
@@ -281,6 +282,17 @@
   };
 
   /**
+   * create all tabs link text
+   * @param {Array} arr - array of link text
+   * @returns {string} - joined link text
+   */
+  const createAllTabsLinkText = async arr => {
+    const {mimeType} = vars;
+    const joiner = mimeType === MIME_HTML && "<br />\n" || "\n";
+    return arr.filter(i => i).join(joiner);
+  };
+
+  /**
    * extract copy data
    * @param {Object} data - copy data
    * @returns {?string} - link text
@@ -293,7 +305,7 @@
       for (const tabData of allTabs) {
         func.push(createLinkText(tabData));
       }
-      text = await Promise.all(func).then(arr => arr.filter(i => i).join("\n"));
+      text = await Promise.all(func).then(createAllTabsLinkText);
     } else {
       text = await createLinkText(data);
     }

@@ -7,10 +7,9 @@ import {
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, EXT_NAME, HTML,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, KEY,
-  MARKDOWN, MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
-  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
-  OUTPUT_TEXT_URL, OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, THEME_DARK,
-  THEME_LIGHT, WEBEXT_ID,
+  MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
+  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
+  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
@@ -200,14 +199,11 @@ const getFormatTemplate = async id => {
       id: itemId, template: itemTmpl, templateWithoutTitle: itemTmplWoTitle,
     } = item;
     const {
-      includeTitleHtml, includeTitleMarkdown, mimeType, textOutput,
+      includeTitleHtml, includeTitleMarkdown, textOutput,
     } = vars;
     switch (itemId) {
       case HTML:
         template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
-        if (mimeType === MIME_HTML) {
-          template = `${template}<br />`;
-        }
         break;
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;

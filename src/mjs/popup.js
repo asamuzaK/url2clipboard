@@ -7,9 +7,9 @@ import {
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS, HTML,
   INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, LINK_MENU,
-  MARKDOWN, MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
-  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
-  OUTPUT_TEXT_URL, OUTPUT_URL, PATH_FORMAT_DATA,
+  MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
+  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
+  OUTPUT_URL, PATH_FORMAT_DATA,
 } from "./constant.js";
 import {getType, isString, throwErr} from "./common.js";
 import {
@@ -87,14 +87,11 @@ const getFormatTemplate = async id => {
       templateWithoutTitle: itemTmplWoTitle,
     } = item;
     const {
-      includeTitleHtml, includeTitleMarkdown, mimeType, textOutput,
+      includeTitleHtml, includeTitleMarkdown, textOutput,
     } = vars;
     switch (itemId) {
       case HTML:
         template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
-        if (mimeType === MIME_HTML) {
-          template = `${template}<br />`;
-        }
         break;
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
