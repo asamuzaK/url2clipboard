@@ -306,8 +306,10 @@ const createContextMenu = async () => {
         const {id: keyId, title: keyTitle} = formats.get(key);
         const formatTitle = i18n.getMessage(
           acckey && `${itemId}_format_key` || `${itemId}_format`,
-          keyTitle || keyId,
-          isWebExt && "(&C)" || " (&C)"
+          [
+            keyTitle || keyId,
+            isWebExt && "(&C)" || " (&C)",
+          ],
         );
         func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
       } else {
