@@ -34,6 +34,7 @@
 
   /* variables */
   const vars = {
+    applyTbFix: false,
     mimeType: MIME_PLAIN,
   };
 
@@ -175,9 +176,14 @@
        * @returns {void}
        */
       const setClipboardData = evt => {
+        const {applyTbFix} = vars;
         let {mimeType: type} = vars;
         if (!isString(type) || !/^text\/(?:plain|html)$/.test(type)) {
           type = MIME_PLAIN;
+        }
+        // Temporary workaround for Thunderbird bug 554264
+        if (type === MIME_HTML && applyTbFix) {
+          text = `${text} `;
         }
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();
@@ -298,8 +304,9 @@
    * @returns {?string} - link text
    */
   const extractCopyData = async (data = {}) => {
-    const {allTabs} = data;
+    const {allTabs, applyTbFix} = data;
     let text;
+    vars.applyTbFix = !!applyTbFix;
     if (Array.isArray(allTabs)) {
       const func = [];
       for (const tabData of allTabs) {
