@@ -153,6 +153,12 @@
   "onCopySettings": {
     "message": "复制时"
   },
+  "optionsApplyTbFix": {
+    "message": "Apply quick fix for Thunderbird"
+  },
+  "optionsApplyTbFixDetail": {
+    "message": "As a quick fix for a bug in Thunderbird, adds a space after the HTML link."
+  },
   "optionsEnableFormatDetail": {
     "message": "在右键菜单中显示 $FORMAT$。",
     "placeholders": {
