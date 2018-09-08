@@ -183,7 +183,7 @@
         }
         // Temporary workaround for Thunderbird bug 554264
         if (type === MIME_HTML && applyTbFix) {
-          text = `${text} `;
+          text = `${text}&#160;`;
         }
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();
