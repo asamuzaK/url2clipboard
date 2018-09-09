@@ -34,7 +34,6 @@
 
   /* variables */
   const vars = {
-    applyTbFix: false,
     mimeType: MIME_PLAIN,
   };
 
@@ -299,9 +298,8 @@
    * @returns {?string} - link text
    */
   const extractCopyData = async (data = {}) => {
-    const {allTabs, applyTbFix} = data;
+    const {allTabs} = data;
     let text;
-    vars.applyTbFix = !!applyTbFix;
     if (Array.isArray(allTabs)) {
       const func = [];
       for (const tabData of allTabs) {
