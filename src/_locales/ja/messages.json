@@ -153,12 +153,6 @@
   "onCopySettings": {
     "message": "コピー時の設定"
   },
-  "optionsApplyTbFix": {
-    "message": "Thunderbird 用の暫定修正を適用する"
-  },
-  "optionsApplyTbFixDetail": {
-    "message": "Thunderbird のバグへの暫定的な対策として、HTML リンクの後ろに空白を追加します。"
-  },
   "optionsEnableFormatDetail": {
     "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
     "placeholders": {

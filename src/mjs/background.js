@@ -9,8 +9,7 @@ import {
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, KEY,
   MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
   OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, TB_FIX_APPLY, THEME_DARK, THEME_LIGHT,
-  WEBEXT_ID,
+  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
@@ -28,7 +27,6 @@ const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
 /* variables */
 const vars = {
-  applyTbFix: false,
   iconId: "",
   includeTitleHtml: false,
   includeTitleMarkdown: false,
@@ -543,8 +541,7 @@ const extractClickedData = async (info, tab) => {
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
     const {menuItemId, selectionText} = info;
     const {
-      applyTbFix, includeTitleHtml, includeTitleMarkdown, mimeType,
-      promptContent,
+      includeTitleHtml, includeTitleMarkdown, mimeType, promptContent,
     } = vars;
     const {
       canonicalUrl,
@@ -555,7 +552,7 @@ const extractClickedData = async (info, tab) => {
       const allTabs = await getAllTabsInfo(menuItemId);
       func.push(sendMsg(tabId, {
         [EXEC_COPY_TABS]: {
-          allTabs, applyTbFix, includeTitleHtml, includeTitleMarkdown,
+          allTabs, includeTitleHtml, includeTitleMarkdown,
         },
       }));
     } else {
@@ -584,8 +581,8 @@ const extractClickedData = async (info, tab) => {
       }
       func.push(sendMsg(tabId, {
         [EXEC_COPY]: {
-          applyTbFix, content, includeTitleHtml, includeTitleMarkdown,
-          menuItemId, mimeType, promptContent, template, title, url,
+          content, includeTitleHtml, includeTitleMarkdown, menuItemId, mimeType,
+          promptContent, template, title, url,
         },
       }));
     }
@@ -802,7 +799,6 @@ const setVar = async (item, obj, changed = false) => {
       case INCLUDE_TITLE_HTML:
       case INCLUDE_TITLE_MARKDOWN:
       case PROMPT:
-      case TB_FIX_APPLY:
         vars[item] = !!checked;
         break;
       case OUTPUT_HTML_HYPER:

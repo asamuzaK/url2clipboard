@@ -176,14 +176,9 @@
        * @returns {void}
        */
       const setClipboardData = evt => {
-        const {applyTbFix} = vars;
         let {mimeType: type} = vars;
         if (!isString(type) || !/^text\/(?:plain|html)$/.test(type)) {
           type = MIME_PLAIN;
-        }
-        // Temporary workaround for Thunderbird bug 554264
-        if (type === MIME_HTML && applyTbFix) {
-          text = `${text}&#160;`;
         }
         document.removeEventListener("copy", setClipboardData, true);
         evt.stopImmediatePropagation();

@@ -153,12 +153,6 @@
   "onCopySettings": {
     "message": "Settings On Copy"
   },
-  "optionsApplyTbFix": {
-    "message": "Apply quick fix for Thunderbird"
-  },
-  "optionsApplyTbFixDetail": {
-    "message": "As a quick fix for a bug in Thunderbird, adds a space after the HTML link."
-  },
   "optionsEnableFormatDetail": {
     "message": "Show $FORMAT$ menu item in the context menu.",
     "placeholders": {
