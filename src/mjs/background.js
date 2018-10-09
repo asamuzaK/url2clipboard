@@ -9,7 +9,8 @@ import {
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, KEY,
   MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
   OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, TEXT, THEME_DARK, THEME_LIGHT,
+  WEBEXT_ID,
 } from "./constant.js";
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
@@ -208,7 +209,7 @@ const getFormatTemplate = async id => {
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
         break;
-      default:
+      case TEXT:
         if (textOutput === OUTPUT_TEXT) {
           template = itemTmpl.replace(/%url%/g, "").trim();
         } else if (textOutput === OUTPUT_URL) {
@@ -216,6 +217,9 @@ const getFormatTemplate = async id => {
         } else {
           template = itemTmpl;
         }
+        break;
+      default:
+        template = itemTmpl;
     }
   }
   return template || null;

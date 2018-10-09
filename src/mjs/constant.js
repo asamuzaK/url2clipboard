@@ -53,6 +53,7 @@ export const OUTPUT_URL = "url";
 export const PATH_FORMAT_DATA = "data/format.json";
 export const PROMPT = "promptContent";
 export const REST = "reStructuredText";
+export const TEXT = "Text";
 export const TEXTILE = "Textile";
 export const THEME_DARK =
   "firefox-compact-dark@mozilla.org@personas.mozilla.org";
