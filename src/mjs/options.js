@@ -93,7 +93,9 @@ const setValuesFromStorage = async () => {
   if (isObjectNotEmpty(pref)) {
     const items = Object.values(pref);
     for (const item of items) {
-      isObjectNotEmpty(item) && func.push(setHtmlInputValue(item));
+      if (isObjectNotEmpty(item)) {
+        func.push(setHtmlInputValue(item));
+      }
     }
   }
   return Promise.all(func);

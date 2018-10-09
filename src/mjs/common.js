@@ -36,7 +36,9 @@ export const logError = e => {
  * @returns {boolean} - false
  */
 export const logWarn = msg => {
-  msg && console.warn(msg);
+  if (msg) {
+    console.warn(msg);
+  }
   return false;
 };
 
@@ -46,7 +48,9 @@ export const logWarn = msg => {
  * @returns {Object} - message
  */
 export const logMsg = msg => {
-  msg && console.log(msg);
+  if (msg) {
+    console.log(msg);
+  }
   return msg;
 };
 
@@ -81,8 +85,13 @@ export const isObjectNotEmpty = o => {
  * @param {boolean} zero - treat 0 as a positive integer
  * @returns {?string} - stringified integer
  */
-export const stringifyPositiveInt = (i, zero = false) =>
-  Number.isSafeInteger(i) && (zero && i >= 0 || i > 0) && `${i}` || null;
+export const stringifyPositiveInt = (i, zero = false) => {
+  let str;
+  if (Number.isSafeInteger(i) && (i > 0 || zero && i === 0)) {
+    str = `${i}`;
+  }
+  return str || null;
+};
 
 /**
  * parse stringified integer
@@ -98,6 +107,22 @@ export const parseStringifiedInt = (i, zero = false) => {
     throw new Error(`${i} is not a stringified integer.`);
   }
   return parseInt(i);
+};
+
+/**
+ * escape all matching chars
+ * @param {string} str - argument
+ * @param {RegExp} re - RegExp
+ * @returns {?string} - string
+ */
+export const escapeMatchingChars = (str, re) => {
+  if (!isString(str)) {
+    throw new TypeError(`Expexted String but got ${getType(str)}`);
+  }
+  if (!(re instanceof RegExp)) {
+    throw new TypeError(`Expexted RegExp but got ${getType(str)}`);
+  }
+  return re.global && str.replace(re, (m, c) => `\\${c}`) || null;
 };
 
 /**
@@ -157,6 +182,55 @@ export const removeQueryFromURI = uri => {
 };
 
 /**
+ * sleep
+ * @param {number} msec - milisec
+ * @param {boolean} doReject - reject instead of resolve
+ * @returns {?AsyncFunction} - resolve / reject
+ */
+export const sleep = (msec = 0, doReject = false) => {
+  let func;
+  if (Number.isInteger(msec) && msec >= 0) {
+    func = new Promise((resolve, reject) => {
+      if (doReject) {
+        setTimeout(reject, msec);
+      } else {
+        setTimeout(resolve, msec);
+      }
+    });
+  }
+  return func || null;
+};
+
+/**
+ * dispatch keyboard event
+ * @param {Object} elm - element
+ * @param {string} type - event type
+ * @param {Object} keyOpt - key options
+ * @returns {void}
+ */
+export const dispatchKeyboardEvt = (elm, type, keyOpt = {}) => {
+  if (elm && elm.nodeType === Node.ELEMENT_NODE &&
+      isString(type) && /^key(?:down|press|up)$/.test(type) &&
+      Object.keys(keyOpt)) {
+    const {altKey, code, ctrlKey, key, shiftKey, metaKey} = keyOpt;
+    if (isString(key) && isString(code)) {
+      const opt = {
+        code, key,
+        altKey: !!altKey,
+        ctrlKey: !!ctrlKey,
+        locale: "",
+        location: 0,
+        metaKey: !!metaKey,
+        repeat: false,
+        shiftKey: !!shiftKey,
+      };
+      const evt = new KeyboardEvent(type, opt);
+      elm.dispatchEvent(evt);
+    }
+  }
+};
+
+/**
  * dispatch change event
  * @param {Object} elm - element
  * @returns {void}
@@ -187,4 +261,17 @@ export const dispatchInputEvt = elm => {
                 new Event("input", opt);
     elm.dispatchEvent(evt);
   }
+};
+
+/**
+ * focus element
+ * @param {!Object} evt - Event
+ * @returns {Object} - element
+ */
+export const focusElement = evt => {
+  const {target} = evt;
+  if (target) {
+    target.focus();
+  }
+  return target || null;
 };

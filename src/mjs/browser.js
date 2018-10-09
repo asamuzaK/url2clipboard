@@ -8,8 +8,8 @@ import {
 
 /* api */
 const {
-  commands, management, notifications, permissions, runtime, storage,
-  tabs, windows,
+  bookmarks, commands, contextualIdentities, management, notifications,
+  permissions, runtime, sessions, storage, tabs, windows,
 } = browser;
 
 /* constants */
@@ -18,6 +18,20 @@ const IS_CHROMEEXT = typeof runtime.getPackageDirectoryEntry === "function";
 const IS_WEBEXT = typeof runtime.getBrowserInfo === "function";
 const WEBEXT_ACCKEY_MIN = 63;
 const WEBEXT_MENU_VISIBLE_MIN = 63;
+
+/* bookmarks */
+/**
+ * create bookmark
+ * @param {Object} opt - options
+ * @returns {Object} - bookmarks.BookmarkTreeNodeType
+ */
+export const createBookmark = async opt => {
+  let type;
+  if (bookmarks) {
+    type = await bookmarks.create(isObjectNotEmpty(opt) && opt || null);
+  }
+  return type || null;
+};
 
 /* commands */
 /**
@@ -60,6 +74,43 @@ export const updateCommand = async (id, value = "") => {
     }
   }
   return func || null;
+};
+
+/* contextualIdentities */
+/**
+ * get all contextual identities
+ * @returns {?Array} - array of contextualIdentities.ContextualIdentity
+ */
+export const getAllContextualIdentities = async () => {
+  let arr;
+  if (contextualIdentities) {
+    try {
+      arr = await contextualIdentities.query({});
+    } catch (e) {
+      // silent fail;
+    }
+  }
+  return arr || null;
+};
+
+/**
+ * get contextual identities
+ * @param {string} cookieStoreId - cookie store ID
+ * @returns {Object} - contextualIdentities.ContextualIdentity
+ */
+export const getContextualId = async cookieStoreId => {
+  if (!isString(cookieStoreId)) {
+    throw new TypeError(`Expected String but got ${getType(cookieStoreId)}.`);
+  }
+  let id;
+  if (contextualIdentities) {
+    try {
+      id = await contextualIdentities.get(cookieStoreId);
+    } catch (e) {
+      // silent fail;
+    }
+  }
+  return id || null;
 };
 
 /* management */
@@ -213,6 +264,39 @@ export const getManifestIcons = () => {
   return icons;
 };
 
+/**
+ * get OS
+ * @returns {string} - OS
+ */
+export const getOs = async () => {
+  const {os} = await runtime.getPlatformInfo();
+  return os;
+};
+
+/**
+ * make a connection
+ * @param {string} [extId] - extension ID
+ * @param {Object} [info] - info
+ * @returns {Object} - runtime.Port
+ */
+export const makeConnection = async (extId, info) => {
+  let port;
+  if (isString(extId)) {
+    if (isObjectNotEmpty(info)) {
+      port = await runtime.connect(extId, info);
+    } else {
+      port = await runtime.connect(extId);
+    }
+  } else if (isObjectNotEmpty(extId)) {
+    port = await runtime.connect(extId);
+  } else if (!extId && isObjectNotEmpty(info)) {
+    port = await runtime.connect(info);
+  } else {
+    port = await runtime.connect();
+  }
+  return port || null;
+};
+
 /** send message
  * @param {number|string} id - tabId or extension ID
  * @param {*} msg - message
@@ -234,7 +318,101 @@ export const sendMessage = async (id, msg, opt) => {
   return func || null;
 };
 
+/* sessions */
+/**
+ * get recently closed tab
+ * @param {number} windowId - window ID
+ * @returns {Object} - tabs.Tab
+ */
+export const getRecentlyClosedTab = async windowId => {
+  let tab;
+  if (sessions) {
+    const items = await sessions.getRecentlyClosed();
+    if (Array.isArray(items) && items.length) {
+      if (!Number.isInteger(windowId)) {
+        windowId = windows.WINDOW_ID_CURRENT;
+      }
+      for (const item of items) {
+        const {tab: itemTab} = item;
+        if (itemTab) {
+          const {windowId: itemWindowId} = itemTab;
+          if (itemWindowId === windowId) {
+            tab = itemTab;
+            break;
+          }
+        }
+      }
+    }
+  }
+  return tab || null;
+};
+
+/**
+ * get session window value
+ * @param {string} key - key
+ * @param {number} windowId - window ID
+ * @returns {string} - value
+ */
+export const getSessionWindowValue = async (key, windowId) => {
+  if (!isString(key)) {
+    throw new TypeError(`Expected String but got ${getType(key)}.`);
+  }
+  let value;
+  if (sessions && typeof sessions.setWindowValue === "function") {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    value = await sessions.getWindowValue(windowId, key);
+  }
+  return value || null;
+};
+
+/**
+ * restore session
+ * @param {string} sessionId - session ID
+ * @returns {Object} - sessions.Session
+ */
+export const restoreSession = async sessionId => {
+  if (!isString(sessionId)) {
+    throw new TypeError(`Expected String but got ${getType(sessionId)}.`);
+  }
+  let ses;
+  if (sessions) {
+    ses = await sessions.restore(sessionId);
+  }
+  return ses || null;
+};
+
+/**
+ * set session window value
+ * @param {string} key - key
+ * @param {string|Object} value - value
+ * @param {number} windowId - window ID
+ * @returns {void}
+ */
+export const setSessionWindowValue = async (key, value, windowId) => {
+  if (!isString(key)) {
+    throw new TypeError(`Expected String but got ${getType(key)}.`);
+  }
+  if (sessions && typeof sessions.setWindowValue === "function") {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    await sessions.setWindowValue(windowId, key, value);
+  }
+};
+
 /* storage */
+/**
+ * clear storage
+ * @returns {void}
+ */
+export const clearStorage = async () => {
+  if (storage) {
+    await storage.local.clear();
+  }
+};
+
 /**
  * get all storage
  * @returns {Object} - stored data
@@ -386,6 +564,132 @@ export const getAllTabsInWindow = async windowId => {
 };
 
 /**
+ * get highlighted tab
+ * @param {number} windowId - window ID
+ * @returns {?Array} - array of tabs.Tab
+ */
+export const getHighlightedTab = async windowId => {
+  let arr;
+  if (tabs) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    arr = await tabs.query({
+      windowId,
+      highlighted: true,
+      windowType: "normal",
+    });
+  }
+  return arr || null;
+};
+
+/**
+ * get tab
+ * @param {number} tabId - tab ID
+ * @returns {Object} - tabs.Tab
+ */
+export const getTab = async tabId => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  let tab;
+  if (tabs) {
+    tab = await tabs.get(tabId);
+  }
+  return tab || null;
+};
+
+/**
+ * highlight tab
+ * @param {number|Array} index - tab index
+ * @param {number} windowId - window ID
+ * @returns {Object} - windows.Window
+ */
+export const highlightTab = async (index, windowId) => {
+  if (!(Array.isArray(index) || Number.isInteger(index))) {
+    throw new TypeError(`Expected Number or Array but got ${getType(index)}.`);
+  }
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
+  }
+  const opt = {
+    windowId,
+    tabs: index,
+  };
+  const win = await tabs.highlight(opt);
+  return win || null;
+};
+
+/**
+ * move tab
+ * @param {number|Array} tabId - tab ID
+ * @param {Object} opt - options
+ * @returns {?Array} - array of tabs.Tab
+ */
+export const moveTab = async (tabId, opt) => {
+  if (!(Array.isArray(tabId) || Number.isInteger(tabId))) {
+    throw new TypeError(`Expected Number or Array but got ${getType(tabId)}.`);
+  }
+  let arr;
+  if (tabs) {
+    arr = await tabs.move(tabId, isObjectNotEmpty(opt) && opt || null);
+    if (arr && !Array.isArray(arr)) {
+      arr = [arr];
+    }
+  }
+  return arr || null;
+};
+
+/**
+ * reload tab
+ * @param {number} tabId - tab ID
+ * @param {Object} opt - options
+ * @returns {void}
+ */
+export const reloadTab = async (tabId, opt) => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  if (tabs) {
+    await tabs.reload(tabId, isObjectNotEmpty(opt) && opt || null);
+  }
+};
+
+/**
+ * remove tab
+ * @param {number|Array} arg - tab ID or array of tab ID
+ * @returns {void}
+ */
+export const removeTab = async arg => {
+  if (Number.isInteger(arg)) {
+    arg = [arg];
+  }
+  if (!Array.isArray(arg)) {
+    throw new TypeError(`Expected Array but got ${getType(arg)}.`);
+  }
+  if (tabs) {
+    await tabs.remove(arg);
+  }
+};
+
+/**
+ * update tab
+ * @param {number} tabId - tab ID
+ * @param {Object} opt - options
+ * @returns {Object} - tabs.Tab
+ */
+export const updateTab = async (tabId, opt) => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  let tab;
+  if (tabs) {
+    tab = await tabs.update(tabId, isObjectNotEmpty(opt) && opt || null);
+  }
+  return tab || null;
+};
+
+/**
  * is accesskey supported in context menu
  * @returns {boolean} - result
  */
@@ -439,12 +743,35 @@ export const isVisibleInMenuSupported = async () => {
 
 /* windows */
 /**
- * get all windows
- * @returns {Promise.<Array>} - array of windows.Window
+ * create new window
+ * @param {Object} opt - options
+ * @returns {Object} - windows.Window
  */
-export const getAllNormalWindows = async () => windows.getAll({
-  windowTypes: ["normal"],
-});
+export const createNewWindow = async opt => {
+  const win = await windows.create(isObjectNotEmpty(opt) && opt || null);
+  return win;
+};
+
+/**
+ * get all windows
+ * @returns {Array} - array of windows.Window
+ */
+export const getAllNormalWindows = async () => {
+  const arr = await windows.getAll({
+    windowTypes: ["normal"],
+  });
+  return arr;
+};
+
+/**
+ * get current window
+ * @param {Object} opt - options
+ * @returns {Object} - windows.Window
+ */
+export const getCurrentWindow = async opt => {
+  const win = await windows.getCurrent(isObjectNotEmpty(opt) && opt || null);
+  return win;
+};
 
 /**
  * check whether incognito window exists

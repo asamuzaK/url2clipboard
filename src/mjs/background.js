@@ -46,7 +46,9 @@ const externalExts = new Set();
  * @returns {void}
  */
 const removeExternalExt = async id => {
-  id && externalExts.has(id) && externalExts.delete(id);
+  if (id && externalExts.has(id)) {
+    externalExts.delete(id);
+  }
 };
 
 /**
@@ -56,7 +58,9 @@ const removeExternalExt = async id => {
  */
 const addExternalExt = async id => {
   const exts = [WEBEXT_TST];
-  id && exts.includes(id) && externalExts.add(id);
+  if (id && exts.includes(id)) {
+    externalExts.add(id);
+  }
 };
 
 /**
@@ -95,7 +99,9 @@ const sendMsg = async (id, msg, opt) => {
         const {enabled} = ext;
         if (enabled) {
           func.push(sendMessage(id, msg, opt));
-          !externalExts.has(id) && func.push(addExternalExt(id));
+          if (!externalExts.has(id)) {
+            func.push(addExternalExt(id));
+          }
         } else {
           func.push(removeExternalExt(id));
         }
@@ -278,9 +284,13 @@ const createMenuItem = async (id, title, data = {}) => {
       id, contexts, title,
       enabled: !!enabled,
     };
-    parentId && (opt.parentId = parentId);
+    if (parentId) {
+      opt.parentId = parentId;
+    }
     if (contexts.includes("tab")) {
-      isWebExt && contextMenus.create(opt);
+      if (isWebExt) {
+        contextMenus.create(opt);
+      }
     } else {
       contextMenus.create(opt);
     }
@@ -523,13 +533,15 @@ const getAllTabsInfo = async menuItemId => {
   const arr = await getAllTabsInWindow();
   const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
-  arr.length && arr.forEach(tab => {
-    const {id, title, url} = tab;
-    tabsInfo.push({
-      id, menuItemId, mimeType, template, title, url,
-      content: title,
+  if (arr.length) {
+    arr.forEach(tab => {
+      const {id, title, url} = tab;
+      tabsInfo.push({
+        id, menuItemId, mimeType, template, title, url,
+        content: title,
+      });
     });
-  });
+  }
   return tabsInfo;
 };
 
@@ -797,7 +809,9 @@ const setVar = async (item, obj, changed = false) => {
       case ICON_WHITE:
         if (checked) {
           vars.iconId = value;
-          changed && func.push(setIcon());
+          if (changed) {
+            func.push(setIcon());
+          }
         }
         break;
       case INCLUDE_TITLE_HTML:

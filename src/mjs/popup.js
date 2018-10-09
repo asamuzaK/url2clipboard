@@ -178,13 +178,15 @@ const getAllTabsInfo = async menuItemId => {
   const arr = await tabs.query({currentWindow: true});
   const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
-  arr.length && arr.forEach(tab => {
-    const {id, title, url} = tab;
-    tabsInfo.push({
-      id, menuItemId, mimeType, template, title, url,
-      content: title,
+  if (arr.length) {
+    arr.forEach(tab => {
+      const {id, title, url} = tab;
+      tabsInfo.push({
+        id, menuItemId, mimeType, template, title, url,
+        content: title,
+      });
     });
-  });
+  }
   return tabsInfo;
 };
 

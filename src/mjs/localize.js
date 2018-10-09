@@ -30,8 +30,9 @@ export const localizeAttr = async elm => {
       const items = Object.entries(attrs);
       for (const item of items) {
         const [key, value] = item;
-        elm.hasAttribute(value) &&
+        if (elm.hasAttribute(value)) {
           elm.setAttribute(value, i18n.getMessage(`${id}_${key}`));
+        }
       }
     }
   }
@@ -49,8 +50,12 @@ export const localizeHtml = async () => {
       for (const node of nodes) {
         const [id, ph] = node.getAttribute(DATA_I18N).split(/\s*,\s*/);
         const data = i18n.getMessage(id, ph);
-        data && (node.textContent = data);
-        node.hasAttributes() && localizeAttr(node);
+        if (data) {
+          node.textContent = data;
+        }
+        if (node.hasAttributes()) {
+          localizeAttr(node);
+        }
       }
     }
     document.documentElement.setAttribute("lang", EXT_LOCALE);
