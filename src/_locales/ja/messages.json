@@ -241,7 +241,7 @@
     "message": "ホワイトアイコン"
   },
   "optionsIncludeTitle": {
-    "message": "タイトルを含ませる"
+    "message": "タイトル属性を付け加える"
   },
   "optionsLabel": {
     "message": "設定"
