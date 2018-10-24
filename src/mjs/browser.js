@@ -358,7 +358,7 @@ export const getSessionWindowValue = async (key, windowId) => {
     throw new TypeError(`Expected String but got ${getType(key)}.`);
   }
   let value;
-  if (sessions && typeof sessions.setWindowValue === "function") {
+  if (sessions && typeof sessions.getWindowValue === "function") {
     if (!Number.isInteger(windowId)) {
       windowId = windows.WINDOW_ID_CURRENT;
     }
