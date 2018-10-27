@@ -25,7 +25,7 @@ export const throwErr = e => {
  * @param {!Object} e - Error
  * @returns {boolean} - false
  */
-export const logError = e => {
+export const logErr = e => {
   console.error(e);
   return false;
 };

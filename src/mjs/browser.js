@@ -3,7 +3,7 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString, parseVersion, throwErr,
+  getType, isObjectNotEmpty, isString, logErr, parseVersion, throwErr,
 } from "./common.js";
 
 /* api */
@@ -87,7 +87,7 @@ export const getAllContextualIdentities = async () => {
     try {
       arr = await contextualIdentities.query({});
     } catch (e) {
-      // silent fail;
+      logErr(e);
     }
   }
   return arr || null;
@@ -107,7 +107,7 @@ export const getContextualId = async cookieStoreId => {
     try {
       id = await contextualIdentities.get(cookieStoreId);
     } catch (e) {
-      // silent fail;
+      logErr(e);
     }
   }
   return id || null;
