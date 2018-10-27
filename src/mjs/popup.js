@@ -2,7 +2,7 @@
  * popup.js
  */
 
-import {getType, isString, throwErr} from "./common.js";
+import {getType, isString, logErr, throwErr} from "./common.js";
 import {
   fetchData, getActiveTab, getAllStorage, sendMessage,
 } from "./browser.js";
@@ -313,6 +313,7 @@ const requestContextInfo = async (tab = {}) => {
         [CONTEXT_INFO_GET]: true,
       });
     } catch (e) {
+      logErr(e);
       await updateMenu({
         contextInfo: {
           isLink: false,
