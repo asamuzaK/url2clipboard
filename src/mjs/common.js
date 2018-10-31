@@ -174,8 +174,8 @@ export const parseVersion = version => {
  * @returns {string} - replaced URI
  */
 export const removeQueryFromURI = uri => {
-  const query = /\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-F]{2})*/;
   if (isString(uri)) {
+    const query = /\?(?:[a-z0-9\-._~!$&'()*+,;=:@/?]|%[0-9A-F]{2})*/;
     uri = uri.replace(query, "");
   }
   return uri;
