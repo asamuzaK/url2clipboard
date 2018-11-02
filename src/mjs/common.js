@@ -257,8 +257,7 @@ export const dispatchInputEvt = elm => {
       bubbles: true,
       cancelable: false,
     };
-    const evt = window.InputEvent && new InputEvent("input", opt) ||
-                new Event("input", opt);
+    const evt = new InputEvent("input", opt);
     elm.dispatchEvent(evt);
   }
 };
