@@ -7,8 +7,9 @@ const TYPE_FROM = 8;
 const TYPE_TO = -1;
 const VERSION_PART =
   "(?:0|[1-9]\\d{0,3}|[1-5]\\d{4}|6(?:[0-4]\\d{3}|5(?:[0-4]\\d{2}|5(?:[0-2]\\d|3[0-5]))))";
+const PRE_PART = "(?:e(\\d+)?[A-z]+|[A-df-z][A-z]*)(?:-?[A-z\\d]+)*|[A-z]+";
 const VERSION_TOOLKIT =
-  `(${VERSION_PART}(?:\\.${VERSION_PART}){1,3})([A-z]+(?:-?[A-z\\d]+)?)?`;
+  `(${VERSION_PART}(?:\\.${VERSION_PART}){0,3})(${PRE_PART})?`;
 const VERSION_TOOLKIT_REGEXP = new RegExp(`^(?:${VERSION_TOOLKIT})$`);
 
 /**
@@ -26,7 +27,11 @@ export const throwErr = e => {
  * @returns {boolean} - false
  */
 export const logErr = e => {
-  console.error(e);
+  if (e && e.message) {
+    console.error(e.message);
+  } else {
+    console.error(e);
+  }
   return false;
 };
 
@@ -208,10 +213,10 @@ export const sleep = (msec = 0, doReject = false) => {
  * @param {Object} keyOpt - key options
  * @returns {void}
  */
-export const dispatchKeyboardEvt = (elm, type, keyOpt = {}) => {
+export const dispatchKeyboardEvt = (elm, type, keyOpt) => {
   if (elm && elm.nodeType === Node.ELEMENT_NODE &&
       isString(type) && /^key(?:down|press|up)$/.test(type) &&
-      Object.keys(keyOpt)) {
+      isObjectNotEmpty(keyOpt)) {
     const {altKey, code, ctrlKey, key, shiftKey, metaKey} = keyOpt;
     if (isString(key) && isString(code)) {
       const opt = {
