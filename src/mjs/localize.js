@@ -45,18 +45,14 @@ export const localizeHtml = async () => {
   const lang = i18n.getMessage(EXT_LOCALE);
   if (lang) {
     const nodes = document.querySelectorAll(`[${DATA_I18N}]`);
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        const [id, ph] = node.getAttribute(DATA_I18N).split(/\s*,\s*/);
-        const data = i18n.getMessage(id, ph);
-        if (data) {
-          node.textContent = data;
-        }
-        if (node.hasAttributes()) {
-          localizeAttr(node);
-        }
+    for (const node of nodes) {
+      const [id, ph] = node.getAttribute(DATA_I18N).split(/\s*,\s*/);
+      const data = i18n.getMessage(id, ph);
+      if (data) {
+        node.textContent = data;
       }
+      localizeAttr(node);
     }
-    document.documentElement.setAttribute("lang", EXT_LOCALE);
+    document.documentElement.setAttribute("lang", lang);
   }
 };
