@@ -6,7 +6,6 @@
 import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
-import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import {EXT_LOCALE} from "../src/mjs/constant.js";
 import * as mjs from "../src/mjs/localize.js";
@@ -88,7 +87,7 @@ describe("localize", () => {
           .returns(`${id}_${key}`);
       }
       p.setAttribute("data-i18n", id);
-      body.appendChild(p)
+      body.appendChild(p);
       await func(p);
       for (const [key, value] of items) {
         assert.strictEqual(p.getAttribute(value), `${id}_${key}`, `${value}`);
@@ -105,16 +104,16 @@ describe("localize", () => {
         placeholder: "placeholder",
         title: "title",
       };
-      const items = Object.entries(attrs);
+      const items = Object.values(attrs);
       const p = document.createElement("p");
       const body = document.querySelector("body");
-      for (const [key, value] of items) {
+      for (const value of items) {
         p.setAttribute(value, "bar");
       }
       p.setAttribute("data-i18n", id);
-      body.appendChild(p)
+      body.appendChild(p);
       await func(p);
-      for (const [key, value] of items) {
+      for (const value of items) {
         assert.strictEqual(p.getAttribute(value), "bar", `${value}`);
       }
       browser.i18n.getMessage.flush();
