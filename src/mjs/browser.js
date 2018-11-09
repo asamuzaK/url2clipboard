@@ -19,18 +19,55 @@ const IS_WEBEXT = typeof runtime.getBrowserInfo === "function";
 const WEBEXT_ACCKEY_MIN = 63;
 const WEBEXT_MENU_VISIBLE_MIN = 63;
 
+/* compat */
+/**
+ * is accesskey supported in context menu
+ * @returns {boolean} - result
+ */
+export const isAccessKeySupported = async () => {
+  let bool;
+  if (IS_WEBEXT) {
+    const {version} = await runtime.getBrowserInfo();
+    const {major: majorVersion} = await parseVersion(version);
+    if (majorVersion >= WEBEXT_ACCKEY_MIN) {
+      bool = true;
+    }
+  } else if (IS_CHROMEEXT) {
+    bool = true;
+  }
+  return !!bool;
+};
+
+/**
+ * is visible supported in context menu
+ * @returns {boolean} - result
+ */
+export const isVisibleInMenuSupported = async () => {
+  let bool;
+  if (IS_WEBEXT) {
+    const {version} = await runtime.getBrowserInfo();
+    const {major: majorVersion} = await parseVersion(version);
+    if (majorVersion >= WEBEXT_MENU_VISIBLE_MIN) {
+      bool = true;
+    }
+  } else if (IS_CHROMEEXT) {
+    bool = true;
+  }
+  return !!bool;
+};
+
 /* bookmarks */
 /**
  * create bookmark
- * @param {Object} opt - options
- * @returns {Object} - bookmarks.BookmarkTreeNodeType
+ * @param {Object} opt - bookmarks.CreateDetails
+ * @returns {Object} - bookmarks.BookmarkTreeNode
  */
 export const createBookmark = async opt => {
-  let type;
-  if (bookmarks) {
-    type = await bookmarks.create(isObjectNotEmpty(opt) && opt || null);
+  let node;
+  if (bookmarks && isObjectNotEmpty(opt)) {
+    node = await bookmarks.create(opt);
   }
-  return type || null;
+  return node || null;
 };
 
 /* commands */
@@ -307,8 +344,10 @@ export const sendMessage = async (id, msg, opt) => {
   let func;
   if (msg) {
     opt = isObjectNotEmpty(opt) && opt || null;
-    if (Number.isInteger(id) && id !== TAB_ID_NONE) {
-      func = tabs.sendMessage(id, msg, opt);
+    if (Number.isInteger(id)) {
+      if (id !== TAB_ID_NONE) {
+        func = tabs.sendMessage(id, msg, opt);
+      }
     } else if (id && isString(id)) {
       func = runtime.sendMessage(id, msg, opt);
     } else {
@@ -690,24 +729,6 @@ export const updateTab = async (tabId, opt) => {
 };
 
 /**
- * is accesskey supported in context menu
- * @returns {boolean} - result
- */
-export const isAccessKeySupported = async () => {
-  let bool;
-  if (IS_CHROMEEXT) {
-    bool = true;
-  } else if (IS_WEBEXT) {
-    const {version} = await runtime.getBrowserInfo();
-    const {major: majorVersion} = await parseVersion(version);
-    if (majorVersion >= WEBEXT_ACCKEY_MIN) {
-      bool = true;
-    }
-  }
-  return !!bool;
-};
-
-/**
  * is tab
  * @param {*} tabId - tab ID
  * @returns {boolean} - result
@@ -721,24 +742,6 @@ export const isTab = async tabId => {
     tab = await tabs.get(tabId).catch(() => false);
   }
   return !!tab;
-};
-
-/**
- * is visible supported in context menu
- * @returns {boolean} - result
- */
-export const isVisibleInMenuSupported = async () => {
-  let bool;
-  if (IS_CHROMEEXT) {
-    bool = true;
-  } else if (IS_WEBEXT) {
-    const {version} = await runtime.getBrowserInfo();
-    const {major: majorVersion} = await parseVersion(version);
-    if (majorVersion >= WEBEXT_MENU_VISIBLE_MIN) {
-      bool = true;
-    }
-  }
-  return !!bool;
 };
 
 /* windows */
