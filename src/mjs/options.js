@@ -11,7 +11,7 @@ import {localizeHtml} from "./localize.js";
  * @param {Object} elm - element
  * @returns {Object} - pref data
  */
-const createPref = async (elm = {}) => {
+export const createPref = async (elm = {}) => {
   const {dataset, id} = elm;
   return id && {
     [id]: {
@@ -28,16 +28,14 @@ const createPref = async (elm = {}) => {
  * @param {!Object} evt - Event
  * @returns {Promise.<Array>} - results of each handler
  */
-const storePref = async evt => {
+export const storePref = async evt => {
   const {target} = evt;
   const {name, type} = target;
   const func = [];
   if (type === "radio") {
     const nodes = document.querySelectorAll(`[name=${name}]`);
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        func.push(createPref(node).then(setStorage));
-      }
+    for (const node of nodes) {
+      func.push(createPref(node).then(setStorage));
     }
   } else {
     func.push(createPref(target).then(setStorage));
@@ -50,12 +48,10 @@ const storePref = async evt => {
  * add event listener to input elements
  * @returns {void}
  */
-const addInputChangeListener = async () => {
+export const addInputChangeListener = async () => {
   const nodes = document.querySelectorAll("input");
-  if (nodes instanceof NodeList) {
-    for (const node of nodes) {
-      node.addEventListener("change", evt => storePref(evt).catch(throwErr));
-    }
+  for (const node of nodes) {
+    node.addEventListener("change", evt => storePref(evt).catch(throwErr));
   }
 };
 
@@ -64,7 +60,7 @@ const addInputChangeListener = async () => {
  * @param {Object} data - storage data
  * @returns {void}
  */
-const setHtmlInputValue = async (data = {}) => {
+export const setHtmlInputValue = async (data = {}) => {
   const {checked, id, value} = data;
   const elm = id && document.getElementById(id);
   if (elm) {
@@ -87,7 +83,7 @@ const setHtmlInputValue = async (data = {}) => {
  * set html input values from storage
  * @returns {Promise.<Array>} - results of each handler
  */
-const setValuesFromStorage = async () => {
+export const setValuesFromStorage = async () => {
   const func = [];
   const pref = await getStorage();
   if (isObjectNotEmpty(pref)) {
