@@ -125,6 +125,8 @@ describe("browser", () => {
       assert.isFalse(fake.calledOnce, "called");
       assert.isFalse(fake2.calledOnce, "not called");
       assert.isNull(res, "result");
+      delete browser.commands.reset;
+      delete browser.commands.update;
     });
 
     it("should call function", async () => {
@@ -136,6 +138,8 @@ describe("browser", () => {
       assert.isTrue(fake.calledOnce, "called");
       assert.isFalse(fake2.calledOnce, "not called");
       assert.isUndefined(res, "result");
+      delete browser.commands.reset;
+      delete browser.commands.update;
     });
 
     it("should call function", async () => {
@@ -193,6 +197,8 @@ describe("browser", () => {
         assert.isFalse(fake2.calledOnce, "not called");
         assert.isUndefined(res, "result");
       }
+      delete browser.commands.reset;
+      delete browser.commands.update;
     });
 
     it("should call function", async () => {
@@ -204,6 +210,8 @@ describe("browser", () => {
       assert.isTrue(fake.calledOnce, "called");
       assert.isFalse(fake2.calledOnce, "not called");
       assert.isUndefined(res, "result");
+      delete browser.commands.reset;
+      delete browser.commands.update;
     });
   });
 
