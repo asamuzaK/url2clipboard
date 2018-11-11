@@ -7,6 +7,8 @@ import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
+import fs from "fs";
+import path from "path";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/browser.js";
 
@@ -509,12 +511,12 @@ describe("browser", () => {
       const dom = createJsdom();
       // Fetch API not implemented in jsdom
       // See https://github.com/jsdom/jsdom/issues/1724
-      const fetch = async path => new Promise((resolve, reject) => {
-        if (path) {
+      const fetch = async file => new Promise((resolve, reject) => {
+        const body = fs.readFileSync(path.resolve(file), "utf8");
+        if (body) {
           resolve({
-            json: () => ({
-              foo: "bar",
-            }),
+            body,
+            json: () => JSON.parse(body),
           });
         } else {
           reject();
@@ -556,10 +558,10 @@ describe("browser", () => {
     });
 
     it("should get JSON", async () => {
-      const path = "baz/qux";
-      browser.runtime.getURL.withArgs(path).returns(path);
+      const url = "test/files/data.json";
+      browser.runtime.getURL.withArgs(url).returns(path.resolve(url));
       window.func = func;
-      const res = await window.func(path);
+      const res = await window.func(url);
       assert.deepEqual(res, {foo: "bar"}, "result");
       browser.runtime.getURL.flush();
     });
