@@ -24,11 +24,21 @@ describe("browser", () => {
     };
     return new JSDOM(domstr, opt);
   };
+  let window, document;
   beforeEach(() => {
+    const dom = createJsdom();
+    window = dom && dom.window;
+    document = window && window.document;
     global.browser = browser;
+    global.window = window;
+    global.document = document;
   });
   afterEach(() => {
+    window = null;
+    document = null;
     delete global.browser;
+    delete global.window;
+    delete global.document;
   });
 
   it("should get browser object", () => {
@@ -506,9 +516,7 @@ describe("browser", () => {
 
   describe("fetch data", () => {
     const func = mjs.fetchData;
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
       // Fetch API not implemented in jsdom
       // See https://github.com/jsdom/jsdom/issues/1724
       const fetch = async file => new Promise((resolve, reject) => {
@@ -522,20 +530,12 @@ describe("browser", () => {
           reject();
         }
       });
-      window = dom && dom.window;
       if (!window.fetch) {
         window.fetch = fetch;
-        global.fetch = fetch;
       }
-      document = window && window.document;
-      global.window = window;
-      global.document = document;
+      global.fetch = fetch;
     });
     afterEach(() => {
-      window = null;
-      document = null;
-      delete global.window;
-      delete global.document;
       delete global.fetch;
     });
 

@@ -22,11 +22,21 @@ describe("options", () => {
     };
     return new JSDOM(domstr, opt);
   };
+  let window, document;
   beforeEach(() => {
+    const dom = createJsdom();
+    window = dom && dom.window;
+    document = window && window.document;
     global.browser = browser;
+    global.window = window;
+    global.document = document;
   });
   afterEach(() => {
+    window = null;
+    document = null;
     delete global.browser;
+    delete global.window;
+    delete global.document;
   });
 
   it("should get browser object", () => {
@@ -58,18 +68,6 @@ describe("options", () => {
 
   describe("store pref", () => {
     const func = mjs.storePref;
-    let window, document;
-    beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
-      global.document = document;
-    });
-    afterEach(() => {
-      window = null;
-      document = null;
-      delete global.document;
-    });
 
     it("should call function", async () => {
       const i = browser.storage.local.set.callCount;
@@ -115,18 +113,6 @@ describe("options", () => {
 
   describe("add event listener to input elements", () => {
     const func = mjs.addInputChangeListener;
-    let window, document;
-    beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
-      global.document = document;
-    });
-    afterEach(() => {
-      window = null;
-      document = null;
-      delete global.document;
-    });
 
     it("should set listener", async () => {
       const elm = document.createElement("input");
@@ -142,18 +128,6 @@ describe("options", () => {
 
   describe("set html input value", () => {
     const func = mjs.setHtmlInputValue;
-    let window, document;
-    beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
-      global.document = document;
-    });
-    afterEach(() => {
-      window = null;
-      document = null;
-      delete global.document;
-    });
 
     it("should not set value if argument not given", async () => {
       const elm = document.createElement("input");
@@ -283,18 +257,6 @@ describe("options", () => {
 
   describe("set html input values from storage", () => {
     const func = mjs.setValuesFromStorage;
-    let window, document;
-    beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
-      global.document = document;
-    });
-    afterEach(() => {
-      window = null;
-      document = null;
-      delete global.document;
-    });
 
     it("should get empty array", async () => {
       const i = browser.storage.local.get.callCount;

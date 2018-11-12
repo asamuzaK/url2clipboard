@@ -22,11 +22,21 @@ describe("localize", () => {
     };
     return new JSDOM(domstr, opt);
   };
+  let window, document;
   beforeEach(() => {
+    const dom = createJsdom();
+    window = dom && dom.window;
+    document = window && window.document;
     global.browser = browser;
+    global.window = window;
+    global.document = document;
   });
   afterEach(() => {
+    window = null;
+    document = null;
     delete global.browser;
+    delete global.window;
+    delete global.document;
   });
 
   it("should get browser object", () => {
@@ -36,25 +46,15 @@ describe("localize", () => {
   describe("localize attribute value", () => {
     const func = mjs.localizeAttr;
     const globalKeys = ["Node", "NodeList"];
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
       for (const key of globalKeys) {
         global[key] = window[key];
       }
-      global.window = window;
-      global.document = document;
     });
     afterEach(() => {
-      window = null;
-      document = null;
       for (const key of globalKeys) {
         delete global[key];
       }
-      delete global.window;
-      delete global.document;
     });
 
     it("should not call function if no argument given", async () => {
@@ -123,25 +123,15 @@ describe("localize", () => {
   describe("localize html", () => {
     const func = mjs.localizeHtml;
     const globalKeys = ["Node", "NodeList"];
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
       for (const key of globalKeys) {
         global[key] = window[key];
       }
-      global.window = window;
-      global.document = document;
     });
     afterEach(() => {
-      window = null;
-      document = null;
       for (const key of globalKeys) {
         delete global[key];
       }
-      delete global.window;
-      delete global.document;
     });
 
     it("should not set value", async () => {

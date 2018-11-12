@@ -21,6 +21,20 @@ describe("common", () => {
     };
     return new JSDOM(domstr, opt);
   };
+  let window, document;
+  beforeEach(() => {
+    const dom = createJsdom();
+    window = dom && dom.window;
+    document = window && window.document;
+    global.window = window;
+    global.document = document;
+  });
+  afterEach(() => {
+    window = null;
+    document = null;
+    delete global.window;
+    delete global.document;
+  });
 
   describe("throw error", () => {
     const func = mjs.throwErr;
@@ -464,18 +478,12 @@ describe("common", () => {
   describe("dispatch keyboard event", () => {
     const func = mjs.dispatchKeyboardEvt;
     const globalKeys = ["KeyboardEvent", "Node"];
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
       for (const key of globalKeys) {
         global[key] = window[key];
       }
     });
     afterEach(() => {
-      window = null;
-      document = null;
       for (const key of globalKeys) {
         delete global[key];
       }
@@ -633,18 +641,12 @@ describe("common", () => {
   describe("dispatch change event", () => {
     const func = mjs.dispatchChangeEvt;
     const globalKeys = ["Event", "Node"];
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
       for (const key of globalKeys) {
         global[key] = window[key];
       }
     });
     afterEach(() => {
-      window = null;
-      document = null;
       for (const key of globalKeys) {
         delete global[key];
       }
@@ -684,18 +686,12 @@ describe("common", () => {
   describe("dispatch input event", () => {
     const func = mjs.dispatchInputEvt;
     const globalKeys = ["InputEvent", "Node"];
-    let window, document;
     beforeEach(() => {
-      const dom = createJsdom();
-      window = dom && dom.window;
-      document = window && window.document;
       for (const key of globalKeys) {
         global[key] = window[key];
       }
     });
     afterEach(() => {
-      window = null;
-      document = null;
       for (const key of globalKeys) {
         delete global[key];
       }
