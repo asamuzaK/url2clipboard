@@ -2,7 +2,7 @@
  * setup.js
  */
 
-"use script";
+"use scrict";
 const {JSDOM} = require("jsdom");
 const browser = require("sinon-chrome/webextensions");
 
