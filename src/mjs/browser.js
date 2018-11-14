@@ -280,19 +280,6 @@ export const requestPermission = async perm => {
 
 /* runtime */
 /**
- * fetch data
- * @param {string} path - data path
- * @returns {Object} - JSON data
- */
-export const fetchData = async path => {
-  if (!isString(path)) {
-    throw new TypeError(`Expected String but got ${getType(path)}.`);
-  }
-  const data = await fetch(runtime.getURL(path)).then(res => res && res.json());
-  return data;
-};
-
-/**
  * get manifest icons
  * @returns {Object|string} - icons
  */

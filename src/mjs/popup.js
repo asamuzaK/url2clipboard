@@ -3,10 +3,9 @@
  */
 
 import {getType, isString, logErr, throwErr} from "./common.js";
-import {
-  fetchData, getActiveTab, getAllStorage, sendMessage,
-} from "./browser.js";
+import {getActiveTab, getAllStorage, sendMessage} from "./browser.js";
 import {localizeHtml} from "./localize.js";
+import formatData from "./format.js";
 
 /* api */
 const {runtime, storage, tabs} = browser;
@@ -19,7 +18,7 @@ import {
   INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, LINK_MENU,
   MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
   OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PATH_FORMAT_DATA,
+  OUTPUT_URL,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
@@ -36,17 +35,13 @@ const vars = {
 const formats = new Map();
 
 /**
- * fetch format data
+ * set format data
  * @returns {void}
  */
-const fetchFormatData = async () => {
-  const data = await fetchData(PATH_FORMAT_DATA);
-  if (data) {
-    const items = Object.entries(data);
-    for (const item of items) {
-      const [key, value] = item;
-      formats.set(key, value);
-    }
+const setFormatData = async () => {
+  const items = Object.entries(formatData);
+  for (const [key, value] of items) {
+    formats.set(key, value);
   }
 };
 
@@ -418,5 +413,5 @@ Promise.all([
     requestContextInfo(tab),
     setTabInfo(tab),
   ])),
-  fetchFormatData().then(getAllStorage).then(setVars),
+  setFormatData().then(getAllStorage).then(setVars),
 ]).catch(throwErr);

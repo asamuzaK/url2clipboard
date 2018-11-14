@@ -50,7 +50,6 @@ export const OUTPUT_TEXT_TEXT = "outputOnlyText";
 export const OUTPUT_TEXT_TEXT_URL = "outputTextUrl";
 export const OUTPUT_TEXT_URL = "outputOnlyUrl";
 export const OUTPUT_URL = "url";
-export const PATH_FORMAT_DATA = "data/format.json";
 export const PROMPT = "promptContent";
 export const REST = "reStructuredText";
 export const TEXT = "Text";

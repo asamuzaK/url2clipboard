@@ -7,8 +7,6 @@ import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
-import fs from "fs";
-import path from "path";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/browser.js";
 
@@ -511,59 +509,6 @@ describe("browser", () => {
       const res = await func(["foo"]);
       assert.isTrue(res, "result");
       browser.permissions.request.flush();
-    });
-  });
-
-  describe("fetch data", () => {
-    const func = mjs.fetchData;
-    beforeEach(() => {
-      // Fetch API not implemented in jsdom
-      // See https://github.com/jsdom/jsdom/issues/1724
-      const fetch = async file => new Promise((resolve, reject) => {
-        const body = fs.readFileSync(path.resolve(file), "utf8");
-        if (body) {
-          resolve({
-            body,
-            json: () => JSON.parse(body),
-          });
-        } else {
-          reject();
-        }
-      });
-      if (!window.fetch) {
-        window.fetch = fetch;
-      }
-      global.fetch = fetch;
-    });
-    afterEach(() => {
-      delete global.fetch;
-    });
-
-    it("should throw if no argument given", async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, "Expected String but got Undefined.");
-      });
-    });
-
-    it("should throw if argument is not string", async () => {
-      await func(1).catch(e => {
-        assert.strictEqual(e.message, "Expected String but got Number.");
-      });
-    });
-
-    it("should throw if argument is not string", async () => {
-      await func(1).catch(e => {
-        assert.strictEqual(e.message, "Expected String but got Number.");
-      });
-    });
-
-    it("should get JSON", async () => {
-      const url = "test/files/data.json";
-      browser.runtime.getURL.withArgs(url).returns(path.resolve(url));
-      window.func = func;
-      const res = await window.func(url);
-      assert.deepEqual(res, {foo: "bar"}, "result");
-      browser.runtime.getURL.flush();
     });
   });
 

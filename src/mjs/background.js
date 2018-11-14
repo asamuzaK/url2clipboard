@@ -4,10 +4,11 @@
 
 import {getType, isObjectNotEmpty, isString, throwErr} from "./common.js";
 import {
-  fetchData, getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
+  getActiveTabId, getAllStorage, getAllTabsInWindow, getEnabledTheme,
   getExtensionInfo, getExternalExtensions, getManifestIcons,
   isAccessKeySupported, isTab, sendMessage,
 } from "./browser.js";
+import formatData from "./format.js";
 
 /* api */
 const {browserAction, contextMenus, i18n, runtime, storage, tabs} = browser;
@@ -20,8 +21,7 @@ import {
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, KEY,
   MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
   OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PATH_FORMAT_DATA, PROMPT, TEXT, THEME_DARK, THEME_LIGHT,
-  WEBEXT_ID,
+  OUTPUT_URL, PROMPT, TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
@@ -150,20 +150,16 @@ const toggleEnabledFormats = async (id, enabled) => {
 };
 
 /**
- * fetch format data
+ * set format data
  * @returns {Promise.<Array>} - result of each handler
  */
-const fetchFormatData = async () => {
-  const data = await fetchData(PATH_FORMAT_DATA);
+const setFormatData = async () => {
+  const items = Object.entries(formatData);
   const func = [];
-  if (data) {
-    const items = Object.entries(data);
-    for (const item of items) {
-      const [key, value] = item;
-      const {enabled} = value;
-      formats.set(key, value);
-      func.push(toggleEnabledFormats(key, enabled));
-    }
+  for (const [key, value] of items) {
+    const {enabled} = value;
+    formats.set(key, value);
+    func.push(toggleEnabledFormats(key, enabled));
   }
   return Promise.all(func);
 };
@@ -895,7 +891,7 @@ tabs.onUpdated.addListener((tabId, info, tab) =>
 
 /* startup */
 Promise.all([
-  fetchFormatData(),
+  setFormatData(),
   setDefaultIcon(),
   setExternalExts(),
 ]).then(getAllStorage).then(setVars).then(prepareUI).catch(throwErr);
