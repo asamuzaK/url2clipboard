@@ -27,10 +27,15 @@ const WEBEXT_MENU_VISIBLE_MIN = 63;
 export const isAccessKeySupported = async () => {
   let bool;
   if (IS_WEBEXT) {
-    const {version} = await runtime.getBrowserInfo();
-    const {major: majorVersion} = await parseVersion(version);
-    if (majorVersion >= WEBEXT_ACCKEY_MIN) {
-      bool = true;
+    const info = await runtime.getBrowserInfo();
+    if (isObjectNotEmpty(info)) {
+      const {version} = info;
+      if (isString(version)) {
+        const {major: majorVersion} = await parseVersion(version);
+        if (majorVersion >= WEBEXT_ACCKEY_MIN) {
+          bool = true;
+        }
+      }
     }
   } else if (IS_CHROMEEXT) {
     bool = true;
@@ -45,10 +50,15 @@ export const isAccessKeySupported = async () => {
 export const isVisibleInMenuSupported = async () => {
   let bool;
   if (IS_WEBEXT) {
-    const {version} = await runtime.getBrowserInfo();
-    const {major: majorVersion} = await parseVersion(version);
-    if (majorVersion >= WEBEXT_MENU_VISIBLE_MIN) {
-      bool = true;
+    const info = await runtime.getBrowserInfo();
+    if (isObjectNotEmpty(info)) {
+      const {version} = info;
+      if (isString(version)) {
+        const {major: majorVersion} = await parseVersion(version);
+        if (majorVersion >= WEBEXT_MENU_VISIBLE_MIN) {
+          bool = true;
+        }
+      }
     }
   } else if (IS_CHROMEEXT) {
     bool = true;
@@ -156,13 +166,16 @@ export const getContextualId = async cookieStoreId => {
  * @returns {?Array} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
-  let arr;
+  let res;
   if (management) {
-    arr = await management.getAll().then(res => res.filter(info =>
-      info.type && info.type === "theme" && info.enabled && info
-    ));
+    const arr = await management.getAll();
+    if (Array.isArray(arr)) {
+      res = arr.filter(info =>
+        info.type && info.type === "theme" && info.enabled && info
+      );
+    }
   }
-  return arr || null;
+  return res || null;
 };
 
 /**
@@ -186,13 +199,14 @@ export const getExtensionInfo = async id => {
  * @returns {?Array} -array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
-  let arr;
+  let res;
   if (management) {
-    arr = await management.getAll().then(res => res.filter(info =>
-      info.type && info.type === "extension" && info
-    ));
+    const arr = await management.getAll();
+    if (Array.isArray(arr)) {
+      res = arr.filter(info => info.type && info.type === "extension" && info);
+    }
   }
-  return arr || null;
+  return res || null;
 };
 
 /* notifications */
