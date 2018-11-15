@@ -556,7 +556,7 @@ export const getActiveTab = async windowId => {
       active: true,
       windowType: "normal",
     });
-    if (arr.length) {
+    if (Array.isArray(arr) && arr.length) {
       [tab] = arr;
     }
   }
