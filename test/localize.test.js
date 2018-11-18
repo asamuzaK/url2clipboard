@@ -136,8 +136,7 @@ describe("localize", () => {
 
     it("should not set value", async () => {
       browser.i18n.getMessage.withArgs(EXT_LOCALE).returns("");
-      window.func = func;
-      await window.func();
+      await func();
       const root = document.documentElement;
       assert.isNull(root.getAttribute("lang"), "lang");
       browser.i18n.getMessage.flush();
@@ -145,8 +144,7 @@ describe("localize", () => {
 
     it("should set value", async () => {
       browser.i18n.getMessage.withArgs(EXT_LOCALE).returns("en");
-      window.func = func;
-      await window.func();
+      await func();
       const root = document.documentElement;
       assert.strictEqual(root.lang, "en", "lang");
       browser.i18n.getMessage.flush();
@@ -159,8 +157,7 @@ describe("localize", () => {
       const p = document.createElement("p");
       p.setAttribute("data-i18n", "foo,bar");
       body.appendChild(p);
-      window.func = func;
-      await window.func();
+      await func();
       const root = document.documentElement;
       assert.strictEqual(root.lang, "en", "lang");
       assert.strictEqual(p.textContent, "baz", "content");
@@ -175,8 +172,7 @@ describe("localize", () => {
       p.setAttribute("data-i18n", "foo,bar");
       p.textContent = "baz";
       body.appendChild(p);
-      window.func = func;
-      await window.func();
+      await func();
       const root = document.documentElement;
       assert.strictEqual(root.lang, "en", "lang");
       assert.strictEqual(p.textContent, "baz", "content");

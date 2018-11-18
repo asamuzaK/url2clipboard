@@ -496,8 +496,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func();
+      func();
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -513,8 +512,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(text);
+      func(text);
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -530,8 +528,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "foo");
+      func(p, "foo");
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -547,8 +544,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "keydown");
+      func(p, "keydown");
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -567,8 +563,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "keydown", opt);
+      func(p, "keydown", opt);
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -588,8 +583,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "keydown", opt);
+      func(p, "keydown", opt);
       assert.strictEqual(fake.callCount, 1);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 0);
@@ -609,8 +603,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "keypress", opt);
+      func(p, "keypress", opt);
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 1);
       assert.strictEqual(fake3.callCount, 0);
@@ -630,8 +623,7 @@ describe("common", () => {
       window.addEventListener("keydown", fake, true);
       window.addEventListener("keypress", fake2, true);
       window.addEventListener("keyup", fake3, true);
-      window.func = func;
-      window.func(p, "keyup", opt);
+      func(p, "keyup", opt);
       assert.strictEqual(fake.callCount, 0);
       assert.strictEqual(fake2.callCount, 0);
       assert.strictEqual(fake3.callCount, 1);
@@ -655,8 +647,7 @@ describe("common", () => {
     it("should not dispach event if no argument given", () => {
       const fake = sinon.fake();
       window.addEventListener("change", fake, true);
-      window.func = func;
-      window.func();
+      func();
       assert.strictEqual(fake.callCount, 0);
     });
 
@@ -666,8 +657,7 @@ describe("common", () => {
       const body = document.querySelector("body");
       body.appendChild(text);
       window.addEventListener("change", fake, true);
-      window.func = func;
-      window.func(text);
+      func(text);
       assert.strictEqual(fake.callCount, 0);
     });
 
@@ -677,8 +667,7 @@ describe("common", () => {
       const body = document.querySelector("body");
       body.appendChild(p);
       window.addEventListener("change", fake, true);
-      window.func = func;
-      window.func(p);
+      func(p);
       assert.strictEqual(fake.callCount, 1);
     });
   });
@@ -700,8 +689,7 @@ describe("common", () => {
     it("should not dispach event if no argument given", () => {
       const fake = sinon.fake();
       window.addEventListener("input", fake, true);
-      window.func = func;
-      window.func();
+      func();
       assert.strictEqual(fake.callCount, 0);
     });
 
@@ -711,8 +699,7 @@ describe("common", () => {
       const body = document.querySelector("body");
       body.appendChild(text);
       window.addEventListener("input", fake, true);
-      window.func = func;
-      window.func(text);
+      func(text);
       assert.strictEqual(fake.callCount, 0);
     });
 
@@ -722,8 +709,7 @@ describe("common", () => {
       const body = document.querySelector("body");
       body.appendChild(p);
       window.addEventListener("input", fake, true);
-      window.func = func;
-      window.func(p);
+      func(p);
       assert.strictEqual(fake.callCount, 1);
     });
   });
