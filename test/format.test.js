@@ -1,5 +1,5 @@
 /**
- * menu-items.test.js
+ * format.test.js
  */
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers */
 
