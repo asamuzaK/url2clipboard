@@ -24,21 +24,21 @@ const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
 
 /* variables */
-const vars = {
-  includeTitleHtml: true,
-  includeTitleMarkdown: true,
+export const vars = {
+  includeTitleHtml: false,
+  includeTitleMarkdown: false,
   mimeType: MIME_PLAIN,
   textOutput: OUTPUT_TEXT_AND_URL,
 };
 
 /* formats */
-const formats = new Map();
+export const formats = new Map();
 
 /**
  * set format data
  * @returns {void}
  */
-const setFormatData = async () => {
+export const setFormatData = async () => {
   const items = Object.entries(formatData);
   for (const [key, value] of items) {
     formats.set(key, value);
@@ -50,7 +50,7 @@ const setFormatData = async () => {
  * @param {string} id - menu item id
  * @returns {Object} - format item
  */
-const getFormatItemFromId = async id => {
+export const getFormatItemFromId = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -70,7 +70,7 @@ const getFormatItemFromId = async id => {
  * @param {string} id - menu item ID
  * @returns {string} - template
  */
-const getFormatTemplate = async id => {
+export const getFormatTemplate = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -105,7 +105,7 @@ const getFormatTemplate = async id => {
 };
 
 /* tab info */
-const tabInfo = {
+export const tabInfo = {
   id: null,
   title: null,
   url: null,
@@ -115,7 +115,7 @@ const tabInfo = {
  * init tab info
  * @returns {Object} - tab info
  */
-const initTabInfo = async () => {
+export const initTabInfo = async () => {
   tabInfo.id = null;
   tabInfo.title = null;
   tabInfo.url = null;
@@ -127,7 +127,7 @@ const initTabInfo = async () => {
  * @param {Object} tab - tabs.Tab
  * @returns {void}
  */
-const setTabInfo = async tab => {
+export const setTabInfo = async tab => {
   const contentPage = document.getElementById(CONTENT_PAGE);
   const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
   await initTabInfo();
@@ -142,7 +142,7 @@ const setTabInfo = async tab => {
 };
 
 /* context info */
-const contextInfo = {
+export const contextInfo = {
   isLink: false,
   content: null,
   title: null,
@@ -154,7 +154,7 @@ const contextInfo = {
  * init context info
  * @returns {Object} - context info
  */
-const initContextInfo = async () => {
+export const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
   contextInfo.title = null;
@@ -168,20 +168,18 @@ const initContextInfo = async () => {
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
-const getAllTabsInfo = async menuItemId => {
+export const getAllTabsInfo = async menuItemId => {
   const tabsInfo = [];
-  const arr = await tabs.query({currentWindow: true});
   const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
-  if (arr.length) {
-    arr.forEach(tab => {
-      const {id, title, url} = tab;
-      tabsInfo.push({
-        id, menuItemId, mimeType, template, title, url,
-        content: title,
-      });
+  const arr = await tabs.query({currentWindow: true});
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    tabsInfo.push({
+      id, menuItemId, mimeType, template, title, url,
+      content: title,
     });
-  }
+  });
   return tabsInfo;
 };
 
@@ -190,45 +188,43 @@ const getAllTabsInfo = async menuItemId => {
  * @param {!Object} evt - Event
  * @returns {void}
  */
-const createCopyData = async evt => {
+export const createCopyData = async evt => {
   const {target} = evt;
+  const {id: menuItemId} = target;
+  const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
+  const {title: tabTitle, url: tabUrl} = tabInfo;
+  const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
   const func = [];
-  if (target) {
-    const {id: menuItemId} = target;
-    const {title: tabTitle, url: tabUrl} = tabInfo;
-    const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
-    const {
-      canonicalUrl, title: contextTitle, url: contextUrl,
-    } = contextInfo;
-    if (menuItemId.startsWith(COPY_ALL_TABS)) {
-      const allTabs = await getAllTabsInfo(menuItemId);
-      func.push(sendMessage(runtime.id, {
-        [EXEC_COPY_TABS]: {
-          allTabs, includeTitleHtml, includeTitleMarkdown,
-        },
-      }));
-    } else {
-      const template = await getFormatTemplate(menuItemId);
-      let content, title, url;
-      if (menuItemId.startsWith(COPY_LINK)) {
-        if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
-          content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
-          url = contextUrl;
-        } else {
-          content = document.getElementById(CONTENT_LINK).value || "";
-          title = contextTitle;
-          url = contextUrl;
-        }
-      } else if (menuItemId.startsWith(COPY_PAGE)) {
-        if (menuItemId === `${COPY_PAGE}${BBCODE_URL}`) {
-          content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
-          url = canonicalUrl || tabUrl;
-        } else {
-          content = document.getElementById(CONTENT_PAGE).value || "";
-          title = tabTitle;
-          url = canonicalUrl || tabUrl;
-        }
+  if (menuItemId.startsWith(COPY_ALL_TABS)) {
+    const allTabs = await getAllTabsInfo(menuItemId);
+    func.push(sendMessage(runtime.id, {
+      [EXEC_COPY_TABS]: {
+        allTabs, includeTitleHtml, includeTitleMarkdown,
+      },
+    }));
+  } else {
+    const template = await getFormatTemplate(menuItemId);
+    let content, title, url;
+    if (menuItemId.startsWith(COPY_LINK)) {
+      if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+        content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
+        url = contextUrl;
+      } else {
+        content = document.getElementById(CONTENT_LINK).value || "";
+        title = contextTitle;
+        url = contextUrl;
       }
+    } else if (menuItemId.startsWith(COPY_PAGE)) {
+      if (menuItemId === `${COPY_PAGE}${BBCODE_URL}`) {
+        content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
+        url = canonicalUrl || tabUrl;
+      } else {
+        content = document.getElementById(CONTENT_PAGE).value || "";
+        title = tabTitle;
+        url = canonicalUrl || tabUrl;
+      }
+    }
+    if (url) {
       func.push(sendMessage(runtime.id, {
         [EXEC_COPY]: {
           content, includeTitleHtml, includeTitleMarkdown, menuItemId,
@@ -236,27 +232,36 @@ const createCopyData = async evt => {
         },
       }));
     }
-    func.push(initContextInfo());
   }
-  return Promise.all(func);
+  func.push(initContextInfo());
+  return Promise.all(func).catch(throwErr);
 };
+
+/**
+ * handle open options on click
+ * @returns {AsyncFunction} - runtime.openOptionsPage()
+ */
+export const openOptionsOnClick = () => runtime.openOptionsPage();
+
+/**
+ * handle menu on click
+ * @param {!Object} evt - Event
+ * @returns {AsyncFunction} - createCopyData()
+ */
+export const menuOnClick = evt => createCopyData(evt).catch(throwErr);
 
 /**
  * add listener to menu
  * @returns {void}
  */
-const addListenerToMenu = async () => {
+export const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll("button");
-  if (nodes instanceof NodeList) {
-    for (const node of nodes) {
-      const {id} = node;
-      if (id === OPTIONS_OPEN) {
-        node.addEventListener("click", () => runtime.openOptionsPage());
-      } else {
-        node.addEventListener("click", evt =>
-          createCopyData(evt).catch(throwErr)
-        );
-      }
+  for (const node of nodes) {
+    const {id} = node;
+    if (id === OPTIONS_OPEN) {
+      node.addEventListener("click", openOptionsOnClick);
+    } else {
+      node.addEventListener("click", menuOnClick);
     }
   }
 };
@@ -266,7 +271,7 @@ const addListenerToMenu = async () => {
  * @param {Object} data - context data;
  * @returns {void}
  */
-const updateMenu = async (data = {}) => {
+export const updateMenu = async (data = {}) => {
   const {contextInfo: info} = data;
   await initContextInfo();
   if (info) {
@@ -281,14 +286,12 @@ const updateMenu = async (data = {}) => {
     contextInfo.url = url;
     contentLink.value = content || "";
     contentBBCode.value = url || "";
-    if (nodes instanceof NodeList) {
-      for (const node of nodes) {
-        const attr = "disabled";
-        if (isLink) {
-          node.removeAttribute(attr);
-        } else {
-          node.setAttribute(attr, attr);
-        }
+    for (const node of nodes) {
+      const attr = "disabled";
+      if (isLink) {
+        node.removeAttribute(attr);
+      } else {
+        node.setAttribute(attr, attr);
       }
     }
   }
@@ -299,7 +302,7 @@ const updateMenu = async (data = {}) => {
  * @param {Object} tab - tabs.Tab
  * @returns {void}
  */
-const requestContextInfo = async (tab = {}) => {
+export const requestContextInfo = async (tab = {}) => {
   const {id} = tab;
   await initContextInfo();
   if (Number.isInteger(id) && id !== TAB_ID_NONE) {
@@ -327,17 +330,17 @@ const requestContextInfo = async (tab = {}) => {
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
-const handleMsg = async msg => {
+export const handleMsg = async msg => {
   const func = [];
-  const items = msg && Object.keys(msg);
-  if (items && items.length) {
+  const items = msg && Object.entries(msg);
+  if (items) {
     for (const item of items) {
-      const obj = msg[item];
-      switch (item) {
+      const [key, value] = item;
+      switch (key) {
         case CONTEXT_INFO:
         case "keydown":
         case "mousedown":
-          func.push(updateMenu(obj));
+          func.push(updateMenu(value));
           break;
         default:
       }
@@ -351,10 +354,9 @@ const handleMsg = async msg => {
  * @param {string} item - item
  * @param {Object} obj - value object
  * @param {boolean} changed - changed
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {void}
  */
-const setVar = async (item, obj) => {
-  const func = [];
+export const setVar = async (item, obj) => {
   if (item && obj) {
     const {checked, value} = obj;
     switch (item) {
@@ -378,32 +380,42 @@ const setVar = async (item, obj) => {
       default:
     }
   }
-  return Promise.all(func);
 };
 
 /**
  * set variables
- * @param {Object} data - storage data
+ * @param {Object} data - data
  * @returns {Promise.<Array>} - results of each handler
  */
-const setVars = async (data = {}) => {
+export const setVars = async (data = {}) => {
+  const items = Object.entries(data);
   const func = [];
-  const items = Object.keys(data);
-  if (items.length) {
-    for (const item of items) {
-      const obj = data[item];
-      const {newValue} = obj;
-      func.push(setVar(item, newValue || obj, !!newValue));
-    }
+  for (const [key, value] of items) {
+    const {newValue} = value;
+    func.push(setVar(key, newValue || value, !!newValue));
   }
   return Promise.all(func);
 };
 
+/* browser event handlers */
+/**
+ * handle storage.onChanged
+ * @param {Object} data - data
+ * @returns {AsyncFunction} - promise chain
+ */
+export const storageOnChanged = data => setVars(data).catch(throwErr);
+
+/**
+ * handle runtime.onMessage
+ * @param {*} msg - message
+ * @param {Object} sender - sender
+ * @returns {AsyncFunction} - handleMsg()
+ */
+export const runtimeOnMessage = msg => handleMsg(msg).catch(throwErr);
+
 /* listeners */
-storage.onChanged.addListener(data => setVars(data).catch(throwErr));
-runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
+storage.onChanged.addListener(storageOnChanged);
+runtime.onMessage.addListener(runtimeOnMessage);
 
 /* startup */
 Promise.all([
