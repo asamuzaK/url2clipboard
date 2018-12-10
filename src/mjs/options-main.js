@@ -46,7 +46,7 @@ export const storePref = async evt => {
 /**
  * handle input change
  * @param {!Object} evt - Event
- * @returns {AsyncFunction} - 
+ * @returns {AsyncFunction} - storePref()
  */
 export const handleInputChange = evt => storePref(evt).catch(throwErr);
 
