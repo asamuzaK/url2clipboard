@@ -1,5 +1,5 @@
 /**
- * popup.test.js
+ * popup-main.test.js
  */
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers */
 
@@ -8,7 +8,7 @@ import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
-import * as mjs from "../src/mjs/popup.js";
+import * as mjs from "../src/mjs/popup-main.js";
 import formatData from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
@@ -19,7 +19,7 @@ import {
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 
-describe("popup", () => {
+describe("popup-main", () => {
   /**
    * create jsdom
    * @returns {Object} - jsdom instance
@@ -1201,24 +1201,6 @@ describe("popup", () => {
         },
       });
       assert.deepEqual(res, [undefined], "result");
-    });
-  });
-
-  describe("handle storage.onChanged", () => {
-    const func = mjs.storageOnChanged;
-
-    it("should get result", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
-    });
-  });
-
-  describe("handle runtime.onMessage", () => {
-    const func = mjs.runtimeOnMessage;
-
-    it("should get empty array", async () => {
-      const res = await func();
-      assert.deepEqual(res, [], "result");
     });
   });
 });
