@@ -4,6 +4,7 @@
 
 "use strict";
 const {JSDOM} = require("jsdom");
+const sinon = require("sinon");
 const browser = require("sinon-chrome/webextensions");
 
 /**
@@ -20,6 +21,12 @@ const createJsdom = () => {
 
 const {window} = createJsdom();
 const {document} = window;
+
+browser.contextMenus.create = sinon.stub();
+browser.contextMenus.remove = sinon.stub();
+browser.contextMenus.removeAll = sinon.stub();
+browser.contextMenus.update = sinon.stub();
+browser.i18n.getMessage.callsFake((...args) => args.toString());
 
 global.browser = browser;
 global.window = window;
