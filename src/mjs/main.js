@@ -631,16 +631,18 @@ export const handleActiveTab = async (info = {}) => {
 /**
  * handle updated tab
  * @param {number} tabId - tab ID
- * @param {Object} tab - tab.Tab
+ * @param {Object} info - info
+ * @param {Object} tab - tabs.Tab
  * @returns {?AsyncFunction} - handle active tab
  */
-export const handleUpdatedTab = async (tabId, tab = {}) => {
+export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
   let func;
+  const {status} = info;
   const {active} = tab;
-  if (active) {
+  if (status === "complete" && active) {
     func = handleActiveTab({tabId});
   }
   return func || null;

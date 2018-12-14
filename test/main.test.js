@@ -1963,10 +1963,30 @@ describe("main", () => {
       assert.isNull(res, "result");
     });
 
+    it("should get null", async () => {
+      const res = await func(1, {
+        status: "loading",
+      }, {
+        active: true,
+      });
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", async () => {
+      const res = await func(1, {
+        status: "complete",
+      }, {
+        active: false,
+      });
+      assert.isNull(res, "result");
+    });
+
     it("should call function", async () => {
       const i = browser.tabs.get.callCount;
       browser.tabs.get.withArgs(1).resolves({});
       const res = await func(1, {
+        status: "complete",
+      }, {
         active: true,
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, "called");

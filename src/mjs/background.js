@@ -36,7 +36,7 @@ tabs.onRemoved.addListener(tabId =>
   removeEnabledTab(tabId).catch(throwErr)
 );
 tabs.onUpdated.addListener((tabId, info, tab) =>
-  handleUpdatedTab(tabId, tab).catch(throwErr)
+  handleUpdatedTab(tabId, info, tab).catch(throwErr)
 );
 
 /* startup */
