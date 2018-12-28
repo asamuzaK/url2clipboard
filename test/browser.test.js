@@ -1314,6 +1314,7 @@ describe("browser", () => {
       browser.windows.get.withArgs(1, null).resolves({});
       const i = browser.windows.get.callCount;
       const res = await func(1);
+      assert.strictEqual(browser.windows.get.callCount, i + 1, "called");
       assert.deepEqual(res, {}, "result");
       browser.windows.get.flush();
     });
@@ -1326,6 +1327,7 @@ describe("browser", () => {
       const res = await func(1, {
         populate: true,
       });
+      assert.strictEqual(browser.windows.get.callCount, i + 1, "called");
       assert.deepEqual(res, {}, "result");
       browser.windows.get.flush();
     });
