@@ -1300,6 +1300,37 @@ describe("browser", () => {
     });
   });
 
+  describe("get window", () => {
+    const func = mjs.getWindow;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected Number but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should get result", async () => {
+      browser.windows.get.withArgs(1, null).resolves({});
+      const i = browser.windows.get.callCount;
+      const res = await func(1);
+      assert.deepEqual(res, {}, "result");
+      browser.windows.get.flush();
+    });
+
+    it("should get result", async () => {
+      browser.windows.get.withArgs(1, {
+        populate: true,
+      }).resolves({});
+      const i = browser.windows.get.callCount;
+      const res = await func(1, {
+        populate: true,
+      });
+      assert.deepEqual(res, {}, "result");
+      browser.windows.get.flush();
+    });
+  });
+
   describe("check whether incognito window exists", () => {
     const func = mjs.checkIncognitoWindowExists;
 

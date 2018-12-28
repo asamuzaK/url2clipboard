@@ -778,6 +778,20 @@ export const getCurrentWindow = async opt => {
 };
 
 /**
+ * get window
+ * @param {number} windowId - window ID
+ * @param {Object} opt - options
+ * @returns {Object} - windows.Window
+ */
+export const getWindow = async (windowId, opt) => {
+  if (!Number.isInteger(windowId)) {
+    throw new TypeError(`Expected Number but got ${getType(windowId)}.`);
+  }
+  const win = await windows.get(windowId, isObjectNotEmpty(opt) && opt || null);
+  return win;
+};
+
+/**
  * check whether incognito window exists
  * @returns {boolean} - result
  */
