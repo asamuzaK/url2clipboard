@@ -4,7 +4,6 @@
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers,
                    array-bracket-newline */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import {browser} from "./mocha/setup.js";
@@ -23,32 +22,11 @@ import {
 const WEBEXT_TST = "treestyletab@piro.sakura.ne.jp";
 
 describe("main", () => {
-  /**
-   * create jsdom
-   * @returns {Object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-    };
-    return new JSDOM(domstr, opt);
-  };
-  let window, document;
   beforeEach(() => {
-    const dom = createJsdom();
-    window = dom && dom.window;
-    document = window && window.document;
     global.browser = browser;
-    global.window = window;
-    global.document = document;
   });
   afterEach(() => {
-    window = null;
-    document = null;
     delete global.browser;
-    delete global.window;
-    delete global.document;
   });
 
   it("should get browser object", () => {
