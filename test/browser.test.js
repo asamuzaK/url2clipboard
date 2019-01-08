@@ -1096,9 +1096,19 @@ describe("browser", () => {
     });
 
     it("should call function", async () => {
-      const i = browser.tabs.reload.callCount;
+      const i = browser.tabs.reload.withArgs(1, null).callCount;
       await func(1);
-      assert.strictEqual(browser.tabs.reload.callCount, i + 1, "res");
+      assert.strictEqual(browser.tabs.reload.withArgs(1, null).callCount, i + 1,
+                         "res");
+    });
+
+    it("should call function", async () => {
+      const i = browser.tabs.reload.withArgs(1, {foo: "bar"}).callCount;
+      await func(1, {foo: "bar"});
+      assert.strictEqual(
+        browser.tabs.reload.withArgs(1, {foo: "bar"}).callCount,
+        i + 1, "res"
+      );
     });
   });
 
