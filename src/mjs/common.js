@@ -13,15 +13,6 @@ const VERSION_TOOLKIT =
 const VERSION_TOOLKIT_REGEXP = new RegExp(`^(?:${VERSION_TOOLKIT})$`);
 
 /**
- * throw error
- * @param {!Object} e - Error
- * @throws
- */
-export const throwErr = e => {
-  throw e;
-};
-
-/**
  * log error
  * @param {!Object} e - Error
  * @returns {boolean} - false
@@ -33,6 +24,16 @@ export const logErr = e => {
     console.error(e);
   }
   return false;
+};
+
+/**
+ * throw error
+ * @param {!Object} e - Error
+ * @throws
+ */
+export const throwErr = e => {
+  logErr(e);
+  throw e;
 };
 
 /**
@@ -106,7 +107,7 @@ export const stringifyPositiveInt = (i, zero = false) => {
  */
 export const parseStringifiedInt = (i, zero = false) => {
   if (!isString(i)) {
-    throw new TypeError(`Expexted String but got ${getType(i)}`);
+    throw new TypeError(`Expexted String but got ${getType(i)}.`);
   }
   if (!zero && !/^-?(?:0|[1-9]\d*)$/.test(i)) {
     throw new Error(`${i} is not a stringified integer.`);
@@ -122,10 +123,10 @@ export const parseStringifiedInt = (i, zero = false) => {
  */
 export const escapeMatchingChars = (str, re) => {
   if (!isString(str)) {
-    throw new TypeError(`Expexted String but got ${getType(str)}`);
+    throw new TypeError(`Expexted String but got ${getType(str)}.`);
   }
   if (!(re instanceof RegExp)) {
-    throw new TypeError(`Expexted RegExp but got ${getType(str)}`);
+    throw new TypeError(`Expexted RegExp but got ${getType(str)}.`);
   }
   return re.global && str.replace(re, (m, c) => `\\${c}`) || null;
 };
@@ -137,7 +138,7 @@ export const escapeMatchingChars = (str, re) => {
  */
 export const isValidToolkitVersion = version => {
   if (!isString(version)) {
-    throw new TypeError(`Expected String but got ${getType(version)}`);
+    throw new TypeError(`Expected String but got ${getType(version)}.`);
   }
   return VERSION_TOOLKIT_REGEXP.test(version);
 };
@@ -156,7 +157,7 @@ export const isValidToolkitVersion = version => {
  */
 export const parseVersion = version => {
   if (!isString(version)) {
-    throw new TypeError(`Expected String but got ${getType(version)}`);
+    throw new TypeError(`Expected String but got ${getType(version)}.`);
   }
   if (!isValidToolkitVersion(version)) {
     throw new Error(`${version} does not match toolkit format.`);
