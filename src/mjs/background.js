@@ -10,8 +10,7 @@ import {
 } from "./browser.js";
 import {
   extractClickedData, handleActiveTab, handleMsg, handleUpdatedTab,
-  prepareUI, removeEnabledTab, setDefaultIcon, setExternalExts,
-  setFormatData, setVars,
+  prepareUI, removeEnabledTab, setDefaultIcon, setFormatData, setVars,
 } from "./main.js";
 
 /* api */
@@ -26,9 +25,6 @@ storage.onChanged.addListener(data =>
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
-runtime.onMessageExternal.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
-);
 tabs.onActivated.addListener(info =>
   handleActiveTab(info).catch(throwErr)
 );
@@ -40,8 +36,7 @@ tabs.onUpdated.addListener((tabId, info, tab) =>
 );
 
 /* startup */
-Promise.all([
+document.addEventListener("DOMContentLoaded", () => Promise.all([
   setFormatData(),
   setDefaultIcon(),
-  setExternalExts(),
-]).then(getAllStorage).then(setVars).then(prepareUI).catch(throwErr);
+]).then(getAllStorage).then(setVars).then(prepareUI).catch(throwErr));

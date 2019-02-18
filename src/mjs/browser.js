@@ -3,7 +3,7 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString, logErr, parseVersion, throwErr,
+  getType, isObjectNotEmpty, isString, logErr, throwErr,
 } from "./common.js";
 
 /* api */
@@ -14,57 +14,6 @@ const {
 
 /* constants */
 const {TAB_ID_NONE} = tabs;
-const IS_CHROMEEXT = typeof runtime.getPackageDirectoryEntry === "function";
-const IS_WEBEXT = typeof runtime.getBrowserInfo === "function";
-const WEBEXT_ACCKEY_MIN = 63;
-const WEBEXT_MENU_VISIBLE_MIN = 63;
-
-/* compat */
-/**
- * is accesskey supported in context menu
- * @returns {boolean} - result
- */
-export const isAccessKeySupported = async () => {
-  let bool;
-  if (IS_WEBEXT) {
-    const info = await runtime.getBrowserInfo();
-    if (isObjectNotEmpty(info)) {
-      const {version} = info;
-      if (isString(version)) {
-        const {major: majorVersion} = await parseVersion(version);
-        if (majorVersion >= WEBEXT_ACCKEY_MIN) {
-          bool = true;
-        }
-      }
-    }
-  } else if (IS_CHROMEEXT) {
-    bool = true;
-  }
-  return !!bool;
-};
-
-/**
- * is visible supported in context menu
- * @returns {boolean} - result
- */
-export const isVisibleInMenuSupported = async () => {
-  let bool;
-  if (IS_WEBEXT) {
-    const info = await runtime.getBrowserInfo();
-    if (isObjectNotEmpty(info)) {
-      const {version} = info;
-      if (isString(version)) {
-        const {major: majorVersion} = await parseVersion(version);
-        if (majorVersion >= WEBEXT_MENU_VISIBLE_MIN) {
-          bool = true;
-        }
-      }
-    }
-  } else if (IS_CHROMEEXT) {
-    bool = true;
-  }
-  return !!bool;
-};
 
 /* bookmarks */
 /**
@@ -657,7 +606,7 @@ export const highlightTab = async (index, windowId) => {
     tabs: index,
   };
   const win = await tabs.highlight(opt);
-  return win || null;
+  return win;
 };
 
 /**
