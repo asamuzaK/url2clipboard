@@ -2,7 +2,7 @@
   "applications": {
     "gecko": {
       "id": "url2clipboard@asamuzak.jp",
-      "strict_min_version": "60.0"
+      "strict_min_version": "66.0a1"
     }
   },
   "background": {
@@ -70,5 +70,5 @@
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "2.1.5"
+  "version": "3.0.0a1"
 }
