@@ -687,7 +687,7 @@ describe("main", () => {
         ],
         [
           {
-            title: "extensionName (Alt+Shift+C)",
+            title: "extensionName",
           },
         ],
       ], "result");
@@ -723,7 +723,7 @@ describe("main", () => {
         ],
         [
           {
-            title: "extensionName (Alt+Shift+C)",
+            title: "extensionName",
           },
         ],
       ], "result");

@@ -33,7 +33,6 @@ export const ICON_LIGHT_ID = "#light";
 export const ICON_WHITE = "buttonIconWhite";
 export const INCLUDE_TITLE_HTML = "includeTitleHtml";
 export const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
-export const KEY = "Alt+Shift+C";
 export const LATEX = "LaTeX";
 export const LINK_DETAILS = "copyLinkDetails";
 export const LINK_MENU =
