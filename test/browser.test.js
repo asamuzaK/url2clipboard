@@ -828,8 +828,17 @@ describe("browser", () => {
       });
     });
 
-    it("should get array", async () => {
+    it("should get call function", async () => {
+      const stubErr = sinon.stub(console, "error");
       const p = "foo/bar";
+      const i = browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount;
+      const j = browser.tabs.executeScript.withArgs(2, {
+        allFrames: false,
+        file: p,
+      }).callCount;
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -838,11 +847,70 @@ describe("browser", () => {
           id: 2,
         },
       ]);
-      browser.tabs.executeScript.resolves(undefined);
+      browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).resolves(undefined);
+      browser.tabs.executeScript.withArgs(2, {
+        allFrames: false,
+        file: p,
+      }).rejects(new Error("error"));
       browser.runtime.getURL.withArgs(p).returns(p);
       const res = await func(p);
-      assert.isArray(res, "result");
-      assert.strictEqual(res.length, 2, "length");
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.executeScript.withArgs(2, {
+        allFrames: false,
+        file: p,
+      }).callCount, j + 1, "called");
+      assert.deepEqual(res, [undefined, false], "result");
+      browser.tabs.query.flush();
+      browser.tabs.executeScript.flush();
+      browser.runtime.getURL.flush();
+    });
+
+    it("should get call function", async () => {
+      const stubErr = sinon.stub(console, "error");
+      const p = "foo/bar";
+      const i = browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).callCount;
+      const j = browser.tabs.executeScript.withArgs(2, {
+        allFrames: true,
+        file: p,
+      }).callCount;
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+        },
+        {
+          id: 2,
+        },
+      ]);
+      browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).resolves(undefined);
+      browser.tabs.executeScript.withArgs(2, {
+        allFrames: true,
+        file: p,
+      }).rejects(new Error("error"));
+      browser.runtime.getURL.withArgs(p).returns(p);
+      const res = await func(p, true);
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.executeScript.withArgs(2, {
+        allFrames: true,
+        file: p,
+      }).callCount, j + 1, "called");
+      assert.deepEqual(res, [undefined, false], "result");
       browser.tabs.query.flush();
       browser.tabs.executeScript.flush();
       browser.runtime.getURL.flush();

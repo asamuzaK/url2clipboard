@@ -483,7 +483,7 @@ export const execScriptToExistingTabs = async (path, frame = false) => {
       func.push(tabs.executeScript(tabId, {
         allFrames: !!frame,
         file: runtime.getURL(path),
-      }));
+      }).catch(logErr));
     }
   }
   return Promise.all(func);
