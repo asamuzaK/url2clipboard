@@ -464,6 +464,29 @@ export const createTab = async (opt = {}) => {
 };
 
 /**
+ * execute content script to existing tab
+ * @param {string} path - content script path
+ * @param {boolean} frame - execute to all frames
+ * @returns {Promise.<Array>} - results of each handler
+ */
+export const execScriptToExistingTab = async (tabId, path, frame = false) => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  if (!isString(path)) {
+    throw new TypeError(`Expected String but got ${getType(path)}.`);
+  }
+  let func;
+  if (tabs) {
+    func = tabs.executeScript(tabId, {
+      allFrames: !!frame,
+      file: runtime.getURL(path),
+    }).catch(logErr);
+  }
+  return func || null;
+};
+
+/**
  * execute content script to existing tabs
  * @param {string} path - content script path
  * @param {boolean} frame - execute to all frames
@@ -480,10 +503,7 @@ export const execScriptToExistingTabs = async (path, frame = false) => {
     });
     for (const tab of tabList) {
       const {id: tabId} = tab;
-      func.push(tabs.executeScript(tabId, {
-        allFrames: !!frame,
-        file: runtime.getURL(path),
-      }).catch(logErr));
+      func.push(execScriptToExistingTab(tabId, path, !!frame));
     }
   }
   return Promise.all(func);

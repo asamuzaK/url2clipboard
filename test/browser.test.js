@@ -819,6 +819,93 @@ describe("browser", () => {
     });
   });
 
+  describe("execute content script to existing tab", () => {
+    const func = mjs.execScriptToExistingTab;
+
+    it("should throw if no argument given", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected Number but got Undefined.");
+      });
+    });
+
+    it("should throw if 2nd argument not given", async () => {
+      await func(1).catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
+    });
+
+    it("should call function", async () => {
+      const stubErr = sinon.stub(console, "error");
+      const p = "foo/bar";
+      const i = browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount;
+      browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).resolves([{}]);
+      browser.runtime.getURL.withArgs(p).returns(p);
+      const res = await func(1, p);
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount, i + 1, "called");
+      assert.deepEqual(res, [{}], "result");
+      browser.tabs.executeScript.flush();
+      browser.runtime.getURL.flush();
+    });
+
+    it("should call function", async () => {
+      const stubErr = sinon.stub(console, "error");
+      const p = "foo/bar";
+      const i = browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).callCount;
+      browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).resolves([{}]);
+      browser.runtime.getURL.withArgs(p).returns(p);
+      const res = await func(1, p, true);
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
+        allFrames: true,
+        file: p,
+      }).callCount, i + 1, "called");
+      assert.deepEqual(res, [{}], "result");
+      browser.tabs.executeScript.flush();
+      browser.runtime.getURL.flush();
+    });
+
+    it("should log error", async () => {
+      const stubErr = sinon.stub(console, "error");
+      const p = "foo/bar";
+      const i = browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount;
+      browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).rejects(new Error("error"));
+      browser.runtime.getURL.withArgs(p).returns(p);
+      const res = await func(1, p);
+      const {calledOnce: errCalled} = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
+        allFrames: false,
+        file: p,
+      }).callCount, i + 1, "called");
+      assert.isTrue(errCalled, "error called");
+      assert.isFalse(res, "result");
+      browser.tabs.executeScript.flush();
+      browser.runtime.getURL.flush();
+    });
+  });
+
   describe("execute content script to existing tabs", () => {
     const func = mjs.execScriptToExistingTabs;
 
@@ -850,13 +937,14 @@ describe("browser", () => {
       browser.tabs.executeScript.withArgs(1, {
         allFrames: false,
         file: p,
-      }).resolves(undefined);
+      }).resolves([{}]);
       browser.tabs.executeScript.withArgs(2, {
         allFrames: false,
         file: p,
       }).rejects(new Error("error"));
       browser.runtime.getURL.withArgs(p).returns(p);
       const res = await func(p);
+      const {calledOnce: errCalled} = stubErr;
       stubErr.restore();
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
         allFrames: false,
@@ -866,7 +954,8 @@ describe("browser", () => {
         allFrames: false,
         file: p,
       }).callCount, j + 1, "called");
-      assert.deepEqual(res, [undefined, false], "result");
+      assert.isTrue(errCalled, "error called");
+      assert.deepEqual(res, [[{}], false], "result");
       browser.tabs.query.flush();
       browser.tabs.executeScript.flush();
       browser.runtime.getURL.flush();
@@ -894,13 +983,14 @@ describe("browser", () => {
       browser.tabs.executeScript.withArgs(1, {
         allFrames: true,
         file: p,
-      }).resolves(undefined);
+      }).resolves([{}, {}]);
       browser.tabs.executeScript.withArgs(2, {
         allFrames: true,
         file: p,
       }).rejects(new Error("error"));
       browser.runtime.getURL.withArgs(p).returns(p);
       const res = await func(p, true);
+      const {calledOnce: errCalled} = stubErr;
       stubErr.restore();
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
         allFrames: true,
@@ -910,7 +1000,8 @@ describe("browser", () => {
         allFrames: true,
         file: p,
       }).callCount, j + 1, "called");
-      assert.deepEqual(res, [undefined, false], "result");
+      assert.isTrue(errCalled, "error called");
+      assert.deepEqual(res, [[{}, {}], false], "result");
       browser.tabs.query.flush();
       browser.tabs.executeScript.flush();
       browser.runtime.getURL.flush();
