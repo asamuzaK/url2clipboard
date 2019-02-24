@@ -465,6 +465,7 @@ export const createTab = async (opt = {}) => {
 
 /**
  * execute content script to existing tab
+ * @param {number} tabId - tab ID
  * @param {string} path - content script path
  * @param {boolean} frame - execute to all frames
  * @returns {Promise.<Array>} - results of each handler
