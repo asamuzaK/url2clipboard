@@ -466,45 +466,41 @@ export const createTab = async (opt = {}) => {
 /**
  * execute content script to existing tab
  * @param {number} tabId - tab ID
- * @param {string} path - content script path
- * @param {boolean} frame - execute to all frames
- * @returns {Promise.<Array>} - results of each handler
+ * @param {Object} opt - options
+ * @returns {?AsyncFunction} - promise chain
  */
-export const execScriptToExistingTab = async (tabId, path, frame = false) => {
+export const execScriptToTab = async (tabId, opt = {}) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  if (!isString(path)) {
-    throw new TypeError(`Expected String but got ${getType(path)}.`);
-  }
   let func;
   if (tabs) {
-    func = tabs.executeScript(tabId, {
-      allFrames: !!frame,
-      file: runtime.getURL(path),
-    }).catch(logErr);
+    const {file} = opt;
+    if (isString(file)) {
+      func = tabs.executeScript(tabId, opt).catch(logErr);
+    }
   }
   return func || null;
 };
 
 /**
  * execute content script to existing tabs
- * @param {string} path - content script path
- * @param {boolean} frame - execute to all frames
+ * @param {Object} opt - options
  * @returns {Promise.<Array>} - results of each handler
  */
-export const execScriptToExistingTabs = async (path, frame = false) => {
-  if (!isString(path)) {
-    throw new TypeError(`Expected String but got ${getType(path)}.`);
-  }
+export const execScriptToTabs = async (opt = {}) => {
   const func = [];
   if (tabs) {
     const tabList = await tabs.query({
+      url: ["<all_urls>"],
       windowType: "normal",
     });
     for (const tab of tabList) {
-      const {id: tabId} = tab;
-      func.push(execScriptToExistingTab(tabId, path, !!frame));
+      const {id: tabId, url} = tab;
+      const {protocol} = new URL(url);
+      if (/^(?:data|f(?:tp|ile)|https?|wss?):/.test(protocol)) {
+        func.push(execScriptToTab(tabId, opt));
+      }
     }
   }
   return Promise.all(func);
