@@ -1290,6 +1290,19 @@ describe("browser", () => {
     });
   });
 
+  describe("getCurrentTheme", () => {
+    const func = mjs.getCurrentTheme;
+
+    it("should get function called and get result", async () => {
+      browser.theme.getCurrent.resolves({});
+      const i = browser.theme.getCurrent.callCount;
+      const res = await func();
+      assert.strictEqual(browser.theme.getCurrent.callCount, i + 1, "called");
+      assert.deepEqual(res, {}, "result");
+      browser.theme.getCurrent.flush();
+    });
+  });
+
   describe("create new window", () => {
     const func = mjs.createNewWindow;
 

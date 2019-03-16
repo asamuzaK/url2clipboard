@@ -9,7 +9,7 @@ import {
 /* api */
 const {
   bookmarks, commands, contextualIdentities, management, notifications,
-  permissions, runtime, sessions, storage, tabs, windows,
+  permissions, runtime, sessions, storage, tabs, theme, windows,
 } = browser;
 
 /* constants */
@@ -709,6 +709,19 @@ export const isTab = async tabId => {
     tab = await tabs.get(tabId).catch(() => false);
   }
   return !!tab;
+};
+
+/* theme */
+/**
+ * get current theme
+ * @returns {Object} - theme.Theme
+ */
+export const getCurrentTheme = async () => {
+  let currentTheme;
+  if (theme) {
+    currentTheme = await theme.getCurrent();
+  }
+  return currentTheme || null;
 };
 
 /* windows */

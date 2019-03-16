@@ -257,7 +257,7 @@ describe("common", () => {
     const func = mjs.parseStringifiedInt;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expexted String but got Undefined.");
+      assert.throws(() => func(), "Expected String but got Undefined.");
     });
 
     it("should throw", () => {
@@ -303,12 +303,12 @@ describe("common", () => {
     const func = mjs.escapeMatchingChars;
 
     it("should throw", () => {
-      assert.throws(() => func(), "Expexted String but got Undefined.");
+      assert.throws(() => func(), "Expected String but got Undefined.");
     });
 
     it("should throw", () => {
       assert.throws(() => func("foo", "bar"),
-                    "Expexted RegExp but got String.");
+                    "Expected RegExp but got String.");
     });
 
     it("should get null", () => {
