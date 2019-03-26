@@ -24,7 +24,7 @@
     "@babel/core": "^7.4.0",
     "@babel/preset-env": "^7.4.2",
     "@babel/register": "^7.4.0",
-    "addons-linter": "^1.6.4",
+    "addons-linter": "^1.7.0",
     "chai": "^4.2.0",
     "eslint": "^5.15.3",
     "jsdom": "^14.0.0",
