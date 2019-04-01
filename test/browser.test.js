@@ -1341,9 +1341,30 @@ describe("browser", () => {
     const func = mjs.getAllNormalWindows;
 
     it("should get function called and get result", async () => {
-      browser.windows.getAll.resolves([]);
-      const i = browser.windows.getAll.callCount;
+      browser.windows.getAll.withArgs({
+        populate: false,
+        windowTypes: ["normal"],
+      }).resolves([]);
+      const i = browser.windows.getAll.withArgs({
+        populate: false,
+        windowTypes: ["normal"],
+      }).callCount;
       const res = await func();
+      assert.strictEqual(browser.windows.getAll.callCount, i + 1, "called");
+      assert.isArray(res, "result");
+      browser.windows.getAll.flush();
+    });
+
+    it("should get function called and get result", async () => {
+      browser.windows.getAll.withArgs({
+        populate: true,
+        windowTypes: ["normal"],
+      }).resolves([]);
+      const i = browser.windows.getAll.withArgs({
+        populate: true,
+        windowTypes: ["normal"],
+      }).callCount;
+      const res = await func(true);
       assert.strictEqual(browser.windows.getAll.callCount, i + 1, "called");
       assert.isArray(res, "result");
       browser.windows.getAll.flush();

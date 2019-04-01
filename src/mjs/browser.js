@@ -737,10 +737,12 @@ export const createNewWindow = async opt => {
 
 /**
  * get all windows
+ * @param {boolean} populate - populate tabs
  * @returns {Array} - array of windows.Window
  */
-export const getAllNormalWindows = async () => {
+export const getAllNormalWindows = async (populate = false) => {
   const arr = await windows.getAll({
+    populate,
     windowTypes: ["normal"],
   });
   return arr;
