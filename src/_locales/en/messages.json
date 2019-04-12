@@ -246,6 +246,12 @@
   "optionsLabel": {
     "message": "Options"
   },
+  "optionsNotifyOnCopy": {
+    "message": "Notify when copied"
+  },
+  "optionsNotifyOnCopyDetail": {
+    "message": "It will notify when successfully copied. Requires additional permission."
+  },
   "optionsPromptContent": {
     "message": "Edit contents when copying"
   },
