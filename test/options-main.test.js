@@ -9,6 +9,7 @@ import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/options-main.js";
+import {NOTIFY_COPY} from "../src/mjs/constant.js";
 
 describe("options-main", () => {
   /**
@@ -79,6 +80,72 @@ describe("options-main", () => {
       };
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(res.length, 1, "array length");
+      assert.deepEqual(res, [undefined], "result");
+    });
+
+    it("should call function", async () => {
+      const i = browser.storage.local.set.callCount;
+      const j = browser.permissions.request.callCount;
+      const k = browser.permissions.remove.callCount;
+      const evt = {
+        target: {
+          id: "foo",
+          type: "checkbox",
+          checked: true,
+        },
+      };
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.permissions.request.callCount, j,
+                         "not called");
+      assert.strictEqual(browser.permissions.remove.callCount, k,
+                         "not called");
+      assert.strictEqual(res.length, 1, "array length");
+      assert.deepEqual(res, [undefined], "result");
+    });
+
+    it("should call function", async () => {
+      const i = browser.storage.local.set.callCount;
+      const j = browser.permissions.request.callCount;
+      const k = browser.permissions.remove.callCount;
+      const evt = {
+        target: {
+          id: NOTIFY_COPY,
+          type: "checkbox",
+          checked: true,
+        },
+      };
+      browser.permissions.request.withArgs({
+        permissions: ["notification"],
+      }).resolves(true);
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.permissions.request.callCount, j + 1,
+                         "called");
+      assert.strictEqual(browser.permissions.remove.callCount, k,
+                         "not called");
+      assert.strictEqual(res.length, 1, "array length");
+      assert.deepEqual(res, [undefined], "result");
+    });
+
+    it("should call function", async () => {
+      const i = browser.storage.local.set.callCount;
+      const j = browser.permissions.request.callCount;
+      const k = browser.permissions.remove.callCount;
+      const evt = {
+        target: {
+          id: NOTIFY_COPY,
+          type: "checkbox",
+          checked: false,
+        },
+      };
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.permissions.request.callCount, j,
+                         "not called");
+      assert.strictEqual(browser.permissions.remove.callCount, k + 1,
+                         "called");
       assert.strictEqual(res.length, 1, "array length");
       assert.deepEqual(res, [undefined], "result");
     });
