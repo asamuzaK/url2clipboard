@@ -150,6 +150,9 @@
   "formats": {
     "message": "Formats"
   },
+  "notifyOnCopyMsg": {
+    "message": "Copied"
+  },
   "onCopySettings": {
     "message": "Settings On Copy"
   },

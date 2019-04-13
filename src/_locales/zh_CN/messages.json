@@ -150,6 +150,9 @@
   "formats": {
     "message": "格式"
   },
+  "notifyOnCopyMsg": {
+    "message": "Copied"
+  },
   "onCopySettings": {
     "message": "复制时"
   },

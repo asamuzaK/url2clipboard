@@ -3,17 +3,11 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString, logErr, throwErr,
+  getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 
 /* api */
-const {
-  bookmarks, commands, contextualIdentities, management, notifications,
-  permissions, runtime, sessions, storage, tabs, theme, windows,
-} = browser;
-
-/* constants */
-const {TAB_ID_NONE} = tabs;
+const {permissions, runtime, windows} = browser;
 
 /* bookmarks */
 /**
@@ -22,6 +16,7 @@ const {TAB_ID_NONE} = tabs;
  * @returns {Object} - bookmarks.BookmarkTreeNode
  */
 export const createBookmark = async opt => {
+  const {bookmarks} = browser;
   let node;
   if (bookmarks && isObjectNotEmpty(opt)) {
     node = await bookmarks.create(opt);
@@ -35,11 +30,9 @@ export const createBookmark = async opt => {
  * @returns {boolean} - result
  */
 export const isCommandCustomizable = () => {
-  let bool;
-  if (commands) {
-    bool = typeof commands.update === "function" &&
-           typeof commands.reset === "function";
-  }
+  const {commands} = browser;
+  const bool = commands && typeof commands.update === "function" &&
+               typeof commands.reset === "function";
   return !!bool;
 };
 
@@ -56,8 +49,9 @@ export const updateCommand = async (id, value = "") => {
   if (!isString(value)) {
     throw new TypeError(`Expected String but got ${getType(value)}.`);
   }
+  const {commands} = browser;
   let func;
-  if (isCommandCustomizable()) {
+  if (commands && isCommandCustomizable()) {
     const shortcut =
       value.trim().replace(/\+([a-z])$/, (m, c) => `+${c.toUpperCase()}`);
     if (shortcut === "") {
@@ -78,13 +72,12 @@ export const updateCommand = async (id, value = "") => {
  * @returns {?Array} - array of contextualIdentities.ContextualIdentity
  */
 export const getAllContextualIdentities = async () => {
+  const {contextualIdentities} = browser;
   let arr;
-  if (contextualIdentities) {
-    try {
-      arr = await contextualIdentities.query({});
-    } catch (e) {
-      logErr(e);
-    }
+  try {
+    arr = contextualIdentities && await contextualIdentities.query({});
+  } catch (e) {
+    logErr(e);
   }
   return arr || null;
 };
@@ -98,13 +91,12 @@ export const getContextualId = async cookieStoreId => {
   if (!isString(cookieStoreId)) {
     throw new TypeError(`Expected String but got ${getType(cookieStoreId)}.`);
   }
+  const {contextualIdentities} = browser;
   let id;
-  if (contextualIdentities) {
-    try {
-      id = await contextualIdentities.get(cookieStoreId);
-    } catch (e) {
-      logErr(e);
-    }
+  try {
+    id = contextualIdentities && await contextualIdentities.get(cookieStoreId);
+  } catch (e) {
+    logErr(e);
   }
   return id || null;
 };
@@ -115,14 +107,13 @@ export const getContextualId = async cookieStoreId => {
  * @returns {?Array} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
+  const {management} = browser;
+  const arr = management && await management.getAll();
   let res;
-  if (management) {
-    const arr = await management.getAll();
-    if (Array.isArray(arr)) {
-      res = arr.filter(info =>
-        info.type && info.type === "theme" && info.enabled && info
-      );
-    }
+  if (Array.isArray(arr)) {
+    res = arr.filter(info =>
+      info.type && info.type === "theme" && info.enabled && info
+    );
   }
   return res || null;
 };
@@ -136,10 +127,8 @@ export const getExtensionInfo = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let ext;
-  if (management) {
-    ext = await management.get(id);
-  }
+  const {management} = browser;
+  const ext = management && await management.get(id);
   return ext || null;
 };
 
@@ -148,12 +137,11 @@ export const getExtensionInfo = async id => {
  * @returns {?Array} -array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
+  const {management} = browser;
+  const arr = management && await management.getAll();
   let res;
-  if (management) {
-    const arr = await management.getAll();
-    if (Array.isArray(arr)) {
-      res = arr.filter(info => info.type && info.type === "extension" && info);
-    }
+  if (Array.isArray(arr)) {
+    res = arr.filter(info => info.type && info.type === "extension" && info);
   }
   return res || null;
 };
@@ -168,10 +156,8 @@ export const clearNotification = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let func;
-  if (notifications) {
-    func = notifications.clear(id).catch(throwErr);
-  }
+  const {notifications} = browser;
+  const func = notifications && notifications.clear(id);
   return func || null;
 };
 
@@ -185,6 +171,7 @@ export const createNotification = async (id, opt) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
+  const {notifications} = browser;
   let func;
   if (notifications) {
     if (notifications.onClosed &&
@@ -211,7 +198,7 @@ export const removePermission = async perm => {
     bool = await permissions.remove({
       permissions: [perm],
     });
-  } else if (Array.isArray(perm)) {
+  } else {
     bool = await permissions.remove({
       permissions: perm,
     });
@@ -233,7 +220,7 @@ export const requestPermission = async perm => {
     bool = await permissions.request({
       permissions: [perm],
     });
-  } else if (Array.isArray(perm)) {
+  } else {
     bool = await permissions.request({
       permissions: perm,
     });
@@ -281,7 +268,7 @@ export const makeConnection = async (extId, info) => {
   } else {
     port = await runtime.connect();
   }
-  return port || null;
+  return port;
 };
 
 /** send message
@@ -295,7 +282,8 @@ export const sendMessage = async (id, msg, opt) => {
   if (msg) {
     opt = isObjectNotEmpty(opt) && opt || null;
     if (Number.isInteger(id)) {
-      if (id !== TAB_ID_NONE) {
+      const {tabs} = browser;
+      if (tabs && id !== tabs.TAB_ID_NONE) {
         func = tabs.sendMessage(id, msg, opt);
       }
     } else if (id && isString(id)) {
@@ -314,21 +302,20 @@ export const sendMessage = async (id, msg, opt) => {
  * @returns {Object} - tabs.Tab
  */
 export const getRecentlyClosedTab = async windowId => {
+  const {sessions} = browser;
+  const items = sessions && await sessions.getRecentlyClosed();
   let tab;
-  if (sessions) {
-    const items = await sessions.getRecentlyClosed();
-    if (Array.isArray(items) && items.length) {
-      if (!Number.isInteger(windowId)) {
-        windowId = windows.WINDOW_ID_CURRENT;
-      }
-      for (const item of items) {
-        const {tab: itemTab} = item;
-        if (itemTab) {
-          const {windowId: itemWindowId} = itemTab;
-          if (itemWindowId === windowId) {
-            tab = itemTab;
-            break;
-          }
+  if (Array.isArray(items) && items.length) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    for (const item of items) {
+      const {tab: itemTab} = item;
+      if (itemTab) {
+        const {windowId: itemWindowId} = itemTab;
+        if (itemWindowId === windowId) {
+          tab = itemTab;
+          break;
         }
       }
     }
@@ -346,13 +333,12 @@ export const getSessionWindowValue = async (key, windowId) => {
   if (!isString(key)) {
     throw new TypeError(`Expected String but got ${getType(key)}.`);
   }
-  let value;
-  if (sessions && typeof sessions.getWindowValue === "function") {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    value = await sessions.getWindowValue(windowId, key);
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {sessions} = browser;
+  const value = sessions && typeof sessions.getWindowValue === "function" &&
+                  await sessions.getWindowValue(windowId, key);
   return value || null;
 };
 
@@ -365,10 +351,8 @@ export const restoreSession = async sessionId => {
   if (!isString(sessionId)) {
     throw new TypeError(`Expected String but got ${getType(sessionId)}.`);
   }
-  let ses;
-  if (sessions) {
-    ses = await sessions.restore(sessionId);
-  }
+  const {sessions} = browser;
+  const ses = sessions && await sessions.restore(sessionId);
   return ses || null;
 };
 
@@ -383,12 +367,12 @@ export const setSessionWindowValue = async (key, value, windowId) => {
   if (!isString(key)) {
     throw new TypeError(`Expected String but got ${getType(key)}.`);
   }
-  if (sessions && typeof sessions.setWindowValue === "function") {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    await sessions.setWindowValue(windowId, key, value);
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {sessions} = browser;
+  sessions && typeof sessions.setWindowValue === "function" &&
+    await sessions.setWindowValue(windowId, key, value);
 };
 
 /* storage */
@@ -397,9 +381,8 @@ export const setSessionWindowValue = async (key, value, windowId) => {
  * @returns {void}
  */
 export const clearStorage = async () => {
-  if (storage) {
-    await storage.local.clear();
-  }
+  const {storage} = browser;
+  storage && await storage.local.clear();
 };
 
 /**
@@ -407,10 +390,8 @@ export const clearStorage = async () => {
  * @returns {Object} - stored data
  */
 export const getAllStorage = async () => {
-  let data;
-  if (storage) {
-    data = await storage.local.get();
-  }
+  const {storage} = browser;
+  const data = storage && await storage.local.get();
   return data || null;
 };
 
@@ -420,10 +401,8 @@ export const getAllStorage = async () => {
  * @returns {Object} - stored data
  */
 export const getStorage = async key => {
-  let data;
-  if (storage) {
-    data = await storage.local.get(key);
-  }
+  const {storage} = browser;
+  const data = storage && await storage.local.get(key);
   return data || null;
 };
 
@@ -433,9 +412,8 @@ export const getStorage = async key => {
  * @returns {void}
  */
 export const removeStorage = async key => {
-  if (storage) {
-    await storage.local.remove(key);
-  }
+  const {storage} = browser;
+  storage && await storage.local.remove(key);
 };
 
 /**
@@ -444,6 +422,7 @@ export const removeStorage = async key => {
  * @returns {void}
  */
 export const setStorage = async obj => {
+  const {storage} = browser;
   if (storage && obj) {
     await storage.local.set(obj);
   }
@@ -456,10 +435,8 @@ export const setStorage = async obj => {
  * @returns {Object} - tabs.Tab
  */
 export const createTab = async (opt = {}) => {
-  let tab;
-  if (tabs) {
-    tab = await tabs.create(isObjectNotEmpty(opt) && opt || null);
-  }
+  const {tabs} = browser;
+  const tab = tabs && await tabs.create(isObjectNotEmpty(opt) && opt || null);
   return tab || null;
 };
 
@@ -473,12 +450,11 @@ export const execScriptToTab = async (tabId, opt = {}) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
+  const {tabs} = browser;
+  const {file} = opt;
   let func;
-  if (tabs) {
-    const {file} = opt;
-    if (isString(file)) {
-      func = tabs.executeScript(tabId, opt).catch(logErr);
-    }
+  if (tabs && isString(file)) {
+    func = tabs.executeScript(tabId, opt).catch(logErr);
   }
   return func || null;
 };
@@ -489,12 +465,13 @@ export const execScriptToTab = async (tabId, opt = {}) => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const execScriptToTabs = async (opt = {}) => {
+  const {tabs} = browser;
   const func = [];
-  if (tabs) {
-    const tabList = await tabs.query({
-      url: ["<all_urls>"],
-      windowType: "normal",
-    });
+  const tabList = tabs && await tabs.query({
+    url: ["<all_urls>"],
+    windowType: "normal",
+  });
+  if (Array.isArray(tabList)) {
     for (const tab of tabList) {
       const {id: tabId, url} = tab;
       const {protocol} = new URL(url);
@@ -512,19 +489,18 @@ export const execScriptToTabs = async (opt = {}) => {
  * @returns {Object} - tabs.Tab
  */
 export const getActiveTab = async windowId => {
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
+  }
+  const {tabs} = browser;
+  const arr = tabs && await tabs.query({
+    windowId,
+    active: true,
+    windowType: "normal",
+  });
   let tab;
-  if (tabs) {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    const arr = await tabs.query({
-      windowId,
-      active: true,
-      windowType: "normal",
-    });
-    if (Array.isArray(arr) && arr.length) {
-      [tab] = arr;
-    }
+  if (Array.isArray(arr) && arr.length) {
+    [tab] = arr;
   }
   return tab || null;
 };
@@ -535,16 +511,12 @@ export const getActiveTab = async windowId => {
  * @returns {?number} - tab ID
  */
 export const getActiveTabId = async windowId => {
-  let tabId;
-  if (tabs) {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    const tab = await getActiveTab(windowId);
-    if (tab) {
-      tabId = tab.id;
-    }
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {tabs} = browser;
+  const tab = tabs && await getActiveTab(windowId);
+  const tabId = tab && tab.id;
   return Number.isInteger(tabId) ?
     tabId :
     null;
@@ -556,16 +528,14 @@ export const getActiveTabId = async windowId => {
  * @returns {?Array} - array of tabs.Tab
  */
 export const getAllTabsInWindow = async windowId => {
-  let arr;
-  if (tabs) {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    arr = await tabs.query({
-      windowId,
-      windowType: "normal",
-    });
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {tabs} = browser;
+  const arr = tabs && await tabs.query({
+    windowId,
+    windowType: "normal",
+  });
   return arr || null;
 };
 
@@ -575,17 +545,15 @@ export const getAllTabsInWindow = async windowId => {
  * @returns {?Array} - array of tabs.Tab
  */
 export const getHighlightedTab = async windowId => {
-  let arr;
-  if (tabs) {
-    if (!Number.isInteger(windowId)) {
-      windowId = windows.WINDOW_ID_CURRENT;
-    }
-    arr = await tabs.query({
-      windowId,
-      highlighted: true,
-      windowType: "normal",
-    });
+  if (!Number.isInteger(windowId)) {
+    windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {tabs} = browser;
+  const arr = tabs && await tabs.query({
+    windowId,
+    highlighted: true,
+    windowType: "normal",
+  });
   return arr || null;
 };
 
@@ -598,10 +566,8 @@ export const getTab = async tabId => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  let tab;
-  if (tabs) {
-    tab = await tabs.get(tabId);
-  }
+  const {tabs} = browser;
+  const tab = tabs && await tabs.get(tabId);
   return tab || null;
 };
 
@@ -618,12 +584,13 @@ export const highlightTab = async (index, windowId) => {
   if (!Number.isInteger(windowId)) {
     windowId = windows.WINDOW_ID_CURRENT;
   }
+  const {tabs} = browser;
   const opt = {
     windowId,
     tabs: index,
   };
-  const win = await tabs.highlight(opt);
-  return win;
+  const win = tabs && await tabs.highlight(opt);
+  return win || null;
 };
 
 /**
@@ -636,12 +603,11 @@ export const moveTab = async (tabId, opt) => {
   if (!(Array.isArray(tabId) || Number.isInteger(tabId))) {
     throw new TypeError(`Expected Number or Array but got ${getType(tabId)}.`);
   }
-  let arr;
-  if (tabs) {
-    arr = await tabs.move(tabId, isObjectNotEmpty(opt) && opt || null);
-    if (arr && !Array.isArray(arr)) {
-      arr = [arr];
-    }
+  const {tabs} = browser;
+  let arr =
+    tabs && await tabs.move(tabId, isObjectNotEmpty(opt) && opt || null);
+  if (arr && !Array.isArray(arr)) {
+    arr = [arr];
   }
   return arr || null;
 };
@@ -656,9 +622,8 @@ export const reloadTab = async (tabId, opt) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  if (tabs) {
-    await tabs.reload(tabId, isObjectNotEmpty(opt) && opt || null);
-  }
+  const {tabs} = browser;
+  tabs && await tabs.reload(tabId, isObjectNotEmpty(opt) && opt || null);
 };
 
 /**
@@ -673,9 +638,8 @@ export const removeTab = async arg => {
   if (!Array.isArray(arg)) {
     throw new TypeError(`Expected Array but got ${getType(arg)}.`);
   }
-  if (tabs) {
-    await tabs.remove(arg);
-  }
+  const {tabs} = browser;
+  tabs && await tabs.remove(arg);
 };
 
 /**
@@ -688,10 +652,9 @@ export const updateTab = async (tabId, opt) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  let tab;
-  if (tabs) {
-    tab = await tabs.update(tabId, isObjectNotEmpty(opt) && opt || null);
-  }
+  const {tabs} = browser;
+  const tab =
+    tabs && await tabs.update(tabId, isObjectNotEmpty(opt) && opt || null);
   return tab || null;
 };
 
@@ -704,9 +667,14 @@ export const isTab = async tabId => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
+  const {tabs} = browser;
   let tab;
-  if (tabs && tabId !== TAB_ID_NONE) {
-    tab = await tabs.get(tabId).catch(() => false);
+  if (tabs && tabId !== tabs.TAB_ID_NONE) {
+    try {
+      tab = await tabs.get(tabId);
+    } catch (e) {
+      tab = false;
+    }
   }
   return !!tab;
 };
@@ -717,10 +685,8 @@ export const isTab = async tabId => {
  * @returns {Object} - theme.Theme
  */
 export const getCurrentTheme = async () => {
-  let currentTheme;
-  if (theme) {
-    currentTheme = await theme.getCurrent();
-  }
+  const {theme} = browser;
+  const currentTheme = theme && await theme.getCurrent();
   return currentTheme || null;
 };
 

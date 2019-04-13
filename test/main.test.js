@@ -7,6 +7,7 @@
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import {browser} from "./mocha/setup.js";
+import sinon from "sinon";
 import * as mjs from "../src/mjs/main.js";
 import formatData from "../src/mjs/format.js";
 import {
@@ -14,9 +15,9 @@ import {
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, ICON,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
-  MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
-  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PROMPT, THEME_DARK, THEME_LIGHT,
+  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
+  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
+  OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT, THEME_DARK, THEME_LIGHT,
 } from "../src/mjs/constant.js";
 
 describe("main", () => {
@@ -1824,6 +1825,34 @@ describe("main", () => {
       ], "result");
       browser.runtime.sendMessage.flush();
     });
+
+    it("should call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: true,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [null], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
+
+    it("should not call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: false,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i,
+                         "not called");
+      assert.deepEqual(res, [], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
   });
 
   describe("set variable", () => {
@@ -2053,6 +2082,35 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should not add listener", async () => {
+      const stubApi = sinon.stub(browser, "notifications").returns(undefined);
+      const res = await func(NOTIFY_COPY, {
+        checked: true,
+      });
+      assert.deepEqual(res, [], "result");
+      stubApi.restore();
+    });
+
+    it("should not add listener", async () => {
+      const i = browser.notifications.onClosed.addListener.callCount;
+      const res = await func(NOTIFY_COPY, {
+        checked: false,
+      });
+      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
+                         i, "not called");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should add listener", async () => {
+      const i = browser.notifications.onClosed.addListener.callCount;
+      const res = await func(NOTIFY_COPY, {
+        checked: true,
+      });
+      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
+                         i + 1, "called");
       assert.deepEqual(res, [], "result");
     });
   });
