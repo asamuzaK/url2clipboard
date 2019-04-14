@@ -205,8 +205,7 @@
     let func;
     switch (type) {
       case "keydown":
-        if (altKey && shiftKey && key === "C" ||
-            shiftKey && key === "F10" || key === "ContextMenu") {
+        if (shiftKey && key === "F10" || key === "ContextMenu") {
           func = sendStatus(evt).catch(throwErr);
         }
         break;

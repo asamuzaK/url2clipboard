@@ -1023,16 +1023,6 @@ describe("popup-main", () => {
       const res = await func({[CONTEXT_INFO]: {}});
       assert.deepEqual(res, [undefined], "result");
     });
-
-    it("should get array", async () => {
-      const res = await func({keydown: {}});
-      assert.deepEqual(res, [undefined], "result");
-    });
-
-    it("should get array", async () => {
-      const res = await func({mousedown: {}});
-      assert.deepEqual(res, [undefined], "result");
-    });
   });
 
   describe("set variable", () => {

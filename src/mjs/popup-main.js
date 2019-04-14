@@ -337,8 +337,6 @@ export const handleMsg = async msg => {
       const [key, value] = item;
       switch (key) {
         case CONTEXT_INFO:
-        case "keydown":
-        case "mousedown":
           func.push(updateMenu(value));
           break;
         default:
