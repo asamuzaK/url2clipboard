@@ -7,7 +7,6 @@
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import {browser} from "./mocha/setup.js";
-import sinon from "sinon";
 import * as mjs from "../src/mjs/main.js";
 import formatData from "../src/mjs/format.js";
 import {
@@ -1648,20 +1647,22 @@ describe("main", () => {
   describe("handle message", () => {
     const func = mjs.handleMsg;
     beforeEach(() => {
-      const {contextInfo} = mjs;
+      const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
     });
     afterEach(() => {
-      const {contextInfo} = mjs;
+      const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
     });
 
     it("should get empty object", async () => {
@@ -1829,6 +1830,7 @@ describe("main", () => {
     it("should call function", async () => {
       browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
       browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = true;
       const i = browser.notifications.create.callCount;
       const res = await func({
         [NOTIFY_COPY]: true,
@@ -1843,9 +1845,25 @@ describe("main", () => {
     it("should not call function", async () => {
       browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
       browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = true;
       const i = browser.notifications.create.callCount;
       const res = await func({
         [NOTIFY_COPY]: false,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i,
+                         "not called");
+      assert.deepEqual(res, [], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
+
+    it("should not call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = false;
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: true,
       });
       assert.strictEqual(browser.notifications.create.callCount, i,
                          "not called");
@@ -1998,6 +2016,24 @@ describe("main", () => {
 
     it("should set variable", async () => {
       const {vars} = mjs;
+      const res = await func(NOTIFY_COPY, {
+        checked: false,
+      });
+      assert.isFalse(vars.notifyOnCopy, "value");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      const res = await func(NOTIFY_COPY, {
+        checked: true,
+      });
+      assert.isTrue(vars.notifyOnCopy, "value");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
       const res = await func(PROMPT, {
         checked: true,
       });
@@ -2082,35 +2118,6 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should not add listener", async () => {
-      const stubApi = sinon.stub(browser, "notifications").returns(undefined);
-      const res = await func(NOTIFY_COPY, {
-        checked: true,
-      });
-      assert.deepEqual(res, [], "result");
-      stubApi.restore();
-    });
-
-    it("should not add listener", async () => {
-      const i = browser.notifications.onClosed.addListener.callCount;
-      const res = await func(NOTIFY_COPY, {
-        checked: false,
-      });
-      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
-                         i, "not called");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should add listener", async () => {
-      const i = browser.notifications.onClosed.addListener.callCount;
-      const res = await func(NOTIFY_COPY, {
-        checked: true,
-      });
-      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
-                         i + 1, "called");
       assert.deepEqual(res, [], "result");
     });
   });

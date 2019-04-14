@@ -6,14 +6,13 @@ import {
   getType, isObjectNotEmpty, isString,
 } from "./common.js";
 import {
-  clearNotification, createNotification, getActiveTabId, getAllTabsInWindow,
-  getEnabledTheme, isTab, sendMessage,
+  createNotification, getActiveTabId, getAllTabsInWindow, getEnabledTheme,
+  isTab, sendMessage,
 } from "./browser.js";
 import formatData from "./format.js";
 
 /* api */
 const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
-let {notifications} = browser;
 
 /* constants */
 import {
@@ -34,6 +33,7 @@ export const vars = {
   includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
   mimeType: MIME_PLAIN,
+  notifyOnCopy: false,
   promptContent: false,
   textOutput: OUTPUT_TEXT_AND_URL,
 };
@@ -577,7 +577,8 @@ export const handleMsg = async (msg, sender = {}) => {
           }));
           break;
         case NOTIFY_COPY: {
-          if (value) {
+          const {notifyOnCopy} = vars;
+          if (notifyOnCopy && value) {
             func.push(createNotification(key, {
               iconUrl: runtime.getURL(ICON),
               message: i18n.getMessage("notifyOnCopyMsg"),
@@ -638,14 +639,9 @@ export const setVar = async (item, obj, changed = false) => {
         break;
       case INCLUDE_TITLE_HTML:
       case INCLUDE_TITLE_MARKDOWN:
+      case NOTIFY_COPY:
       case PROMPT:
         vars[item] = !!checked;
-        break;
-      case NOTIFY_COPY:
-        notifications = browser && browser.notifications;
-        if (notifications && checked) {
-          notifications.onClosed.addListener(clearNotification);
-        }
         break;
       case OUTPUT_HTML_HYPER:
       case OUTPUT_HTML_PLAIN:
