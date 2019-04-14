@@ -201,7 +201,7 @@
    * @returns {?AsyncFunction} - send status
    */
   const handleKeyMouseEvt = evt => {
-    const {altKey, button, key, shiftKey, type} = evt;
+    const {button, key, shiftKey, type} = evt;
     let func;
     switch (type) {
       case "keydown":
