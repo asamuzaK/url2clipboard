@@ -150,6 +150,9 @@
   "formats": {
     "message": "格式"
   },
+  "notifyOnCopyMsg": {
+    "message": "Copied"
+  },
   "onCopySettings": {
     "message": "复制时"
   },
@@ -245,6 +248,12 @@
   },
   "optionsLabel": {
     "message": "设置"
+  },
+  "optionsNotifyOnCopy": {
+    "message": "Notify when copied"
+  },
+  "optionsNotifyOnCopyDetail": {
+    "message": "It will notify when successfully copied. Requires additional permission."
   },
   "optionsPromptContent": {
     "message": "编辑链接标题"

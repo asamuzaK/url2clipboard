@@ -2,8 +2,15 @@
  * options-main.js
  */
 
-import {isObjectNotEmpty, isString, throwErr} from "./common.js";
-import {getStorage, setStorage} from "./browser.js";
+import {
+  isObjectNotEmpty, isString, throwErr,
+} from "./common.js";
+import {
+  getStorage, setStorage, removePermission, requestPermission,
+} from "./browser.js";
+import {
+  NOTIFY_COPY,
+} from "./constant.js";
 
 /**
  * create pref
@@ -29,7 +36,7 @@ export const createPref = async (elm = {}) => {
  */
 export const storePref = async evt => {
   const {target} = evt;
-  const {name, type} = target;
+  const {checked, id, name, type} = target;
   const func = [];
   if (type === "radio") {
     const nodes = document.querySelectorAll(`[name=${name}]`);
@@ -37,7 +44,18 @@ export const storePref = async evt => {
       func.push(createPref(node).then(setStorage));
     }
   } else {
-    func.push(createPref(target).then(setStorage));
+    switch (id) {
+      case NOTIFY_COPY:
+        if (checked) {
+          target.checked = await requestPermission(["notifications"]);
+        } else {
+          await removePermission(["notifications"]);
+        }
+        func.push(createPref(target).then(setStorage));
+        break;
+      default:
+        func.push(createPref(target).then(setStorage));
+    }
   }
   return Promise.all(func);
 };

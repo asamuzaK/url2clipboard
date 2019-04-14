@@ -6,7 +6,8 @@ import {
   getType, isObjectNotEmpty, isString,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getEnabledTheme, isTab, sendMessage,
+  createNotification, getActiveTabId, getAllTabsInWindow, getEnabledTheme,
+  isTab, sendMessage,
 } from "./browser.js";
 import formatData from "./format.js";
 
@@ -19,9 +20,9 @@ import {
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, EXT_NAME, HTML,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
-  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PROMPT, TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  MARKDOWN, MIME_PLAIN, NOTIFY_COPY, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
+  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
+  OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT, TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 
@@ -32,6 +33,7 @@ export const vars = {
   includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
   mimeType: MIME_PLAIN,
+  notifyOnCopy: false,
   promptContent: false,
   textOutput: OUTPUT_TEXT_AND_URL,
 };
@@ -574,6 +576,18 @@ export const handleMsg = async (msg, sender = {}) => {
             [EXEC_COPY_TABS_POPUP]: value,
           }));
           break;
+        case NOTIFY_COPY: {
+          const {notifyOnCopy} = vars;
+          if (notifyOnCopy && value) {
+            func.push(createNotification(key, {
+              iconUrl: runtime.getURL(ICON),
+              message: i18n.getMessage("notifyOnCopyMsg"),
+              title: i18n.getMessage("extensionName"),
+              type: "basic",
+            }));
+          }
+          break;
+        }
         case "keydown":
         case "mousedown":
           func.push(updateContextInfo(value));
@@ -625,6 +639,7 @@ export const setVar = async (item, obj, changed = false) => {
         break;
       case INCLUDE_TITLE_HTML:
       case INCLUDE_TITLE_MARKDOWN:
+      case NOTIFY_COPY:
       case PROMPT:
         vars[item] = !!checked;
         break;

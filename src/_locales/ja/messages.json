@@ -150,6 +150,9 @@
   "formats": {
     "message": "フォーマット"
   },
+  "notifyOnCopyMsg": {
+    "message": "コピーしました"
+  },
   "onCopySettings": {
     "message": "コピー時の設定"
   },
@@ -245,6 +248,12 @@
   },
   "optionsLabel": {
     "message": "設定"
+  },
+  "optionsNotifyOnCopy": {
+    "message": "コピー後に通知する"
+  },
+  "optionsNotifyOnCopyDetail": {
+    "message": "正常にコピーしたら通知します。追加の許可が必要です。"
   },
   "optionsPromptContent": {
     "message": "コピー時にコンテンツを編集する"

@@ -14,9 +14,9 @@ import {
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, ICON,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
-  MIME_HTML, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
-  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL, PROMPT, THEME_DARK, THEME_LIGHT,
+  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
+  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
+  OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT, THEME_DARK, THEME_LIGHT,
 } from "../src/mjs/constant.js";
 
 describe("main", () => {
@@ -1647,20 +1647,22 @@ describe("main", () => {
   describe("handle message", () => {
     const func = mjs.handleMsg;
     beforeEach(() => {
-      const {contextInfo} = mjs;
+      const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
     });
     afterEach(() => {
-      const {contextInfo} = mjs;
+      const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
     });
 
     it("should get empty object", async () => {
@@ -1824,6 +1826,51 @@ describe("main", () => {
       ], "result");
       browser.runtime.sendMessage.flush();
     });
+
+    it("should call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = true;
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: true,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [null], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
+
+    it("should not call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = true;
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: false,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i,
+                         "not called");
+      assert.deepEqual(res, [], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
+
+    it("should not call function", async () => {
+      browser.runtime.getURL.withArgs(ICON).returns("/foo/bar");
+      browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.vars.notifyOnCopy = false;
+      const i = browser.notifications.create.callCount;
+      const res = await func({
+        [NOTIFY_COPY]: true,
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i,
+                         "not called");
+      assert.deepEqual(res, [], "result");
+      browser.runtime.getURL.flush();
+      browser.i18n.getMessage.flush();
+    });
   });
 
   describe("set variable", () => {
@@ -1964,6 +2011,24 @@ describe("main", () => {
         checked: true,
       });
       assert.isTrue(vars.includeTitleMarkdown, "value");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      const res = await func(NOTIFY_COPY, {
+        checked: false,
+      });
+      assert.isFalse(vars.notifyOnCopy, "value");
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      const res = await func(NOTIFY_COPY, {
+        checked: true,
+      });
+      assert.isTrue(vars.notifyOnCopy, "value");
       assert.deepEqual(res, [], "result");
     });
 

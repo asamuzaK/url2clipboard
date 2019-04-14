@@ -56,6 +56,9 @@
   },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
+  "optional_permissions": [
+    "notifications"
+  ],
   "options_ui": {
     "browser_style": false,
     "open_in_tab": true,

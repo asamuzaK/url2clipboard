@@ -41,6 +41,7 @@ export const MARKDOWN = "Markdown";
 export const MEDIAWIKI = "MediaWiki";
 export const MIME_HTML = "text/html";
 export const MIME_PLAIN = "text/plain";
+export const NOTIFY_COPY = "notifyOnCopy";
 export const OUTPUT_HTML_HYPER = "outputTextHtml";
 export const OUTPUT_HTML_PLAIN = "outputTextPlain";
 export const OUTPUT_TEXT = "text";

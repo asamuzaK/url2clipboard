@@ -170,6 +170,14 @@ describe("browser", () => {
   describe("get all contextual identities", () => {
     const func = mjs.getAllContextualIdentities;
 
+    it("should get null", async () => {
+      const stubApi =
+        sinon.stub(browser, "contextualIdentities").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get result", async () => {
       browser.contextualIdentities.query.withArgs({}).resolves([
         {
@@ -215,6 +223,14 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi =
+        sinon.stub(browser, "contextualIdentities").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get result", async () => {
       browser.contextualIdentities.get.withArgs("foo").resolves({});
       const res = await func("foo");
@@ -239,6 +255,13 @@ describe("browser", () => {
 
   describe("get enabled theme", () => {
     const func = mjs.getEnabledTheme;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "management").returns(undefined);
+      const res = await func();
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get null", async () => {
       const res = await func();
@@ -291,6 +314,13 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "management").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should reject if given id is not found", async () => {
       browser.management.get.withArgs("foo").rejects(new Error("error"));
       await func("foo").catch(e => {
@@ -308,6 +338,13 @@ describe("browser", () => {
 
   describe("get external extensions", () => {
     const func = mjs.getExternalExtensions;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "management").returns(undefined);
+      const res = await func();
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get null", async () => {
       const res = await func();
@@ -354,6 +391,13 @@ describe("browser", () => {
       assert.throws(() => func(1), "Expected String but got Number.");
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "notifications").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get result", async () => {
       browser.notifications.clear.withArgs("foo").resolves(true);
       const res = await func("foo");
@@ -377,12 +421,16 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "notifications").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get message", async () => {
-      const i = browser.notifications.onClosed.addListener.callCount;
       browser.notifications.create.withArgs("foo", {}).resolves("bar");
       const res = await func("foo", {});
-      assert.strictEqual(browser.notifications.onClosed.addListener.callCount,
-                         i + 1, "called");
       assert.strictEqual(res, "bar", "result");
       browser.notifications.create.flush();
     });
@@ -662,6 +710,13 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "sessions").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get object", async () => {
       browser.sessions.getWindowValue.withArgs(1, "foo").resolves("bar");
       const res = await func("foo", 1);
@@ -691,6 +746,13 @@ describe("browser", () => {
       await func(1).catch(e => {
         assert.strictEqual(e.message, "Expected String but got Number.");
       });
+    });
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "sessions").returns(undefined);
+      const res = await func("foo");
+      assert.isNull(res, "result");
+      stubApi.restore();
     });
 
     it("should get object", async () => {
@@ -745,6 +807,13 @@ describe("browser", () => {
   describe("get all storage", () => {
     const func = mjs.getAllStorage;
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "storage").returns(undefined);
+      const res = await func();
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get object", async () => {
       browser.storage.local.get.resolves({foo: "bar"});
       const res = await func();
@@ -755,6 +824,13 @@ describe("browser", () => {
 
   describe("get storage", () => {
     const func = mjs.getStorage;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "storage").returns(undefined);
+      const res = await func();
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get object", async () => {
       browser.storage.local.get.withArgs("foo").resolves({foo: "bar"});
@@ -794,6 +870,13 @@ describe("browser", () => {
   describe("create tab", () => {
     const func = mjs.createTab;
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get object", async () => {
       browser.tabs.create.withArgs(null).resolves({});
       const res = await func();
@@ -826,6 +909,13 @@ describe("browser", () => {
       await func().catch(e => {
         assert.strictEqual(e.message, "Expected Number but got Undefined.");
       });
+    });
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
     });
 
     it("should call function", async () => {
@@ -897,6 +987,13 @@ describe("browser", () => {
 
   describe("execute content script to existing tabs", () => {
     const func = mjs.execScriptToTabs;
+
+    it("should not call function", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func();
+      assert.deepEqual(res, [], "result");
+      stubApi.restore();
+    });
 
     it("should call function", async () => {
       const stubErr = sinon.stub(console, "error");
@@ -999,6 +1096,13 @@ describe("browser", () => {
   describe("get active tab", () => {
     const func = mjs.getActiveTab;
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get number", async () => {
       browser.tabs.query.resolves([{}]);
       const res = await func(1);
@@ -1016,6 +1120,13 @@ describe("browser", () => {
 
   describe("get active tab ID", () => {
     const func = mjs.getActiveTabId;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get number", async () => {
       browser.tabs.query.resolves([
@@ -1043,6 +1154,13 @@ describe("browser", () => {
   describe("get all tabs in window", () => {
     const func = mjs.getAllTabsInWindow;
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get array", async () => {
       browser.tabs.query.resolves([{}]);
       const res = await func(1);
@@ -1060,6 +1178,13 @@ describe("browser", () => {
 
   describe("get highlighted tab", () => {
     const func = mjs.getHighlightedTab;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get array", async () => {
       browser.tabs.query.resolves([{}]);
@@ -1091,6 +1216,13 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get object", async () => {
       browser.tabs.get.withArgs(1).resolves({});
       const res = await func(1);
@@ -1116,9 +1248,23 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get object", async () => {
       browser.tabs.highlight.resolves({});
       const res = await func(1);
+      assert.deepEqual(res, {}, "result");
+      browser.tabs.highlight.flush();
+    });
+
+    it("should get object", async () => {
+      browser.tabs.highlight.resolves({});
+      const res = await func(1, 2);
       assert.deepEqual(res, {}, "result");
       browser.tabs.highlight.flush();
     });
@@ -1141,9 +1287,23 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should get array", async () => {
       browser.tabs.move.withArgs(1).resolves({});
       const res = await func(1);
+      assert.deepEqual(res, [{}], "res");
+      browser.tabs.move.flush();
+    });
+
+    it("should get array", async () => {
+      browser.tabs.move.withArgs(1, {foo: "bar"}).resolves({});
+      const res = await func(1, {foo: "bar"});
       assert.deepEqual(res, [{}], "res");
       browser.tabs.move.flush();
     });
@@ -1238,6 +1398,13 @@ describe("browser", () => {
       });
     });
 
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
+
     it("should throw if tab does not exist", async () => {
       browser.tabs.update.withArgs(1).throws(new Error("error"));
       await func(1).catch(e => {
@@ -1248,7 +1415,23 @@ describe("browser", () => {
 
     it("should get object", async () => {
       browser.tabs.update.withArgs(1).resolves({});
+      const i = browser.tabs.update.withArgs(1).callCount;
       const res = await func(1);
+      assert.strictEqual(browser.tabs.update.withArgs(1).callCount, i + 1,
+                         "called");
+      assert.isObject(res, "res");
+      browser.tabs.update.flush();
+    });
+
+    it("should get object", async () => {
+      browser.tabs.update.withArgs(1, {foo: "bar"}).resolves({});
+      const i = browser.tabs.update.withArgs(1, {foo: "bar"}).callCount;
+      const res = await func(1, {foo: "bar"});
+      assert.strictEqual(
+        browser.tabs.update.withArgs(1, {foo: "bar"}).callCount,
+        i + 1,
+        "called"
+      );
       assert.isObject(res, "res");
       browser.tabs.update.flush();
     });
@@ -1267,6 +1450,13 @@ describe("browser", () => {
       await func("").catch(e => {
         assert.strictEqual(e.message, "Expected Number but got String.");
       });
+    });
+
+    it("should get false", async () => {
+      const stubApi = sinon.stub(browser, "tabs").returns(undefined);
+      const res = await func(1);
+      assert.isFalse(res, "result");
+      stubApi.restore();
     });
 
     it("should get result", async () => {
@@ -1292,6 +1482,13 @@ describe("browser", () => {
 
   describe("getCurrentTheme", () => {
     const func = mjs.getCurrentTheme;
+
+    it("should get null", async () => {
+      const stubApi = sinon.stub(browser, "theme").returns(undefined);
+      const res = await func();
+      assert.isNull(res, "result");
+      stubApi.restore();
+    });
 
     it("should get function called and get result", async () => {
       browser.theme.getCurrent.resolves({});

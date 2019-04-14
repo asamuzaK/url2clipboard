@@ -17,6 +17,7 @@
   const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
+  const NOTIFY_COPY = "notifyOnCopy";
   const TYPE_FROM = 8;
   const TYPE_TO = -1;
   const USER_INPUT = "userInput";
@@ -183,6 +184,9 @@
         evt.stopImmediatePropagation();
         evt.preventDefault();
         evt.clipboardData.setData(type, text);
+        return runtime.sendMessage({
+          [NOTIFY_COPY]: true,
+        });
       };
 
       document.addEventListener("copy", setClipboardData, true);
