@@ -30,6 +30,39 @@
       "suggested_key": {
         "default": "Alt+Shift+C"
       }
+    },
+    "commandCopyHTML": {
+      "description": "__MSG_commandCopyHTML__"
+    },
+    "commandCopyMarkdown": {
+      "description": "__MSG_commandCopyMarkdown__"
+    },
+    "commandCopyBBCodeText": {
+      "description": "__MSG_commandCopyBBCodeText__"
+    },
+    "commandCopyBBCodeURL": {
+      "description": "__MSG_commandCopyBBCodeURL__"
+    },
+    "commandCopyTextile": {
+      "description": "__MSG_commandCopyTextile__"
+    },
+    "commandCopyAsciiDoc": {
+      "description": "__MSG_commandCopyAsciiDoc__"
+    },
+    "commandCopyMediaWiki": {
+      "description": "__MSG_commandCopyMediaWiki__"
+    },
+    "commandCopyJira": {
+      "description": "__MSG_commandCopyJira__"
+    },
+    "commandCopyreStructuredText": {
+      "description": "__MSG_commandCopyreStructuredText__"
+    },
+    "commandCopyLaTeX": {
+      "description": "__MSG_commandCopyLaTeX__"
+    },
+    "commandCopyText": {
+      "description": "__MSG_commandCopyText__"
     }
   },
   "content_scripts": [
