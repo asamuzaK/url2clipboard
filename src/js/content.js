@@ -180,13 +180,13 @@
    * @returns {Promise.<Array>} - results of each handler
    */
   const handleMsg = async (msg = {}) => {
-    const items = msg && Object.keys(msg);
+    const items = msg && Object.entries(msg);
     const func = [];
     if (items && items.length) {
-      for (const item of items) {
-        switch (item) {
+      for (const [key, value] of items) {
+        switch (key) {
           case CONTEXT_INFO_GET:
-            func.push(sendContextInfo());
+            func.push(sendContextInfo(value));
             break;
           default:
         }
