@@ -9,13 +9,16 @@ import {
   getAllStorage,
 } from "./browser.js";
 import {
-  extractClickedData, handleActiveTab, handleMsg, handleUpdatedTab,
+  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleUpdatedTab,
   prepareUI, removeEnabledTab, setDefaultIcon, setFormatData, setVars,
 } from "./main.js";
 
 /* api */
-const {contextMenus, runtime, storage, tabs} = browser;
+const {commands, contextMenus, runtime, storage, tabs} = browser;
 
+commands.onCommand.addListener(cmd =>
+  handleCmd(cmd).catch(throwErr)
+);
 contextMenus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
 );

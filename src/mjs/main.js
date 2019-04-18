@@ -3,7 +3,7 @@
  */
 
 import {
-  getType, isObjectNotEmpty, isString,
+  getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
   createNotification, getActiveTabId, getAllTabsInWindow, getEnabledTheme,
@@ -16,13 +16,14 @@ const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
 
 /* constants */
 import {
-  BBCODE_URL, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
-  EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, EXT_NAME, HTML,
-  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
-  ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, MIME_PLAIN, NOTIFY_COPY, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
-  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
-  OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT, TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET, COPY_ALL_TABS,
+  COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS,
+  EXEC_COPY_TABS_POPUP, EXT_NAME, HTML, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
+  ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
+  INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, MARKDOWN, MIME_PLAIN, NOTIFY_COPY,
+  OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT, OUTPUT_TEXT_AND_URL,
+  OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT,
+  TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 
@@ -103,6 +104,8 @@ export const getFormatItemFromId = async id => {
     item = formats.get(id.replace(COPY_PAGE, ""));
   } else if (id.startsWith(COPY_TAB)) {
     item = formats.get(id.replace(COPY_TAB, ""));
+  } else {
+    item = formats.get(id);
   }
   return item || null;
 };
@@ -386,6 +389,7 @@ export const setDefaultIcon = async () => {
 export const contextInfo = {
   isLink: false,
   content: null,
+  selectionText: "",
   title: null,
   url: null,
   canonicalUrl: null,
@@ -398,6 +402,7 @@ export const contextInfo = {
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
+  contextInfo.selectionText = "";
   contextInfo.title = null;
   contextInfo.url = null;
   contextInfo.canonicalUrl = null;
@@ -455,13 +460,18 @@ export const extractClickedData = async (info, tab) => {
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const {menuItemId, selectionText} = info;
       const {
         includeTitleHtml, includeTitleMarkdown, mimeType, promptContent,
       } = vars;
       const {
-        canonicalUrl,
-        content: contextContent, title: contextTitle, url: contextUrl,
+        menuItemId, selectionText: infoSelectionText,
+        canonicalUrl: infoCanonicalUrl, content: infoContent,
+        isLink: infoIsLink, title: infoTitle, url: infoUrl,
+      } = info;
+      const {
+        canonicalUrl: contextCanonicalUrl, content: contextContent,
+        selectionText: contextSelectionText, title: contextTitle,
+        url: contextUrl,
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
       if (isString(menuItemId) && menuItemId.startsWith(COPY_ALL_TABS)) {
@@ -479,7 +489,8 @@ export const extractClickedData = async (info, tab) => {
             content = contextUrl;
             url = contextUrl;
           } else {
-            content = selectionText || contextContent || contextTitle;
+            content = infoSelectionText || contextSelectionText ||
+                      contextContent || contextTitle;
             title = contextTitle;
             url = contextUrl;
           }
@@ -487,12 +498,30 @@ export const extractClickedData = async (info, tab) => {
                    menuItemId.startsWith(COPY_TAB)) {
           if (menuItemId === `${COPY_PAGE}${BBCODE_URL}` ||
               menuItemId === `${COPY_TAB}${BBCODE_URL}`) {
-            content = !tabUrlHash && canonicalUrl || tabUrl;
-            url = !tabUrlHash && canonicalUrl || tabUrl;
+            content = !tabUrlHash && contextCanonicalUrl || tabUrl;
+            url = !tabUrlHash && contextCanonicalUrl || tabUrl;
           } else {
-            content = selectionText || tabTitle;
+            content = infoSelectionText || tabTitle;
             title = tabTitle;
-            url = !tabUrlHash && canonicalUrl || tabUrl;
+            url = !tabUrlHash && contextCanonicalUrl || tabUrl;
+          }
+        } else if (enabledFormats.has(menuItemId)) {
+          if (infoIsLink) {
+            if (menuItemId === BBCODE_URL) {
+              content = infoUrl;
+              url = infoUrl;
+            } else {
+              content = infoSelectionText || infoContent || infoTitle;
+              title = infoTitle;
+              url = infoUrl;
+            }
+          } else if (menuItemId === BBCODE_URL) {
+            content = !tabUrlHash && infoCanonicalUrl || tabUrl;
+            url = !tabUrlHash && infoCanonicalUrl || tabUrl;
+          } else {
+            content = infoSelectionText || tabTitle;
+            title = tabTitle;
+            url = !tabUrlHash && infoCanonicalUrl || tabUrl;
           }
         }
         if (isString(content) && isString(url)) {
@@ -554,18 +583,54 @@ export const prepareUI = async () => Promise.all([
 ]);
 
 /**
+ * handle command
+ * @param {!string} cmd - command
+ * @returns {void}
+ */
+export const handleCmd = async cmd => {
+  if (!isString(cmd)) {
+    throw new TypeError(`Expected String but got ${getType(cmd)}.`);
+  }
+  if (cmd.startsWith(CMD_COPY)) {
+    const format = cmd.replace(CMD_COPY, "");
+    const tabId = await getActiveTabId();
+    if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
+        enabledFormats.has(format)) {
+      try {
+        await sendMessage(tabId, {
+          [CONTEXT_INFO_GET]: {
+            format, tabId,
+          },
+        });
+      } catch (e) {
+        logErr(e);
+      }
+    }
+  }
+};
+
+/**
  * handle message
  * @param {*} msg - message
  * @param {Object} sender - sender
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async (msg, sender = {}) => {
-  const {tab: senderTab} = sender;
+  const {tab} = sender;
   const func = [];
   if (isObjectNotEmpty(msg)) {
     const items = Object.entries(msg);
     for (const [key, value] of items) {
       switch (key) {
+        case CONTEXT_INFO: {
+          if (isObjectNotEmpty(value)) {
+            const {contextInfo: info, data} = value;
+            const {format} = data;
+            info.menuItemId = format;
+            func.push(extractClickedData(info, tab));
+          }
+          break;
+        }
         case EXEC_COPY:
           func.push(sendMessage(null, {
             [EXEC_COPY_POPUP]: value,
@@ -593,10 +658,10 @@ export const handleMsg = async (msg, sender = {}) => {
           func.push(updateContextInfo(value));
           break;
         case "load": {
-          if (senderTab) {
-            const {id: tabId} = senderTab;
+          if (tab) {
+            const {id: tabId} = tab;
             func.push(
-              setEnabledTab(tabId, senderTab, value).then(handleActiveTab)
+              setEnabledTab(tabId, tab, value).then(handleActiveTab)
             );
           }
           func.push(updateContextInfo(value));

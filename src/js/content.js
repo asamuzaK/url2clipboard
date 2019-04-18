@@ -91,6 +91,7 @@
   const contextInfo = {
     isLink: false,
     content: null,
+    selectionText: "",
     title: null,
     url: null,
     canonicalUrl: null,
@@ -104,6 +105,7 @@
     contextInfo.isLink = false;
     contextInfo.content = null;
     contextInfo.title = null;
+    contextInfo.selectionText = "";
     contextInfo.url = null;
     contextInfo.canonicalUrl = null;
     return contextInfo;
@@ -137,6 +139,7 @@
           contextInfo.canonicalUrl = url.href;
         }
       }
+      contextInfo.selectionText = window.getSelection().toString();
     }
     return contextInfo;
   };
@@ -161,13 +164,15 @@
 
   /**
    * send context info
+   * @param {*} data - data
    * @returns {AsyncFunction} - send message
    */
-  const sendContextInfo = async () => {
+  const sendContextInfo = async data => {
     const elm = await getActiveElm();
     const info = await createContextInfo(elm);
     const msg = {
       [CONTEXT_INFO]: {
+        data,
         contextInfo: info,
       },
     };
@@ -186,7 +191,9 @@
       for (const [key, value] of items) {
         switch (key) {
           case CONTEXT_INFO_GET:
-            func.push(sendContextInfo(value));
+            if (value) {
+              func.push(sendContextInfo(value));
+            }
             break;
           default:
         }
