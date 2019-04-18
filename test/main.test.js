@@ -1632,17 +1632,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "foo",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": "Text",
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "%content% %url%",
-              "title": "bar",
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
@@ -1678,17 +1678,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "bar",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": "Text",
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "%content% %url%",
-              "title": "bar",
-              "url": "https://example.com/",
-            }
+            executeCopy: {
+              content: "bar",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/",
+            },
           },
           null,
         ],
@@ -1725,17 +1725,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "https://example.com/#baz",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": BBCODE_URL,
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "[url]%content%[/url]",
-              "title": undefined,
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "https://example.com/#baz",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
@@ -1771,19 +1771,19 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "https://example.com/",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": BBCODE_URL,
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "[url]%content%[/url]",
-              "title": undefined,
-              "url": "https://example.com/",
-            }
+            executeCopy: {
+              content: "https://example.com/",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/",
+            },
           },
-          null
+          null,
         ],
         {
           canonicalUrl: null,
@@ -1820,17 +1820,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "foo",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": "Text",
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "%content% %url%",
-              "title": "bar",
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
@@ -1870,17 +1870,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "foo",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": "Text",
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "%content% %url%",
-              "title": "bar",
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
@@ -1920,17 +1920,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "bar",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": "Text",
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "%content% %url%",
-              "title": "bar",
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "bar",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
@@ -1970,17 +1970,17 @@ describe("main", () => {
         [
           1,
           {
-            "executeCopy": {
-              "content": "https://example.com/#baz",
-              "includeTitleHtml": false,
-              "includeTitleMarkdown": false,
-              "menuItemId": BBCODE_URL,
-              "mimeType": "text/plain",
-              "promptContent": false,
-              "template": "[url]%content%[/url]",
-              "title": undefined,
-              "url": "https://example.com/#baz",
-            }
+            executeCopy: {
+              content: "https://example.com/#baz",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/#baz",
+            },
           },
           null,
         ],
