@@ -11,6 +11,39 @@
   "extensionShortName": {
     "message": "url2clipboard"
   },
+  "commandCopyAsciiDoc": {
+    "message": "URL を AsciiDoc でコピー"
+  },
+  "commandCopyBBCodeText": {
+    "message": "URL を BBCode (Text) でコピー"
+  },
+  "commandCopyBBCodeURL": {
+    "message": "URL を BBCode (URL) でコピー"
+  },
+  "commandCopyHTML": {
+    "message": "URL を HTML でコピー"
+  },
+  "commandCopyJira": {
+    "message": "URL を Jira でコピー"
+  },
+  "commandCopyLaTeX": {
+    "message": "URL を LaTeX でコピー"
+  },
+  "commandCopyMarkdown": {
+    "message": "URL を Markdown でコピー"
+  },
+  "commandCopyMediaWiki": {
+    "message": "URL を MediaWiki でコピー"
+  },
+  "commandCopyreStructuredText": {
+    "message": "URL を reStructuredText でコピー"
+  },
+  "commandCopyText": {
+    "message": "URL を Text でコピー"
+  },
+  "commandCopyTextile": {
+    "message": "URL を Textile でコピー"
+  },
   "copyAllTabsURL": {
     "message": "すべてのタブの URL をコピー"
   },

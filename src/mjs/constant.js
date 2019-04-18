@@ -5,6 +5,7 @@
 export const ASCIIDOC = "AsciiDoc";
 export const BBCODE_TEXT = "BBCodeText";
 export const BBCODE_URL = "BBCodeURL";
+export const CMD_COPY = "commandCopy";
 export const CONTENT_LINK = "copyLinkContent";
 export const CONTENT_LINK_BBCODE = "copyLinkBBCodeURLContent";
 export const CONTENT_PAGE = "copyPageContent";
@@ -33,6 +34,7 @@ export const ICON_LIGHT_ID = "#light";
 export const ICON_WHITE = "buttonIconWhite";
 export const INCLUDE_TITLE_HTML = "includeTitleHtml";
 export const INCLUDE_TITLE_MARKDOWN = "includeTitleMarkdown";
+export const JIRA = "Jira";
 export const LATEX = "LaTeX";
 export const LINK_DETAILS = "copyLinkDetails";
 export const LINK_MENU =

@@ -7,10 +7,12 @@
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import {browser} from "./mocha/setup.js";
+import sinon from "sinon";
 import * as mjs from "../src/mjs/main.js";
 import formatData from "../src/mjs/format.js";
 import {
-  BBCODE_URL, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
+  BBCODE_URL, CMD_COPY, CONTEXT_INFO,
+  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, ICON,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
@@ -871,12 +873,14 @@ describe("main", () => {
       contextInfo.title = "bar";
       contextInfo.url = "baz";
       contextInfo.canonicalUrl = "qux";
+      contextInfo.selectionText = "quux";
       const res = await func();
       assert.isFalse(res.isLink, "isLink");
       assert.isNull(res.content, "content");
       assert.isNull(res.title, "title");
       assert.isNull(res.url, "url");
       assert.isNull(res.canonicalUrl, "canonicalUrl");
+      assert.strictEqual(res.selectionText, "");
     });
   });
 
@@ -886,6 +890,7 @@ describe("main", () => {
       const {contextInfo} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
@@ -894,6 +899,7 @@ describe("main", () => {
       const {contextInfo} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
@@ -906,10 +912,12 @@ describe("main", () => {
       contextInfo.title = "bar";
       contextInfo.url = "baz";
       contextInfo.canonicalUrl = "qux";
+      contextInfo.selectionText = "quux";
       const res = await func();
       assert.deepEqual(res, {
         isLink: false,
         content: null,
+        selectionText: "",
         title: null,
         url: null,
         canonicalUrl: null,
@@ -924,12 +932,14 @@ describe("main", () => {
           title: "bar",
           url: "baz",
           canonicalUrl: "qux",
+          selectionText: "quux",
         },
       };
       const res = await func(obj);
       assert.deepEqual(res, {
         isLink: true,
         content: "foo",
+        selectionText: "quux",
         title: "bar",
         url: "baz",
         canonicalUrl: "qux",
@@ -993,24 +1003,28 @@ describe("main", () => {
   describe("extract clicked data", () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
-      const {contextInfo, formats} = mjs;
+      const {contextInfo, enabledFormats, formats} = mjs;
       const items = Object.entries(formatData);
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      enabledFormats.clear();
       for (const [key, value] of items) {
         formats.set(key, value);
       }
     });
     afterEach(() => {
-      const {contextInfo, formats} = mjs;
+      const {contextInfo, enabledFormats, formats} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      enabledFormats.clear();
       formats.clear();
     });
 
@@ -1055,6 +1069,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1086,6 +1101,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1157,6 +1173,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1200,6 +1217,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1243,6 +1261,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1291,6 +1310,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1334,6 +1354,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1382,6 +1403,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1430,6 +1452,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1478,6 +1501,7 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
@@ -1551,12 +1575,425 @@ describe("main", () => {
           canonicalUrl: null,
           content: null,
           isLink: false,
+          selectionText: "",
           title: null,
           url: null,
         },
       ], "result");
       browser.tabs.sendMessage.flush();
       browser.tabs.query.flush();
+    });
+
+    it("should not call function", async () => {
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        menuItemId: "Text",
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: "Text",
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add("Text");
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: "Text",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add("Text");
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "bar",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: BBCODE_URL,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "https://example.com/#baz",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: BBCODE_URL,
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "https://example.com/",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "Text",
+        selectionText: "foo",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add("Text");
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "Text",
+        content: "foo",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add("Text");
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "foo",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "Text",
+        content: "",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add("Text");
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "bar",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: "Text",
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "%content% %url%",
+              title: "bar",
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: BBCODE_URL,
+        content: "",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            executeCopy: {
+              content: "https://example.com/#baz",
+              includeTitleHtml: false,
+              includeTitleMarkdown: false,
+              menuItemId: BBCODE_URL,
+              mimeType: "text/plain",
+              promptContent: false,
+              template: "[url]%content%[/url]",
+              title: undefined,
+              url: "https://example.com/#baz",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
     });
   });
 
@@ -1644,12 +2081,100 @@ describe("main", () => {
     });
   });
 
+  describe("handle command", () => {
+    const func = mjs.handleCmd;
+    beforeEach(() => {
+      const {enabledFormats} = mjs;
+      enabledFormats.clear();
+    });
+    afterEach(() => {
+      const {enabledFormats} = mjs;
+      enabledFormats.clear();
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should not call function", async () => {
+      const i = browser.tabs.sendMessage.callCount;
+      await func("foo");
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+    });
+
+    it("should not call function", async () => {
+      const i = browser.tabs.sendMessage.callCount;
+      await func("foo");
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+    });
+
+    it("should not call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        active: true,
+        windowType: "normal",
+      }).resolves([{
+        id: -1,
+      }]);
+      enabledFormats.add("HTML");
+      await func("HTML");
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      browser.tabs.query.flush();
+    });
+
+    it("should not call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        active: true,
+        windowType: "normal",
+      }).resolves([{
+        id: 1,
+      }]);
+      enabledFormats.add("HTML");
+      await func(`${CMD_COPY}HTML`);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      browser.tabs.query.flush();
+    });
+
+    it("should log error", async () => {
+      const {enabledFormats} = mjs;
+      const stub = sinon.stub(console, "error");
+      const i = browser.tabs.sendMessage.callCount;
+      browser.tabs.sendMessage.rejects(new Error("error"));
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        active: true,
+        windowType: "normal",
+      }).resolves([{
+        id: 1,
+      }]);
+      enabledFormats.add("HTML");
+      await func(`${CMD_COPY}HTML`);
+      const {calledOnce} = stub;
+      stub.restore();
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
+                         "called sendMessage");
+      assert.isTrue(calledOnce, "called console");
+      browser.tabs.query.flush();
+      browser.tabs.sendMessage.flush();
+    });
+  });
+
   describe("handle message", () => {
     const func = mjs.handleMsg;
     beforeEach(() => {
       const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
@@ -1659,6 +2184,7 @@ describe("main", () => {
       const {contextInfo, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
+      contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
@@ -1684,6 +2210,7 @@ describe("main", () => {
             isLink: false,
             content: "foo",
             title: "bar",
+            selectionText: "baz",
             url: "https:www.example.com",
             canonicalUrl: "https://example.com",
           },
@@ -1694,6 +2221,7 @@ describe("main", () => {
           isLink: false,
           content: "foo",
           title: "bar",
+          selectionText: "baz",
           url: "https:www.example.com",
           canonicalUrl: "https://example.com",
         },
@@ -1709,6 +2237,7 @@ describe("main", () => {
             isLink: false,
             content: "foo",
             title: "bar",
+            selectionText: "baz",
             url: "https:www.example.com",
             canonicalUrl: "https://example.com",
           },
@@ -1726,6 +2255,7 @@ describe("main", () => {
           isLink: false,
           content: "foo",
           title: "bar",
+          selectionText: "baz",
           url: "https:www.example.com",
           canonicalUrl: "https://example.com",
         },
@@ -1740,6 +2270,7 @@ describe("main", () => {
             isLink: false,
             content: "foo",
             title: "bar",
+            selectionText: "baz",
             url: "https:www.example.com",
             canonicalUrl: "https://example.com",
           },
@@ -1750,6 +2281,7 @@ describe("main", () => {
           isLink: false,
           content: "foo",
           title: "bar",
+          selectionText: "baz",
           url: "https:www.example.com",
           canonicalUrl: "https://example.com",
         },
@@ -1763,6 +2295,7 @@ describe("main", () => {
             isLink: false,
             content: "foo",
             title: "bar",
+            selectionText: "baz",
             url: "https:www.example.com",
             canonicalUrl: "https://example.com",
           },
@@ -1773,6 +2306,7 @@ describe("main", () => {
           isLink: false,
           content: "foo",
           title: "bar",
+          selectionText: "baz",
           url: "https:www.example.com",
           canonicalUrl: "https://example.com",
         },
@@ -1870,6 +2404,23 @@ describe("main", () => {
       assert.deepEqual(res, [], "result");
       browser.runtime.getURL.flush();
       browser.i18n.getMessage.flush();
+    });
+
+    it("should get empty array", async () => {
+      const res = await func({
+        [CONTEXT_INFO]: true,
+      });
+      assert.deepEqual(res, [], "result");
+    });
+
+    it("should get result", async () => {
+      const res = await func({
+        [CONTEXT_INFO]: {
+          contextInfo: {},
+          data: {},
+        },
+      });
+      assert.deepEqual(res, [[]], "result");
     });
   });
 
