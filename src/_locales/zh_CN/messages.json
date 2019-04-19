@@ -12,37 +12,37 @@
     "message": "url2clipboard"
   },
   "commandCopyAsciiDoc": {
-    "message": "Copy URL as AsciiDoc"
+    "message": "复制链接为 AsciiDoc"
   },
   "commandCopyBBCodeText": {
-    "message": "Copy URL as BBCode (Text)"
+    "message": "复制链接为 BBCode (文本)"
   },
   "commandCopyBBCodeURL": {
-    "message": "Copy URL as BBCode (URL)"
+    "message": "复制链接为 BBCode (链接)"
   },
   "commandCopyHTML": {
-    "message": "Copy URL as HTML"
+    "message": "复制链接为 HTML"
   },
   "commandCopyJira": {
-    "message": "Copy URL as Jira"
+    "message": "复制链接为 Jira"
   },
   "commandCopyLaTeX": {
-    "message": "Copy URL as LaTeX"
+    "message": "复制链接为 LaTeX"
   },
   "commandCopyMarkdown": {
-    "message": "Copy URL as Markdown"
+    "message": "复制链接为 Markdown"
   },
   "commandCopyMediaWiki": {
-    "message": "Copy URL as MediaWiki"
+    "message": "复制链接为 MediaWiki"
   },
   "commandCopyreStructuredText": {
-    "message": "Copy URL as reStructuredText"
+    "message": "复制链接为 reStructuredText"
   },
   "commandCopyText": {
-    "message": "Copy URL as Text"
+    "message": "复制链接为文本"
   },
   "commandCopyTextile": {
-    "message": "Copy URL as Textile"
+    "message": "复制链接为 Textile"
   },
   "copyAllTabsURL": {
     "message": "复制所有标签页 URL"
@@ -184,7 +184,7 @@
     "message": "格式"
   },
   "notifyOnCopyMsg": {
-    "message": "Copied"
+    "message": "已复制"
   },
   "onCopySettings": {
     "message": "复制时"
@@ -283,10 +283,10 @@
     "message": "设置"
   },
   "optionsNotifyOnCopy": {
-    "message": "Notify when copied"
+    "message": "复制后通知"
   },
   "optionsNotifyOnCopyDetail": {
-    "message": "It will notify when successfully copied. Requires additional permission."
+    "message": "成功复制后发送通知。需要额外权限。"
   },
   "optionsPromptContent": {
     "message": "编辑链接标题"
