@@ -159,18 +159,22 @@ export const menuItems = {
   [COPY_PAGE]: {
     id: COPY_PAGE,
     contexts: ["page", "selection"],
+    key: "(&C)",
   },
   [COPY_LINK]: {
     id: COPY_LINK,
     contexts: ["link"],
+    key: "(&C)",
   },
   [COPY_TAB]: {
     id: COPY_TAB,
     contexts: ["tab"],
+    key: "(&T)",
   },
   [COPY_ALL_TABS]: {
     id: COPY_ALL_TABS,
     contexts: ["tab"],
+    key: "(&A)",
   },
 };
 
@@ -218,7 +222,7 @@ export const createContextMenu = async () => {
     const {isWebExt} = vars;
     const items = Object.keys(menuItems);
     for (const item of items) {
-      const {contexts, id: itemId} = menuItems[item];
+      const {contexts, id: itemId, key: itemKey} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
@@ -228,14 +232,14 @@ export const createContextMenu = async () => {
           `${itemId}_format_key`,
           [
             keyTitle || keyId,
-            isWebExt && "(&C)" || " (&C)",
+            isWebExt && itemKey || ` ${itemKey}`,
           ],
         );
         func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
-          isWebExt && "(&C)" || " (&C)"
+          isWebExt && itemKey || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         formats.forEach((value, key) => {
