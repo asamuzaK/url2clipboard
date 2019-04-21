@@ -3,12 +3,29 @@
  */
 
 export default {
+  // NOTE: remove later
   HTML: {
     id: "HTML",
     enabled: true,
     menu: "&HTML",
     template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
     templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+  },
+  HTMLPlain: {
+    id: "HTMLPlain",
+    enabled: true,
+    menu: "HTML (text/&plain)",
+    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
+    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    title: "HTML (text/plain)",
+  },
+  HTMLHtml: {
+    id: "HTMLHtml",
+    enabled: true,
+    menu: "&HTML (text/html)",
+    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
+    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    title: "HTML (text/html)",
   },
   Markdown: {
     id: "Markdown",
@@ -27,14 +44,14 @@ export default {
   BBCodeURL: {
     id: "BBCodeURL",
     enabled: true,
-    menu: "BBCode (&URL)",
+    menu: "BB&Code (URL)",
     template: "[url]%content%[/url]",
     title: "BBCode (URL)",
   },
   Textile: {
     id: "Textile",
     enabled: true,
-    menu: "Te&xtile",
+    menu: "Text&ile",
     template: "\"%content%\":%url%",
   },
   AsciiDoc: {
@@ -67,10 +84,31 @@ export default {
     menu: "&LaTeX",
     template: "\\href{%url%}{%content%}",
   },
+  // NOTE: remove later
   Text: {
     id: "Text",
     enabled: true,
     menu: "&Text",
     template: "%content% %url%",
+  },
+  TextURL: {
+    id: "TextURL",
+    enabled: true,
+    menu: "&Text && URL",
+    template: "%content% %url%",
+  },
+  TextOnly: {
+    id: "TextOnly",
+    enabled: true,
+    menu: "Te&xt",
+    template: "%content%",
+    title: "Text",
+  },
+  URLOnly: {
+    id: "URLOnly",
+    enabled: true,
+    menu: "&URL",
+    template: "%url%",
+    title: "URL",
   },
 };

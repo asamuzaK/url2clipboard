@@ -23,6 +23,8 @@ export const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
 export const EXT_LOCALE = "extensionLocale";
 export const EXT_NAME = "extensionName";
 export const HTML = "HTML";
+export const HTML_HTML = "HTMLHtml";
+export const HTML_PLAIN = "HTMLPlain";
 export const ICON = "img/icon.svg";
 export const ICON_AUTO = "buttonIconAuto";
 export const ICON_BLACK = "buttonIconBlack";
@@ -56,8 +58,9 @@ export const PROMPT = "promptContent";
 export const REST = "reStructuredText";
 export const TEXT = "Text";
 export const TEXTILE = "Textile";
-export const THEME_DARK =
-  "firefox-compact-dark@mozilla.org@personas.mozilla.org";
-export const THEME_LIGHT =
-  "firefox-compact-light@mozilla.org@personas.mozilla.org";
+export const TEXT_ONLY = "TextOnly";
+export const TEXT_URL = "TextURL";
+export const THEME_DARK = "firefox-compact-dark@mozilla.org";
+export const THEME_LIGHT = "firefox-compact-light@mozilla.org";
+export const URL_ONLY = "URLOnly";
 export const WEBEXT_ID = "url2clipboard@asamuzak.jp";
