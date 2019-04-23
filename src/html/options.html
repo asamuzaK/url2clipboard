@@ -80,44 +80,51 @@
             Formats
           </legend>
           <div>
-            <p aria-details="enableHtmlDetail">
+            <p aria-details="enableHtmlPlainDetail">
               <span>
-                <input type="checkbox" id="HTML" checked="checked" />
-                <label for="HTML" class="checkboxLabel">
-                  HTML
+                <input type="checkbox" id="HTMLPlain" checked="checked" />
+                <label for="HTMLPlain" class="checkboxLabel">
+                  HTML (text/plain)
                 </label>
               </span>
               <span class="subItem">
-                <input type="checkbox" id="includeTitleHtml"
-                       data-sub-item-of="HTML" />
-                <label for="includeTitleHtml" class="label"
+                <input type="checkbox" id="includeTitleHtmlPlain"
+                       data-sub-item-of="HTMLPlain" />
+                <label for="includeTitleHtmlPlain" class="label"
                        data-i18n="optionsIncludeTitle">
                   Add title attribute
                 </label>
               </span>
+            </p>
+            <details id="enableHtmlPlainDetail">
+              <div>
+                <p data-i18n="optionsEnableFormatDetail,HTML (text/plain)">
+                  Show HTML (text/plain) menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p aria-details="enableHtmlHtmlDetail">
+              <span>
+                <input type="checkbox" id="HTMLHtml" checked="checked" />
+                <label for="HTMLHtml" class="checkboxLabel">
+                  HTML (text/html)
+                </label>
+              </span>
               <span class="subItem">
-                <span class="label" data-i18n="optionsHtmlOutputLabel">
-                  Paste as:
-                </span>
-                <span class="htmlOutput">
-                  <label for="outputTextPlain">
-                    <input type="radio" checked="checked" id="outputTextPlain"
-                           name="mimeType" value="text/plain"
-                           data-sub-item-of="HTML" />
-                    text/plain
-                  </label>
-                  <label for="outputTextHtml">
-                    <input type="radio" id="outputTextHtml" name="mimeType"
-                           value="text/html" data-sub-item-of="HTML" />
-                    text/html
-                  </label>
-                </span>
+                <input type="checkbox" id="includeTitleHtmlHtml"
+                       data-sub-item-of="HTMLHtml" />
+                <label for="includeTitleHtmlHtml" class="label"
+                       data-i18n="optionsIncludeTitle">
+                  Add title attribute
+                </label>
               </span>
             </p>
-            <details id="enableHtmlDetail">
+            <details id="enableHtmlHtmlDetail">
               <div>
-                <p data-i18n="optionsEnableFormatDetail,HTML">
-                  Show HTML menu item in the context menu.
+                <p data-i18n="optionsEnableFormatDetail,HTML (text/html)">
+                  Show HTML (text/html) menu item in the context menu.
                 </p>
               </div>
             </details>
@@ -286,47 +293,52 @@
             </details>
           </div>
           <div>
-            <p aria-details="enableTextDetail">
+            <p aria-details="enableTextURLDetail">
               <span>
-                <input type="checkbox" id="Text" checked="checked" />
-                <label for="Text" class="checkboxLabel">
+                <input type="checkbox" id="TextURL" checked="checked" />
+                <label for="TextURL" class="checkboxLabel">
+                  Text &amp; URL
+                </label>
+              </span>
+            </p>
+            <details id="enableTextURLDetail">
+              <div>
+                <p data-i18n="optionsEnableFormatDetail,Text &amp; URL">
+                  Show Text &amp; URL menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p aria-details="enableTextOnlyDetail">
+              <span>
+                <input type="checkbox" id="TextOnly" checked="checked" />
+                <label for="TextOnly" class="checkboxLabel">
                   Text
                 </label>
               </span>
-              <span class="subItem">
-                <span class="textOutput">
-                  <span>
-                    <input type="radio" checked="checked" id="outputTextUrl"
-                           name="textOutput" value="text_url"
-                           data-sub-item-of="Text" />
-                    <label for="outputTextUrl"
-                           data-i18n="optionsTextOutputTextUrlLabel">
-                      Copy text and URL
-                    </label>
-                  </span>
-                  <span>
-                    <input type="radio" id="outputOnlyText" name="textOutput"
-                           value="text" data-sub-item-of="Text" />
-                    <label for="outputOnlyText"
-                           data-i18n="optionsTextOutputOnlyTextLabel">
-                      Copy only text
-                    </label>
-                  </span>
-                  <span>
-                    <input type="radio" id="outputOnlyUrl" name="textOutput"
-                           value="url" data-sub-item-of="Text" />
-                    <label for="outputOnlyUrl"
-                           data-i18n="optionsTextOutputOnlyUrlLabel">
-                      Copy only URL
-                    </label>
-                  </span>
-                </span>
-              </span>
             </p>
-            <details id="enableTextDetail">
+            <details id="enableTextOnlyDetail">
               <div>
                 <p data-i18n="optionsEnableFormatDetail,Text">
                   Show Text menu item in the context menu.
+                </p>
+              </div>
+            </details>
+          </div>
+          <div>
+            <p aria-details="enableURLOnlyDetail">
+              <span>
+                <input type="checkbox" id="URLOnly" checked="checked" />
+                <label for="URLOnly" class="checkboxLabel">
+                  URL
+                </label>
+              </span>
+            </p>
+            <details id="enableURLOnlyDetail">
+              <div>
+                <p data-i18n="optionsEnableFormatDetail,URL">
+                  Show URL menu item in the context menu.
                 </p>
               </div>
             </details>
