@@ -26,7 +26,8 @@
   const ASCIIDOC = "AsciiDoc";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
-  const HTML = "HTML";
+  const HTML_HTML = "HTMLHtml";
+  const HTML_PLAIN = "HTMLPlain";
   const LATEX = "LaTeX";
   const MARKDOWN = "Markdown";
   const MEDIAWIKI = "MediaWiki";
@@ -234,8 +235,7 @@
    */
   const createLinkText = async (data = {}) => {
     const {
-      content: contentText, menuItemId, mimeType, promptContent, template,
-      title, url,
+      content: contentText, menuItemId, promptContent, template, title, url,
     } = data;
     if (!isString(template)) {
       throw new TypeError(`Expected String but got ${getType(template)}.`);
@@ -257,7 +257,8 @@
       case BBCODE_URL:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         break;
-      case HTML:
+      case HTML_HTML:
+      case HTML_PLAIN:
         content = convertHtmlChar(content) || "";
         linkTitle = convertHtmlChar(title) || "";
         break;
@@ -279,7 +280,7 @@
         break;
       default:
     }
-    vars.mimeType = format === HTML && mimeType || MIME_PLAIN;
+    vars.mimeType = format === HTML_HTML && MIME_HTML || MIME_PLAIN;
     return template.replace(/%content%/g, content.trim())
       .replace(/%title%/g, linkTitle.trim())
       .replace(/%url%/g, linkUrl.trim());
