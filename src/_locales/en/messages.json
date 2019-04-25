@@ -12,37 +12,46 @@
     "message": "url2clipboard"
   },
   "commandCopyAsciiDoc": {
-    "message": "Copy URL as AsciiDoc"
+    "message": "Copy as AsciiDoc"
   },
   "commandCopyBBCodeText": {
-    "message": "Copy URL as BBCode (Text)"
+    "message": "Copy as BBCode (Text)"
   },
   "commandCopyBBCodeURL": {
-    "message": "Copy URL as BBCode (URL)"
+    "message": "Copy as BBCode (URL)"
   },
-  "commandCopyHTML": {
-    "message": "Copy URL as HTML"
+  "commandCopyHTMLHyper": {
+    "message": "Copy as HTML (text/html)"
+  },
+  "commandCopyHTMLPlain": {
+    "message": "Copy as HTML (text/plain)"
   },
   "commandCopyJira": {
-    "message": "Copy URL as Jira"
+    "message": "Copy as Jira"
   },
   "commandCopyLaTeX": {
-    "message": "Copy URL as LaTeX"
+    "message": "Copy as LaTeX"
   },
   "commandCopyMarkdown": {
-    "message": "Copy URL as Markdown"
+    "message": "Copy as Markdown"
   },
   "commandCopyMediaWiki": {
-    "message": "Copy URL as MediaWiki"
+    "message": "Copy as MediaWiki"
   },
   "commandCopyreStructuredText": {
-    "message": "Copy URL as reStructuredText"
-  },
-  "commandCopyText": {
-    "message": "Copy URL as Text"
+    "message": "Copy as reStructuredText"
   },
   "commandCopyTextile": {
-    "message": "Copy URL as Textile"
+    "message": "Copy as Textile"
+  },
+  "commandCopyTextOnly": {
+    "message": "Copy Text"
+  },
+  "commandCopyTextURL": {
+    "message": "Copy Text & URL"
+  },
+  "commandCopyURLOnly": {
+    "message": "Copy URL"
   },
   "copyAllTabsURL": {
     "message": "Copy All Tabs URLs"

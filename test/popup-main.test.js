@@ -13,9 +13,7 @@ import formatData from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
   CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
-  INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER,
-  OUTPUT_HTML_PLAIN, OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT,
-  OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL, OUTPUT_URL,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 
@@ -58,6 +56,10 @@ describe("popup-main", () => {
       const {formats} = mjs;
       formats.clear();
     });
+    afterEach(() => {
+      const {formats} = mjs;
+      formats.clear();
+    });
 
     it("should set map", async () => {
       const {formats} = mjs;
@@ -75,6 +77,10 @@ describe("popup-main", () => {
   describe("get format item from menu item ID", () => {
     const func = mjs.getFormatItemFromId;
     beforeEach(() => {
+      const {formats} = mjs;
+      formats.clear();
+    });
+    afterEach(() => {
       const {formats} = mjs;
       formats.clear();
     });
@@ -111,23 +117,23 @@ describe("popup-main", () => {
     });
 
     it("should get value", async () => {
-      const value = formatData.Text;
+      const value = formatData.TextURL;
       await mjs.setFormatData();
-      const res = await func(`${COPY_ALL_TABS}Text`);
+      const res = await func(`${COPY_ALL_TABS}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
     it("should get value", async () => {
-      const value = formatData.Text;
+      const value = formatData.TextURL;
       await mjs.setFormatData();
-      const res = await func(`${COPY_LINK}Text`);
+      const res = await func(`${COPY_LINK}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
     it("should get value", async () => {
-      const value = formatData.Text;
+      const value = formatData.TextURL;
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.deepEqual(res, value, "result");
     });
   });
@@ -137,9 +143,16 @@ describe("popup-main", () => {
     beforeEach(() => {
       const {formats, vars} = mjs;
       formats.clear();
-      vars.includeTitleHtml = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.textOutput =  OUTPUT_TEXT_AND_URL;
+    });
+    afterEach(() => {
+      const {formats, vars} = mjs;
+      formats.clear();
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
+      vars.includeTitleMarkdown = false;
     });
 
     it("should throw", async () => {
@@ -163,21 +176,19 @@ describe("popup-main", () => {
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, "%content% %url%", "result");
     });
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      mjs.vars.textOutput = OUTPUT_URL;
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}URLOnly`);
       assert.strictEqual(res, "%url%", "result");
     });
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      mjs.vars.textOutput = OUTPUT_TEXT;
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextOnly`);
       assert.strictEqual(res, "%content%", "result");
     });
 
@@ -196,14 +207,29 @@ describe("popup-main", () => {
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}HTML`);
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
     });
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      mjs.vars.includeTitleHtml = true;
-      const res = await func(`${COPY_PAGE}HTML`);
+      mjs.vars.includeTitleHTMLHyper = true;
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
+      assert.strictEqual(
+        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
+      );
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      const res = await func(`${COPY_PAGE}HTMLPlain`);
+      assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      mjs.vars.includeTitleHTMLPlain = true;
+      const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
@@ -300,13 +326,12 @@ describe("popup-main", () => {
         },
       ]);
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, "called");
       assert.deepEqual(res, [
         {
           id: 1,
-          menuItemId: `${COPY_PAGE}Text`,
-          mimeType: MIME_PLAIN,
+          menuItemId: `${COPY_PAGE}TextURL`,
           template: "%content% %url%",
           title: "foo",
           url: "https://example.com",
@@ -314,8 +339,7 @@ describe("popup-main", () => {
         },
         {
           id: 2,
-          menuItemId: `${COPY_PAGE}Text`,
-          mimeType: MIME_PLAIN,
+          menuItemId: `${COPY_PAGE}TextURL`,
           template: "%content% %url%",
           title: "bar",
           url: "https://www.example.com",
@@ -330,9 +354,9 @@ describe("popup-main", () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
       const {contextInfo, tabInfo, vars} = mjs;
-      vars.includeTitleHtml = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.mimeType = MIME_PLAIN;
       tabInfo.title = "foo";
       tabInfo.url = "https://www.example.com";
       contextInfo.canonicalUrl = "https://example.com";
@@ -351,6 +375,20 @@ describe("popup-main", () => {
       body.appendChild(elm2);
       body.appendChild(elm3);
       body.appendChild(elm4);
+    });
+    afterEach(() => {
+      const {contextInfo, tabInfo, vars} = mjs;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
+      vars.includeTitleMarkdown = false;
+      tabInfo.id = null;
+      tabInfo.title = null;
+      tabInfo.url = null;
+      contextInfo.isLink = false;
+      contextInfo.content = null;
+      contextInfo.canonicalUrl = null;
+      contextInfo.title = null;
+      contextInfo.url = null;
     });
 
     it("should not call function", async () => {
@@ -382,7 +420,7 @@ describe("popup-main", () => {
       elm.value = "qux";
       const evt = {
         target: {
-          id: `${COPY_PAGE}Text`,
+          id: `${COPY_PAGE}TextURL`,
         },
       };
       browser.runtime.sendMessage.callsFake((...args) => args);
@@ -397,10 +435,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}Text`,
-              mimeType: MIME_PLAIN,
+              menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
               title: "foo",
               url: "https://example.com",
@@ -425,7 +463,7 @@ describe("popup-main", () => {
       elm.value = "";
       const evt = {
         target: {
-          id: `${COPY_PAGE}Text`,
+          id: `${COPY_PAGE}TextURL`,
         },
       };
       browser.runtime.sendMessage.callsFake((...args) => args);
@@ -441,10 +479,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}Text`,
-              mimeType: MIME_PLAIN,
+              menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
               title: "foo",
               url: "https://www.example.com",
@@ -484,10 +522,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}BBCodeURL`,
-              mimeType: MIME_PLAIN,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com",
@@ -528,10 +566,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}BBCodeURL`,
-              mimeType: MIME_PLAIN,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com",
@@ -556,7 +594,7 @@ describe("popup-main", () => {
       elm.value = "qux";
       const evt = {
         target: {
-          id: `${COPY_LINK}Text`,
+          id: `${COPY_LINK}TextURL`,
         },
       };
       browser.runtime.sendMessage.callsFake((...args) => args);
@@ -571,10 +609,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}Text`,
-              mimeType: MIME_PLAIN,
+              menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -599,7 +637,7 @@ describe("popup-main", () => {
       elm.value = "";
       const evt = {
         target: {
-          id: `${COPY_LINK}Text`,
+          id: `${COPY_LINK}TextURL`,
         },
       };
       browser.runtime.sendMessage.callsFake((...args) => args);
@@ -614,10 +652,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}Text`,
-              mimeType: MIME_PLAIN,
+              menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -657,10 +695,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com/baz",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}BBCodeURL`,
-              mimeType: MIME_PLAIN,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -700,10 +738,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}BBCodeURL`,
-              mimeType: MIME_PLAIN,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -727,7 +765,7 @@ describe("popup-main", () => {
       const j = browser.tabs.query.callCount;
       const evt = {
         target: {
-          id: `${COPY_ALL_TABS}Text`,
+          id: `${COPY_ALL_TABS}TextURL`,
         },
       };
       browser.runtime.sendMessage.callsFake((...args) => args);
@@ -758,8 +796,7 @@ describe("popup-main", () => {
                 {
                   content: "foo",
                   id: 1,
-                  menuItemId: `${COPY_ALL_TABS}Text`,
-                  mimeType: MIME_PLAIN,
+                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "foo",
                   url: "https://example.com",
@@ -767,14 +804,14 @@ describe("popup-main", () => {
                 {
                   content: "bar",
                   id: 2,
-                  menuItemId: `${COPY_ALL_TABS}Text`,
-                  mimeType: MIME_PLAIN,
+                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "bar",
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHtml: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
             },
           },
@@ -1029,134 +1066,63 @@ describe("popup-main", () => {
     const func = mjs.setVar;
     beforeEach(() => {
       const {vars} = mjs;
-      vars.mimeType = MIME_PLAIN;
-      vars.textOutput = OUTPUT_TEXT_AND_URL;
-      vars.includeTitleHtml = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
+      vars.includeTitleMarkdown = false;
+    });
+    afterEach(() => {
+      const {vars} = mjs;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
 
     it("should not set variable", async () => {
       const {vars} = mjs;
       await func();
-      assert.strictEqual(vars.mimeType, MIME_PLAIN, "mime");
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_AND_URL, "output");
-      assert.isFalse(vars.includeTitleHtml, "html");
+      assert.isFalse(vars.includeTitleHTMLHyper, "html");
+      assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
     });
 
     it("should not set variable", async () => {
       const {vars} = mjs;
       await func("foo", {});
-      assert.strictEqual(vars.mimeType, MIME_PLAIN, "mime");
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_AND_URL, "output");
-      assert.isFalse(vars.includeTitleHtml, "html");
+      assert.isFalse(vars.includeTitleHTMLHyper, "html");
+      assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(OUTPUT_TEXT_TEXT, {
+      await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true,
-        value: "foo",
       });
-      assert.strictEqual(vars.textOutput, "foo", "variable");
+      assert.isTrue(vars.includeTitleHTMLHyper, "variable");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(OUTPUT_TEXT_TEXT_URL, {
-        checked: true,
-        value: "bar",
+      await func(INCLUDE_TITLE_HTML_HYPER, {
+        checked: false,
       });
-      assert.strictEqual(vars.textOutput, "bar", "variable");
+      assert.isFalse(vars.includeTitleHTMLHyper, "variable");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(OUTPUT_TEXT_URL, {
+      await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true,
-        value: "baz",
       });
-      assert.strictEqual(vars.textOutput, "baz", "variable");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_TEXT_TEXT, {
-        checked: false,
-        value: "foo",
-      });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_AND_URL, "variable");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_TEXT_TEXT_URL, {
-        checked: false,
-        value: "bar",
-      });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_AND_URL, "variable");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_TEXT_URL, {
-        checked: false,
-        value: "baz",
-      });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_AND_URL, "variable");
+      assert.isTrue(vars.includeTitleHTMLPlain, "variable");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(OUTPUT_HTML_HYPER, {
-        checked: true,
-        value: "foo",
-      });
-      assert.strictEqual(vars.mimeType, "foo", "variable");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_HTML_PLAIN, {
-        checked: true,
-        value: "bar",
-      });
-      assert.strictEqual(vars.mimeType, "bar", "variable");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_HTML_HYPER, {
-        checked: false,
-        value: "foo",
-      });
-      assert.strictEqual(vars.mimeType, MIME_PLAIN, "variable");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      await func(OUTPUT_HTML_PLAIN, {
-        checked: false,
-        value: "bar",
-      });
-      assert.strictEqual(vars.mimeType, MIME_PLAIN, "variable");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      await func(INCLUDE_TITLE_HTML, {
-        checked: true,
-      });
-      assert.isTrue(vars.includeTitleHtml, "variable");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      await func(INCLUDE_TITLE_HTML, {
+      await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: false,
       });
-      assert.isFalse(vars.includeTitleHtml, "variable");
+      assert.isFalse(vars.includeTitleHTMLPlain, "variable");
     });
 
     it("should set variable", async () => {

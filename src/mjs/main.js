@@ -16,27 +16,25 @@ const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
 
 /* constants */
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET, COPY_ALL_TABS,
-  COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS,
-  EXEC_COPY_TABS_POPUP, EXT_NAME, HTML, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
+  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB,
+  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
+  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
-  INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, MARKDOWN, MIME_PLAIN, NOTIFY_COPY,
-  OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT, OUTPUT_TEXT_AND_URL,
-  OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT,
-  TEXT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  MARKDOWN, NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 
 /* variables */
 export const vars = {
   iconId: "",
-  includeTitleHtml: false,
+  includeTitleHTMLHyper: false,
+  includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
-  mimeType: MIME_PLAIN,
   notifyOnCopy: false,
   promptContent: false,
-  textOutput: OUTPUT_TEXT_AND_URL,
 };
 
 /* formats */
@@ -126,23 +124,17 @@ export const getFormatTemplate = async id => {
       id: itemId, template: itemTmpl, templateWithoutTitle: itemTmplWoTitle,
     } = item;
     const {
-      includeTitleHtml, includeTitleMarkdown, textOutput,
+      includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
     } = vars;
     switch (itemId) {
-      case HTML:
-        template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
+      case HTML_HYPER:
+        template = includeTitleHTMLHyper && itemTmpl || itemTmplWoTitle;
+        break;
+      case HTML_PLAIN:
+        template = includeTitleHTMLPlain && itemTmpl || itemTmplWoTitle;
         break;
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
-        break;
-      case TEXT:
-        if (textOutput === OUTPUT_TEXT) {
-          template = itemTmpl.replace(/%url%/g, "").trim();
-        } else if (textOutput === OUTPUT_URL) {
-          template = itemTmpl.replace(/%content%/g, "").trim();
-        } else {
-          template = itemTmpl;
-        }
         break;
       default:
         template = itemTmpl;
@@ -159,18 +151,22 @@ export const menuItems = {
   [COPY_PAGE]: {
     id: COPY_PAGE,
     contexts: ["page", "selection"],
+    key: "(&C)",
   },
   [COPY_LINK]: {
     id: COPY_LINK,
     contexts: ["link"],
+    key: "(&C)",
   },
   [COPY_TAB]: {
     id: COPY_TAB,
     contexts: ["tab"],
+    key: "(&T)",
   },
   [COPY_ALL_TABS]: {
     id: COPY_ALL_TABS,
     contexts: ["tab"],
+    key: "(&A)",
   },
 };
 
@@ -218,7 +214,7 @@ export const createContextMenu = async () => {
     const {isWebExt} = vars;
     const items = Object.keys(menuItems);
     for (const item of items) {
-      const {contexts, id: itemId} = menuItems[item];
+      const {contexts, id: itemId, key: itemKey} = menuItems[item];
       const enabled = false;
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
@@ -228,14 +224,14 @@ export const createContextMenu = async () => {
           `${itemId}_format_key`,
           [
             keyTitle || keyId,
-            isWebExt && "(&C)" || " (&C)",
+            isWebExt && itemKey || ` ${itemKey}`,
           ],
         );
         func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
-          isWebExt && "(&C)" || " (&C)"
+          isWebExt && itemKey || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         formats.forEach((value, key) => {
@@ -436,13 +432,12 @@ export const getAllTabsInfo = async menuItemId => {
     throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
   }
   const tabsInfo = [];
-  const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow();
   arr.forEach(tab => {
     const {id, title, url} = tab;
     tabsInfo.push({
-      id, menuItemId, mimeType, template, title, url,
+      id, menuItemId, template, title, url,
       content: title,
     });
   });
@@ -458,27 +453,30 @@ export const getAllTabsInfo = async menuItemId => {
 export const extractClickedData = async (info, tab) => {
   const func = [];
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
+    const {
+      menuItemId, selectionText: infoSelectionText,
+      canonicalUrl: infoCanonicalUrl, content: infoContent,
+      isLink: infoIsLink, title: infoTitle, url: infoUrl,
+    } = info;
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
-    if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
+    if (isString(menuItemId) &&
+        Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       const {
-        includeTitleHtml, includeTitleMarkdown, mimeType, promptContent,
+        includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
+        promptContent,
       } = vars;
-      const {
-        menuItemId, selectionText: infoSelectionText,
-        canonicalUrl: infoCanonicalUrl, content: infoContent,
-        isLink: infoIsLink, title: infoTitle, url: infoUrl,
-      } = info;
       const {
         canonicalUrl: contextCanonicalUrl, content: contextContent,
         selectionText: contextSelectionText, title: contextTitle,
         url: contextUrl,
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
-      if (isString(menuItemId) && menuItemId.startsWith(COPY_ALL_TABS)) {
+      if (menuItemId.startsWith(COPY_ALL_TABS)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         func.push(sendMessage(tabId, {
           [EXEC_COPY_TABS]: {
-            allTabs, includeTitleHtml, includeTitleMarkdown,
+            allTabs,
+            includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
           },
         }));
       } else {
@@ -527,8 +525,9 @@ export const extractClickedData = async (info, tab) => {
         if (isString(content) && isString(url)) {
           func.push(sendMessage(tabId, {
             [EXEC_COPY]: {
-              content, includeTitleHtml, includeTitleMarkdown, menuItemId,
-              mimeType, promptContent, template, title, url,
+              content, includeTitleHTMLHyper, includeTitleHTMLPlain,
+              includeTitleMarkdown, menuItemId, promptContent, template,
+              title, url,
             },
           }));
         }
@@ -702,24 +701,12 @@ export const setVar = async (item, obj, changed = false) => {
           }
         }
         break;
-      case INCLUDE_TITLE_HTML:
+      case INCLUDE_TITLE_HTML_HYPER:
+      case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
       case PROMPT:
         vars[item] = !!checked;
-        break;
-      case OUTPUT_HTML_HYPER:
-      case OUTPUT_HTML_PLAIN:
-        if (checked) {
-          vars.mimeType = value;
-        }
-        break;
-      case OUTPUT_TEXT_TEXT_URL:
-      case OUTPUT_TEXT_TEXT:
-      case OUTPUT_TEXT_URL:
-        if (checked) {
-          vars.textOutput = value;
-        }
         break;
       default: {
         if (formats.has(item)) {

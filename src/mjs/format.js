@@ -3,12 +3,21 @@
  */
 
 export default {
-  HTML: {
-    id: "HTML",
+  HTMLPlain: {
+    id: "HTMLPlain",
     enabled: true,
-    menu: "&HTML",
+    menu: "HTML (text/&plain)",
     template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
     templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    title: "HTML (text/plain)",
+  },
+  HTMLHyper: {
+    id: "HTMLHyper",
+    enabled: true,
+    menu: "&HTML (text/html)",
+    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
+    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    title: "HTML (text/html)",
   },
   Markdown: {
     id: "Markdown",
@@ -27,14 +36,14 @@ export default {
   BBCodeURL: {
     id: "BBCodeURL",
     enabled: true,
-    menu: "BBCode (&URL)",
+    menu: "BB&Code (URL)",
     template: "[url]%content%[/url]",
     title: "BBCode (URL)",
   },
   Textile: {
     id: "Textile",
     enabled: true,
-    menu: "Te&xtile",
+    menu: "Text&ile",
     template: "\"%content%\":%url%",
   },
   AsciiDoc: {
@@ -67,10 +76,24 @@ export default {
     menu: "&LaTeX",
     template: "\\href{%url%}{%content%}",
   },
-  Text: {
-    id: "Text",
+  TextURL: {
+    id: "TextURL",
     enabled: true,
-    menu: "&Text",
+    menu: "&Text && URL",
     template: "%content% %url%",
+  },
+  TextOnly: {
+    id: "TextOnly",
+    enabled: true,
+    menu: "Te&xt",
+    template: "%content%",
+    title: "Text",
+  },
+  URLOnly: {
+    id: "URLOnly",
+    enabled: true,
+    menu: "&URL",
+    template: "%url%",
+    title: "URL",
   },
 };

@@ -20,8 +20,11 @@
   "commandCopyBBCodeURL": {
     "message": "复制链接为 BBCode (链接)"
   },
-  "commandCopyHTML": {
-    "message": "复制链接为 HTML"
+  "commandCopyHTMLHyper": {
+    "message": "复制链接为 HTML (text/html)"
+  },
+  "commandCopyHTMLPlain": {
+    "message": "复制链接为 HTML (text/plain)"
   },
   "commandCopyJira": {
     "message": "复制链接为 Jira"
@@ -38,11 +41,17 @@
   "commandCopyreStructuredText": {
     "message": "复制链接为 reStructuredText"
   },
-  "commandCopyText": {
-    "message": "复制链接为文本"
-  },
   "commandCopyTextile": {
     "message": "复制链接为 Textile"
+  },
+  "commandCopyTextOnly": {
+    "message": "复制链接为文本"
+  },
+  "commandCopyTextURL": {
+    "message": "复制链接为文本 & URL"
+  },
+  "commandCopyURLOnly": {
+    "message": "复制链接为 URL"
   },
   "copyAllTabsURL": {
     "message": "复制所有标签页 URL"

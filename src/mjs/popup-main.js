@@ -13,21 +13,18 @@ const {runtime, tabs} = browser;
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS, HTML,
-  INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN, LINK_MENU,
-  MARKDOWN, MIME_PLAIN, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN, OUTPUT_TEXT,
-  OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL, OUTPUT_TEXT_URL,
-  OUTPUT_URL,
+  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
+  HTML_HYPER, HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN, LINK_MENU, MARKDOWN,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
 
 /* variables */
 export const vars = {
-  includeTitleHtml: false,
+  includeTitleHTMLHyper: false,
+  includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
-  mimeType: MIME_PLAIN,
-  textOutput: OUTPUT_TEXT_AND_URL,
 };
 
 /* formats */
@@ -81,23 +78,20 @@ export const getFormatTemplate = async id => {
       templateWithoutTitle: itemTmplWoTitle,
     } = item;
     const {
-      includeTitleHtml, includeTitleMarkdown, textOutput,
+      includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
     } = vars;
     switch (itemId) {
-      case HTML:
-        template = includeTitleHtml && itemTmpl || itemTmplWoTitle;
+      case HTML_HYPER:
+        template = includeTitleHTMLHyper && itemTmpl || itemTmplWoTitle;
+        break;
+      case HTML_PLAIN:
+        template = includeTitleHTMLPlain && itemTmpl || itemTmplWoTitle;
         break;
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
         break;
       default:
-        if (textOutput === OUTPUT_TEXT) {
-          template = itemTmpl.replace(/%url%/g, "").trim();
-        } else if (textOutput === OUTPUT_URL) {
-          template = itemTmpl.replace(/%content%/g, "").trim();
-        } else {
-          template = itemTmpl;
-        }
+        template = itemTmpl;
     }
   }
   return template || null;
@@ -169,13 +163,12 @@ export const initContextInfo = async () => {
  */
 export const getAllTabsInfo = async menuItemId => {
   const tabsInfo = [];
-  const {mimeType} = vars;
   const template = await getFormatTemplate(menuItemId);
   const arr = await tabs.query({currentWindow: true});
   arr.forEach(tab => {
     const {id, title, url} = tab;
     tabsInfo.push({
-      id, menuItemId, mimeType, template, title, url,
+      id, menuItemId, template, title, url,
       content: title,
     });
   });
@@ -190,7 +183,9 @@ export const getAllTabsInfo = async menuItemId => {
 export const createCopyData = async evt => {
   const {target} = evt;
   const {id: menuItemId} = target;
-  const {includeTitleHtml, includeTitleMarkdown, mimeType} = vars;
+  const {
+    includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
+  } = vars;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
   const func = [];
@@ -198,7 +193,8 @@ export const createCopyData = async evt => {
     const allTabs = await getAllTabsInfo(menuItemId);
     func.push(sendMessage(runtime.id, {
       [EXEC_COPY_TABS]: {
-        allTabs, includeTitleHtml, includeTitleMarkdown,
+        allTabs,
+        includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
       },
     }));
   } else {
@@ -226,8 +222,8 @@ export const createCopyData = async evt => {
     if (url) {
       func.push(sendMessage(runtime.id, {
         [EXEC_COPY]: {
-          content, includeTitleHtml, includeTitleMarkdown, menuItemId,
-          mimeType, template, title, url,
+          content, includeTitleHTMLHyper, includeTitleHTMLPlain,
+          includeTitleMarkdown, menuItemId, template, title, url,
         },
       }));
     }
@@ -355,24 +351,12 @@ export const handleMsg = async msg => {
  */
 export const setVar = async (item, obj) => {
   if (item && obj) {
-    const {checked, value} = obj;
+    const {checked} = obj;
     switch (item) {
-      case INCLUDE_TITLE_HTML:
+      case INCLUDE_TITLE_HTML_HYPER:
+      case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
         vars[item] = !!checked;
-        break;
-      case OUTPUT_HTML_HYPER:
-      case OUTPUT_HTML_PLAIN:
-        if (checked) {
-          vars.mimeType = value;
-        }
-        break;
-      case OUTPUT_TEXT_TEXT:
-      case OUTPUT_TEXT_TEXT_URL:
-      case OUTPUT_TEXT_URL:
-        if (checked) {
-          vars.textOutput = value;
-        }
         break;
       default:
     }
