@@ -13,12 +13,11 @@ import formatData from "../src/mjs/format.js";
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO,
   COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
-  EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP, ICON,
-  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
-  ICON_LIGHT_ID, ICON_WHITE, INCLUDE_TITLE_HTML, INCLUDE_TITLE_MARKDOWN,
-  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OUTPUT_HTML_HYPER, OUTPUT_HTML_PLAIN,
-  OUTPUT_TEXT, OUTPUT_TEXT_AND_URL, OUTPUT_TEXT_TEXT, OUTPUT_TEXT_TEXT_URL,
-  OUTPUT_TEXT_URL, OUTPUT_URL, PROMPT, THEME_DARK, THEME_LIGHT,
+  EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
+  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
+  ICON_LIGHT_ID, ICON_WHITE,
+  INCLUDE_TITLE_HTML_HTML, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT,
 } from "../src/mjs/constant.js";
 
 describe("main", () => {
@@ -37,7 +36,7 @@ describe("main", () => {
     const func = mjs.toggleEnabledFormats;
     beforeEach(() => {
       const {formats} = mjs;
-      formats.set("Text", {
+      formats.set("TextURL", {
         foo: "bar",
       });
     });
@@ -61,32 +60,32 @@ describe("main", () => {
 
     it("should not set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_PAGE}Text`, false);
-      assert.isFalse(enabledFormats.has("Text"), "result");
+      await func(`${COPY_PAGE}TextURL`, false);
+      assert.isFalse(enabledFormats.has("TextURL"), "result");
     });
 
     it("should set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_TAB}Text`, true);
-      assert.isTrue(enabledFormats.has("Text"), "result");
+      await func(`${COPY_TAB}TextURL`, true);
+      assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
     it("should set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_PAGE}Text`, true);
-      assert.isTrue(enabledFormats.has("Text"), "result");
+      await func(`${COPY_PAGE}TextURL`, true);
+      assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
     it("should set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_LINK}Text`, true);
-      assert.isTrue(enabledFormats.has("Text"), "result");
+      await func(`${COPY_LINK}TextURL`, true);
+      assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
     it("should set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_ALL_TABS}Text`, true);
-      assert.isTrue(enabledFormats.has("Text"), "result");
+      await func(`${COPY_ALL_TABS}TextURL`, true);
+      assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
   });
 
@@ -140,26 +139,26 @@ describe("main", () => {
     });
 
     it("should get result", async () => {
-      const value = formatData.Text;
-      const res = await func(`${COPY_TAB}Text`);
+      const value = formatData.TextURL;
+      const res = await func(`${COPY_TAB}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
     it("should get result", async () => {
-      const value = formatData.Text;
-      const res = await func(`${COPY_PAGE}Text`);
+      const value = formatData.TextURL;
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
     it("should get result", async () => {
-      const value = formatData.Text;
-      const res = await func(`${COPY_LINK}Text`);
+      const value = formatData.TextURL;
+      const res = await func(`${COPY_LINK}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
     it("should get result", async () => {
-      const value = formatData.Text;
-      const res = await func(`${COPY_ALL_TABS}Text`);
+      const value = formatData.TextURL;
+      const res = await func(`${COPY_ALL_TABS}TextURL`);
       assert.deepEqual(res, value, "result");
     });
   });
@@ -172,18 +171,16 @@ describe("main", () => {
       for (const [key, value] of items) {
         formats.set(key, value);
       }
-      vars.includeTitleHtml = false;
+      vars.includeTitleHtmlHtml = false;
+      vars.includeTitleHtmlPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.mimeType = MIME_PLAIN;
-      vars.textOutput = OUTPUT_TEXT_AND_URL;
     });
     afterEach(() => {
       const {formats, vars} = mjs;
       formats.clear();
-      vars.includeTitleHtml = false;
+      vars.includeTitleHtmlHtml = false;
+      vars.includeTitleHtmlPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.mimeType = MIME_PLAIN;
-      vars.textOutput = OUTPUT_TEXT_AND_URL;
     });
 
     it("should throw", async () => {
@@ -204,22 +201,8 @@ describe("main", () => {
     });
 
     it("should get value", async () => {
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, "%content% %url%", "result");
-    });
-
-    it("should get value", async () => {
-      const {vars} = mjs;
-      vars.textOutput = OUTPUT_URL;
-      const res = await func(`${COPY_PAGE}Text`);
-      assert.strictEqual(res, "%url%", "result");
-    });
-
-    it("should get value", async () => {
-      const {vars} = mjs;
-      vars.textOutput = OUTPUT_TEXT;
-      const res = await func(`${COPY_PAGE}Text`);
-      assert.strictEqual(res, "%content%", "result");
     });
 
     it("should get value", async () => {
@@ -235,14 +218,28 @@ describe("main", () => {
     });
 
     it("should get value", async () => {
-      const res = await func(`${COPY_PAGE}HTML`);
+      const res = await func(`${COPY_PAGE}HTMLHtml`);
       assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
     });
 
     it("should get value", async () => {
       const {vars} = mjs;
-      vars.includeTitleHtml = true;
-      const res = await func(`${COPY_PAGE}HTML`);
+      vars.includeTitleHtmlHtml = true;
+      const res = await func(`${COPY_PAGE}HTMLHtml`);
+      assert.strictEqual(
+        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
+      );
+    });
+
+    it("should get value", async () => {
+      const res = await func(`${COPY_PAGE}HTMLPlain`);
+      assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
+    });
+
+    it("should get value", async () => {
+      const {vars} = mjs;
+      vars.includeTitleHtmlPlain = true;
+      const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
@@ -340,9 +337,9 @@ describe("main", () => {
       const {enabledFormats, formats, vars} = mjs;
       const items = Object.entries(formatData);
       vars.isWebExt = true;
-      enabledFormats.add("HTML");
+      enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       for (const [key, value] of items) {
         formats.set(key, value);
       }
@@ -369,11 +366,11 @@ describe("main", () => {
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 48,
+      assert.strictEqual(browser.contextMenus.create.callCount, i + 60,
                          "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 4,
                          "called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
       browser.i18n.getMessage.flush();
     });
 
@@ -384,11 +381,11 @@ describe("main", () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 24,
+      assert.strictEqual(browser.contextMenus.create.callCount, i + 30,
                          "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 4,
                          "called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
       browser.i18n.getMessage.flush();
     });
 
@@ -396,7 +393,7 @@ describe("main", () => {
       const {enabledFormats} = mjs;
       const i = browser.contextMenus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
-      enabledFormats.delete("HTML");
+      enabledFormats.delete("HTMLPlain");
       enabledFormats.delete("Markdown");
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
@@ -412,7 +409,7 @@ describe("main", () => {
       const {enabledFormats, vars} = mjs;
       const i = browser.contextMenus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
-      enabledFormats.delete("HTML");
+      enabledFormats.delete("HTMLPlain");
       enabledFormats.delete("Markdown");
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
@@ -432,9 +429,9 @@ describe("main", () => {
       const {enabledFormats, enabledTabs, formats, vars} = mjs;
       const items = Object.entries(formatData);
       vars.isWebExt = true;
-      enabledFormats.add("HTML");
+      enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       enabledTabs.set(1, true);
       for (const [key, value] of items) {
         formats.set(key, value);
@@ -468,9 +465,9 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.contextMenus.update.callCount;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 48,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
                          "called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
       browser.management.get.flush();
     });
 
@@ -480,11 +477,11 @@ describe("main", () => {
       const j = browser.runtime.sendMessage.callCount;
       vars.isWebExt = false;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 24,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 30,
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(res.length, 24, "result");
+      assert.strictEqual(res.length, 30, "result");
     });
 
     it("should call function", async () => {
@@ -493,11 +490,11 @@ describe("main", () => {
       const j = browser.runtime.sendMessage.callCount;
       enabledTabs.clear();
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 48,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
     });
   });
 
@@ -507,9 +504,9 @@ describe("main", () => {
       const {enabledFormats, enabledTabs, formats, vars} = mjs;
       const items = Object.entries(formatData);
       vars.isWebExt = true;
-      enabledFormats.add("HTML");
+      enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       enabledTabs.set(1, true);
       for (const [key, value] of items) {
         formats.set(key, value);
@@ -533,9 +530,9 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.contextMenus.update.callCount;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 48,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
                          "called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
     });
 
     it("should call function", async () => {
@@ -543,9 +540,9 @@ describe("main", () => {
       const i = browser.contextMenus.update.callCount;
       vars.isWebExt = false;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 24,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 30,
                          "called");
-      assert.strictEqual(res.length, 24, "result");
+      assert.strictEqual(res.length, 30, "result");
       browser.management.get.flush();
     });
 
@@ -554,9 +551,9 @@ describe("main", () => {
       const i = browser.contextMenus.update.callCount;
       enabledTabs.clear();
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 48,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
                          "called");
-      assert.strictEqual(res.length, 48, "result");
+      assert.strictEqual(res.length, 60, "result");
       browser.management.get.flush();
     });
   });
@@ -975,14 +972,13 @@ describe("main", () => {
         },
       ]);
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}Text`);
+      const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, "called");
       assert.deepEqual(res, [
         {
           content: "foo",
           id: 1,
-          menuItemId: "copyPageURLText",
-          mimeType: "text/plain",
+          menuItemId: "copyPageURLTextURL",
           template: "%content% %url%",
           title: "foo",
           url: "https://example.com",
@@ -990,8 +986,7 @@ describe("main", () => {
         {
           content: "bar",
           id: 2,
-          menuItemId: "copyPageURLText",
-          mimeType: "text/plain",
+          menuItemId: "copyPageURLTextURL",
           template: "%content% %url%",
           title: "bar",
           url: "https://www.example.com",
@@ -1036,7 +1031,7 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: `${COPY_PAGE}Text`,
+        menuItemId: `${COPY_PAGE}TextURL`,
         selectionText: "foo",
       };
       const tab = {
@@ -1053,10 +1048,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}Text`,
-              mimeType: "text/plain",
+              menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1136,7 +1131,7 @@ describe("main", () => {
       const {contextInfo} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: `${COPY_PAGE}Text`,
+        menuItemId: `${COPY_PAGE}TextURL`,
         selectionText: "",
       };
       const tab = {
@@ -1157,10 +1152,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}Text`,
-              mimeType: "text/plain",
+              menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1184,7 +1179,7 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: `${COPY_TAB}Text`,
+        menuItemId: `${COPY_TAB}TextURL`,
         selectionText: "foo",
       };
       const tab = {
@@ -1201,10 +1196,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_TAB}Text`,
-              mimeType: "text/plain",
+              menuItemId: `${COPY_TAB}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1245,10 +1240,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1294,10 +1289,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1338,10 +1333,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_TAB}${BBCODE_URL}`,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1366,7 +1361,7 @@ describe("main", () => {
       const {contextInfo} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: `${COPY_LINK}Text`,
+        menuItemId: `${COPY_LINK}TextURL`,
         selectionText: "foo",
       };
       const tab = {
@@ -1387,10 +1382,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}Text`,
-              mimeType: "text/plain",
+              menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1415,7 +1410,7 @@ describe("main", () => {
       const {contextInfo} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: `${COPY_LINK}Text`,
+        menuItemId: `${COPY_LINK}TextURL`,
         selectionText: "",
       };
       const tab = {
@@ -1436,10 +1431,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "qux",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}Text`,
-              mimeType: "text/plain",
+              menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1485,10 +1480,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://www.example.com/#corge",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}${BBCODE_URL}`,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1513,7 +1508,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const j = browser.tabs.query.callCount;
       const info = {
-        menuItemId: `${COPY_ALL_TABS}Text`,
+        menuItemId: `${COPY_ALL_TABS}TextURL`,
         selectionText: "foo",
       };
       const tab = {
@@ -1549,8 +1544,7 @@ describe("main", () => {
                 {
                   content: "foo",
                   id: 1,
-                  menuItemId: `${COPY_ALL_TABS}Text`,
-                  mimeType: "text/plain",
+                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "foo",
                   url: "https://example.com#baz",
@@ -1558,14 +1552,14 @@ describe("main", () => {
                 {
                   content: "bar",
                   id: 2,
-                  menuItemId: `${COPY_ALL_TABS}Text`,
-                  mimeType: "text/plain",
+                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "bar",
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
             },
           },
@@ -1587,7 +1581,7 @@ describe("main", () => {
     it("should not call function", async () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
-        menuItemId: "Text",
+        menuItemId: "TextURL",
         selectionText: "foo",
       };
       const tab = {
@@ -1616,7 +1610,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
-        menuItemId: "Text",
+        menuItemId: "TextURL",
         selectionText: "foo",
       };
       const tab = {
@@ -1625,7 +1619,7 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1634,10 +1628,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "Text",
-              mimeType: "text/plain",
+              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1663,7 +1657,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
-        menuItemId: "Text",
+        menuItemId: "TextURL",
       };
       const tab = {
         id: 1,
@@ -1671,7 +1665,7 @@ describe("main", () => {
         url: "https://example.com/",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1680,10 +1674,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "Text",
-              mimeType: "text/plain",
+              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1727,10 +1721,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1773,10 +1767,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1802,7 +1796,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
-        menuItemId: "Text",
+        menuItemId: "TextURL",
         selectionText: "foo",
         title: "bar",
         url: "https://example.com/#baz",
@@ -1813,7 +1807,7 @@ describe("main", () => {
         url: "https://example.com/",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1822,10 +1816,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "Text",
-              mimeType: "text/plain",
+              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1851,7 +1845,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
-        menuItemId: "Text",
+        menuItemId: "TextURL",
         content: "foo",
         selectionText: "",
         title: "bar",
@@ -1863,7 +1857,7 @@ describe("main", () => {
         url: "https://example.com/",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1872,10 +1866,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "Text",
-              mimeType: "text/plain",
+              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1901,7 +1895,7 @@ describe("main", () => {
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
-        menuItemId: "Text",
+        menuItemId: "TextURL",
         content: "",
         selectionText: "",
         title: "bar",
@@ -1913,7 +1907,7 @@ describe("main", () => {
         url: "https://example.com/",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
-      enabledFormats.add("Text");
+      enabledFormats.add("TextURL");
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1922,10 +1916,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "Text",
-              mimeType: "text/plain",
+              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1972,10 +1966,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtml: false,
+              includeTitleHtmlHtml: false,
+              includeTitleHtmlPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
-              mimeType: "text/plain",
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2122,13 +2116,13 @@ describe("main", () => {
       }).resolves([{
         id: -1,
       }]);
-      enabledFormats.add("HTML");
-      await func("HTML");
+      enabledFormats.add("HTMLPlain");
+      await func("HTMLPlain");
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
       browser.tabs.query.flush();
     });
 
-    it("should not call function", async () => {
+    it("should call function", async () => {
       const {enabledFormats} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       browser.tabs.query.withArgs({
@@ -2138,8 +2132,8 @@ describe("main", () => {
       }).resolves([{
         id: 1,
       }]);
-      enabledFormats.add("HTML");
-      await func(`${CMD_COPY}HTML`);
+      enabledFormats.add("HTMLPlain");
+      await func(`${CMD_COPY}HTMLPlain`);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       browser.tabs.query.flush();
     });
@@ -2156,8 +2150,8 @@ describe("main", () => {
       }).resolves([{
         id: 1,
       }]);
-      enabledFormats.add("HTML");
-      await func(`${CMD_COPY}HTML`);
+      enabledFormats.add("HTMLPlain");
+      await func(`${CMD_COPY}HTMLPlain`);
       const {calledOnce} = stub;
       stub.restore();
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
@@ -2429,24 +2423,22 @@ describe("main", () => {
     beforeEach(() => {
       const {enabledFormats, formats, vars} = mjs;
       vars.iconId = "";
-      vars.includeTitleHtml = false;
+      vars.includeTitleHtmlHtml = false;
+      vars.includeTitleHtmlPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
-      vars.mimeType = MIME_PLAIN;
       vars.promptContent = false;
-      vars.textOutput = OUTPUT_TEXT_AND_URL;
       enabledFormats.clear();
       formats.clear();
     });
     afterEach(() => {
       const {enabledFormats, formats, vars} = mjs;
       vars.iconId = "";
-      vars.includeTitleHtml = false;
+      vars.includeTitleHtmlHtml = false;
+      vars.includeTitleHtmlPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
-      vars.mimeType = MIME_PLAIN;
       vars.promptContent = false;
-      vars.textOutput = OUTPUT_TEXT_AND_URL;
       enabledFormats.clear();
       formats.clear();
     });
@@ -2465,94 +2457,40 @@ describe("main", () => {
 
     it("should set variable", async () => {
       await mjs.setFormatData();
-      const res = await func("Text", {
+      const res = await func("TextURL", {
         checked: false,
       });
       const {enabledFormats} = mjs;
-      assert.isFalse(enabledFormats.has("Text"), "value");
+      assert.isFalse(enabledFormats.has("TextURL"), "value");
       assert.deepEqual(res, [undefined], "result");
     });
 
     it("should set variable", async () => {
       await mjs.setFormatData();
-      const res = await func("Text", {
+      const res = await func("TextURL", {
         checked: false,
       }, true);
       const {enabledFormats} = mjs;
-      assert.isFalse(enabledFormats.has("Text"), "value");
+      assert.isFalse(enabledFormats.has("TextURL"), "value");
       assert.strictEqual(res.length, 1, "result");
-      assert.strictEqual(res[0].length, 44, "result");
+      assert.strictEqual(res[0].length, 56, "result");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      const res = await func(OUTPUT_TEXT_URL, {
+      const res = await func(INCLUDE_TITLE_HTML_HTML, {
         checked: true,
-        value: OUTPUT_TEXT_URL,
       });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_URL, "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      const res = await func(OUTPUT_TEXT_TEXT, {
-        checked: true,
-        value: OUTPUT_TEXT_TEXT,
-      });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_TEXT, "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      vars.textOutput = OUTPUT_TEXT_TEXT;
-      const res = await func(OUTPUT_TEXT_TEXT_URL, {
-        checked: false,
-        value: OUTPUT_TEXT_TEXT_URL,
-      });
-      assert.strictEqual(vars.textOutput, OUTPUT_TEXT_TEXT, "value");
+      assert.isTrue(vars.includeTitleHtmlHtml, "value");
       assert.deepEqual(res, [], "result");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      const res = await func(OUTPUT_HTML_HYPER, {
-        checked: true,
-        value: MIME_HTML,
-      });
-      assert.strictEqual(vars.mimeType, MIME_HTML, "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      vars.mimeType = MIME_HTML;
-      const res = await func(OUTPUT_HTML_PLAIN, {
-        checked: true,
-        value: MIME_PLAIN,
-      });
-      assert.strictEqual(vars.mimeType, MIME_PLAIN, "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should not set variable", async () => {
-      const {vars} = mjs;
-      vars.mimeType = MIME_HTML;
-      const res = await func(OUTPUT_HTML_PLAIN, {
-        checked: false,
-        value: MIME_PLAIN,
-      });
-      assert.strictEqual(vars.mimeType, MIME_HTML, "value");
-      assert.deepEqual(res, [], "result");
-    });
-
-    it("should set variable", async () => {
-      const {vars} = mjs;
-      const res = await func(INCLUDE_TITLE_HTML, {
+      const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true,
       });
-      assert.isTrue(vars.includeTitleHtml, "value");
+      assert.isTrue(vars.includeTitleHtmlPlain, "value");
       assert.deepEqual(res, [], "result");
     });
 

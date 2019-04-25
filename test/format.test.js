@@ -22,9 +22,9 @@ describe("format", () => {
 
   describe("keys", () => {
     const itemKeys = [
-      "HTML", "HTMLHtml", "HTMLPlain", "Markdown", "BBCodeText", "BBCodeURL",
+      "HTMLHtml", "HTMLPlain", "Markdown", "BBCodeText", "BBCodeURL",
       "Textile", "AsciiDoc", "MediaWiki", "Jira", "reStructuredText", "LaTeX",
-      "Text", "TextURL", "TextOnly", "URLOnly",
+      "TextURL", "TextOnly", "URLOnly",
     ];
     const items = Object.entries(format);
 

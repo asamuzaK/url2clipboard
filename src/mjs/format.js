@@ -3,14 +3,6 @@
  */
 
 export default {
-  // NOTE: remove later
-  HTML: {
-    id: "HTML",
-    enabled: true,
-    menu: "&HTML",
-    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
-    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
-  },
   HTMLPlain: {
     id: "HTMLPlain",
     enabled: true,
@@ -83,13 +75,6 @@ export default {
     enabled: true,
     menu: "&LaTeX",
     template: "\\href{%url%}{%content%}",
-  },
-  // NOTE: remove later
-  Text: {
-    id: "Text",
-    enabled: true,
-    menu: "&Text",
-    template: "%content% %url%",
   },
   TextURL: {
     id: "TextURL",
