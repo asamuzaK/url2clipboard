@@ -13,7 +13,7 @@ import formatData from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
   CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
-  INCLUDE_TITLE_HTML_HTML, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 
@@ -143,15 +143,15 @@ describe("popup-main", () => {
     beforeEach(() => {
       const {formats, vars} = mjs;
       formats.clear();
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
     afterEach(() => {
       const {formats, vars} = mjs;
       formats.clear();
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
 
@@ -207,14 +207,14 @@ describe("popup-main", () => {
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}HTMLHtml`);
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
     });
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      mjs.vars.includeTitleHtmlHtml = true;
-      const res = await func(`${COPY_PAGE}HTMLHtml`);
+      mjs.vars.includeTitleHTMLHyper = true;
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
@@ -228,7 +228,7 @@ describe("popup-main", () => {
 
     it("should get value", async () => {
       await mjs.setFormatData();
-      mjs.vars.includeTitleHtmlPlain = true;
+      mjs.vars.includeTitleHTMLPlain = true;
       const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
@@ -354,8 +354,8 @@ describe("popup-main", () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
       const {contextInfo, tabInfo, vars} = mjs;
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       tabInfo.title = "foo";
       tabInfo.url = "https://www.example.com";
@@ -378,8 +378,8 @@ describe("popup-main", () => {
     });
     afterEach(() => {
       const {contextInfo, tabInfo, vars} = mjs;
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       tabInfo.id = null;
       tabInfo.title = null;
@@ -435,8 +435,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
@@ -479,8 +479,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
@@ -522,8 +522,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}BBCodeURL`,
               template: "[url]%content%[/url]",
@@ -566,8 +566,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}BBCodeURL`,
               template: "[url]%content%[/url]",
@@ -609,8 +609,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
@@ -652,8 +652,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
@@ -695,8 +695,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com/baz",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}BBCodeURL`,
               template: "[url]%content%[/url]",
@@ -738,8 +738,8 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}BBCodeURL`,
               template: "[url]%content%[/url]",
@@ -810,8 +810,8 @@ describe("popup-main", () => {
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
             },
           },
@@ -1066,47 +1066,47 @@ describe("popup-main", () => {
     const func = mjs.setVar;
     beforeEach(() => {
       const {vars} = mjs;
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
     afterEach(() => {
       const {vars} = mjs;
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
 
     it("should not set variable", async () => {
       const {vars} = mjs;
       await func();
-      assert.isFalse(vars.includeTitleHtmlHtml, "html");
-      assert.isFalse(vars.includeTitleHtmlPlain, "html");
+      assert.isFalse(vars.includeTitleHTMLHyper, "html");
+      assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
     });
 
     it("should not set variable", async () => {
       const {vars} = mjs;
       await func("foo", {});
-      assert.isFalse(vars.includeTitleHtmlHtml, "html");
-      assert.isFalse(vars.includeTitleHtmlPlain, "html");
+      assert.isFalse(vars.includeTitleHTMLHyper, "html");
+      assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(INCLUDE_TITLE_HTML_HTML, {
+      await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true,
       });
-      assert.isTrue(vars.includeTitleHtmlHtml, "variable");
+      assert.isTrue(vars.includeTitleHTMLHyper, "variable");
     });
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      await func(INCLUDE_TITLE_HTML_HTML, {
+      await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: false,
       });
-      assert.isFalse(vars.includeTitleHtmlHtml, "variable");
+      assert.isFalse(vars.includeTitleHTMLHyper, "variable");
     });
 
     it("should set variable", async () => {
@@ -1114,7 +1114,7 @@ describe("popup-main", () => {
       await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true,
       });
-      assert.isTrue(vars.includeTitleHtmlPlain, "variable");
+      assert.isTrue(vars.includeTitleHTMLPlain, "variable");
     });
 
     it("should set variable", async () => {
@@ -1122,7 +1122,7 @@ describe("popup-main", () => {
       await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: false,
       });
-      assert.isFalse(vars.includeTitleHtmlPlain, "variable");
+      assert.isFalse(vars.includeTitleHTMLPlain, "variable");
     });
 
     it("should set variable", async () => {

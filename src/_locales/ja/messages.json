@@ -20,7 +20,7 @@
   "commandCopyBBCodeURL": {
     "message": "BBCode (URL) でコピー"
   },
-  "commandCopyHTMLHtml": {
+  "commandCopyHTMLHyper": {
     "message": "HTML (text/html) でコピー"
   },
   "commandCopyHTMLPlain": {

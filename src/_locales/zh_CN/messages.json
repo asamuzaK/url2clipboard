@@ -20,7 +20,7 @@
   "commandCopyBBCodeURL": {
     "message": "复制链接为 BBCode (链接)"
   },
-  "commandCopyHTMLHtml": {
+  "commandCopyHTMLHyper": {
     "message": "复制链接为 HTML (text/html)"
   },
   "commandCopyHTMLPlain": {

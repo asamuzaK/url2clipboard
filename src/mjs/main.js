@@ -19,9 +19,9 @@ import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB,
   EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
-  EXT_NAME, HTML_HTML, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
+  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
-  INCLUDE_TITLE_HTML_HTML, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
@@ -29,8 +29,8 @@ const {TAB_ID_NONE} = tabs;
 /* variables */
 export const vars = {
   iconId: "",
-  includeTitleHtmlHtml: false,
-  includeTitleHtmlPlain: false,
+  includeTitleHTMLHyper: false,
+  includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
   notifyOnCopy: false,
@@ -124,14 +124,14 @@ export const getFormatTemplate = async id => {
       id: itemId, template: itemTmpl, templateWithoutTitle: itemTmplWoTitle,
     } = item;
     const {
-      includeTitleHtmlHtml, includeTitleHtmlPlain, includeTitleMarkdown,
+      includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
     } = vars;
     switch (itemId) {
-      case HTML_HTML:
-        template = includeTitleHtmlHtml && itemTmpl || itemTmplWoTitle;
+      case HTML_HYPER:
+        template = includeTitleHTMLHyper && itemTmpl || itemTmplWoTitle;
         break;
       case HTML_PLAIN:
-        template = includeTitleHtmlPlain && itemTmpl || itemTmplWoTitle;
+        template = includeTitleHTMLPlain && itemTmpl || itemTmplWoTitle;
         break;
       case MARKDOWN:
         template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
@@ -462,7 +462,7 @@ export const extractClickedData = async (info, tab) => {
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       const {
-        includeTitleHtmlHtml, includeTitleHtmlPlain, includeTitleMarkdown,
+        includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
         promptContent,
       } = vars;
       const {
@@ -476,7 +476,7 @@ export const extractClickedData = async (info, tab) => {
         func.push(sendMessage(tabId, {
           [EXEC_COPY_TABS]: {
             allTabs,
-            includeTitleHtmlHtml, includeTitleHtmlPlain, includeTitleMarkdown,
+            includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
           },
         }));
       } else {
@@ -525,7 +525,7 @@ export const extractClickedData = async (info, tab) => {
         if (isString(content) && isString(url)) {
           func.push(sendMessage(tabId, {
             [EXEC_COPY]: {
-              content, includeTitleHtmlHtml, includeTitleHtmlPlain,
+              content, includeTitleHTMLHyper, includeTitleHTMLPlain,
               includeTitleMarkdown, menuItemId, promptContent, template,
               title, url,
             },
@@ -701,7 +701,7 @@ export const setVar = async (item, obj, changed = false) => {
           }
         }
         break;
-      case INCLUDE_TITLE_HTML_HTML:
+      case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:

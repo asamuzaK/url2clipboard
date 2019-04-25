@@ -11,8 +11,8 @@ export default {
     templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
     title: "HTML (text/plain)",
   },
-  HTMLHtml: {
-    id: "HTMLHtml",
+  HTMLHyper: {
+    id: "HTMLHyper",
     enabled: true,
     menu: "&HTML (text/html)",
     template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",

@@ -16,7 +16,7 @@ import {
   EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE,
-  INCLUDE_TITLE_HTML_HTML, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT,
 } from "../src/mjs/constant.js";
 
@@ -171,15 +171,15 @@ describe("main", () => {
       for (const [key, value] of items) {
         formats.set(key, value);
       }
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
     afterEach(() => {
       const {formats, vars} = mjs;
       formats.clear();
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
     });
 
@@ -218,14 +218,14 @@ describe("main", () => {
     });
 
     it("should get value", async () => {
-      const res = await func(`${COPY_PAGE}HTMLHtml`);
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(res, "<a href=\"%url%\">%content%</a>", "result");
     });
 
     it("should get value", async () => {
       const {vars} = mjs;
-      vars.includeTitleHtmlHtml = true;
-      const res = await func(`${COPY_PAGE}HTMLHtml`);
+      vars.includeTitleHTMLHyper = true;
+      const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
@@ -238,7 +238,7 @@ describe("main", () => {
 
     it("should get value", async () => {
       const {vars} = mjs;
-      vars.includeTitleHtmlPlain = true;
+      vars.includeTitleHTMLPlain = true;
       const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
@@ -1048,8 +1048,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
@@ -1152,8 +1152,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
@@ -1196,8 +1196,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_TAB}TextURL`,
               promptContent: false,
@@ -1240,8 +1240,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
               promptContent: false,
@@ -1289,8 +1289,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
               promptContent: false,
@@ -1333,8 +1333,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_TAB}${BBCODE_URL}`,
               promptContent: false,
@@ -1382,8 +1382,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
@@ -1431,8 +1431,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "qux",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
@@ -1480,8 +1480,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://www.example.com/#corge",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: `${COPY_LINK}${BBCODE_URL}`,
               promptContent: false,
@@ -1558,8 +1558,8 @@ describe("main", () => {
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
             },
           },
@@ -1628,8 +1628,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: "TextURL",
               promptContent: false,
@@ -1674,8 +1674,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: "TextURL",
               promptContent: false,
@@ -1721,8 +1721,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
               promptContent: false,
@@ -1767,8 +1767,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
               promptContent: false,
@@ -1816,8 +1816,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: "TextURL",
               promptContent: false,
@@ -1866,8 +1866,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: "TextURL",
               promptContent: false,
@@ -1916,8 +1916,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: "TextURL",
               promptContent: false,
@@ -1966,8 +1966,8 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
-              includeTitleHtmlHtml: false,
-              includeTitleHtmlPlain: false,
+              includeTitleHTMLHyper: false,
+              includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
               menuItemId: BBCODE_URL,
               promptContent: false,
@@ -2423,8 +2423,8 @@ describe("main", () => {
     beforeEach(() => {
       const {enabledFormats, formats, vars} = mjs;
       vars.iconId = "";
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
       vars.promptContent = false;
@@ -2434,8 +2434,8 @@ describe("main", () => {
     afterEach(() => {
       const {enabledFormats, formats, vars} = mjs;
       vars.iconId = "";
-      vars.includeTitleHtmlHtml = false;
-      vars.includeTitleHtmlPlain = false;
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
       vars.promptContent = false;
@@ -2478,10 +2478,10 @@ describe("main", () => {
 
     it("should set variable", async () => {
       const {vars} = mjs;
-      const res = await func(INCLUDE_TITLE_HTML_HTML, {
+      const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true,
       });
-      assert.isTrue(vars.includeTitleHtmlHtml, "value");
+      assert.isTrue(vars.includeTitleHTMLHyper, "value");
       assert.deepEqual(res, [], "result");
     });
 
@@ -2490,7 +2490,7 @@ describe("main", () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true,
       });
-      assert.isTrue(vars.includeTitleHtmlPlain, "value");
+      assert.isTrue(vars.includeTitleHTMLPlain, "value");
       assert.deepEqual(res, [], "result");
     });
 

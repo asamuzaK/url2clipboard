@@ -34,8 +34,8 @@
     "commandCopyHTMLPlain": {
       "description": "__MSG_commandCopyHTMLPlain__"
     },
-    "commandCopyHTMLHtml": {
-      "description": "__MSG_commandCopyHTMLHtml__"
+    "commandCopyHTMLHyper": {
+      "description": "__MSG_commandCopyHTMLHyper__"
     },
     "commandCopyMarkdown": {
       "description": "__MSG_commandCopyMarkdown__"

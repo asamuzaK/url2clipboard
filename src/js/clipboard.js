@@ -26,7 +26,7 @@
   const ASCIIDOC = "AsciiDoc";
   const BBCODE_TEXT = "BBCodeText";
   const BBCODE_URL = "BBCodeURL";
-  const HTML_HTML = "HTMLHtml";
+  const HTML_HYPER = "HTMLHyper";
   const HTML_PLAIN = "HTMLPlain";
   const LATEX = "LaTeX";
   const MARKDOWN = "Markdown";
@@ -257,7 +257,7 @@
       case BBCODE_URL:
         content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         break;
-      case HTML_HTML:
+      case HTML_HYPER:
       case HTML_PLAIN:
         content = convertHtmlChar(content) || "";
         linkTitle = convertHtmlChar(title) || "";
@@ -280,7 +280,7 @@
         break;
       default:
     }
-    vars.mimeType = format === HTML_HTML && MIME_HTML || MIME_PLAIN;
+    vars.mimeType = format === HTML_HYPER && MIME_HTML || MIME_PLAIN;
     return template.replace(/%content%/g, content.trim())
       .replace(/%title%/g, linkTitle.trim())
       .replace(/%url%/g, linkUrl.trim());

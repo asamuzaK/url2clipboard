@@ -22,7 +22,7 @@ describe("format", () => {
 
   describe("keys", () => {
     const itemKeys = [
-      "HTMLHtml", "HTMLPlain", "Markdown", "BBCodeText", "BBCodeURL",
+      "HTMLHyper", "HTMLPlain", "Markdown", "BBCodeText", "BBCodeURL",
       "Textile", "AsciiDoc", "MediaWiki", "Jira", "reStructuredText", "LaTeX",
       "TextURL", "TextOnly", "URLOnly",
     ];
