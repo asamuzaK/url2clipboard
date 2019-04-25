@@ -12,37 +12,46 @@
     "message": "url2clipboard"
   },
   "commandCopyAsciiDoc": {
-    "message": "URL を AsciiDoc でコピー"
+    "message": "AsciiDoc でコピー"
   },
   "commandCopyBBCodeText": {
-    "message": "URL を BBCode (Text) でコピー"
+    "message": "BBCode (Text) でコピー"
   },
   "commandCopyBBCodeURL": {
-    "message": "URL を BBCode (URL) でコピー"
+    "message": "BBCode (URL) でコピー"
   },
-  "commandCopyHTML": {
-    "message": "URL を HTML でコピー"
+  "commandCopyHTMLHtml": {
+    "message": "HTML (text/html) でコピー"
+  },
+  "commandCopyHTMLPlain": {
+    "message": "HTML (text/plain) でコピー"
   },
   "commandCopyJira": {
-    "message": "URL を Jira でコピー"
+    "message": "Jira でコピー"
   },
   "commandCopyLaTeX": {
-    "message": "URL を LaTeX でコピー"
+    "message": "LaTeX でコピー"
   },
   "commandCopyMarkdown": {
-    "message": "URL を Markdown でコピー"
+    "message": "Markdown でコピー"
   },
   "commandCopyMediaWiki": {
-    "message": "URL を MediaWiki でコピー"
+    "message": "MediaWiki でコピー"
   },
   "commandCopyreStructuredText": {
-    "message": "URL を reStructuredText でコピー"
-  },
-  "commandCopyText": {
-    "message": "URL を Text でコピー"
+    "message": "reStructuredText でコピー"
   },
   "commandCopyTextile": {
-    "message": "URL を Textile でコピー"
+    "message": "Textile でコピー"
+  },
+  "commandCopyTextOnly": {
+    "message": "Text をコピー"
+  },
+  "commandCopyTextURL": {
+    "message": "Text & URL をコピー"
+  },
+  "commandCopyURLOnly": {
+    "message": "URL をコピー"
   },
   "copyAllTabsURL": {
     "message": "すべてのタブの URL をコピー"
