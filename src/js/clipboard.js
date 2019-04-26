@@ -224,8 +224,10 @@
       id = menuItemId.replace(COPY_PAGE, "");
     } else if (menuItemId.startsWith(COPY_TAB)) {
       id = menuItemId.replace(COPY_TAB, "");
+    } else if (isString(menuItemId)) {
+      id = menuItemId;
     }
-    return id || null;
+    return id;
   };
 
   /**
@@ -241,49 +243,54 @@
       throw new TypeError(`Expected String but got ${getType(template)}.`);
     }
     const format = await getFormatIdFromMenuItemId(menuItemId);
-    let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
-                  "";
-    let linkTitle = title || "";
-    let linkUrl = url;
-    if (promptContent) {
-      content = await editContent(content) || "";
+    let text = "";
+    if (format) {
+      let linkTitle = title || "";
+      let linkUrl = url;
+      let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
+                    "";
+      if (promptContent) {
+        content = await editContent(content) || "";
+      }
+      switch (format) {
+        case ASCIIDOC:
+          content = escapeChar(content, /\[[\]]/g) || "";
+          linkUrl = encodeUrlSpecialChar(url);
+          break;
+        case BBCODE_TEXT:
+        case BBCODE_URL:
+          content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+          break;
+        case HTML_HYPER:
+        case HTML_PLAIN:
+          content = convertHtmlChar(content) || "";
+          linkTitle = convertHtmlChar(title) || "";
+          break;
+        case LATEX:
+          content = convertLaTeXChar(content) || "";
+          break;
+        case MARKDOWN:
+          content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
+          linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
+          break;
+        case MEDIAWIKI:
+          content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
+          break;
+        case REST:
+          content = escapeChar(content, /([`<>])/g) || "";
+          break;
+        case TEXTILE:
+          content =
+            convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
+          break;
+        default:
+      }
+      vars.mimeType = format === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+      text = template.replace(/%content%/g, content.trim())
+        .replace(/%title%/g, linkTitle.trim())
+        .replace(/%url%/g, linkUrl.trim());
     }
-    switch (format) {
-      case ASCIIDOC:
-        content = escapeChar(content, /\[[\]]/g) || "";
-        linkUrl = encodeUrlSpecialChar(url);
-        break;
-      case BBCODE_TEXT:
-      case BBCODE_URL:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-        break;
-      case HTML_HYPER:
-      case HTML_PLAIN:
-        content = convertHtmlChar(content) || "";
-        linkTitle = convertHtmlChar(title) || "";
-        break;
-      case LATEX:
-        content = convertLaTeXChar(content) || "";
-        break;
-      case MARKDOWN:
-        content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
-        linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
-        break;
-      case MEDIAWIKI:
-        content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
-        break;
-      case REST:
-        content = escapeChar(content, /([`<>])/g) || "";
-        break;
-      case TEXTILE:
-        content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
-        break;
-      default:
-    }
-    vars.mimeType = format === HTML_HYPER && MIME_HTML || MIME_PLAIN;
-    return template.replace(/%content%/g, content.trim())
-      .replace(/%title%/g, linkTitle.trim())
-      .replace(/%url%/g, linkUrl.trim());
+    return text;
   };
 
   /**
