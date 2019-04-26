@@ -74,6 +74,34 @@ describe("popup-main", () => {
     });
   });
 
+  describe("get format id", () => {
+    const func = mjs.getFormatId;
+
+    it("should throw", async () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get result", async () => {
+      const res = func("foo");
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_ALL_TABS}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_LINK}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_PAGE}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+  });
+
   describe("get format item from menu item ID", () => {
     const func = mjs.getFormatItemFromId;
     beforeEach(() => {
@@ -331,7 +359,7 @@ describe("popup-main", () => {
       assert.deepEqual(res, [
         {
           id: 1,
-          menuItemId: `${COPY_PAGE}TextURL`,
+          formatId: "TextURL",
           template: "%content% %url%",
           title: "foo",
           url: "https://example.com",
@@ -339,7 +367,7 @@ describe("popup-main", () => {
         },
         {
           id: 2,
-          menuItemId: `${COPY_PAGE}TextURL`,
+          formatId: "TextURL",
           template: "%content% %url%",
           title: "bar",
           url: "https://www.example.com",
@@ -435,10 +463,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
               title: "foo",
               url: "https://example.com",
@@ -479,10 +507,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}TextURL`,
               template: "%content% %url%",
               title: "foo",
               url: "https://www.example.com",
@@ -522,10 +550,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com",
+              formatId: "BBCodeURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}BBCodeURL`,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com",
@@ -566,10 +594,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
+              formatId: "BBCodeURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}BBCodeURL`,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com",
@@ -609,10 +637,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "qux",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -652,10 +680,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}TextURL`,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -695,10 +723,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "https://www.example.com/baz",
+              formatId: "BBCodeURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}BBCodeURL`,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -738,10 +766,10 @@ describe("popup-main", () => {
           {
             [EXEC_COPY]: {
               content: "",
+              formatId: "BBCodeURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}BBCodeURL`,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -795,16 +823,16 @@ describe("popup-main", () => {
               allTabs: [
                 {
                   content: "foo",
+                  formatId: "TextURL",
                   id: 1,
-                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "foo",
                   url: "https://example.com",
                 },
                 {
                   content: "bar",
+                  formatId: "TextURL",
                   id: 2,
-                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "bar",
                   url: "https://www.example.com",

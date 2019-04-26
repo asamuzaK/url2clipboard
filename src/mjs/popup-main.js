@@ -2,8 +2,12 @@
  * popup-main.js
  */
 
-import {getType, isString, logErr, throwErr} from "./common.js";
-import {sendMessage} from "./browser.js";
+import {
+  getType, isString, logErr, throwErr,
+} from "./common.js";
+import {
+  sendMessage,
+} from "./browser.js";
 import formatData from "./format.js";
 
 /* api */
@@ -42,6 +46,25 @@ export const setFormatData = async () => {
 };
 
 /**
+ * get format id
+ * @param {string} id - id
+ * @returns {string} - format id
+ */
+export const getFormatId = id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  if (id.startsWith(COPY_ALL_TABS)) {
+    id = id.replace(COPY_ALL_TABS, "");
+  } else if (id.startsWith(COPY_LINK)) {
+    id = id.replace(COPY_LINK, "");
+  } else if (id.startsWith(COPY_PAGE)) {
+    id = id.replace(COPY_PAGE, "");
+  }
+  return id;
+};
+
+/**
  * get format item from menu item ID
  * @param {string} id - menu item id
  * @returns {Object} - format item
@@ -50,14 +73,8 @@ export const getFormatItemFromId = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let item;
-  if (id.startsWith(COPY_ALL_TABS)) {
-    item = formats.get(id.replace(COPY_ALL_TABS, ""));
-  } else if (id.startsWith(COPY_LINK)) {
-    item = formats.get(id.replace(COPY_LINK, ""));
-  } else if (id.startsWith(COPY_PAGE)) {
-    item = formats.get(id.replace(COPY_PAGE, ""));
-  }
+  const formatId = getFormatId(id);
+  const item = formatId && formats.get(formatId);
   return item || null;
 };
 
@@ -167,8 +184,9 @@ export const getAllTabsInfo = async menuItemId => {
   const arr = await tabs.query({currentWindow: true});
   arr.forEach(tab => {
     const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, menuItemId, template, title, url,
+      id, formatId, template, title, url,
       content: title,
     });
   });
@@ -219,11 +237,12 @@ export const createCopyData = async evt => {
         url = canonicalUrl || tabUrl;
       }
     }
-    if (url) {
+    if (isString(content) && isString(url)) {
+      const formatId = getFormatId(menuItemId);
       func.push(sendMessage(runtime.id, {
         [EXEC_COPY]: {
-          content, includeTitleHTMLHyper, includeTitleHTMLPlain,
-          includeTitleMarkdown, menuItemId, template, title, url,
+          content, formatId, includeTitleHTMLHyper, includeTitleHTMLPlain,
+          includeTitleMarkdown, template, title, url,
         },
       }));
     }

@@ -32,6 +32,39 @@ describe("main", () => {
     assert.isObject(browser, "browser");
   });
 
+  describe("get format id", () => {
+    const func = mjs.getFormatId;
+
+    it("should throw", async () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get result", async () => {
+      const res = func("foo");
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_ALL_TABS}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_LINK}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_PAGE}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_TAB}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+  });
+
   describe("toggle enabled formats", () => {
     const func = mjs.toggleEnabledFormats;
     beforeEach(() => {
@@ -977,16 +1010,16 @@ describe("main", () => {
       assert.deepEqual(res, [
         {
           content: "foo",
+          formatId: "TextURL",
           id: 1,
-          menuItemId: "copyPageURLTextURL",
           template: "%content% %url%",
           title: "foo",
           url: "https://example.com",
         },
         {
           content: "bar",
+          formatId: "TextURL",
           id: 2,
-          menuItemId: "copyPageURLTextURL",
           template: "%content% %url%",
           title: "bar",
           url: "https://www.example.com",
@@ -1048,10 +1081,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1152,10 +1185,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1196,10 +1229,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_TAB}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1240,10 +1273,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1289,10 +1322,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1333,10 +1366,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_TAB}${BBCODE_URL}`,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1382,10 +1415,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1431,10 +1464,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "qux",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}TextURL`,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1480,10 +1513,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://www.example.com/#corge",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: `${COPY_LINK}${BBCODE_URL}`,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1543,16 +1576,16 @@ describe("main", () => {
               allTabs: [
                 {
                   content: "foo",
+                  formatId: "TextURL",
                   id: 1,
-                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "foo",
                   url: "https://example.com#baz",
                 },
                 {
                   content: "bar",
+                  formatId: "TextURL",
                   id: 2,
-                  menuItemId: `${COPY_ALL_TABS}TextURL`,
                   template: "%content% %url%",
                   title: "bar",
                   url: "https://www.example.com",
@@ -1628,10 +1661,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1674,10 +1707,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1721,10 +1754,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: BBCODE_URL,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1767,10 +1800,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: BBCODE_URL,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1816,10 +1849,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1866,10 +1899,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "foo",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1916,10 +1949,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "bar",
+              formatId: "TextURL",
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: "TextURL",
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1966,10 +1999,10 @@ describe("main", () => {
           {
             executeCopy: {
               content: "https://example.com/#baz",
+              formatId: BBCODE_URL,
               includeTitleHTMLHyper: false,
               includeTitleHTMLPlain: false,
               includeTitleMarkdown: false,
-              menuItemId: BBCODE_URL,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,

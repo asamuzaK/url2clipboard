@@ -7,10 +7,6 @@
   const {i18n, runtime} = browser;
 
   /* constants */
-  const COPY_ALL_TABS = "copyAllTabsURL";
-  const COPY_LINK = "copyLinkURL";
-  const COPY_PAGE = "copyPageURL";
-  const COPY_TAB = "copyTabURL";
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_POPUP = "executeCopyPopup";
   const EXEC_COPY_TABS = "executeCopyAllTabs";
@@ -210,87 +206,63 @@
   };
 
   /**
-   * get format ID from menu item ID
-   * @param {string} menuItemId - menu item ID
-   * @returns {?string} - ID
-   */
-  const getFormatIdFromMenuItemId = async menuItemId => {
-    let id;
-    if (menuItemId.startsWith(COPY_ALL_TABS)) {
-      id = menuItemId.replace(COPY_ALL_TABS, "");
-    } else if (menuItemId.startsWith(COPY_LINK)) {
-      id = menuItemId.replace(COPY_LINK, "");
-    } else if (menuItemId.startsWith(COPY_PAGE)) {
-      id = menuItemId.replace(COPY_PAGE, "");
-    } else if (menuItemId.startsWith(COPY_TAB)) {
-      id = menuItemId.replace(COPY_TAB, "");
-    } else if (isString(menuItemId)) {
-      id = menuItemId;
-    }
-    return id;
-  };
-
-  /**
    * create link text
    * @param {Object} data - copy data
    * @returns {?string} - link text
    */
   const createLinkText = async (data = {}) => {
     const {
-      content: contentText, menuItemId, promptContent, template, title, url,
+      content: contentText, formatId, promptContent, template, title, url,
     } = data;
+    if (!isString(formatId)) {
+      throw new TypeError(`Expected String but got ${getType(formatId)}.`);
+    }
     if (!isString(template)) {
       throw new TypeError(`Expected String but got ${getType(template)}.`);
     }
-    const format = await getFormatIdFromMenuItemId(menuItemId);
-    let text = "";
-    if (format) {
-      let linkTitle = title || "";
-      let linkUrl = url;
-      let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
-                    "";
-      if (promptContent) {
-        content = await editContent(content) || "";
-      }
-      switch (format) {
-        case ASCIIDOC:
-          content = escapeChar(content, /\[[\]]/g) || "";
-          linkUrl = encodeUrlSpecialChar(url);
-          break;
-        case BBCODE_TEXT:
-        case BBCODE_URL:
-          content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
-          break;
-        case HTML_HYPER:
-        case HTML_PLAIN:
-          content = convertHtmlChar(content) || "";
-          linkTitle = convertHtmlChar(title) || "";
-          break;
-        case LATEX:
-          content = convertLaTeXChar(content) || "";
-          break;
-        case MARKDOWN:
-          content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
-          linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
-          break;
-        case MEDIAWIKI:
-          content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
-          break;
-        case REST:
-          content = escapeChar(content, /([`<>])/g) || "";
-          break;
-        case TEXTILE:
-          content =
-            convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
-          break;
-        default:
-      }
-      vars.mimeType = format === HTML_HYPER && MIME_HTML || MIME_PLAIN;
-      text = template.replace(/%content%/g, content.trim())
-        .replace(/%title%/g, linkTitle.trim())
-        .replace(/%url%/g, linkUrl.trim());
+    let linkTitle = title || "";
+    let linkUrl = url;
+    let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
+                  "";
+    if (promptContent) {
+      content = await editContent(content) || "";
     }
-    return text;
+    switch (formatId) {
+      case ASCIIDOC:
+        content = escapeChar(content, /\[[\]]/g) || "";
+        linkUrl = encodeUrlSpecialChar(url);
+        break;
+      case BBCODE_TEXT:
+      case BBCODE_URL:
+        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+        break;
+      case HTML_HYPER:
+      case HTML_PLAIN:
+        content = convertHtmlChar(content) || "";
+        linkTitle = convertHtmlChar(title) || "";
+        break;
+      case LATEX:
+        content = convertLaTeXChar(content) || "";
+        break;
+      case MARKDOWN:
+        content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
+        linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
+        break;
+      case MEDIAWIKI:
+        content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
+        break;
+      case REST:
+        content = escapeChar(content, /([`<>])/g) || "";
+        break;
+      case TEXTILE:
+        content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
+        break;
+      default:
+    }
+    vars.mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+    return template.replace(/%content%/g, content.trim())
+      .replace(/%title%/g, linkTitle.trim())
+      .replace(/%url%/g, linkUrl.trim());
   };
 
   /**

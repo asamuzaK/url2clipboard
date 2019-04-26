@@ -44,12 +44,11 @@ export const formats = new Map();
 export const enabledFormats = new Set();
 
 /**
- * toggle enabled formats
- * @param {string} id - format id
- * @param {boolean} enabled - format is enabled
- * @returns {void}
+ * get format id
+ * @param {string} id - id
+ * @returns {string} - format id
  */
-export const toggleEnabledFormats = async (id, enabled) => {
+export const getFormatId = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -62,10 +61,24 @@ export const toggleEnabledFormats = async (id, enabled) => {
   } else if (id.startsWith(COPY_TAB)) {
     id = id.replace(COPY_TAB, "");
   }
-  if (formats.has(id) && enabled) {
-    enabledFormats.add(id);
+  return id;
+};
+
+/**
+ * toggle enabled formats
+ * @param {string} id - format id
+ * @param {boolean} enabled - format is enabled
+ * @returns {void}
+ */
+export const toggleEnabledFormats = async (id, enabled) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const formatId = getFormatId(id);
+  if (formats.has(formatId) && enabled) {
+    enabledFormats.add(formatId);
   } else {
-    enabledFormats.delete(id);
+    enabledFormats.delete(formatId);
   }
 };
 
@@ -93,18 +106,8 @@ export const getFormatItemFromId = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let item;
-  if (id.startsWith(COPY_ALL_TABS)) {
-    item = formats.get(id.replace(COPY_ALL_TABS, ""));
-  } else if (id.startsWith(COPY_LINK)) {
-    item = formats.get(id.replace(COPY_LINK, ""));
-  } else if (id.startsWith(COPY_PAGE)) {
-    item = formats.get(id.replace(COPY_PAGE, ""));
-  } else if (id.startsWith(COPY_TAB)) {
-    item = formats.get(id.replace(COPY_TAB, ""));
-  } else {
-    item = formats.get(id);
-  }
+  const formatId = getFormatId(id);
+  const item = formatId && formats.get(formatId);
   return item || null;
 };
 
@@ -436,8 +439,9 @@ export const getAllTabsInfo = async menuItemId => {
   const arr = await getAllTabsInWindow();
   arr.forEach(tab => {
     const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, menuItemId, template, title, url,
+      id, formatId, template, title, url,
       content: title,
     });
   });
@@ -523,11 +527,11 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
+          const formatId = getFormatId(menuItemId);
           func.push(sendMessage(tabId, {
             [EXEC_COPY]: {
-              content, includeTitleHTMLHyper, includeTitleHTMLPlain,
-              includeTitleMarkdown, menuItemId, promptContent, template,
-              title, url,
+              content, formatId, includeTitleHTMLHyper, includeTitleHTMLPlain,
+              includeTitleMarkdown, promptContent, template, title, url,
             },
           }));
         }
