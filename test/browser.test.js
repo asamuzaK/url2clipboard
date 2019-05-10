@@ -46,7 +46,6 @@ describe("browser", () => {
     });
   });
 
-  // NOTE: commands.reset and commands.update not implemented in sinon-chrome
   describe("update command", () => {
     const func = mjs.updateCommand;
 
@@ -69,36 +68,30 @@ describe("browser", () => {
     });
 
     it("should get null", async () => {
-      const fake = sinon.fake.resolves(undefined);
-      const fake2 = sinon.fake.rejects();
-      browser.commands.reset = fake2;
-      browser.commands.update = fake;
+      browser.commands.reset.rejects();
+      browser.commands.update.resolves(undefined);
       const res = await func("foo", "a");
-      assert.isFalse(fake.calledOnce, "called");
-      assert.isFalse(fake2.calledOnce, "not called");
+      assert.isFalse(browser.commands.reset.calledOnce, "called");
+      assert.isFalse(browser.commands.update.calledOnce, "not called");
       assert.isNull(res, "result");
-      delete browser.commands.reset;
-      delete browser.commands.update;
+      browser.commands.reset.flush();
+      browser.commands.update.flush();
     });
 
     it("should call function", async () => {
-      const fake = sinon.fake.resolves(undefined);
-      const fake2 = sinon.fake.rejects();
-      browser.commands.reset = fake;
-      browser.commands.update = fake2;
+      browser.commands.reset.resolves(undefined);
+      browser.commands.update.rejects();
       const res = await func("foo", "");
-      assert.isTrue(fake.calledOnce, "called");
-      assert.isFalse(fake2.calledOnce, "not called");
+      assert.isTrue(browser.commands.reset.calledOnce, "called");
+      assert.isFalse(browser.commands.update.calledOnce, "not called");
       assert.isUndefined(res, "result");
-      delete browser.commands.reset;
-      delete browser.commands.update;
+      browser.commands.reset.flush();
+      browser.commands.update.flush();
     });
 
     it("should call function", async () => {
-      const fake = sinon.fake.resolves(undefined);
-      const fake2 = sinon.fake.rejects();
-      browser.commands.reset = fake2;
-      browser.commands.update = fake;
+      browser.commands.reset.rejects();
+      browser.commands.update.resolves(undefined);
       const items = [
         "Alt+1", "Command+1", "Ctrl+1", "MacCtrl+1",
         "Alt+Shift+1", "Command+Shift+1", "Ctrl+Shift+1", "MacCtrl+Shift+1",
@@ -143,27 +136,26 @@ describe("browser", () => {
         "MediaNextTrack", "MediaPrevTrack", "MediaPlayPause", "MediaStop",
       ];
       for (const item of items) {
-        const i = fake.callCount;
+        const i = browser.commands.update.callCount;
         const res = await func("foo", item);
-        assert.strictEqual(fake.callCount, i + 1, `called ${item}`);
-        assert.isFalse(fake2.calledOnce, "not called");
+        assert.strictEqual(browser.commands.update.callCount, i + 1,
+                           `called ${item}`);
+        assert.isFalse(browser.commands.reset.calledOnce, "not called");
         assert.isUndefined(res, "result");
       }
-      delete browser.commands.reset;
-      delete browser.commands.update;
+      browser.commands.reset.flush();
+      browser.commands.update.flush();
     });
 
     it("should call function", async () => {
-      const fake = sinon.fake.resolves(undefined);
-      const fake2 = sinon.fake.rejects();
-      browser.commands.reset = fake2;
-      browser.commands.update = fake;
+      browser.commands.reset.rejects();
+      browser.commands.update.resolves(undefined);
       const res = await func("foo", " Ctrl+a ");
-      assert.isTrue(fake.calledOnce, "called");
-      assert.isFalse(fake2.calledOnce, "not called");
+      assert.isTrue(browser.commands.update.calledOnce, "called");
+      assert.isFalse(browser.commands.reset.calledOnce, "not called");
       assert.isUndefined(res, "result");
-      delete browser.commands.reset;
-      delete browser.commands.update;
+      browser.commands.reset.flush();
+      browser.commands.update.flush();
     });
   });
 
