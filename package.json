@@ -21,10 +21,10 @@
     "test": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --require @babel/register --exit"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
     "@babel/register": "^7.4.4",
-    "addons-linter": "^1.9.3",
+    "addons-linter": "^1.9.4",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
     "jsdom": "^15.1.0",
@@ -36,5 +36,5 @@
     "webext-schema": "^0.6.0",
     "webextension-polyfill": "^0.4.0"
   },
-  "version": "2.1.5"
+  "version": "3.0.0"
 }
