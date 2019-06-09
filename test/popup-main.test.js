@@ -14,6 +14,7 @@ import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
   CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 
@@ -174,6 +175,7 @@ describe("popup-main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
     afterEach(() => {
       const {formats, vars} = mjs;
@@ -181,6 +183,7 @@ describe("popup-main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
 
     it("should throw", async () => {
@@ -261,6 +264,19 @@ describe("popup-main", () => {
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(res, "%content% %url%", "result");
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      mjs.vars.separateTextURL = true;
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(res, "%content%\n%url%", "result");
     });
   });
 
@@ -381,10 +397,7 @@ describe("popup-main", () => {
   describe("create copy data", () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
-      const {contextInfo, tabInfo, vars} = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
+      const {contextInfo, tabInfo} = mjs;
       tabInfo.title = "foo";
       tabInfo.url = "https://www.example.com";
       contextInfo.canonicalUrl = "https://example.com";
@@ -405,10 +418,7 @@ describe("popup-main", () => {
       body.appendChild(elm4);
     });
     afterEach(() => {
-      const {contextInfo, tabInfo, vars} = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
+      const {contextInfo, tabInfo} = mjs;
       tabInfo.id = null;
       tabInfo.title = null;
       tabInfo.url = null;
@@ -464,9 +474,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "qux",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "%content% %url%",
               title: "foo",
               url: "https://example.com",
@@ -508,9 +515,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "%content% %url%",
               title: "foo",
               url: "https://www.example.com",
@@ -551,9 +555,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "https://www.example.com",
               formatId: "BBCodeURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com",
@@ -595,9 +596,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "",
               formatId: "BBCodeURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com",
@@ -638,9 +636,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "qux",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -681,9 +676,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "%content% %url%",
               title: "bar",
               url: "https://www.example.com/baz",
@@ -724,9 +716,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "https://www.example.com/baz",
               formatId: "BBCodeURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -767,9 +756,6 @@ describe("popup-main", () => {
             [EXEC_COPY]: {
               content: "",
               formatId: "BBCodeURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/baz",
@@ -838,9 +824,6 @@ describe("popup-main", () => {
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
             },
           },
           null,
@@ -1097,12 +1080,14 @@ describe("popup-main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
     afterEach(() => {
       const {vars} = mjs;
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
 
     it("should not set variable", async () => {
@@ -1167,6 +1152,22 @@ describe("popup-main", () => {
         checked: false,
       });
       assert.isFalse(vars.includeTitleMarkdown, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(TEXT_SEP_LINES, {
+        checked: true,
+      });
+      assert.isTrue(vars.separateTextURL, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(TEXT_SEP_LINES, {
+        checked: false,
+      });
+      assert.isFalse(vars.separateTextURL, "variable");
     });
   });
 

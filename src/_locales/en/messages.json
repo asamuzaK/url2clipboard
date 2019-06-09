@@ -303,6 +303,9 @@
   "optionsPromptContentDetail": {
     "message": "If enabled, prompt window will appear when copying and you can edit content text of the link."
   },
+  "optionsSeparateTextURL": {
+    "message": "Copy text and URL in separate lines"
+  },
   "optionsTextOutputOnlyTextLabel": {
     "message": "Copy only text"
   },

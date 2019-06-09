@@ -303,6 +303,9 @@
   "optionsPromptContentDetail": {
     "message": "从右键菜单复制链接时提示修改链接信息"
   },
+  "optionsSeparateTextURL": {
+    "message": "Copy text and URL in separate lines"
+  },
   "optionsTextOutputOnlyTextLabel": {
     "message": "只复制文本"
   },

@@ -207,6 +207,7 @@ describe("main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
     afterEach(() => {
       const {formats, vars} = mjs;
@@ -214,6 +215,7 @@ describe("main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.separateTextURL = false;
     });
 
     it("should throw", async () => {
@@ -276,6 +278,19 @@ describe("main", () => {
       assert.strictEqual(
         res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
       );
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(res, "%content% %url%", "result");
+    });
+
+    it("should get value", async () => {
+      await mjs.setFormatData();
+      mjs.vars.separateTextURL = true;
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(res, "%content%\n%url%", "result");
     });
   });
 
@@ -1082,9 +1097,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1186,9 +1198,6 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1230,9 +1239,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1274,9 +1280,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1323,9 +1326,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1367,9 +1367,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1416,9 +1413,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1465,9 +1459,6 @@ describe("main", () => {
             executeCopy: {
               content: "qux",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "quux",
@@ -1514,9 +1505,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://www.example.com/#corge",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1591,9 +1579,6 @@ describe("main", () => {
                   url: "https://www.example.com",
                 },
               ],
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
             },
           },
           null,
@@ -1662,9 +1647,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1708,9 +1690,6 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1755,9 +1734,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1801,9 +1777,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1850,9 +1823,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1900,9 +1870,6 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -1950,9 +1917,6 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "%content% %url%",
               title: "bar",
@@ -2000,9 +1964,6 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              includeTitleHTMLHyper: false,
-              includeTitleHTMLPlain: false,
-              includeTitleMarkdown: false,
               promptContent: false,
               template: "[url]%content%[/url]",
               title: undefined,
