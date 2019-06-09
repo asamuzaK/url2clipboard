@@ -49,6 +49,7 @@ export const NOTIFY_COPY = "notifyOnCopy";
 export const PROMPT = "promptContent";
 export const REST = "reStructuredText";
 export const TEXTILE = "Textile";
+export const TEXT_SEP_LINES = "separateTextURL";
 export const TEXT_TEXT_ONLY = "TextOnly";
 export const TEXT_TEXT_URL = "TextURL";
 export const TEXT_URL_ONLY = "URLOnly";

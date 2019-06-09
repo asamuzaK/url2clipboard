@@ -8,7 +8,7 @@ export default {
     enabled: true,
     menu: "HTML (text/&plain)",
     template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
-    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    templateAlt: "<a href=\"%url%\">%content%</a>",
     title: "HTML (text/plain)",
   },
   HTMLHyper: {
@@ -16,7 +16,7 @@ export default {
     enabled: true,
     menu: "&HTML (text/html)",
     template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
-    templateWithoutTitle: "<a href=\"%url%\">%content%</a>",
+    templateAlt: "<a href=\"%url%\">%content%</a>",
     title: "HTML (text/html)",
   },
   Markdown: {
@@ -24,7 +24,7 @@ export default {
     enabled: true,
     menu: "&Markdown",
     template: "[%content%](%url% \"%title%\")",
-    templateWithoutTitle: "[%content%](%url%)",
+    templateAlt: "[%content%](%url%)",
   },
   BBCodeText: {
     id: "BBCodeText",
@@ -81,6 +81,7 @@ export default {
     enabled: true,
     menu: "&Text && URL",
     template: "%content% %url%",
+    templateAlt: "%content%\n%url%",
   },
   TextOnly: {
     id: "TextOnly",

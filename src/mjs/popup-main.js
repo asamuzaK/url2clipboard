@@ -19,7 +19,7 @@ import {
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
   HTML_HYPER, HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, LINK_MENU, MARKDOWN,
+  INCLUDE_TITLE_MARKDOWN, LINK_MENU, MARKDOWN, TEXT_SEP_LINES, TEXT_TEXT_URL,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
@@ -29,6 +29,7 @@ export const vars = {
   includeTitleHTMLHyper: false,
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
+  separateTextURL: false,
 };
 
 /* formats */
@@ -91,21 +92,24 @@ export const getFormatTemplate = async id => {
   let template;
   if (item) {
     const {
-      id: itemId, template: itemTmpl,
-      templateWithoutTitle: itemTmplWoTitle,
+      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt,
     } = item;
     const {
       includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
+      separateTextURL,
     } = vars;
     switch (itemId) {
       case HTML_HYPER:
-        template = includeTitleHTMLHyper && itemTmpl || itemTmplWoTitle;
+        template = includeTitleHTMLHyper && itemTmpl || itemTmplAlt;
         break;
       case HTML_PLAIN:
-        template = includeTitleHTMLPlain && itemTmpl || itemTmplWoTitle;
+        template = includeTitleHTMLPlain && itemTmpl || itemTmplAlt;
         break;
       case MARKDOWN:
-        template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
+        template = includeTitleMarkdown && itemTmpl || itemTmplAlt;
+        break;
+      case TEXT_TEXT_URL:
+        template = separateTextURL && itemTmplAlt || itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -201,9 +205,6 @@ export const getAllTabsInfo = async menuItemId => {
 export const createCopyData = async evt => {
   const {target} = evt;
   const {id: menuItemId} = target;
-  const {
-    includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-  } = vars;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
   const func = [];
@@ -212,7 +213,6 @@ export const createCopyData = async evt => {
     func.push(sendMessage(runtime.id, {
       [EXEC_COPY_TABS]: {
         allTabs,
-        includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
       },
     }));
   } else {
@@ -241,8 +241,7 @@ export const createCopyData = async evt => {
       const formatId = getFormatId(menuItemId);
       func.push(sendMessage(runtime.id, {
         [EXEC_COPY]: {
-          content, formatId, includeTitleHTMLHyper, includeTitleHTMLPlain,
-          includeTitleMarkdown, template, title, url,
+          content, formatId, template, title, url,
         },
       }));
     }
@@ -375,6 +374,7 @@ export const setVar = async (item, obj) => {
       case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
+      case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
       default:

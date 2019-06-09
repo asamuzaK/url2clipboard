@@ -22,7 +22,8 @@ import {
   EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  MARKDOWN, NOTIFY_COPY, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL,
+  THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 
@@ -35,6 +36,7 @@ export const vars = {
   isWebExt: runtime.id === WEBEXT_ID,
   notifyOnCopy: false,
   promptContent: false,
+  separateTextURL: false,
 };
 
 /* formats */
@@ -124,20 +126,24 @@ export const getFormatTemplate = async id => {
   let template;
   if (item) {
     const {
-      id: itemId, template: itemTmpl, templateWithoutTitle: itemTmplWoTitle,
+      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt,
     } = item;
     const {
       includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
+      separateTextURL,
     } = vars;
     switch (itemId) {
       case HTML_HYPER:
-        template = includeTitleHTMLHyper && itemTmpl || itemTmplWoTitle;
+        template = includeTitleHTMLHyper && itemTmpl || itemTmplAlt;
         break;
       case HTML_PLAIN:
-        template = includeTitleHTMLPlain && itemTmpl || itemTmplWoTitle;
+        template = includeTitleHTMLPlain && itemTmpl || itemTmplAlt;
         break;
       case MARKDOWN:
-        template = includeTitleMarkdown && itemTmpl || itemTmplWoTitle;
+        template = includeTitleMarkdown && itemTmpl || itemTmplAlt;
+        break;
+      case TEXT_TEXT_URL:
+        template = separateTextURL && itemTmplAlt || itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -465,10 +471,7 @@ export const extractClickedData = async (info, tab) => {
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const {
-        includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-        promptContent,
-      } = vars;
+      const {promptContent} = vars;
       const {
         canonicalUrl: contextCanonicalUrl, content: contextContent,
         selectionText: contextSelectionText, title: contextTitle,
@@ -480,7 +483,6 @@ export const extractClickedData = async (info, tab) => {
         func.push(sendMessage(tabId, {
           [EXEC_COPY_TABS]: {
             allTabs,
-            includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
           },
         }));
       } else {
@@ -530,8 +532,7 @@ export const extractClickedData = async (info, tab) => {
           const formatId = getFormatId(menuItemId);
           func.push(sendMessage(tabId, {
             [EXEC_COPY]: {
-              content, formatId, includeTitleHTMLHyper, includeTitleHTMLPlain,
-              includeTitleMarkdown, promptContent, template, title, url,
+              content, formatId, promptContent, template, title, url,
             },
           }));
         }
@@ -710,6 +711,7 @@ export const setVar = async (item, obj, changed = false) => {
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
       case PROMPT:
+      case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
       default: {
