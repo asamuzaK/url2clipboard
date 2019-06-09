@@ -303,6 +303,9 @@
   "optionsPromptContentDetail": {
     "message": "有効化すると、コピー時にプロンプ​​トウィンドウが表示されて、リンクのコンテンツテキストを編集できます。"
   },
+  "optionsSeparateTextURL": {
+    "message": "テキストとURLを別々の行にコピーする"
+  },
   "optionsTextOutputOnlyTextLabel": {
     "message": "テキストだけをコピー"
   },
