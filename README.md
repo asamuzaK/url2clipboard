@@ -14,7 +14,7 @@ Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Textile, As
 * When you right-click on a link (an anchor element), you can copy the URL of that link.
 * If you select some text before right-click, that selected text will be used for the content of the link.
 * You can edit content text when copying.
-* Copy to clipboard can be executed from the context menu, the tool button, or keyboard shortcut (Alt+Shift+C).
+* Copy to clipboard can be executed from the context menu, the tool button, or keyboard shortcut.
 
 NOTE: Currently, enabled only on (X)HTML documents.
 
