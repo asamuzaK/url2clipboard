@@ -126,9 +126,77 @@ export const escapeMatchingChars = (str, re) => {
     throw new TypeError(`Expected String but got ${getType(str)}.`);
   }
   if (!(re instanceof RegExp)) {
-    throw new TypeError(`Expected RegExp but got ${getType(str)}.`);
+    throw new TypeError(`Expected RegExp but got ${getType(re)}.`);
   }
   return re.global && str.replace(re, (m, c) => `\\${c}`) || null;
+};
+
+/**
+ * strip all matching chars
+ * @param {string} str - string
+ * @param {RegExp} re - RegExp
+ * @returns {?string} - string
+ */
+export const stripMatchingChars = (str, re) => {
+  if (!isString(str)) {
+    throw new TypeError(`Expected String but got ${getType(str)}.`);
+  }
+  if (!(re instanceof RegExp)) {
+    throw new TypeError(`Expected RegExp but got ${getType(re)}.`);
+  }
+  return re.global && str.replace(re, "") || null;
+};
+
+/**
+ * convert matching character to numeric character reference
+ * @param {string} str - string
+ * @param {RegExp} re - RegExp
+ * @returns {?string} - string
+ */
+export const convertNumCharRef = (str, re) => {
+  if (!isString(str)) {
+    throw new TypeError(`Expected String but got ${getType(str)}.`);
+  }
+  if (!(re instanceof RegExp)) {
+    throw new TypeError(`Expected RegExp but got ${getType(re)}.`);
+  }
+  return re.global && str.replace(re, (m, c) => `&#${c.charCodeAt(0)};`) ||
+         null;
+};
+
+/**
+ * convert HTML specific character to character reference
+ * @param {string} str - string
+ * @returns {?string} - string
+ */
+export const convertHtmlChar = str => {
+  if (!isString(str)) {
+    throw new TypeError(`Expected String but got ${getType(str)}.`);
+  }
+  return str.replace(/&(?!(?:(?:(?:[gl]|quo)t|amp)|[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, "&amp;")
+    .replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") ||
+    null;
+};
+
+/**
+ * convert LaTeX special char
+ * @param {string} str - string
+ * @returns {?string} - string
+ */
+export const convertLaTeXChar = str => {
+  if (!isString(str)) {
+    throw new TypeError(`Expected String but got ${getType(str)}.`);
+  }
+  const spChar = escapeMatchingChars(
+    str.replace(/\\/g, "\\textbackslash[]")
+      .replace(/\^/g, "\\textasciicircum[]")
+      .replace(/~/g, "\\textasciitilde[]"),
+    /([%$#&_{}])/g
+  );
+  return spChar && spChar.replace(
+    /(\\text(?:backslash|ascii(?:circum|tilde)))\[\]/g,
+    (m, c) => `${c}{}`
+  ) || null;
 };
 
 /**
@@ -185,6 +253,48 @@ export const removeQueryFromURI = uri => {
     uri = uri.replace(query, "");
   }
   return uri;
+};
+
+/**
+ * encode URL component part
+ * @param {string} part - component part
+ * @returns {string} - encoded component part
+ */
+export const encodeUrlPart = part => {
+  if (!isString(part)) {
+    throw new TypeError(`Expected String but got ${getType(part)}.`);
+  }
+  return part.replace(/&(?!amp)/g, "&amp;")
+    .replace(/([\s<>[\]'^`{|}])/g, (m, c) => encodeURIComponent(c))
+    .replace(/(')/g, (m, c) => escape(c)) || "";
+};
+
+/**
+ * encode special char in URL
+ * @param {string} str - URL string
+ * @returns {string|undefined} - encoded URL
+ */
+export const encodeUrlSpecialChar = str => {
+  if (!isString(str)) {
+    throw new TypeError(`Expected String but got ${getType(str)}.`);
+  }
+  let href;
+  try {
+    const url = new URL(str);
+    const {
+      hash: frag, origin, pathname: path, protocol, search: query,
+    } = url;
+    const base = protocol === "file:" && `${protocol}//` || origin;
+    const encodedUrl = new URL(
+      `${encodeUrlPart(path)}${encodeUrlPart(query)}${encodeUrlPart(frag)}`,
+      base
+    );
+    const {href: encodedHref} = encodedUrl;
+    href = encodedHref;
+  } catch (e) {
+    throw e;
+  }
+  return href;
 };
 
 /**
@@ -279,4 +389,12 @@ export const focusElement = evt => {
     target.focus();
   }
   return target || null;
+};
+
+/**
+ * close window
+ * @returns {void}
+ */
+export const closeWindow = () => {
+  window.close();
 };
