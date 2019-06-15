@@ -9,7 +9,7 @@ import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/popup-main.js";
-import formatData from "../src/mjs/format.js";
+import {formatData} from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
   CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,

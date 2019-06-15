@@ -8,7 +8,7 @@ import {
 import {
   sendMessage,
 } from "./browser.js";
-import formatData from "./format.js";
+import {formatData} from "./format.js";
 
 /* api */
 const {runtime, tabs} = browser;

@@ -65,7 +65,7 @@
    * @param {RegExp} re - RegExp
    * @returns {?string} - string
    */
-  const stripChar = (str, re) =>
+  const stripMatchingChars = (str, re) =>
     isString(str) && re && re.global && str.replace(re, "") || null;
 
   /**
@@ -74,7 +74,7 @@
    * @param {RegExp} re - RegExp
    * @returns {?string} - string
    */
-  const escapeChar = (str, re) =>
+  const escapeMatchingChars = (str, re) =>
     isString(str) && re && re.global &&
     str.replace(re, (m, c) => `\\${c}`) || null;
 
@@ -105,7 +105,7 @@
    * @returns {?string} - string
    */
   const convertLaTeXChar = str =>
-    isString(str) && escapeChar(
+    isString(str) && escapeMatchingChars(
       str.replace(/\\/g, "\\textbackslash[]")
         .replace(/\^/g, "\\textasciicircum[]")
         .replace(/~/g, "\\textasciitilde[]"),
@@ -221,7 +221,7 @@
       throw new TypeError(`Expected String but got ${getType(template)}.`);
     }
     let linkTitle = title || "";
-    let linkUrl = url;
+    let linkUrl = url || "";
     let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
                   "";
     if (promptContent) {
@@ -229,33 +229,39 @@
     }
     switch (formatId) {
       case ASCIIDOC:
-        content = escapeChar(content, /\[[\]]/g) || "";
-        linkUrl = encodeUrlSpecialChar(url);
+        content = escapeMatchingChars(content, /([\]])/g) || "";
+        linkUrl = encodeUrlSpecialChar(linkUrl);
         break;
       case BBCODE_TEXT:
       case BBCODE_URL:
-        content = stripChar(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+        content =
+          stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
         break;
       case HTML_HYPER:
       case HTML_PLAIN:
         content = convertHtmlChar(content) || "";
-        linkTitle = convertHtmlChar(title) || "";
+        linkTitle = convertHtmlChar(linkTitle) || "";
         break;
       case LATEX:
         content = convertLaTeXChar(content) || "";
         break;
       case MARKDOWN:
-        content = escapeChar(convertHtmlChar(content), /([[\]])/g) || "";
-        linkTitle = escapeChar(convertHtmlChar(title), /(")/g) || "";
+        content = content &&
+                  escapeMatchingChars(convertHtmlChar(content), /([[\]])/g) ||
+                  "";
+        linkTitle = linkTitle &&
+                    escapeMatchingChars(convertHtmlChar(linkTitle), /(")/g) ||
+                    "";
         break;
       case MEDIAWIKI:
         content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
         break;
       case REST:
-        content = escapeChar(content, /([`<>])/g) || "";
+        content = escapeMatchingChars(content, /([`<>])/g) || "";
         break;
       case TEXTILE:
-        content = convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
+        content = content &&
+                  convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
         break;
       default:
     }
