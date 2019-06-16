@@ -9,8 +9,8 @@ import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/format.js";
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-  MARKDOWN, MEDIAWIKI, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL,
-  TEXT_URL_ONLY,
+  MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, REST, TEXTILE,
+  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
 } from "../src/mjs/constant.js";
 
 describe("format", () => {
@@ -43,6 +43,32 @@ describe("format", () => {
         assert.isString(key, "key");
         assert.isObject(value, "value");
       }
+    });
+  });
+
+  describe("create all tabs link text", () => {
+    const func = mjs.createAllTabsLinkText;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected Array but got Undefined.");
+      });
+    });
+
+    it("should get string", async () => {
+      const res = await func(["foo", "bar"]);
+      assert.strictEqual(res, "foo\nbar", "result");
+    });
+
+    it("should get string", async () => {
+      const res = await func(["foo", "bar"], MIME_PLAIN);
+      assert.strictEqual(res, "foo\nbar", "result");
+    });
+
+    it("should get string", async () => {
+      const res = await func(["foo", "bar"], MIME_HTML);
+      assert.strictEqual(res, "foo<br />\nbar", "result");
     });
   });
 

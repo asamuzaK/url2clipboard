@@ -11,8 +11,8 @@ import {
 /* constants */
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-  MARKDOWN, MEDIAWIKI, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL,
-  TEXT_URL_ONLY,
+  MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, REST, TEXTILE,
+  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
 } from "./constant.js";
 
 export const formatData = {
@@ -113,6 +113,20 @@ export const formatData = {
 };
 
 /**
+ * create all tabs link text
+ * @param {Array} arr - array of link text
+ * @param {string} mime - mime type
+ * @returns {string} - joined link text
+ */
+export const createAllTabsLinkText = async (arr, mime = MIME_PLAIN) => {
+  if (!Array.isArray(arr)) {
+    throw new TypeError(`Expected Array but got ${getType(arr)}.`);
+  }
+  const joiner = mime === MIME_HTML && "<br />\n" || "\n";
+  return arr.filter(i => i).join(joiner);
+};
+
+/**
  * create link text
  * @param {Object} data - copy data
  * @returns {?string} - link text
@@ -169,4 +183,3 @@ export const createLinkText = async (data = {}) => {
     .replace(/%title%/g, linkTitle.trim())
     .replace(/%url%/g, linkUrl.trim());
 };
-
