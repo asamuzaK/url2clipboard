@@ -282,9 +282,7 @@ export const updateContextMenu = async tabId => {
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
       if (contexts.includes("tab")) {
-        if (isWebExt) {
-          func.push(contextMenus.update(itemId, {enabled}));
-        }
+        isWebExt && func.push(contextMenus.update(itemId, {enabled}));
       } else {
         func.push(contextMenus.update(itemId, {contexts, enabled}));
       }
@@ -293,9 +291,7 @@ export const updateContextMenu = async tabId => {
         if (formatEnabled) {
           const subItemId = `${itemId}${key}`;
           if (contexts.includes("tab")) {
-            if (isWebExt) {
-              func.push(contextMenus.update(subItemId, {enabled}));
-            }
+            isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
           } else {
             func.push(contextMenus.update(subItemId, {enabled}));
           }
@@ -478,6 +474,7 @@ export const extractClickedData = async (info, tab) => {
         url: contextUrl,
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
+      const formatId = getFormatId(menuItemId);
       if (menuItemId.startsWith(COPY_ALL_TABS)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         func.push(sendMessage(tabId, {
@@ -489,7 +486,7 @@ export const extractClickedData = async (info, tab) => {
         const template = await getFormatTemplate(menuItemId);
         let content, title, url;
         if (menuItemId.startsWith(COPY_LINK)) {
-          if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+          if (formatId === BBCODE_URL) {
             content = contextUrl;
             url = contextUrl;
           } else {
@@ -500,8 +497,7 @@ export const extractClickedData = async (info, tab) => {
           }
         } else if (menuItemId.startsWith(COPY_PAGE) ||
                    menuItemId.startsWith(COPY_TAB)) {
-          if (menuItemId === `${COPY_PAGE}${BBCODE_URL}` ||
-              menuItemId === `${COPY_TAB}${BBCODE_URL}`) {
+          if (formatId === BBCODE_URL) {
             content = !tabUrlHash && contextCanonicalUrl || tabUrl;
             url = !tabUrlHash && contextCanonicalUrl || tabUrl;
           } else {
@@ -509,9 +505,9 @@ export const extractClickedData = async (info, tab) => {
             title = tabTitle;
             url = !tabUrlHash && contextCanonicalUrl || tabUrl;
           }
-        } else if (enabledFormats.has(menuItemId)) {
+        } else if (enabledFormats.has(formatId)) {
           if (infoIsLink) {
-            if (menuItemId === BBCODE_URL) {
+            if (formatId === BBCODE_URL) {
               content = infoUrl;
               url = infoUrl;
             } else {
@@ -519,7 +515,7 @@ export const extractClickedData = async (info, tab) => {
               title = infoTitle;
               url = infoUrl;
             }
-          } else if (menuItemId === BBCODE_URL) {
+          } else if (formatId === BBCODE_URL) {
             content = !tabUrlHash && infoCanonicalUrl || tabUrl;
             url = !tabUrlHash && infoCanonicalUrl || tabUrl;
           } else {
@@ -529,7 +525,6 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          const formatId = getFormatId(menuItemId);
           func.push(sendMessage(tabId, {
             [EXEC_COPY]: {
               content, formatId, promptContent, template, title, url,
@@ -598,17 +593,15 @@ export const handleCmd = async cmd => {
   if (cmd.startsWith(CMD_COPY)) {
     const format = cmd.replace(CMD_COPY, "");
     const tabId = await getActiveTabId();
-    if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
-        enabledFormats.has(format)) {
-      try {
-        await sendMessage(tabId, {
-          [CONTEXT_INFO_GET]: {
-            format, tabId,
-          },
-        });
-      } catch (e) {
-        logErr(e);
-      }
+    try {
+      Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
+      enabledFormats.has(format) && await sendMessage(tabId, {
+        [CONTEXT_INFO_GET]: {
+          format, tabId,
+        },
+      });
+    } catch (e) {
+      logErr(e);
     }
   }
 };

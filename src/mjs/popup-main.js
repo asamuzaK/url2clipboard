@@ -217,9 +217,10 @@ export const createCopyData = async evt => {
     }));
   } else {
     const template = await getFormatTemplate(menuItemId);
+    const formatId = getFormatId(menuItemId);
     let content, title, url;
     if (menuItemId.startsWith(COPY_LINK)) {
-      if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+      if (formatId === BBCODE_URL) {
         content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
         url = contextUrl;
       } else {
@@ -228,7 +229,7 @@ export const createCopyData = async evt => {
         url = contextUrl;
       }
     } else if (menuItemId.startsWith(COPY_PAGE)) {
-      if (menuItemId === `${COPY_PAGE}${BBCODE_URL}`) {
+      if (formatId === BBCODE_URL) {
         content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
         url = canonicalUrl || tabUrl;
       } else {
@@ -238,7 +239,6 @@ export const createCopyData = async evt => {
       }
     }
     if (isString(content) && isString(url)) {
-      const formatId = getFormatId(menuItemId);
       func.push(sendMessage(runtime.id, {
         [EXEC_COPY]: {
           content, formatId, template, title, url,
