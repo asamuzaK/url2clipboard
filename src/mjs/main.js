@@ -9,7 +9,9 @@ import {
   createNotification, getActiveTabId, getAllTabsInWindow, getEnabledTheme,
   isTab, sendMessage,
 } from "./browser.js";
-import {formatData} from "./format.js";
+import {
+  formatData,
+} from "./format.js";
 
 /* api */
 const {browserAction, contextMenus, i18n, runtime, tabs} = browser;

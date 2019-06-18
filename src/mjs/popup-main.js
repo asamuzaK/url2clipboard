@@ -8,7 +8,9 @@ import {
 import {
   sendMessage,
 } from "./browser.js";
-import {formatData} from "./format.js";
+import {
+  formatData,
+} from "./format.js";
 
 /* api */
 const {runtime, tabs} = browser;
@@ -207,6 +209,7 @@ export const createCopyData = async evt => {
   const {id: menuItemId} = target;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
+  const formatId = getFormatId(menuItemId);
   const func = [];
   if (menuItemId.startsWith(COPY_ALL_TABS)) {
     const allTabs = await getAllTabsInfo(menuItemId);
@@ -217,7 +220,6 @@ export const createCopyData = async evt => {
     }));
   } else {
     const template = await getFormatTemplate(menuItemId);
-    const formatId = getFormatId(menuItemId);
     let content, title, url;
     if (menuItemId.startsWith(COPY_LINK)) {
       if (formatId === BBCODE_URL) {
