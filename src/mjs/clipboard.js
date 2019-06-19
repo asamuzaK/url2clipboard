@@ -3,33 +3,13 @@
  */
 
 import {
-  getType, isString, throwErr,
+  getType, isString,
 } from "./common.js";
-import {
-  createNotification,
-} from "./browser.js";
-
-/* api */
-const {i18n, runtime} = browser;
 
 /* constants */
 import {
-  ICON, MIME_PLAIN, NOTIFY_COPY,
+  MIME_HTML, MIME_PLAIN,
 } from "./constant.js";
-
-/**
- * notify on copy
- * @returns {AsyncFunction} - createNotification()
- */
-export const notifyOnCopy = async () => {
-  const msg = {
-    iconUrl: runtime.getURL(ICON),
-    message: i18n.getMessage("notifyOnCopyMsg"),
-    title: i18n.getMessage("extensionName"),
-    type: "basic",
-  };
-  return createNotification(NOTIFY_COPY, msg);
-};
 
 /* Clip */
 export class Clip {
@@ -37,16 +17,14 @@ export class Clip {
    * constructor
    * @param {string} content - content
    * @param {string} mime - mime
-   * @param {boolean} notify - notify on copy
    */
-  constructor(content, mime, notify) {
+  constructor(content, mime) {
     this._supportedMimeTypes = [
-      "text/html",
-      "text/plain",
+      MIME_HTML,
+      MIME_PLAIN,
     ];
     this._content = isString(content) && content.trim() || "";
     this._mime = isString(mime) && mime.trim() || null;
-    this._notify = !!notify;
   }
 
   /* getter / setter */
@@ -74,30 +52,6 @@ export class Clip {
     this._mime = type;
   }
 
-  get notify() {
-    return this._notify;
-  }
-  set notify(bool) {
-    this._notify = !!bool;
-  }
-
-  /**
-   * copy to clipboard sync
-   * @param {Object} evt - Event
-   * @returns {?AsyncFunction} - notifyOnCopy()
-   */
-  _copySync(evt) {
-    let func;
-    document.removeEventListener("copy", this._copySync, true);
-    evt.stopImmediatePropagation();
-    evt.preventDefault();
-    evt.clipboardData.setData(this._mime, this._content);
-    if (this._notify) {
-      func = notifyOnCopy().catch(throwErr);
-    }
-    return func || null;
-  }
-
   /**
    * copy to clipboard
    * @returns {?AsyncFunction} - notifyOnCopy()
@@ -111,21 +65,26 @@ export class Clip {
       const {clipboard} = navigator;
       if (clipboard && typeof clipboard.writeText === "function" &&
           this._mime === MIME_PLAIN) {
-        await clipboard.writeText(this._content);
-        if (this._notify) {
-          func = notifyOnCopy();
-        }
+        func = clipboard.writeText(this._content);
       /*
       } else if (clipboard && typeof clipboard.write === "function") {
         const data = new DataTransfer();
         data.items.add(this._content, this._mime);
-        await clipboard.write(data);
-        if (this._notify) {
-          func = notifyOnCopy();
-        }
+        func = clipboard.write(data);
       */
       } else {
-        document.addEventListener("copy", this._copySync, true);
+        /**
+         * copy to clipboard sync
+         * @param {Object} evt - Event
+         * @returns {void} - notifyOnCopy()
+         */
+        const copySync = evt => {
+          document.removeEventListener("copy", copySync, true);
+          evt.stopImmediatePropagation();
+          evt.preventDefault();
+          evt.clipboardData.setData(this._mime, this._content);
+        };
+        document.addEventListener("copy", copySync, true);
         document.execCommand("copy");
       }
     }

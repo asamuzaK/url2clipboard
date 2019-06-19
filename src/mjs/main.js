@@ -641,8 +641,8 @@ export const handleMsg = async (msg, sender = {}) => {
           }));
           break;
         case NOTIFY_COPY: {
-          const {notifyOnCopy} = vars;
-          if (notifyOnCopy && value) {
+          const {notifyOnCopy: notify} = vars;
+          if (notify && value) {
             func.push(createNotification(key, {
               iconUrl: runtime.getURL(ICON),
               message: i18n.getMessage("notifyOnCopyMsg"),

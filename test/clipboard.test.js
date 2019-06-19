@@ -8,7 +8,6 @@ import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
-import {ICON, NOTIFY_COPY} from "../src/mjs/constant.js";
 import * as mjs from "../src/mjs/clipboard.js";
 
 describe("clipboard", () => {
@@ -46,27 +45,6 @@ describe("clipboard", () => {
 
   it("should get browser object", () => {
     assert.isObject(browser, "browser");
-  });
-
-  describe("notify on copy", () => {
-    const func = mjs.notifyOnCopy;
-
-    it("should call function", async () => {
-      browser.runtime.getURL.withArgs(ICON).returns("foo/bar");
-      browser.i18n.getMessage.withArgs("notifyOnCopyMsg").returns("foo");
-      browser.i18n.getMessage.withArgs("extensionName").returns("bar");
-      browser.notifications.create.withArgs(NOTIFY_COPY, {
-        iconUrl: "foo/bar",
-        message: "foo",
-        title: "bar",
-        type: "basic",
-      }).resolves(true);
-      const res = await func();
-      assert.isTrue(res, "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
-      browser.notifications.create.flush();
-    });
   });
 
   describe("Clip", () => {
@@ -144,77 +122,6 @@ describe("clipboard", () => {
         clip.mime = "text/html";
         assert.strictEqual(clip.mime, "text/html", "value");
       });
-
-      it("should get value", () => {
-        const clip = new Clip("foo", "text/plain");
-        assert.isFalse(clip.notify, "value");
-      });
-
-      it("should get value", () => {
-        const clip = new Clip("foo", "text/plain", true);
-        assert.isTrue(clip.notify, "value");
-      });
-
-      it("should set value", () => {
-        const clip = new Clip();
-        clip.notify = true;
-        assert.isTrue(clip.notify, "value");
-      });
-
-      it("should set value", () => {
-        const clip = new Clip(null, null, true);
-        clip.notify = false;
-        assert.isFalse(clip.notify, "value");
-      });
-    });
-
-    describe("copy to clipboard sync", () => {
-      it("should call function", () => {
-        const stubPropagate = sinon.fake();
-        const stubPreventDefault = sinon.fake();
-        const stubSetData = sinon.fake();
-        const evt = {
-          stopImmediatePropagation: stubPropagate,
-          preventDefault: stubPreventDefault,
-          clipboardData: {
-            setData: stubSetData,
-          },
-        };
-        const stubRemoveListener = sinon.stub(document, "removeEventListener");
-        const clip = new Clip();
-        const res = clip._copySync(evt);
-        assert.isTrue(stubRemoveListener.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.isTrue(stubSetData.calledOnce, "called");
-        assert.isNull(res, "result");
-        stubRemoveListener.restore();
-      });
-
-      it("should call function", async () => {
-        const stubPropagate = sinon.fake();
-        const stubPreventDefault = sinon.fake();
-        const stubSetData = sinon.fake();
-        const evt = {
-          stopImmediatePropagation: stubPropagate,
-          preventDefault: stubPreventDefault,
-          clipboardData: {
-            setData: stubSetData,
-          },
-        };
-        const stubRemoveListener = sinon.stub(document, "removeEventListener");
-        browser.notifications.create.resolves(true);
-        const i = browser.notifications.create.callCount;
-        const clip = new Clip("foo", "text/plain", true);
-        const res = await clip._copySync(evt);
-        assert.isTrue(stubRemoveListener.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.isTrue(stubSetData.calledOnce, "called");
-        assert.isTrue(res, "result");
-        stubRemoveListener.restore();
-        browser.notifications.create.flush();
-      });
     });
 
     describe("copy to clipboard", () => {
@@ -252,24 +159,6 @@ describe("clipboard", () => {
       });
 
       it("should call function", async () => {
-        const fakeWrite = sinon.fake();
-        navigator.clipboard = {
-          writeText: fakeWrite,
-        };
-        browser.notifications.create.resolves(true);
-        const i = browser.notifications.create.callCount;
-        const clip = new Clip("foo", "text/plain", true);
-        const res = await clip.copy();
-        const {calledOnce: calledWrite} = fakeWrite;
-        delete navigator.clipboard;
-        assert.strictEqual(browser.notifications.create.callCount, i + 1,
-                           "called");
-        assert.isTrue(calledWrite, "called");
-        assert.isTrue(res, "result");
-        browser.notifications.create.flush();
-      });
-
-      it("should call function", async () => {
         const stubAdd = sinon.stub(document, "addEventListener");
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
@@ -282,6 +171,38 @@ describe("clipboard", () => {
         assert.isTrue(calledAdd, "called");
         assert.isTrue(calledExec, "called");
         assert.isNull(res, "result");
+      });
+    });
+
+    describe("copy to clipboard sync", () => {
+      it("should call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.fake();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("foo", "text/plain");
+        await clip.copy();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.isTrue(stubSetData.calledOnce, "called");
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
       });
     });
   });
