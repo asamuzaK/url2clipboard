@@ -234,6 +234,9 @@ export const createContextMenu = async () => {
       // FIXME: depends on Issue #39
       const enabled = !promptContent;
       const itemData = {contexts, enabled};
+      if (itemId === COPY_ALL_TABS) {
+        itemData.enabled = true;
+      }
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
         const {id: keyId, title: keyTitle} = formats.get(key);
@@ -285,27 +288,28 @@ export const updateContextMenu = async tabId => {
   const func = [];
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
-    // FIXME: depends on Issue #39
-    const enabled = !promptContent || enabledTabs.get(tabId) || false;
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
-      if (contexts.includes("tab")) {
-        isWebExt && func.push(contextMenus.update(itemId, {enabled}));
-      } else {
-        func.push(contextMenus.update(itemId, {contexts, enabled}));
-      }
-      formats.forEach((value, key) => {
-        const {enabled: formatEnabled} = value;
-        if (formatEnabled) {
-          const subItemId = `${itemId}${key}`;
-          if (contexts.includes("tab")) {
-            isWebExt && func.push(contextMenus.update(subItemId, {enabled}));
+      if (contexts.includes("link")) {
+        const enabled = enabledTabs.get(tabId) || false;
+        func.push(contextMenus.update(itemId, {enabled}));
+      } else if (contexts.includes("tab")) {
+        if (isWebExt) {
+          // FIXME: depends on Issue #39
+          let enabled;
+          if (itemId === COPY_ALL_TABS) {
+            enabled = true;
           } else {
-            func.push(contextMenus.update(subItemId, {enabled}));
+            enabled = !promptContent || enabledTabs.get(tabId) || false;
           }
+          func.push(contextMenus.update(itemId, {enabled}));
         }
-      });
+      } else {
+        // FIXME: depends on Issue #39
+        const enabled = !promptContent || enabledTabs.get(tabId) || false;
+        func.push(contextMenus.update(itemId, {enabled}));
+      }
     }
   }
   return Promise.all(func);

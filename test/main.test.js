@@ -551,9 +551,9 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.contextMenus.update.callCount;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 4,
                          "called");
-      assert.strictEqual(res.length, 60, "result");
+      assert.strictEqual(res.length, 4, "result");
       browser.management.get.flush();
     });
 
@@ -563,11 +563,11 @@ describe("main", () => {
       const j = browser.runtime.sendMessage.callCount;
       vars.isWebExt = false;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 30,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(res.length, 30, "result");
+      assert.strictEqual(res.length, 2, "result");
     });
 
     it("should call function", async () => {
@@ -576,11 +576,11 @@ describe("main", () => {
       const j = browser.runtime.sendMessage.callCount;
       enabledTabs.clear();
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 4,
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(res.length, 60, "result");
+      assert.strictEqual(res.length, 4, "result");
     });
   });
 
@@ -616,9 +616,9 @@ describe("main", () => {
     it("should call function", async () => {
       const i = browser.contextMenus.update.callCount;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 4,
                          "called");
-      assert.strictEqual(res.length, 60, "result");
+      assert.strictEqual(res.length, 4, "result");
     });
 
     it("should call function", async () => {
@@ -626,9 +626,9 @@ describe("main", () => {
       const i = browser.contextMenus.update.callCount;
       vars.isWebExt = false;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 30,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
                          "called");
-      assert.strictEqual(res.length, 30, "result");
+      assert.strictEqual(res.length, 2, "result");
       browser.management.get.flush();
     });
 
@@ -637,9 +637,9 @@ describe("main", () => {
       const i = browser.contextMenus.update.callCount;
       enabledTabs.clear();
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 60,
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 4,
                          "called");
-      assert.strictEqual(res.length, 60, "result");
+      assert.strictEqual(res.length, 4, "result");
       browser.management.get.flush();
     });
   });
