@@ -16,8 +16,6 @@ Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Textile, As
 * You can edit content text when copying.
 * Copy to clipboard can be executed from the context menu, the tool button, or keyboard shortcut.
 
-NOTE: Currently, enabled only on (X)HTML documents.
-
 ## Download
 
 Gecko:
