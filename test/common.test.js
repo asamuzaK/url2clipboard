@@ -307,8 +307,8 @@ describe("common", () => {
     });
 
     it("should throw", () => {
-      assert.throws(() => func("foo", "bar"),
-                    "Expected RegExp but got String.");
+      assert.throws(() => func("foo", 1),
+                    "Expected RegExp but got Number.");
     });
 
     it("should get null", () => {
@@ -323,6 +323,111 @@ describe("common", () => {
       const re = /([[\]])/g;
       const res = func(str, re);
       assert.strictEqual(res, "\\[foo\\]\\[bar\\]\\[baz\\]");
+    });
+  });
+
+  describe("strip all matching chars", () => {
+    const func = mjs.stripMatchingChars;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should throw", () => {
+      assert.throws(() => func("foo", 1),
+                    "Expected RegExp but got Number.");
+    });
+
+    it("should get null", () => {
+      const str = "[foo][bar][baz]";
+      const re = /([[\]])/;
+      const res = func(str, re);
+      assert.isNull(res);
+    });
+
+    it("should get string", () => {
+      const str = "[foo][bar][baz]";
+      const re = /([[\]])/g;
+      const res = func(str, re);
+      assert.strictEqual(res, "foobarbaz");
+    });
+  });
+
+  describe("convert matching character to numeric character reference", () => {
+    const func = mjs.convertNumCharRef;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should throw", () => {
+      assert.throws(() => func("foo", 1),
+                    "Expected RegExp but got Number.");
+    });
+
+    it("should get null", () => {
+      const str = "[foo][bar][baz]";
+      const re = /([[\]])/;
+      const res = func(str, re);
+      assert.isNull(res);
+    });
+
+    it("should get string", () => {
+      const str = "[foo][bar][baz]";
+      const re = /([[\]])/g;
+      const res = func(str, re);
+      assert.strictEqual(res, "&#91;foo&#93;&#91;bar&#93;&#91;baz&#93;");
+    });
+  });
+
+  describe("convert HTML specific character to character reference", () => {
+    const func = mjs.convertHtmlChar;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get null", () => {
+      const res = func("");
+      assert.isNull(res);
+    });
+
+    it("should get string", () => {
+      const res = func("<a title=\"foo & bar\">");
+      assert.strictEqual(res, "&lt;a title=&quot;foo &amp; bar&quot;&gt;");
+    });
+  });
+
+  describe("convert LaTeX special char", () => {
+    const func = mjs.convertLaTeXChar;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get null", () => {
+      const res = func("");
+      assert.isNull(res);
+    });
+
+    it("should get string", () => {
+      const res = func("{}");
+      assert.strictEqual(res, "\\{\\}");
+    });
+
+    it("should get string", () => {
+      const res = func("\\backslash");
+      assert.strictEqual(res, "\\textbackslash{}backslash");
+    });
+
+    it("should get string", () => {
+      const res = func("^circum");
+      assert.strictEqual(res, "\\textasciicircum{}circum");
+    });
+
+    it("should get string", () => {
+      const res = func("~tilde");
+      assert.strictEqual(res, "\\textasciitilde{}tilde");
     });
   });
 
@@ -438,6 +543,60 @@ describe("common", () => {
       const arg = "https://example.com#foo?bar=baz%20qux";
       const res = func(arg);
       assert.strictEqual(res, "https://example.com#foo");
+    });
+  });
+
+  describe("encode URL component part", () => {
+    const func = mjs.encodeUrlPart;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get empty string", () => {
+      const res = func("");
+      assert.strictEqual(res, "");
+    });
+
+    it("should get string", () => {
+      const res = func("'foo bar'");
+      assert.strictEqual(res, "%27foo%20bar%27");
+    });
+  });
+
+  describe("encode special char in URL", () => {
+    const func = mjs.encodeUrlSpecialChar;
+
+    it("should throw", () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should throw", () => {
+      assert.throws(() => func(""));
+    });
+
+    it("should throw", () => {
+      assert.throws(() => func("foo"));
+    });
+
+    it("should throw", () => {
+      assert.throws(() => func("./foo"));
+    });
+
+    it("should get string", () => {
+      const res = func("https://example.com/foo bar?baz&qux#quux'corge");
+      assert.strictEqual(
+        res,
+        "https://example.com/foo%20bar?baz&amp;qux#quux%27corge"
+      );
+    });
+
+    it("should get string", () => {
+      const res = func("file:///foo bar?baz&qux#quux'corge");
+      assert.strictEqual(
+        res,
+        "file:///foo%20bar?baz&amp;qux#quux%27corge"
+      );
     });
   });
 
@@ -743,6 +902,18 @@ describe("common", () => {
       assert.isObject(res);
       assert.deepEqual(res, target);
       assert.strictEqual(fake.callCount, 1);
+    });
+  });
+
+  describe("close window", () => {
+    const func = mjs.closeWindow;
+
+    it("should call function", async () => {
+      const stubClose = sinon.stub(window, "close");
+      await func();
+      const {calledOnce} = stubClose;
+      stubClose.restore();
+      assert.isTrue(calledOnce, "caled");
     });
   });
 });

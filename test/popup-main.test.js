@@ -9,10 +9,10 @@ import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/popup-main.js";
-import formatData from "../src/mjs/format.js";
+import {formatData} from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
-  CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
+  CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
@@ -30,21 +30,37 @@ describe("popup-main", () => {
     };
     return new JSDOM(domstr, opt);
   };
-  let window, document;
+  let window, document, navigator;
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
+    if (document.execCommand) {
+      sinon.stub(document, "execCommand");
+    } else {
+      document.execCommand = sinon.fake();
+    }
+    navigator = window && window.navigator;
+    if (navigator.clipboard) {
+      sinon.stub(navigator.clipboard, "writeText");
+    } else {
+      navigator.clipboard = {
+        writeText: sinon.fake(),
+      };
+    }
     global.browser = browser;
     global.window = window;
     global.document = document;
+    global.navigator = navigator;
   });
   afterEach(() => {
     window = null;
     document = null;
+    navigator = null;
     delete global.browser;
     delete global.window;
     delete global.document;
+    delete global.navigator;
   });
 
   it("should get browser object", () => {
@@ -430,16 +446,18 @@ describe("popup-main", () => {
     });
 
     it("should not call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const evt = {
         target: {
           id: "foo",
         },
       };
+      const i = navigator.clipboard.writeText.callCount;
+      const j = document.execCommand.callCount;
       await mjs.setFormatData();
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
                          "not called");
+      assert.strictEqual(document.execCommand.callCount, j, "not called");
       assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
         {
@@ -453,7 +471,6 @@ describe("popup-main", () => {
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_PAGE);
       elm.value = "qux";
       const evt = {
@@ -461,26 +478,14 @@ describe("popup-main", () => {
           id: `${COPY_PAGE}TextURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
+      const i = navigator.clipboard.writeText.callCount;
       await mjs.setFormatData();
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "qux",
-              formatId: "TextURL",
-              template: "%content% %url%",
-              title: "foo",
-              url: "https://example.com",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -489,11 +494,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_PAGE);
       elm.value = "";
       const evt = {
@@ -501,27 +504,15 @@ describe("popup-main", () => {
           id: `${COPY_PAGE}TextURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
       mjs.contextInfo.canonicalUrl = null;
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "",
-              formatId: "TextURL",
-              template: "%content% %url%",
-              title: "foo",
-              url: "https://www.example.com",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -530,11 +521,36 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
+      const elm = document.getElementById(CONTENT_PAGE);
+      elm.value = "";
+      const evt = {
+        target: {
+          id: `${COPY_PAGE}HTMLHyper`,
+        },
+      };
+      await mjs.setFormatData();
+      mjs.contextInfo.canonicalUrl = null;
+      const i = document.execCommand.callCount;
+      const res = await func(evt);
+      assert.strictEqual(document.execCommand.callCount, i + 1,
+                         "called");
+      assert.strictEqual(res.length, 2, "result");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
       const elm = document.getElementById(CONTENT_PAGE_BBCODE);
       elm.value = "https://www.example.com";
       const evt = {
@@ -542,26 +558,14 @@ describe("popup-main", () => {
           id: `${COPY_PAGE}BBCodeURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "https://www.example.com",
-              formatId: "BBCodeURL",
-              template: "[url]%content%[/url]",
-              title: undefined,
-              url: "https://example.com",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -570,11 +574,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_PAGE_BBCODE);
       elm.value = "";
       const evt = {
@@ -582,27 +584,15 @@ describe("popup-main", () => {
           id: `${COPY_PAGE}BBCodeURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
       mjs.contextInfo.canonicalUrl = null;
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "",
-              formatId: "BBCodeURL",
-              template: "[url]%content%[/url]",
-              title: undefined,
-              url: "https://www.example.com",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -611,11 +601,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_LINK);
       elm.value = "qux";
       const evt = {
@@ -623,26 +611,14 @@ describe("popup-main", () => {
           id: `${COPY_LINK}TextURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "qux",
-              formatId: "TextURL",
-              template: "%content% %url%",
-              title: "bar",
-              url: "https://www.example.com/baz",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -651,11 +627,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_LINK);
       elm.value = "";
       const evt = {
@@ -663,26 +637,14 @@ describe("popup-main", () => {
           id: `${COPY_LINK}TextURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "",
-              formatId: "TextURL",
-              template: "%content% %url%",
-              title: "bar",
-              url: "https://www.example.com/baz",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -691,11 +653,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_LINK_BBCODE);
       elm.value = "https://www.example.com/baz";
       const evt = {
@@ -703,26 +663,14 @@ describe("popup-main", () => {
           id: `${COPY_LINK}BBCodeURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "https://www.example.com/baz",
-              formatId: "BBCodeURL",
-              template: "[url]%content%[/url]",
-              title: undefined,
-              url: "https://www.example.com/baz",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -731,11 +679,9 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
       const elm = document.getElementById(CONTENT_LINK_BBCODE);
       elm.value = "";
       const evt = {
@@ -743,26 +689,14 @@ describe("popup-main", () => {
           id: `${COPY_LINK}BBCodeURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY]: {
-              content: "",
-              formatId: "BBCodeURL",
-              template: "[url]%content%[/url]",
-              title: undefined,
-              url: "https://www.example.com/baz",
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -771,18 +705,16 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      const j = browser.tabs.query.callCount;
       const evt = {
         target: {
           id: `${COPY_ALL_TABS}TextURL`,
         },
       };
-      browser.runtime.sendMessage.callsFake((...args) => args);
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({currentWindow: true}).resolves([
         {
           id: 1,
@@ -797,37 +729,12 @@ describe("popup-main", () => {
       ]);
       await mjs.setFormatData();
       const res = await func(evt);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY_TABS]: {
-              allTabs: [
-                {
-                  content: "foo",
-                  formatId: "TextURL",
-                  id: 1,
-                  template: "%content% %url%",
-                  title: "foo",
-                  url: "https://example.com",
-                },
-                {
-                  content: "bar",
-                  formatId: "TextURL",
-                  id: 2,
-                  template: "%content% %url%",
-                  title: "bar",
-                  url: "https://www.example.com",
-                },
-              ],
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -836,7 +743,6 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.runtime.sendMessage.flush();
       browser.tabs.query.flush();
     });
   });
@@ -852,10 +758,44 @@ describe("popup-main", () => {
     });
   });
 
+  describe("send notify", () => {
+    const func = mjs.sendNotify;
+
+    it("should not call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+                         "not called");
+    });
+
+    it("should not call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func([undefined]);
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+                         "not called");
+    });
+
+    it("should call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func([undefined, "bar"]);
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+                         "called");
+    });
+  });
+
   describe("handle menu on click", () => {
     const func = mjs.menuOnClick;
+    beforeEach(() => {
+      const {vars} = mjs;
+      vars.notifyOnCopy = false;
+    });
+    afterEach(() => {
+      const {vars} = mjs;
+      vars.notifyOnCopy = false;
+    });
 
-    it("should get result", async () => {
+    it("should call function", async () => {
+      const stubClose = sinon.stub(window, "close");
       const evt = {
         target: {
           id: "foo",
@@ -863,16 +803,27 @@ describe("popup-main", () => {
       };
       await mjs.setFormatData();
       const res = await func(evt);
-      assert.strictEqual(res.length, 1, "result");
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null,
+      const {calledOnce} = stubClose;
+      stubClose.restore();
+      assert.isTrue(calledOnce, "called");
+      assert.isUndefined(res, "result");
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const stubClose = sinon.stub(window, "close");
+      const evt = {
+        target: {
+          id: "foo",
         },
-      ], "result");
+      };
+      await mjs.setFormatData();
+      vars.notifyOnCopy = true;
+      const res = await func(evt);
+      const {calledOnce} = stubClose;
+      stubClose.restore();
+      assert.isTrue(calledOnce, "called");
+      assert.isUndefined(res, "result");
     });
   });
 

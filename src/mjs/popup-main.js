@@ -3,12 +3,17 @@
  */
 
 import {
-  getType, isString, logErr, throwErr,
+  Clip,
+} from "./clipboard.js";
+import {
+  closeWindow, getType, isString, logErr, throwErr,
 } from "./common.js";
 import {
   sendMessage,
 } from "./browser.js";
-import formatData from "./format.js";
+import {
+  createAllTabsLinkText, createLinkText, formatData,
+} from "./format.js";
 
 /* api */
 const {runtime, tabs} = browser;
@@ -17,9 +22,10 @@ const {runtime, tabs} = browser;
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, EXEC_COPY, EXEC_COPY_TABS,
-  HTML_HYPER, HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, LINK_MENU, MARKDOWN, TEXT_SEP_LINES, TEXT_TEXT_URL,
+  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, HTML_HYPER, HTML_PLAIN,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
+  TEXT_SEP_LINES, TEXT_TEXT_URL,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const OPTIONS_OPEN = "openOptions";
@@ -29,6 +35,7 @@ export const vars = {
   includeTitleHTMLHyper: false,
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
+  notifyOnCopy: false,
   separateTextURL: false,
 };
 
@@ -200,26 +207,30 @@ export const getAllTabsInfo = async menuItemId => {
 /**
  * create copy data
  * @param {!Object} evt - Event
- * @returns {void}
+ * @returns {Promise} - Promise chain
  */
 export const createCopyData = async evt => {
   const {target} = evt;
   const {id: menuItemId} = target;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
+  const formatId = getFormatId(menuItemId);
+  const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
   const func = [];
+  let text;
   if (menuItemId.startsWith(COPY_ALL_TABS)) {
     const allTabs = await getAllTabsInfo(menuItemId);
-    func.push(sendMessage(runtime.id, {
-      [EXEC_COPY_TABS]: {
-        allTabs,
-      },
-    }));
+    const arr = [];
+    for (const tabData of allTabs) {
+      arr.push(createLinkText(tabData));
+    }
+    const tmplArr = await Promise.all(arr);
+    text = await createAllTabsLinkText(tmplArr, mimeType);
   } else {
     const template = await getFormatTemplate(menuItemId);
     let content, title, url;
     if (menuItemId.startsWith(COPY_LINK)) {
-      if (menuItemId === `${COPY_LINK}${BBCODE_URL}`) {
+      if (formatId === BBCODE_URL) {
         content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
         url = contextUrl;
       } else {
@@ -228,7 +239,7 @@ export const createCopyData = async evt => {
         url = contextUrl;
       }
     } else if (menuItemId.startsWith(COPY_PAGE)) {
-      if (menuItemId === `${COPY_PAGE}${BBCODE_URL}`) {
+      if (formatId === BBCODE_URL) {
         content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
         url = canonicalUrl || tabUrl;
       } else {
@@ -238,16 +249,14 @@ export const createCopyData = async evt => {
       }
     }
     if (isString(content) && isString(url)) {
-      const formatId = getFormatId(menuItemId);
-      func.push(sendMessage(runtime.id, {
-        [EXEC_COPY]: {
-          content, formatId, template, title, url,
-        },
-      }));
+      text = await createLinkText({
+        content, formatId, template, title, url,
+      });
     }
   }
+  isString(text) && func.push((new Clip(text, mimeType)).copy());
   func.push(initContextInfo());
-  return Promise.all(func).catch(throwErr);
+  return Promise.all(func);
 };
 
 /**
@@ -257,11 +266,36 @@ export const createCopyData = async evt => {
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
 /**
+ * send notify
+ * @param {Array} arr - array
+ * @returns {?AsyncFunction} - runtime.sendMessage()
+ */
+export const sendNotify = async arr => {
+  let func;
+  if (Array.isArray(arr) && arr.length > 1) {
+    func = sendMessage(null, {
+      [NOTIFY_COPY]: true,
+    });
+  }
+  return func || null;
+};
+
+/**
  * handle menu on click
  * @param {!Object} evt - Event
- * @returns {AsyncFunction} - createCopyData()
+ * @returns {Promise} - Promise chain
  */
-export const menuOnClick = evt => createCopyData(evt).catch(throwErr);
+export const menuOnClick = evt => {
+  const {notifyOnCopy: notify} = vars;
+  let func;
+  if (notify) {
+    func =
+      createCopyData(evt).then(sendNotify).then(closeWindow).catch(throwErr);
+  } else {
+    func = createCopyData(evt).then(closeWindow).catch(throwErr);
+  }
+  return func;
+};
 
 /**
  * add listener to menu
@@ -374,6 +408,7 @@ export const setVar = async (item, obj) => {
       case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
+      case NOTIFY_COPY:
       case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
