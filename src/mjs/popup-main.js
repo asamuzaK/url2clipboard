@@ -254,9 +254,7 @@ export const createCopyData = async evt => {
       });
     }
   }
-  if (isString(text)) {
-    func.push((new Clip(text, mimeType)).copy());
-  }
+  isString(text) && func.push((new Clip(text, mimeType)).copy());
   func.push(initContextInfo());
   return Promise.all(func);
 };

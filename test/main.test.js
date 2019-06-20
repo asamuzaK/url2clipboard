@@ -4,6 +4,7 @@
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers,
                    array-bracket-newline */
 
+import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
 import {browser} from "./mocha/setup.js";
@@ -21,11 +22,48 @@ import {
 } from "../src/mjs/constant.js";
 
 describe("main", () => {
+  /**
+   * create jsdom
+   * @returns {Object} - jsdom instance
+   */
+  const createJsdom = () => {
+    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
+    const opt = {
+      runScripts: "dangerously",
+    };
+    return new JSDOM(domstr, opt);
+  };
+  let window, document, navigator;
   beforeEach(() => {
+    const dom = createJsdom();
+    window = dom && dom.window;
+    document = window && window.document;
+    if (document.execCommand) {
+      sinon.stub(document, "execCommand");
+    } else {
+      document.execCommand = sinon.fake();
+    }
+    navigator = window && window.navigator;
+    if (navigator.clipboard) {
+      sinon.stub(navigator.clipboard, "writeText");
+    } else {
+      navigator.clipboard = {
+        writeText: sinon.fake(),
+      };
+    }
     global.browser = browser;
+    global.window = window;
+    global.document = document;
+    global.navigator = navigator;
   });
   afterEach(() => {
+    window = null;
+    document = null;
+    navigator = null;
     delete global.browser;
+    delete global.window;
+    delete global.document;
+    delete global.navigator;
   });
 
   it("should get browser object", () => {
@@ -1046,7 +1084,7 @@ describe("main", () => {
   describe("extract clicked data", () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
-      const {contextInfo, enabledFormats, formats} = mjs;
+      const {contextInfo, enabledFormats, formats, vars} = mjs;
       const items = Object.entries(formatData);
       contextInfo.isLink = false;
       contextInfo.content = null;
@@ -1054,19 +1092,23 @@ describe("main", () => {
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
+      vars.promptContent = false;
       enabledFormats.clear();
       for (const [key, value] of items) {
         formats.set(key, value);
       }
     });
     afterEach(() => {
-      const {contextInfo, enabledFormats, formats} = mjs;
+      const {contextInfo, enabledFormats, formats, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.selectionText = "";
       contextInfo.title = null;
       contextInfo.url = null;
       contextInfo.canonicalUrl = null;
+      vars.notifyOnCopy = false;
+      vars.promptContent = false;
       enabledFormats.clear();
       formats.clear();
     });
@@ -1077,6 +1119,66 @@ describe("main", () => {
     });
 
     it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.notifications.create.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      vars.notifyOnCopy = true;
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.notifications.create.callCount, j + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_PAGE}TextURL`,
@@ -1088,6 +1190,7 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1097,7 +1200,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1120,6 +1223,7 @@ describe("main", () => {
     it("should not call function", async () => {
       const {contextInfo} = mjs;
       const i = browser.tabs.sendMessage.callCount;
+      const j = navigator.clipboard.writeText.callCount;
       const info = {
         menuItemId: "foo",
         selectionText: "",
@@ -1136,6 +1240,8 @@ describe("main", () => {
       contextInfo.url = "https://www.example.com/";
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      assert.strictEqual(navigator.clipboard.writeText.callCount, j,
+                         "not called");
       assert.deepEqual(res, [
         {
           canonicalUrl: null,
@@ -1152,6 +1258,7 @@ describe("main", () => {
     it("should not call function", async () => {
       const {contextInfo} = mjs;
       const i = browser.tabs.sendMessage.callCount;
+      const j = navigator.clipboard.writeText.callCount;
       const info = {
         menuItemId: "foo",
         selectionText: "",
@@ -1168,12 +1275,47 @@ describe("main", () => {
       contextInfo.url = "https://www.example.com/";
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      assert.strictEqual(navigator.clipboard.writeText.callCount, j,
+                         "not called");
       assert.deepEqual(res, [], "result");
       browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
       const {contextInfo} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}TextURL`,
+        selectionText: "",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://www.example.com/",
+      };
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/";
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_PAGE}TextURL`,
@@ -1189,6 +1331,7 @@ describe("main", () => {
       contextInfo.content = "qux";
       contextInfo.title = "quux";
       contextInfo.url = "https://www.example.com/";
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1198,7 +1341,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/",
@@ -1219,6 +1362,35 @@ describe("main", () => {
     });
 
     it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_TAB}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_TAB}TextURL`,
@@ -1230,6 +1402,7 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1239,7 +1412,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1260,6 +1433,35 @@ describe("main", () => {
     });
 
     it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
@@ -1271,6 +1473,7 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1280,7 +1483,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/#baz",
@@ -1302,6 +1505,38 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {contextInfo} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
+        selectionText: "",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://www.example.com/",
+      };
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/";
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_PAGE}${BBCODE_URL}`,
@@ -1317,6 +1552,7 @@ describe("main", () => {
       contextInfo.content = "qux";
       contextInfo.title = "quux";
       contextInfo.url = "https://www.example.com/";
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1326,7 +1562,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/",
@@ -1347,6 +1583,34 @@ describe("main", () => {
     });
 
     it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_TAB}${BBCODE_URL}`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_TAB}${BBCODE_URL}`,
@@ -1358,6 +1622,7 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1367,7 +1632,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/#baz",
@@ -1389,6 +1654,38 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {contextInfo} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_LINK}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/#corge";
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_LINK}TextURL`,
@@ -1404,6 +1701,7 @@ describe("main", () => {
       contextInfo.content = "qux";
       contextInfo.title = "quux";
       contextInfo.url = "https://www.example.com/#corge";
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1413,7 +1711,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "quux",
               url: "https://www.example.com/#corge",
@@ -1435,6 +1733,38 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {contextInfo} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_LINK}TextURL`,
+        selectionText: "",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/#corge";
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_LINK}TextURL`,
@@ -1450,6 +1780,7 @@ describe("main", () => {
       contextInfo.content = "qux";
       contextInfo.title = "quux";
       contextInfo.url = "https://www.example.com/#corge";
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1459,7 +1790,7 @@ describe("main", () => {
             executeCopy: {
               content: "qux",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "quux",
               url: "https://www.example.com/#corge",
@@ -1481,6 +1812,38 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {contextInfo} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        menuItemId: `${COPY_LINK}${BBCODE_URL}`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/#corge";
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         menuItemId: `${COPY_LINK}${BBCODE_URL}`,
@@ -1496,6 +1859,7 @@ describe("main", () => {
       contextInfo.content = "qux";
       contextInfo.title = "quux";
       contextInfo.url = "https://www.example.com/#corge";
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1505,7 +1869,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://www.example.com/#corge",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://www.example.com/#corge",
@@ -1526,7 +1890,7 @@ describe("main", () => {
     });
 
     it("should call function", async () => {
-      const i = browser.tabs.sendMessage.callCount;
+      const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
       const info = {
         menuItemId: `${COPY_ALL_TABS}TextURL`,
@@ -1537,7 +1901,6 @@ describe("main", () => {
         title: "bar",
         url: "https://example.com/#baz",
       };
-      browser.tabs.sendMessage.callsFake((...args) => args);
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: "normal",
@@ -1554,35 +1917,11 @@ describe("main", () => {
         },
       ]);
       const res = await func(info, tab);
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.deepEqual(res, [
-        [
-          1,
-          {
-            executeCopyAllTabs: {
-              allTabs: [
-                {
-                  content: "foo",
-                  formatId: "TextURL",
-                  id: 1,
-                  template: "%content% %url%",
-                  title: "foo",
-                  url: "https://example.com#baz",
-                },
-                {
-                  content: "bar",
-                  formatId: "TextURL",
-                  id: 2,
-                  template: "%content% %url%",
-                  title: "bar",
-                  url: "https://www.example.com",
-                },
-              ],
-            },
-          },
-          null,
-        ],
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -1592,7 +1931,50 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const i = document.execCommand.callCount;
+      const j = browser.tabs.query.callCount;
+      const info = {
+        menuItemId: `${COPY_ALL_TABS}HTMLHyper`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com#baz",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      const res = await func(info, tab);
+      assert.strictEqual(document.execCommand.callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
       browser.tabs.query.flush();
     });
 
@@ -1625,6 +2007,36 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: "TextURL",
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      enabledFormats.add("TextURL");
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
@@ -1638,6 +2050,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add("TextURL");
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1647,7 +2060,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1669,6 +2082,36 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: "TextURL",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/",
+      };
+      enabledFormats.add("TextURL");
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
@@ -1681,6 +2124,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add("TextURL");
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1690,7 +2134,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/",
@@ -1712,6 +2156,37 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: BBCODE_URL,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
@@ -1725,6 +2200,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add(BBCODE_URL);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1734,7 +2210,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/#baz",
@@ -1756,6 +2232,36 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: false,
+        menuItemId: BBCODE_URL,
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/",
+      };
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: false,
@@ -1768,6 +2274,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add(BBCODE_URL);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1777,7 +2284,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/",
@@ -1799,6 +2306,39 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "TextURL",
+        selectionText: "foo",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      enabledFormats.add("TextURL");
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
@@ -1814,6 +2354,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add("TextURL");
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1823,7 +2364,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1845,6 +2386,39 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "TextURL",
+        content: "foo",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      enabledFormats.add("TextURL");
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
@@ -1861,6 +2435,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add("TextURL");
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1870,7 +2445,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1892,6 +2467,39 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: "TextURL",
+        content: "",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      enabledFormats.add("TextURL");
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
@@ -1908,6 +2516,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add("TextURL");
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1917,7 +2526,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
-              promptContent: false,
+              promptContent: true,
               template: "%content% %url%",
               title: "bar",
               url: "https://example.com/#baz",
@@ -1939,6 +2548,39 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const info = {
+        isLink: true,
+        menuItemId: BBCODE_URL,
+        content: "",
+        selectionText: "",
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      const tab = {
+        id: 1,
+        title: "qux",
+        url: "https://example.com/",
+      };
+      enabledFormats.add(BBCODE_URL);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [
+        null,
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {enabledFormats, vars} = mjs;
       const i = browser.tabs.sendMessage.callCount;
       const info = {
         isLink: true,
@@ -1955,6 +2597,7 @@ describe("main", () => {
       };
       browser.tabs.sendMessage.callsFake((...args) => args);
       enabledFormats.add(BBCODE_URL);
+      vars.promptContent = true;
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
       assert.deepEqual(res, [
@@ -1964,7 +2607,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
-              promptContent: false,
+              promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
               url: "https://example.com/#baz",

@@ -3,15 +3,20 @@
  */
 
 import {
+  Clip,
+} from "./clipboard.js";
+import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  createNotification, getActiveTabId, getAllTabsInWindow, getEnabledTheme,
-  isTab, sendMessage,
+  getActiveTabId, getAllTabsInWindow, getEnabledTheme, isTab, sendMessage,
 } from "./browser.js";
 import {
-  formatData,
+  createAllTabsLinkText, createLinkText, formatData,
 } from "./format.js";
+import {
+  notifyOnCopy,
+} from "./notify.js";
 
 /* api */
 const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
@@ -24,8 +29,8 @@ import {
   EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, NOTIFY_COPY, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL,
-  THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
+  TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 
@@ -469,7 +474,7 @@ export const extractClickedData = async (info, tab) => {
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const {promptContent} = vars;
+      const {notifyOnCopy: notify, promptContent} = vars;
       const {
         canonicalUrl: contextCanonicalUrl, content: contextContent,
         selectionText: contextSelectionText, title: contextTitle,
@@ -477,13 +482,16 @@ export const extractClickedData = async (info, tab) => {
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
+      const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
       if (menuItemId.startsWith(COPY_ALL_TABS)) {
         const allTabs = await getAllTabsInfo(menuItemId);
-        func.push(sendMessage(tabId, {
-          [EXEC_COPY_TABS]: {
-            allTabs,
-          },
-        }));
+        const arr = [];
+        for (const tabData of allTabs) {
+          arr.push(createLinkText(tabData));
+        }
+        const tmplArr = await Promise.all(arr);
+        const text = await createAllTabsLinkText(tmplArr, mimeType);
+        func.push((new Clip(text, mimeType)).copy());
       } else {
         const template = await getFormatTemplate(menuItemId);
         let content, title, url;
@@ -527,11 +535,23 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          func.push(sendMessage(tabId, {
-            [EXEC_COPY]: {
-              content, formatId, promptContent, template, title, url,
-            },
-          }));
+          // FIXME: depends on Issue #39
+          if (promptContent) {
+            func.push(sendMessage(tabId, {
+              [EXEC_COPY]: {
+                content, formatId, promptContent, template, title, url,
+              },
+            }));
+          } else {
+            const text = await createLinkText({
+              content, formatId, template, title, url,
+            });
+            if (notify) {
+              func.push((new Clip(text, mimeType)).copy().then(notifyOnCopy));
+            } else {
+              func.push((new Clip(text, mimeType)).copy());
+            }
+          }
         }
       }
       func.push(initContextInfo());
@@ -642,14 +662,7 @@ export const handleMsg = async (msg, sender = {}) => {
           break;
         case NOTIFY_COPY: {
           const {notifyOnCopy: notify} = vars;
-          if (notify && value) {
-            func.push(createNotification(key, {
-              iconUrl: runtime.getURL(ICON),
-              message: i18n.getMessage("notifyOnCopyMsg"),
-              title: i18n.getMessage("extensionName"),
-              type: "basic",
-            }));
-          }
+          notify && value && func.push(notifyOnCopy());
           break;
         }
         case "keydown":

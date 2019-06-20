@@ -129,7 +129,7 @@ export const createAllTabsLinkText = async (arr, mime = MIME_PLAIN) => {
 /**
  * create link text
  * @param {Object} data - copy data
- * @returns {?string} - link text
+ * @returns {string} - link text
  */
 export const createLinkText = async (data = {}) => {
   const {content: contentText, formatId, template, title, url} = data;
