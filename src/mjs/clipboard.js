@@ -76,7 +76,7 @@ export class Clip {
         /**
          * copy to clipboard sync
          * @param {Object} evt - Event
-         * @returns {void} - notifyOnCopy()
+         * @returns {void}
          */
         const copySync = evt => {
           document.removeEventListener("copy", copySync, true);
