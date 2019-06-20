@@ -3064,6 +3064,7 @@ describe("main", () => {
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
+      vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
       formats.clear();
@@ -3075,6 +3076,7 @@ describe("main", () => {
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.isWebExt = false;
+      vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
       formats.clear();
@@ -3160,11 +3162,38 @@ describe("main", () => {
 
     it("should set variable", async () => {
       const {vars} = mjs;
+      const i = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        active: true,
+        windowType: "normal",
+      }).resolves([{
+        id: 1,
+      }]);
       const res = await func(PROMPT, {
         checked: true,
       });
+      assert.strictEqual(browser.tabs.query.callCount, i, "not called");
       assert.isTrue(vars.promptContent, "value");
       assert.deepEqual(res, [], "result");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      const i = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        active: true,
+        windowType: "normal",
+      }).resolves([{
+        id: 1,
+      }]);
+      const res = await func(PROMPT, {
+        checked: true,
+      }, true);
+      assert.strictEqual(browser.tabs.query.callCount, i + 1, "called");
+      assert.isTrue(vars.promptContent, "value");
+      assert.deepEqual(res, [[]], "result");
     });
 
     it("should set variable", async () => {

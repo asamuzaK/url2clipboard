@@ -724,9 +724,18 @@ export const setVar = async (item, obj, changed = false) => {
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
-      case PROMPT:
       case TEXT_SEP_LINES:
         vars[item] = !!checked;
+        break;
+      case PROMPT:
+        vars[item] = !!checked;
+        // FIXME: depends on Issue #39
+        if (changed) {
+          func.push(
+            removeContextMenu().then(createContextMenu).then(getActiveTabId)
+              .then(updateContextMenu)
+          );
+        }
         break;
       default: {
         if (formats.has(item)) {
