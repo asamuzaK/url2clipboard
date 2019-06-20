@@ -227,11 +227,12 @@ export const createMenuItem = async (id, title, data = {}) => {
 export const createContextMenu = async () => {
   const func = [];
   if (enabledFormats.size) {
-    const {isWebExt} = vars;
+    const {isWebExt, promptContent} = vars;
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id: itemId, key: itemKey} = menuItems[item];
-      const enabled = false;
+      // FIXME: depends on Issue #39
+      const enabled = !promptContent;
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
