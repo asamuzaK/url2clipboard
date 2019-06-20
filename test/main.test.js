@@ -677,7 +677,7 @@ describe("main", () => {
     });
 
     it("should get null", async () => {
-      const res = await func({contexts: ["tabs"]}, {});
+      const res = await func({contexts: ["tab"]}, {});
       assert.isNull(res, "result");
     });
 
