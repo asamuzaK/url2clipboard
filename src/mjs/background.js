@@ -9,8 +9,9 @@ import {
   getAllStorage,
 } from "./browser.js";
 import {
-  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleUpdatedTab,
-  prepareUI, removeEnabledTab, setDefaultIcon, setFormatData, setVars,
+  extractClickedData, handleActiveTab, handleCmd, handleMenusOnShown, handleMsg,
+  handleUpdatedTab, prepareUI, removeEnabledTab, setDefaultIcon, setFormatData,
+  setVars,
 } from "./main.js";
 
 /* api */
@@ -22,6 +23,10 @@ commands.onCommand.addListener(cmd =>
 contextMenus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
 );
+contextMenus.onShown &&
+  contextMenus.onShown.addListener((info, tab) =>
+    handleMenusOnShown(info, tab).catch(throwErr)
+  );
 storage.onChanged.addListener(data =>
   setVars(data).catch(throwErr)
 );

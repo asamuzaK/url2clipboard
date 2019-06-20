@@ -644,6 +644,68 @@ describe("main", () => {
     });
   });
 
+  describe("handle menus on shown", () => {
+    const func = mjs.handleMenusOnShown;
+    beforeEach(() => {
+      const {enabledFormats, enabledTabs, formats, vars} = mjs;
+      const items = Object.entries(formatData);
+      vars.isWebExt = true;
+      enabledFormats.add("HTMLPlain");
+      enabledFormats.add("Markdown");
+      enabledFormats.add("TextURL");
+      enabledTabs.set(1, true);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+    });
+    afterEach(() => {
+      const {enabledFormats, enabledTabs, formats, vars} = mjs;
+      vars.isWebExt = false;
+      enabledFormats.clear();
+      enabledTabs.clear();
+      formats.clear();
+    });
+
+    it("should get null", async () => {
+      const res = await func({}, {});
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", async () => {
+      const res = await func({contexts: []}, {});
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", async () => {
+      const res = await func({contexts: ["tabs"]}, {});
+      assert.isNull(res, "result");
+    });
+
+    it("should not call function", async () => {
+      const {enabledFormats} = mjs;
+      const i = browser.contextMenus.update.callCount;
+      const j = browser.contextMenus.refresh.callCount;
+      enabledFormats.clear();
+      const res = await func({contexts: ["tab"]}, {id: 1});
+      assert.strictEqual(browser.contextMenus.update.callCount, i,
+                         "not called");
+      assert.strictEqual(browser.contextMenus.refresh.callCount, j,
+                         "not called");
+      assert.isNull(res, "result");
+    });
+
+    it("should call function", async () => {
+      const i = browser.contextMenus.update.callCount;
+      const j = browser.contextMenus.refresh.callCount;
+      const res = await func({contexts: ["tab"]}, {id: 1});
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 4,
+                         "called");
+      assert.strictEqual(browser.contextMenus.refresh.callCount, j + 1,
+                         "called");
+      assert.isNull(res, "result");
+    });
+  });
+
   describe("set enabled tab", () => {
     const func = mjs.setEnabledTab;
     beforeEach(() => {

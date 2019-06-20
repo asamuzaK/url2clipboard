@@ -316,6 +316,26 @@ export const updateContextMenu = async tabId => {
 };
 
 /**
+ * handle menus on shown
+ * @param {Object} info - menu info
+ * @param {Object} tab - tabs.Tab
+ * @returns {?AsyncFunction} - contextMenus.reflesh()
+ */
+export const handleMenusOnShown = async (info, tab) => {
+  const {contexts} = info;
+  const {id: tabId} = tab;
+  let func;
+  if (Array.isArray(contexts) && contexts.includes("tab") &&
+      Number.isInteger(tabId) && typeof contextMenus.refresh === "function") {
+    const arr = await updateContextMenu(tabId);
+    if (Array.isArray(arr) && arr.length) {
+      func = contextMenus.refresh();
+    }
+  }
+  return func || null;
+};
+
+/**
  * set enabled tab
  * @param {number} tabId - tab ID
  * @param {Object} tab - tabs.Tab
