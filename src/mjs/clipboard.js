@@ -68,7 +68,7 @@ export class Clip {
         func = clipboard.writeText(this._content);
       /*
       } else if (clipboard && typeof clipboard.write === "function") {
-        const data = new DataTransfer();
+        const data = new Blob();
         data.items.add(this._content, this._mime);
         func = clipboard.write(data);
       */
