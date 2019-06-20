@@ -284,8 +284,9 @@ export const updateContextMenu = async tabId => {
   }
   const func = [];
   if (enabledFormats.size) {
-    const {isWebExt} = vars;
-    const enabled = enabledTabs.get(tabId) || false;
+    const {isWebExt, promptContent} = vars;
+    // FIXME: depends on Issue #39
+    const enabled = !promptContent || enabledTabs.get(tabId) || false;
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
