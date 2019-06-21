@@ -1195,7 +1195,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1221,13 +1221,14 @@ describe("main", () => {
         url: "https://example.com/#baz",
       };
       vars.notifyOnCopy = true;
+      browser.notifications.create.resolves(true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(browser.notifications.create.callCount, j + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        true,
         {
           canonicalUrl: null,
           content: null,
@@ -1237,6 +1238,7 @@ describe("main", () => {
           url: null,
         },
       ], "result");
+      browser.notifications.create.flush();
     });
 
     it("should call function", async () => {
@@ -1363,7 +1365,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1438,7 +1440,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1509,7 +1511,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1585,7 +1587,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1659,7 +1661,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1734,7 +1736,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1813,7 +1815,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1892,7 +1894,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1983,7 +1985,7 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2027,7 +2029,7 @@ describe("main", () => {
       assert.strictEqual(document.execCommand.callCount, i + 1, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2085,7 +2087,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2159,7 +2161,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2234,7 +2236,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2309,7 +2311,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2386,7 +2388,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2467,7 +2469,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2548,7 +2550,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2629,7 +2631,7 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -3059,14 +3061,16 @@ describe("main", () => {
       browser.i18n.getMessage.callsFake(msg => msg);
       mjs.vars.notifyOnCopy = true;
       const i = browser.notifications.create.callCount;
+      browser.notifications.create.resolves(true);
       const res = await func({
         [NOTIFY_COPY]: true,
       });
       assert.strictEqual(browser.notifications.create.callCount, i + 1,
                          "called");
-      assert.deepEqual(res, [null], "result");
+      assert.deepEqual(res, [true], "result");
       browser.runtime.getURL.flush();
       browser.i18n.getMessage.flush();
+      browser.notifications.create.flush();
     });
 
     it("should not call function", async () => {

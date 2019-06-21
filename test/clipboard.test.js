@@ -134,10 +134,22 @@ describe("clipboard", () => {
         });
       });
 
-      it("should get null", async () => {
+      it("should not call function", async () => {
         const clip = new Clip("", "text/plain");
+        const fakeWrite = sinon.fake();
+        navigator.clipboard = {
+          writeText: fakeWrite,
+        };
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
         const res = await clip.copy();
-        assert.isNull(res, "result");
+        const {called: calledWrite} = fakeWrite;
+        const {called: calledExec} = fakeExec;
+        delete navigator.clipboard;
+        delete document.execCommand;
+        assert.isFalse(calledWrite, "not called");
+        assert.isFalse(calledExec, "not called");
+        assert.isUndefined(res, "result");
       });
 
       it("should call function", async () => {
@@ -145,17 +157,45 @@ describe("clipboard", () => {
         navigator.clipboard = {
           writeText: fakeWrite,
         };
-        browser.notifications.create.resolves(true);
-        const i = browser.notifications.create.callCount;
         const clip = new Clip("foo", "text/plain");
         const res = await clip.copy();
         const {calledOnce: calledWrite} = fakeWrite;
         delete navigator.clipboard;
-        assert.strictEqual(browser.notifications.create.callCount, i,
-                           "not called");
         assert.isTrue(calledWrite, "called");
-        assert.isNull(res, "result");
-        browser.notifications.create.flush();
+        assert.isUndefined(res, "result");
+      });
+
+      it("should throw", async () => {
+        const fakeWrite = sinon.fake.throws(new Error("error"));
+        navigator.clipboard = {
+          writeText: fakeWrite,
+        };
+        const clip = new Clip("foo", "text/plain");
+        const res = await clip.copy().catch(e => {
+          assert.instanceOf(e, Error);
+          assert.strictEqual(e.message, "error");
+        });
+        const {calledOnce: calledWrite} = fakeWrite;
+        delete navigator.clipboard;
+        assert.isTrue(calledWrite, "called");
+        assert.isUndefined(res, "result");
+      });
+
+      it("should not throw", async () => {
+        const err = new Error("error");
+        err.name = "NotAllowedError";
+        const fakeWrite = sinon.fake.throws(err);
+        navigator.clipboard = {
+          writeText: fakeWrite,
+        };
+        const clip = new Clip("foo", "text/plain");
+        const res = await clip.copy().catch(e => {
+          assert.isUndefined(e, "not thrown");
+        });
+        const {calledOnce: calledWrite} = fakeWrite;
+        delete navigator.clipboard;
+        assert.isTrue(calledWrite, "called");
+        assert.isUndefined(res, "result");
       });
 
       it("should call function", async () => {
@@ -170,7 +210,7 @@ describe("clipboard", () => {
         delete document.execCommand;
         assert.isTrue(calledAdd, "called");
         assert.isTrue(calledExec, "called");
-        assert.isNull(res, "result");
+        assert.isUndefined(res, "result");
       });
     });
 

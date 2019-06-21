@@ -485,7 +485,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -512,7 +512,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -539,7 +539,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -565,7 +565,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -592,7 +592,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -618,7 +618,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -644,7 +644,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -670,7 +670,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -696,7 +696,7 @@ describe("popup-main", () => {
                          "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -734,7 +734,7 @@ describe("popup-main", () => {
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        null,
+        undefined,
         {
           canonicalUrl: null,
           content: null,

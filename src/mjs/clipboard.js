@@ -54,18 +54,24 @@ export class Clip {
 
   /**
    * copy to clipboard
-   * @returns {?AsyncFunction} - notifyOnCopy()
+   * @returns {void}
    */
   async copy() {
     if (!this._supportedMimeTypes.includes(this._mime)) {
       throw new Error(`Mime type of ${this._mime} is not supported.`);
     }
-    let func;
     if (this._content) {
       const {clipboard} = navigator;
       if (clipboard && typeof clipboard.writeText === "function" &&
           this._mime === MIME_PLAIN) {
-        func = clipboard.writeText(this._content);
+        try {
+          await clipboard.writeText(this._content);
+        } catch (e) {
+          // DOMExeption on Blink
+          if (e.name !== "NotAllowedError") {
+            throw e;
+          }
+        }
       /*
       } else if (clipboard && typeof clipboard.write === "function") {
         const data = new Blob();
@@ -79,6 +85,7 @@ export class Clip {
          * @returns {void}
          */
         const copySync = evt => {
+          console.log("clip sync");
           document.removeEventListener("copy", copySync, true);
           evt.stopImmediatePropagation();
           evt.preventDefault();
@@ -88,6 +95,5 @@ export class Clip {
         document.execCommand("copy");
       }
     }
-    return func || null;
   }
 }
