@@ -990,14 +990,14 @@ describe("popup-main", () => {
     });
 
     it("should call function", async () => {
-      const stub = sinon.stub(console, "error");
+      const spy = sinon.spy(document, "querySelectorAll");
       const i = browser.tabs.sendMessage.callCount;
       browser.tabs.sendMessage.rejects(new Error("error"));
       await func({
         id: 1,
       });
-      const {calledOnce} = stub;
-      stub.restore();
+      const {calledOnce} = spy;
+      spy.restore();
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
                          "called sendMessage");
       assert.isTrue(calledOnce, "called console");

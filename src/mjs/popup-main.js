@@ -6,7 +6,7 @@ import {
   Clip,
 } from "./clipboard.js";
 import {
-  closeWindow, getType, isString, logErr, throwErr,
+  closeWindow, getType, isString, throwErr,
 } from "./common.js";
 import {
   sendMessage,
@@ -358,7 +358,6 @@ export const requestContextInfo = async (tab = {}) => {
         [CONTEXT_INFO_GET]: true,
       });
     } catch (e) {
-      logErr(e);
       await updateMenu({
         contextInfo: {
           isLink: false,
