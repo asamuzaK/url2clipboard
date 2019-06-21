@@ -67,16 +67,15 @@ export class Clip {
         try {
           await clipboard.writeText(this._content);
         } catch (e) {
-          // DOMExeption on Blink
+          // NOTE: DOMExeption occurs on Blink
           if (e.name !== "NotAllowedError") {
             throw e;
           }
         }
       /*
       } else if (clipboard && typeof clipboard.write === "function") {
-        const data = new Blob();
-        data.items.add(this._content, this._mime);
-        func = clipboard.write(data);
+        const data = new Blob([this._content], {type: this._mime});
+        await clipboard.write(data);
       */
       } else {
         /**
