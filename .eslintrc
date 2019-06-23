@@ -103,7 +103,7 @@
     "max-len": [
       "error",
       {
-        "ignorePattern": "^.+/(?:[^\\s]|\\ )+/.+$",
+        "ignorePattern": "^.+/(?:[^\\s]| )+/.+$",
         "ignoreStrings": true,
         "ignoreRegExpLiterals": true,
         "ignoreTemplateLiterals": true,
