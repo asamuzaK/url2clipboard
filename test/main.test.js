@@ -2,7 +2,7 @@
  * main.test.js
  */
 /* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers,
-                   array-bracket-newline */
+                   array-bracket-newline, require-atomic-updates */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";

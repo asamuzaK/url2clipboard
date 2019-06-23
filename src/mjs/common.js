@@ -278,22 +278,16 @@ export const encodeUrlSpecialChar = str => {
   if (!isString(str)) {
     throw new TypeError(`Expected String but got ${getType(str)}.`);
   }
-  let href;
-  try {
-    const url = new URL(str);
-    const {
-      hash: frag, origin, pathname: path, protocol, search: query,
-    } = url;
-    const base = protocol === "file:" && `${protocol}//` || origin;
-    const encodedUrl = new URL(
-      `${encodeUrlPart(path)}${encodeUrlPart(query)}${encodeUrlPart(frag)}`,
-      base
-    );
-    const {href: encodedHref} = encodedUrl;
-    href = encodedHref;
-  } catch (e) {
-    throw e;
-  }
+  const url = new URL(str);
+  const {
+    hash: frag, origin, pathname: path, protocol, search: query,
+  } = url;
+  const base = protocol === "file:" && `${protocol}//` || origin;
+  const encodedUrl = new URL(
+    `${encodeUrlPart(path)}${encodeUrlPart(query)}${encodeUrlPart(frag)}`,
+    base
+  );
+  const {href} = encodedUrl;
   return href;
 };
 
