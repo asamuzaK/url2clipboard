@@ -195,6 +195,15 @@
   "notifyOnCopyMsg": {
     "message": "已复制"
   },
+  "notifyOnCopyMsg_format": {
+    "message": "已复制 $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
   "onCopySettings": {
     "message": "复制时"
   },
@@ -322,6 +331,12 @@
     "message": "工具栏图标"
   },
   "userInput": {
-    "message": "编辑链接标题"
+    "message": "编辑链接标题 $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
   }
 }

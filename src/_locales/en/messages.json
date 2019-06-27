@@ -195,6 +195,15 @@
   "notifyOnCopyMsg": {
     "message": "Copied"
   },
+  "notifyOnCopyMsg_format": {
+    "message": "Copied as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
   "onCopySettings": {
     "message": "Settings On Copy"
   },
@@ -322,6 +331,12 @@
     "message": "Toolbar Button Icon"
   },
   "userInput": {
-    "message": "Edit content text of the link"
+    "message": "Edit content text of the $FORMAT$ link",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
   }
 }

@@ -195,6 +195,15 @@
   "notifyOnCopyMsg": {
     "message": "コピーしました"
   },
+  "notifyOnCopyMsg_format": {
+    "message": "$FORMAT$ でコピーしました",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
   "onCopySettings": {
     "message": "コピー時の設定"
   },
@@ -322,6 +331,12 @@
     "message": "ツールバーボタンアイコン"
   },
   "userInput": {
-    "message": "リンクのテキストを編集してください"
+    "message": "$FORMAT$ リンクのテキストを編集してください",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
   }
 }

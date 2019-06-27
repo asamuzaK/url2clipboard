@@ -33,6 +33,7 @@
   /* variables */
   const vars = {
     mimeType: MIME_PLAIN,
+    notifyLabel: null,
   };
 
   /**
@@ -173,6 +174,7 @@
        * @returns {void}
        */
       const setClipboardData = evt => {
+        const {notifyLabel} = vars;
         let {mimeType: type} = vars;
         if (!isString(type) || !/^text\/(?:plain|html)$/.test(type)) {
           type = MIME_PLAIN;
@@ -182,7 +184,7 @@
         evt.preventDefault();
         evt.clipboardData.setData(type, text);
         return runtime.sendMessage({
-          [NOTIFY_COPY]: true,
+          [NOTIFY_COPY]: notifyLabel || true,
         });
       };
 
@@ -194,13 +196,18 @@
   /**
    * edit content
    * @param {string} content - content to edit
+   * @param {string} label - format label
    * @returns {?string} - edited content
    */
-  const editContent = async (content = "") => {
+  const editContent = async (content = "", label = "") => {
     if (!isString(content)) {
       throw new TypeError(`Expected String but got ${getType(content)}.`);
     }
-    const msg = await i18n.getMessage(USER_INPUT) || USER_INPUT_DEFAULT;
+    if (!isString(label)) {
+      throw new TypeError(`Expected String but got ${getType(label)}.`);
+    }
+    const msg = label && await i18n.getMessage(USER_INPUT, label) ||
+                USER_INPUT_DEFAULT;
     content = window.prompt(msg, content.trim());
     return content;
   };
@@ -212,7 +219,8 @@
    */
   const createLinkText = async (data = {}) => {
     const {
-      content: contentText, formatId, promptContent, template, title, url,
+      content: contentText, formatId, formatTitle, promptContent, template,
+      title, url,
     } = data;
     if (!isString(formatId)) {
       throw new TypeError(`Expected String but got ${getType(formatId)}.`);
@@ -225,7 +233,7 @@
     let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
                   "";
     if (promptContent) {
-      content = await editContent(content) || "";
+      content = await editContent(content, formatTitle || formatId) || "";
     }
     switch (formatId) {
       case ASCIIDOC:
@@ -266,6 +274,7 @@
       default:
     }
     vars.mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+    vars.notifyLabel = formatTitle || formatId;
     return template.replace(/%content%/g, content.trim())
       .replace(/%title%/g, linkTitle.trim())
       .replace(/%url%/g, linkUrl.trim());

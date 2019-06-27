@@ -14,6 +14,9 @@ import {
 import {
   createAllTabsLinkText, createLinkText, formatData,
 } from "./format.js";
+import {
+  notifyOnCopy,
+} from "./notify.js";
 
 /* api */
 const {runtime, tabs} = browser;
@@ -37,6 +40,21 @@ export const vars = {
   includeTitleMarkdown: false,
   notifyOnCopy: false,
   separateTextURL: false,
+};
+
+/**
+ * send notify
+ * @param {*} value - value
+ * @returns {?AsyncFunction} - runtime.sendMessage()
+ */
+export const sendNotify = async value => {
+  let func;
+  if (value) {
+    func = sendMessage(null, {
+      [NOTIFY_COPY]: value,
+    });
+  }
+  return func || null;
 };
 
 /* formats */
@@ -123,6 +141,24 @@ export const getFormatTemplate = async id => {
     }
   }
   return template || null;
+};
+
+/**
+ * get format title
+ * @param {string} id - menu item ID
+ * @returns {?string} - title
+ */
+export const getFormatTitle = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const item = await getFormatItemFromId(id);
+  let title;
+  if (item) {
+    const {id: itemId, title: itemTitle} = item;
+    title = itemTitle || itemId;
+  }
+  return title || null;
 };
 
 /* tab info */
@@ -212,9 +248,11 @@ export const getAllTabsInfo = async menuItemId => {
 export const createCopyData = async evt => {
   const {target} = evt;
   const {id: menuItemId} = target;
+  const {notifyOnCopy: notify} = vars;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
   const formatId = getFormatId(menuItemId);
+  const formatTitle = await getFormatTitle(formatId);
   const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
   const func = [];
   let text;
@@ -227,7 +265,7 @@ export const createCopyData = async evt => {
     const tmplArr = await Promise.all(arr);
     text = await createAllTabsLinkText(tmplArr, mimeType);
   } else {
-    const template = await getFormatTemplate(menuItemId);
+    const template = await getFormatTemplate(formatId);
     let content, title, url;
     if (menuItemId.startsWith(COPY_LINK)) {
       if (formatId === BBCODE_URL) {
@@ -254,7 +292,10 @@ export const createCopyData = async evt => {
       });
     }
   }
-  isString(text) && func.push((new Clip(text, mimeType)).copy());
+  if (isString(text)) {
+    await (new Clip(text, mimeType)).copy();
+    notify && func.push(notifyOnCopy(formatTitle));
+  }
   func.push(initContextInfo());
   return Promise.all(func);
 };
@@ -266,36 +307,12 @@ export const createCopyData = async evt => {
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
 /**
- * send notify
- * @param {Array} arr - array
- * @returns {?AsyncFunction} - runtime.sendMessage()
- */
-export const sendNotify = async arr => {
-  let func;
-  if (Array.isArray(arr) && arr.length > 1) {
-    func = sendMessage(null, {
-      [NOTIFY_COPY]: true,
-    });
-  }
-  return func || null;
-};
-
-/**
  * handle menu on click
  * @param {!Object} evt - Event
  * @returns {Promise} - Promise chain
  */
-export const menuOnClick = evt => {
-  const {notifyOnCopy: notify} = vars;
-  let func;
-  if (notify) {
-    func =
-      createCopyData(evt).then(sendNotify).then(closeWindow).catch(throwErr);
-  } else {
-    func = createCopyData(evt).then(closeWindow).catch(throwErr);
-  }
-  return func;
-};
+export const menuOnClick = evt =>
+  createCopyData(evt).then(closeWindow).catch(throwErr);
 
 /**
  * add listener to menu

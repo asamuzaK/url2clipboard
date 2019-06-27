@@ -68,6 +68,31 @@ describe("popup-main", () => {
     assert.isObject(browser, "browser");
   });
 
+  describe("send notify", () => {
+    const func = mjs.sendNotify;
+
+    it("should not call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+                         "not called");
+    });
+
+    it("should call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func(true);
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+                         "called");
+    });
+
+    it("should call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      await func("foo");
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+                         "called");
+    });
+  });
+
   describe("set format data", () => {
     const func = mjs.setFormatData;
     beforeEach(() => {
@@ -297,6 +322,48 @@ describe("popup-main", () => {
     });
   });
 
+  describe("get format title", () => {
+    const func = mjs.getFormatTitle;
+    beforeEach(() => {
+      const {formats} = mjs;
+      const items = Object.entries(formatData);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+    });
+    afterEach(() => {
+      const {formats} = mjs;
+      formats.clear();
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should get null", async () => {
+      const res = await func("foo");
+      assert.isNull(res, "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func(`${COPY_PAGE}BBCodeText`);
+      assert.strictEqual(res, "BBCode (Text)", "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func("TextURL");
+      assert.strictEqual(res, "Text & URL", "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func(`${COPY_PAGE}Markdown`);
+      assert.strictEqual(res, "Markdown", "result");
+    });
+  });
+
   describe("init tab info", () => {
     const func = mjs.initTabInfo;
 
@@ -414,12 +481,13 @@ describe("popup-main", () => {
   describe("create copy data", () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
-      const {contextInfo, tabInfo} = mjs;
+      const {contextInfo, tabInfo, vars} = mjs;
       tabInfo.title = "foo";
       tabInfo.url = "https://www.example.com";
       contextInfo.canonicalUrl = "https://example.com";
       contextInfo.title = "bar";
       contextInfo.url = "https://www.example.com/baz";
+      vars.notifyOnCopy = false;
       const elm = document.createElement("input");
       const elm2 = document.createElement("input");
       const elm3 = document.createElement("input");
@@ -435,7 +503,7 @@ describe("popup-main", () => {
       body.appendChild(elm4);
     });
     afterEach(() => {
-      const {contextInfo, tabInfo} = mjs;
+      const {contextInfo, tabInfo, vars} = mjs;
       tabInfo.id = null;
       tabInfo.title = null;
       tabInfo.url = null;
@@ -444,6 +512,7 @@ describe("popup-main", () => {
       contextInfo.canonicalUrl = null;
       contextInfo.title = null;
       contextInfo.url = null;
+      vars.notifyOnCopy = false;
     });
 
     it("should not call function", async () => {
@@ -484,9 +553,38 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
+      assert.strictEqual(res.length, 1, "result");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const elm = document.getElementById(CONTENT_PAGE);
+      elm.value = "qux";
+      const evt = {
+        target: {
+          id: `${COPY_PAGE}TextURL`,
+        },
+      };
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.notifications.create.callCount;
+      await mjs.setFormatData();
+      mjs.vars.notifyOnCopy = true;
+      const res = await func(evt);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.notifications.create.callCount, j + 1,
+                         "called");
       assert.strictEqual(res.length, 2, "result");
       assert.deepEqual(res, [
-        undefined,
+        null,
         {
           canonicalUrl: null,
           content: null,
@@ -511,9 +609,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -538,9 +635,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(document.execCommand.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -564,9 +660,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -591,9 +686,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -617,9 +711,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -643,9 +736,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -669,9 +761,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -695,9 +786,8 @@ describe("popup-main", () => {
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -733,9 +823,8 @@ describe("popup-main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
-      assert.strictEqual(res.length, 2, "result");
+      assert.strictEqual(res.length, 1, "result");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -759,67 +848,25 @@ describe("popup-main", () => {
     });
   });
 
-  describe("send notify", () => {
-    const func = mjs.sendNotify;
-
-    it("should not call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-    });
-
-    it("should not call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func([undefined]);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-    });
-
-    it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func([undefined, "bar"]);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-    });
-  });
-
   describe("handle menu on click", () => {
     const func = mjs.menuOnClick;
     beforeEach(() => {
-      const {vars} = mjs;
-      vars.notifyOnCopy = false;
+      const {formats} = mjs;
+      formats.clear();
     });
     afterEach(() => {
-      const {vars} = mjs;
-      vars.notifyOnCopy = false;
+      const {formats} = mjs;
+      formats.clear();
     });
 
     it("should call function", async () => {
       const stubClose = sinon.stub(window, "close");
       const evt = {
         target: {
-          id: "foo",
+          id: "HTMLPlain",
         },
       };
       await mjs.setFormatData();
-      const res = await func(evt);
-      const {calledOnce} = stubClose;
-      stubClose.restore();
-      assert.isTrue(calledOnce, "called");
-      assert.isUndefined(res, "result");
-    });
-
-    it("should call function", async () => {
-      const {vars} = mjs;
-      const stubClose = sinon.stub(window, "close");
-      const evt = {
-        target: {
-          id: "foo",
-        },
-      };
-      await mjs.setFormatData();
-      vars.notifyOnCopy = true;
       const res = await func(evt);
       const {calledOnce} = stubClose;
       stubClose.restore();

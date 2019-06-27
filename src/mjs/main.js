@@ -123,7 +123,7 @@ export const getFormatItemFromId = async id => {
 /**
  * get format template
  * @param {string} id - menu item ID
- * @returns {string} - template
+ * @returns {?string} - template
  */
 export const getFormatTemplate = async id => {
   if (!isString(id)) {
@@ -157,6 +157,24 @@ export const getFormatTemplate = async id => {
     }
   }
   return template || null;
+};
+
+/**
+ * get format title
+ * @param {string} id - menu item ID
+ * @returns {?string} - title
+ */
+export const getFormatTitle = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const item = await getFormatItemFromId(id);
+  let title;
+  if (item) {
+    const {id: itemId, title: itemTitle} = item;
+    title = itemTitle || itemId;
+  }
+  return title || null;
 };
 
 /* enabled tabs collection */
@@ -508,7 +526,9 @@ export const extractClickedData = async (info, tab) => {
       } = contextInfo;
       const {hash: tabUrlHash} = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
+      const formatTitle = await getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+      let text;
       if (menuItemId.startsWith(COPY_ALL_TABS)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
@@ -516,10 +536,9 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        const text = await createAllTabsLinkText(tmplArr, mimeType);
-        func.push((new Clip(text, mimeType)).copy());
+        text = await createAllTabsLinkText(tmplArr, mimeType);
       } else {
-        const template = await getFormatTemplate(menuItemId);
+        const template = await getFormatTemplate(formatId);
         let content, title, url;
         if (menuItemId.startsWith(COPY_LINK)) {
           if (formatId === BBCODE_URL) {
@@ -565,20 +584,20 @@ export const extractClickedData = async (info, tab) => {
           if (promptContent) {
             func.push(sendMessage(tabId, {
               [EXEC_COPY]: {
-                content, formatId, promptContent, template, title, url,
+                content, formatId, formatTitle, promptContent, template, title,
+                url,
               },
             }));
           } else {
-            const text = await createLinkText({
+            text = await createLinkText({
               content, formatId, template, title, url,
             });
-            if (notify) {
-              func.push((new Clip(text, mimeType)).copy().then(notifyOnCopy));
-            } else {
-              func.push((new Clip(text, mimeType)).copy());
-            }
           }
         }
+      }
+      if (isString(text)) {
+        await (new Clip(text, mimeType)).copy();
+        notify && func.push(notifyOnCopy(formatTitle));
       }
       func.push(initContextInfo());
     }
