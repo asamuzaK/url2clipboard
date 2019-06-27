@@ -42,21 +42,6 @@ export const vars = {
   separateTextURL: false,
 };
 
-/**
- * send notify
- * @param {*} value - value
- * @returns {?AsyncFunction} - runtime.sendMessage()
- */
-export const sendNotify = async value => {
-  let func;
-  if (value) {
-    func = sendMessage(null, {
-      [NOTIFY_COPY]: value,
-    });
-  }
-  return func || null;
-};
-
 /* formats */
 export const formats = new Map();
 

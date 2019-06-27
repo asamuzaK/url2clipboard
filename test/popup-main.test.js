@@ -68,31 +68,6 @@ describe("popup-main", () => {
     assert.isObject(browser, "browser");
   });
 
-  describe("send notify", () => {
-    const func = mjs.sendNotify;
-
-    it("should not call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-                         "not called");
-    });
-
-    it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func(true);
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-    });
-
-    it("should call function", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      await func("foo");
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-    });
-  });
-
   describe("set format data", () => {
     const func = mjs.setFormatData;
     beforeEach(() => {
