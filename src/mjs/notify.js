@@ -3,6 +3,9 @@
  */
 
 import {
+  isString,
+} from "./common.js";
+import {
   createNotification,
 } from "./browser.js";
 
@@ -16,12 +19,16 @@ import {
 
 /**
  * notify on copy
+ * @param {string} label - label
  * @returns {AsyncFunction} - createNotification()
  */
-export const notifyOnCopy = async () => {
+export const notifyOnCopy = async label => {
+  const message = isString(label) && label &&
+                  i18n.getMessage("notifyOnCopyMsg_format", label) ||
+                  i18n.getMessage("notifyOnCopyMsg");
   const msg = {
+    message,
     iconUrl: runtime.getURL(ICON),
-    message: i18n.getMessage("notifyOnCopyMsg"),
     title: i18n.getMessage("extensionName"),
     type: "basic",
   };

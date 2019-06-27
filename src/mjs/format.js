@@ -95,6 +95,7 @@ export const formatData = {
     menu: "&Text && URL",
     template: "%content% %url%",
     templateAlt: "%content%\n%url%",
+    title: "Text & URL",
   },
   [TEXT_TEXT_ONLY]: {
     id: TEXT_TEXT_ONLY,

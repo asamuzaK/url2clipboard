@@ -332,6 +332,48 @@ describe("main", () => {
     });
   });
 
+  describe("get format title", () => {
+    const func = mjs.getFormatTitle;
+    beforeEach(() => {
+      const {formats} = mjs;
+      const items = Object.entries(formatData);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+    });
+    afterEach(() => {
+      const {formats} = mjs;
+      formats.clear();
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should get null", async () => {
+      const res = await func("foo");
+      assert.isNull(res, "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func(`${COPY_PAGE}BBCodeText`);
+      assert.strictEqual(res, "BBCode (Text)", "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func("TextURL");
+      assert.strictEqual(res, "Text & URL", "result");
+    });
+
+    it("should get value", async () => {
+      const res = await func(`${COPY_PAGE}Markdown`);
+      assert.strictEqual(res, "Markdown", "result");
+    });
+  });
+
   describe("remove context menu", () => {
     const func = mjs.removeContextMenu;
 
@@ -1195,7 +1237,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1264,6 +1305,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -1365,7 +1407,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1405,6 +1446,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -1440,7 +1482,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1476,6 +1517,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -1511,7 +1553,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1547,6 +1588,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1587,7 +1629,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1626,6 +1667,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1661,7 +1703,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1696,6 +1737,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1736,7 +1778,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1775,6 +1816,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "quux",
@@ -1815,7 +1857,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1854,6 +1895,7 @@ describe("main", () => {
             executeCopy: {
               content: "qux",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "quux",
@@ -1894,7 +1936,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -1933,6 +1974,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://www.example.com/#corge",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1985,7 +2027,6 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2029,7 +2070,6 @@ describe("main", () => {
       assert.strictEqual(document.execCommand.callCount, i + 1, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2087,7 +2127,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2124,6 +2163,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2161,7 +2201,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2198,6 +2237,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2236,7 +2276,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2274,6 +2313,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2311,7 +2351,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2348,6 +2387,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2388,7 +2428,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2428,6 +2467,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2469,7 +2509,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2509,6 +2548,7 @@ describe("main", () => {
             executeCopy: {
               content: "foo",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2550,7 +2590,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2590,6 +2629,7 @@ describe("main", () => {
             executeCopy: {
               content: "bar",
               formatId: "TextURL",
+              formatTitle: "Text & URL",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2631,7 +2671,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [
-        undefined,
         {
           canonicalUrl: null,
           content: null,
@@ -2671,6 +2710,7 @@ describe("main", () => {
             executeCopy: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
+              formatTitle: "BBCode (URL)",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
