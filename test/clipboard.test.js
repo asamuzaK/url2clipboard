@@ -40,7 +40,7 @@ describe("clipboard", () => {
             add: fakeDataTransferAdd,
           };
         }
-      };
+      }
       global.DataTransfer = DataTransfer;
     }
   });
