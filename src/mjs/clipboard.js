@@ -53,6 +53,26 @@ export class Clip {
   }
 
   /**
+   * copy to clipborad sync (for fallback)
+   * @returns {void}
+   */
+  _copySync() {
+    /**
+     * set clipboard data
+     * @param {Object} evt - Event
+     * @returns {void}
+     */
+    const setClipboardData = evt => {
+      document.removeEventListener("copy", setClipboardData, true);
+      evt.stopImmediatePropagation();
+      evt.preventDefault();
+      evt.clipboardData.setData(this._mime, this._content);
+    };
+    document.addEventListener("copy", setClipboardData, true);
+    document.execCommand("copy");
+  }
+
+  /**
    * copy to clipboard
    * @returns {void}
    */
@@ -67,31 +87,26 @@ export class Clip {
         try {
           await clipboard.writeText(this._content);
         } catch (e) {
-          // NOTE: DOMExeption occurs on Blink
+          // NOTE: NotAllowedError occurs on Blink
           if (e.name !== "NotAllowedError") {
             throw e;
           }
         }
-      /*
       } else if (clipboard && typeof clipboard.write === "function") {
-        const data = new Blob([this._content], {type: this._mime});
-        await clipboard.write(data);
-      */
+        try {
+          const data = new DataTransfer();
+          data.items.add(this._content, this._mime);
+          await clipboard.write(data);
+        } catch (e) {
+          // NOTE: TypeError occurs on Blink
+          if (e.name === "TypeError") {
+            this._copySync();
+          } else {
+            throw e;
+          }
+        }
       } else {
-        /**
-         * copy to clipboard sync
-         * @param {Object} evt - Event
-         * @returns {void}
-         */
-        const copySync = evt => {
-          console.log("clip sync");
-          document.removeEventListener("copy", copySync, true);
-          evt.stopImmediatePropagation();
-          evt.preventDefault();
-          evt.clipboardData.setData(this._mime, this._content);
-        };
-        document.addEventListener("copy", copySync, true);
-        document.execCommand("copy");
+        this._copySync();
       }
     }
   }

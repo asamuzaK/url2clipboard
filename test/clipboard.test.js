@@ -22,7 +22,7 @@ describe("clipboard", () => {
     };
     return new JSDOM(domstr, opt);
   };
-  let window, document, navigator;
+  let window, document, navigator, fakeDataTransferAdd;
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
@@ -32,6 +32,17 @@ describe("clipboard", () => {
     global.window = window;
     global.document = document;
     global.navigator = navigator;
+    if (!global.DataTransfer) {
+      fakeDataTransferAdd = sinon.fake();
+      class DataTransfer {
+        constructor() {
+          this.items = {
+            add: fakeDataTransferAdd,
+          };
+        }
+      };
+      global.DataTransfer = DataTransfer;
+    }
   });
   afterEach(() => {
     window = null;
@@ -41,6 +52,9 @@ describe("clipboard", () => {
     delete global.window;
     delete global.document;
     delete global.navigator;
+    if (fakeDataTransferAdd) {
+      delete global.DataTransfer;
+    }
   });
 
   it("should get browser object", () => {
@@ -124,6 +138,38 @@ describe("clipboard", () => {
       });
     });
 
+    describe("copy to clipboard sync (for fallback)", () => {
+      it("should call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.fake();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("foo", "text/plain");
+        await clip._copySync();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.isTrue(stubSetData.calledOnce, "called");
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+    });
+
     describe("copy to clipboard", () => {
       it("should throw", async () => {
         const clip = new Clip("foo", "image/png");
@@ -199,6 +245,60 @@ describe("clipboard", () => {
       });
 
       it("should call function", async () => {
+        const fakeWrite = sinon.fake();
+        navigator.clipboard = {
+          write: fakeWrite,
+        };
+        const clip = new Clip("<a>foo</a>", "text/html");
+        const res = await clip.copy();
+        const {calledOnce: calledWrite} = fakeWrite;
+        delete navigator.clipboard;
+        assert.isTrue(calledWrite, "called");
+        assert.isUndefined(res, "result");
+      });
+
+      it("should throw", async () => {
+        const fakeWrite = sinon.fake.throws(new Error("error"));
+        navigator.clipboard = {
+          write: fakeWrite,
+        };
+        const clip = new Clip("<a>foo</a>", "text/html");
+        const res = await clip.copy().catch(e => {
+          assert.instanceOf(e, Error);
+          assert.strictEqual(e.message, "error");
+        });
+        const {calledOnce: calledWrite} = fakeWrite;
+        delete navigator.clipboard;
+        assert.isTrue(calledWrite, "called");
+        assert.isUndefined(res, "result");
+      });
+
+      it("should call function", async () => {
+        const err = new TypeError("error");
+        const fakeWrite = sinon.fake.throws(err);
+        navigator.clipboard = {
+          write: fakeWrite,
+        };
+        const stubAdd = sinon.stub(document, "addEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("<a>foo</a>", "text/html");
+        const res = await clip.copy().catch(e => {
+          assert.isUndefined(e, "not thrown");
+        });
+        const {calledOnce: calledWrite} = fakeWrite;
+        const {calledOnce: calledAdd} = stubAdd;
+        const {calledOnce: calledExec} = fakeExec;
+        stubAdd.restore();
+        delete document.execCommand;
+        delete navigator.clipboard;
+        assert.isTrue(calledWrite, "called");
+        assert.isTrue(calledAdd, "called");
+        assert.isTrue(calledExec, "called");
+        assert.isUndefined(res, "result");
+      });
+
+      it("should call function", async () => {
         const stubAdd = sinon.stub(document, "addEventListener");
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
@@ -211,38 +311,6 @@ describe("clipboard", () => {
         assert.isTrue(calledAdd, "called");
         assert.isTrue(calledExec, "called");
         assert.isUndefined(res, "result");
-      });
-    });
-
-    describe("copy to clipboard sync", () => {
-      it("should call function", async () => {
-        const stubPropagate = sinon.fake();
-        const stubPreventDefault = sinon.fake();
-        const stubSetData = sinon.fake();
-        const evt = {
-          stopImmediatePropagation: stubPropagate,
-          preventDefault: stubPreventDefault,
-          clipboardData: {
-            setData: stubSetData,
-          },
-        };
-        const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
-            const [, callback] = args;
-            return callback(evt);
-          });
-        const stubRemove = sinon.stub(document, "removeEventListener");
-        const fakeExec = sinon.fake();
-        document.execCommand = fakeExec;
-        const clip = new Clip("foo", "text/plain");
-        await clip.copy();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.isTrue(stubSetData.calledOnce, "called");
-        stubAdd.restore();
-        stubRemove.restore();
-        delete document.execCommand;
       });
     });
   });
