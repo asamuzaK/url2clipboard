@@ -54,6 +54,7 @@ describe("clipboard", () => {
     delete global.navigator;
     if (fakeDataTransferAdd) {
       delete global.DataTransfer;
+      fakeDataTransferAdd = null;
     }
   });
 
