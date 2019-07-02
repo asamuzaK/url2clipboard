@@ -92,19 +92,11 @@ export class Clip {
             throw e;
           }
         }
+      /*
       } else if (clipboard && typeof clipboard.write === "function") {
-        try {
-          const data = new DataTransfer();
-          data.items.add(this._content, this._mime);
-          await clipboard.write(data);
-        } catch (e) {
-          // NOTE: TypeError occurs on Blink
-          if (e.name === "TypeError") {
-            this._copySync();
-          } else {
-            throw e;
-          }
-        }
+        const data = new Blob([this._content], {type: this._mime});
+        await clipboard.write(data);
+      */
       } else {
         this._copySync();
       }
