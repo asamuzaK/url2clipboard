@@ -231,6 +231,7 @@ describe("clipboard", () => {
         delete navigator.clipboard;
         delete document.execCommand;
         assert.isTrue(calledWrite, "called");
+        assert.isTrue(calledExec, "called");
         assert.isUndefined(res, "result");
       });
 
