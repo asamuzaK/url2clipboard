@@ -88,7 +88,9 @@ export class Clip {
           await clipboard.writeText(this._content);
         } catch (e) {
           // NOTE: NotAllowedError occurs on Blink
-          if (e.name !== "NotAllowedError") {
+          if (e.name === "NotAllowedError") {
+            this._copySync();
+          } else {
             throw e;
           }
         }

@@ -221,11 +221,15 @@ describe("clipboard", () => {
           writeText: fakeWrite,
         };
         const clip = new Clip("foo", "text/plain");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
         const res = await clip.copy().catch(e => {
           assert.isUndefined(e, "not thrown");
         });
         const {calledOnce: calledWrite} = fakeWrite;
+        const {calledOnce: calledExec} = fakeExec;
         delete navigator.clipboard;
+        delete document.execCommand;
         assert.isTrue(calledWrite, "called");
         assert.isUndefined(res, "result");
       });
