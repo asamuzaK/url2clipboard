@@ -197,25 +197,8 @@ describe("clipboard", () => {
         assert.isUndefined(res, "result");
       });
 
-      it("should throw", async () => {
-        const fakeWrite = sinon.fake.throws(new Error("error"));
-        navigator.clipboard = {
-          writeText: fakeWrite,
-        };
-        const clip = new Clip("foo", "text/plain");
-        const res = await clip.copy().catch(e => {
-          assert.instanceOf(e, Error);
-          assert.strictEqual(e.message, "error");
-        });
-        const {calledOnce: calledWrite} = fakeWrite;
-        delete navigator.clipboard;
-        assert.isTrue(calledWrite, "called");
-        assert.isUndefined(res, "result");
-      });
-
-      it("should not throw", async () => {
+      it("should call function", async () => {
         const err = new Error("error");
-        err.name = "NotAllowedError";
         const fakeWrite = sinon.fake.throws(err);
         navigator.clipboard = {
           writeText: fakeWrite,
