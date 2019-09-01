@@ -1,8 +1,7 @@
 /**
  * popup-main.test.js
  */
-/* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers,
-                   require-atomic-updates */
+/* eslint-disable no-magic-numbers, require-atomic-updates */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";

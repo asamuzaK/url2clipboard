@@ -7,11 +7,12 @@
   },
   "extends": "eslint:recommended",
   "parserOptions": {
-    "ecmaVersion": 2018,
+    "ecmaVersion": 2019,
     "sourceType": "module"
   },
   "plugins": [
   ],
+  "reportUnusedDisableDirectives": true,
   "rules": {
     "accessor-pairs": "error",
     "array-bracket-newline": [

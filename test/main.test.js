@@ -1,8 +1,9 @@
 /**
  * main.test.js
  */
-/* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers,
-                   array-bracket-newline, require-atomic-updates */
+/*
+  eslint-disable array-bracket-newline, no-magic-numbers, require-atomic-updates
+*/
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";

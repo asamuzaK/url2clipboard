@@ -1,7 +1,7 @@
 /**
  * browser.test.js
  */
-/* eslint-disable  max-nested-callbacks, no-await-in-loop, no-magic-numbers */
+/* eslint-disable max-nested-callbacks, no-await-in-loop, no-magic-numbers */
 
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";

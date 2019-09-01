@@ -1,7 +1,6 @@
 /**
  * localize.test.js
  */
-/* eslint-disable no-magic-numbers, max-nested-callbacks */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";
