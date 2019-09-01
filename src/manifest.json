@@ -82,7 +82,10 @@
         "js/clipboard.js",
         "js/content.js"
       ],
-      "matches": ["*://*/*", "file:///*"],
+      "matches": [
+        "*://*/*",
+        "file:///*"
+      ],
       "run_at": "document_start"
     }
   ],
