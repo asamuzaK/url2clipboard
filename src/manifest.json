@@ -83,8 +83,7 @@
         "js/content.js"
       ],
       "matches": [
-        "*://*/*",
-        "file:///*"
+        "*://*/*"
       ],
       "run_at": "document_start"
     }
