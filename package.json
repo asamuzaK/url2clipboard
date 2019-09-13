@@ -24,7 +24,7 @@
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/register": "^7.6.0",
-    "addons-linter": "^1.12.2",
+    "addons-linter": "^1.13.0",
     "chai": "^4.2.0",
     "eslint": "^6.3.0",
     "jsdom": "^15.1.1",
@@ -33,7 +33,7 @@
     "nyc": "^14.1.1",
     "sinon": "^7.4.2",
     "sinon-chrome": "^3.0.1",
-    "webext-schema": "^0.7.17",
+    "webext-schema": "^0.7.18",
     "webextension-polyfill": "^0.4.0"
   },
   "version": "3.1.2"
