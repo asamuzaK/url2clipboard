@@ -123,7 +123,8 @@
    */
   const encodeUrlPart = part =>
     isString(part) &&
-    part.replace(/([\s<>[\]'^`{|}])/g, (m, c) => encodeURIComponent(c))
+    part.replace(/&(?!amp)/g, "&amp;").
+      .replace(/([\s<>[\]'^`{|}])/g, (m, c) => encodeURIComponent(c))
       .replace(/(')/g, (m, c) => escape(c)) || "";
 
   /**
