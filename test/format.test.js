@@ -164,12 +164,12 @@ describe("format", () => {
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].template,
         title: "foo&bar",
-        url: "https://example.com/foo",
+        url: "https://example.com/foo?key=1&key2=2",
       };
       const res = await func(data);
       assert.strictEqual(
         res,
-        "<a href=\"https://example.com/foo\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
+        "<a href=\"https://example.com/foo?key=1&amp;key2=2\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
         "result"
       );
     });
@@ -179,12 +179,12 @@ describe("format", () => {
         content: "foo \"bar\" baz",
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
-        url: "https://example.com/foo",
+        url: "https://example.com/foo?key=1&amp;key2=2",
       };
       const res = await func(data);
       assert.strictEqual(
         res,
-        "<a href=\"https://example.com/foo\">foo &quot;bar&quot; baz</a>",
+        "<a href=\"https://example.com/foo?key=1&amp;key2=2\">foo &quot;bar&quot; baz</a>",
         "result"
       );
     });
@@ -207,12 +207,12 @@ describe("format", () => {
         formatId: HTML_PLAIN,
         template: formatData[HTML_PLAIN].template,
         title: "foo&bar",
-        url: "https://example.com/foo",
+        url: "https://example.com/foo?key=1&key2=2",
       };
       const res = await func(data);
       assert.strictEqual(
         res,
-        "<a href=\"https://example.com/foo\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
+        "<a href=\"https://example.com/foo?key=1&amp;key2=2\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
         "result"
       );
     });
@@ -222,12 +222,12 @@ describe("format", () => {
         content: "foo \"bar\" baz",
         formatId: HTML_PLAIN,
         template: formatData[HTML_PLAIN].templateAlt,
-        url: "https://example.com/foo",
+        url: "https://example.com/foo?key=1&amp;key2=2",
       };
       const res = await func(data);
       assert.strictEqual(
         res,
-        "<a href=\"https://example.com/foo\">foo &quot;bar&quot; baz</a>",
+        "<a href=\"https://example.com/foo?key=1&amp;key2=2\">foo &quot;bar&quot; baz</a>",
         "result"
       );
     });

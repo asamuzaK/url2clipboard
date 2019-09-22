@@ -158,6 +158,7 @@ export const createLinkText = async (data = {}) => {
     case HTML_PLAIN:
       content = convertHtmlChar(content) || "";
       linkTitle = convertHtmlChar(linkTitle) || "";
+      linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case LATEX:
       content = convertLaTeXChar(content) || "";
