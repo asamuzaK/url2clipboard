@@ -155,6 +155,40 @@
       }
     }
   },
+  "copySelectedTabsURL": {
+    "message": "Copy Selected Tabs URLs"
+  },
+  "copySelectedTabsURL_key": {
+    "message": "&Copy Selected Tabs URLs",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
+  "copySelectedTabsURL_format": {
+    "message": "Copy Selected Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
+  "copySelectedTabsURL_format_key": {
+    "message": "&Copy Selected Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "Copy Tab URL"
   },
