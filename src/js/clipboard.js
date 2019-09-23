@@ -272,37 +272,6 @@
   };
 
   /**
-   * create multiple tabs link text
-   * @param {Array} arr - array of link text
-   * @returns {string} - joined link text
-   */
-  const createTabsLinkText = async arr => {
-    const {mimeType} = vars;
-    const joiner = mimeType === MIME_HTML && "<br />\n" || "\n";
-    return arr.filter(i => i).join(joiner);
-  };
-
-  /**
-   * extract copy data
-   * @param {Object} data - copy data
-   * @returns {?string} - link text
-   */
-  const extractCopyData = async (data = {}) => {
-    const {allTabs} = data;
-    let text;
-    if (Array.isArray(allTabs)) {
-      const func = [];
-      for (const tabData of allTabs) {
-        func.push(createLinkText(tabData));
-      }
-      text = await Promise.all(func).then(createTabsLinkText);
-    } else {
-      text = await createLinkText(data);
-    }
-    return text || null;
-  };
-
-  /**
    * handle message
    * @param {*} msg - message
    * @returns {Promise.<Array>} - results of each handler
@@ -313,11 +282,9 @@
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
-        switch (item) {
-          case EXEC_COPY:
-            func.push(extractCopyData(obj).then(copyToClipboard));
-            break;
-          default:
+        if (item === EXEC_COPY) {
+          func.push(createLinkText(obj).then(copyToClipboard));
+          break;
         }
       }
     }
