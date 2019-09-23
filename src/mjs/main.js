@@ -9,7 +9,8 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getEnabledTheme, isTab, sendMessage,
+  getActiveTabId, getAllTabsInWindow, getEnabledTheme, getHighlightedTab, isTab,
+  sendMessage,
 } from "./browser.js";
 import {
   createLinkText, createTabsLinkText, formatData,
@@ -19,12 +20,12 @@ import {
 } from "./notify.js";
 
 /* api */
-const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
+const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
 
 /* constants */
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
   EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS_ALL, EXEC_COPY_TABS_ALL_POPUP,
   EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
@@ -63,6 +64,8 @@ export const getFormatId = id => {
   }
   if (id.startsWith(COPY_TABS_ALL)) {
     id = id.replace(COPY_TABS_ALL, "");
+  } else if (id.startsWith(COPY_TABS_SELECTED)) {
+    id = id.replace(COPY_TABS_SELECTED, "");
   } else if (id.startsWith(COPY_LINK)) {
     id = id.replace(COPY_LINK, "");
   } else if (id.startsWith(COPY_PAGE)) {
@@ -197,6 +200,11 @@ export const menuItems = {
     contexts: ["tab"],
     key: "(&T)",
   },
+  [COPY_TABS_SELECTED]: {
+    id: COPY_TABS_SELECTED,
+    contexts: ["tab"],
+    key: "(&S)",
+  },
   [COPY_TABS_ALL]: {
     id: COPY_TABS_ALL,
     contexts: ["tab"],
@@ -314,14 +322,21 @@ export const updateContextMenu = async tabId => {
         func.push(contextMenus.update(itemId, {enabled}));
       } else if (contexts.includes("tab")) {
         if (isWebExt) {
+          const highlightedTabs = await getHighlightedTab(windows.WINDOW_ID);
+          const isHighlighted = highlightedTabs.length > 1;
           // FIXME: depends on Issue #39
-          let enabled;
+          let enabled, visible;
           if (itemId === COPY_TABS_ALL) {
             enabled = true;
+            visible = true;
+          } else if (itemId === COPY_TABS_SELECTED) {
+            enabled = true;
+            visible = isHighlighted;
           } else {
             enabled = !promptContent || enabledTabs.get(tabId) || false;
+            visible = !isHighlighted;
           }
-          func.push(contextMenus.update(itemId, {enabled}));
+          func.push(contextMenus.update(itemId, {enabled, visible}));
         }
       } else {
         // FIXME: depends on Issue #39
