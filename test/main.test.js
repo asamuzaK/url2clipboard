@@ -590,12 +590,14 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
+      const stub = browser.tabs.query.callsFake(() => [{}]);
       const i = browser.contextMenus.update.callCount;
       enabledFormats.clear();
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i,
                          "not called");
       assert.deepEqual(res, [], "result");
+      stub.flush();
     });
 
     it("should call function", async () => {
@@ -605,7 +607,7 @@ describe("main", () => {
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 3,
+      assert.strictEqual(browser.tabs.query.callCount, j + 1,
                          "called");
       assert.strictEqual(res.length, 5, "result");
       stub.flush();
@@ -618,7 +620,7 @@ describe("main", () => {
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 3,
+      assert.strictEqual(browser.tabs.query.callCount, j + 1,
                          "called");
       assert.strictEqual(res.length, 5, "result");
       stub.flush();
@@ -633,7 +635,7 @@ describe("main", () => {
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 3,
+      assert.strictEqual(browser.tabs.query.callCount, j + 1,
                          "called");
       assert.strictEqual(res.length, 5, "result");
       stub.flush();
@@ -648,7 +650,7 @@ describe("main", () => {
       const res = await func(2);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 3,
+      assert.strictEqual(browser.tabs.query.callCount, j + 1,
                          "called");
       assert.strictEqual(res.length, 5, "result");
       stub.flush();
@@ -666,9 +668,10 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k,
-                         "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 1,
+                         "called");
       assert.strictEqual(res.length, 2, "result");
+      stub.flush();
     });
 
     it("should call function", async () => {
@@ -684,9 +687,10 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k,
-                         "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 1,
+                         "called");
       assert.strictEqual(res.length, 2, "result");
+      stub.flush();
     });
 
     it("should call function", async () => {
@@ -702,9 +706,10 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k,
-                         "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 1,
+                         "called");
       assert.strictEqual(res.length, 2, "result");
+      stub.flush();
     });
   });
 
@@ -773,7 +778,7 @@ describe("main", () => {
                          "called");
       assert.strictEqual(browser.contextMenus.refresh.callCount, j + 1,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 3,
+      assert.strictEqual(browser.tabs.query.callCount, k + 1,
                          "called");
       assert.isNull(res, "result");
       stub.flush();
@@ -1179,6 +1184,58 @@ describe("main", () => {
     it("should get result", async () => {
       const i = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      await mjs.setFormatData();
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(browser.tabs.query.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        {
+          content: "foo",
+          formatId: "TextURL",
+          id: 1,
+          template: "%content% %url%",
+          title: "foo",
+          url: "https://example.com",
+        },
+        {
+          content: "bar",
+          formatId: "TextURL",
+          id: 2,
+          template: "%content% %url%",
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ], "result");
+    });
+  });
+
+  describe("get all tabs info", () => {
+    const func = mjs.getSelectedTabsInfo;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should get result", async () => {
+      const i = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        highlighted: true,
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: "normal",
       }).resolves([
@@ -2046,7 +2103,7 @@ describe("main", () => {
         {
           id: 1,
           title: "foo",
-          url: "https://example.com#baz",
+          url: "https://example.com/#baz",
         },
         {
           id: 2,
@@ -2090,7 +2147,96 @@ describe("main", () => {
         {
           id: 1,
           title: "foo",
-          url: "https://example.com#baz",
+          url: "https://example.com/#baz",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      const res = await func(info, tab);
+      assert.strictEqual(document.execCommand.callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
+      const info = {
+        menuItemId: `${COPY_TABS_SELECTED}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com/#baz",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const i = document.execCommand.callCount;
+      const j = browser.tabs.query.callCount;
+      const info = {
+        menuItemId: `${COPY_TABS_SELECTED}HTMLHyper`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com/#baz",
         },
         {
           id: 2,

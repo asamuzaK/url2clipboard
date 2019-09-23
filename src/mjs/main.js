@@ -315,6 +315,8 @@ export const updateContextMenu = async tabId => {
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
     const items = Object.keys(menuItems);
+    const highlightedTabs = await getHighlightedTab(windows.WINDOW_ID_CURRENT);
+    const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
       if (contexts.includes("link")) {
@@ -322,8 +324,6 @@ export const updateContextMenu = async tabId => {
         func.push(contextMenus.update(itemId, {enabled}));
       } else if (contexts.includes("tab")) {
         if (isWebExt) {
-          const highlightedTabs = await getHighlightedTab(windows.WINDOW_ID);
-          const isHighlighted = highlightedTabs.length > 1;
           // FIXME: depends on Issue #39
           let enabled, visible;
           if (itemId === COPY_TABS_ALL) {
@@ -517,6 +517,29 @@ export const getAllTabsInfo = async menuItemId => {
 };
 
 /**
+ * get selected tabs info
+ * @param {string} menuItemId - menu item ID
+ * @returns {Array} - tabs info
+ */
+export const getSelectedTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
+  const tabsInfo = [];
+  const template = await getFormatTemplate(menuItemId);
+  const arr = await getHighlightedTab(windows.WINDONW_ID_CURRENT);
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
+    tabsInfo.push({
+      id, formatId, template, title, url,
+      content: title,
+    });
+  });
+  return tabsInfo;
+};
+
+/**
  * extract clicked data
  * @param {Object} info - clicked info
  * @param {Object} tab - tabs.Tab
@@ -548,6 +571,14 @@ export const extractClickedData = async (info, tab) => {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of allTabs) {
+          arr.push(createLinkText(tabData));
+        }
+        const tmplArr = await Promise.all(arr);
+        text = await createTabsLinkText(tmplArr, mimeType);
+      } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
+        const selectedTabs = await getSelectedTabsInfo(menuItemId);
+        const arr = [];
+        for (const tabData of selectedTabs) {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
