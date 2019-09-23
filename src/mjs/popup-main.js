@@ -12,7 +12,7 @@ import {
   sendMessage,
 } from "./browser.js";
 import {
-  createAllTabsLinkText, createLinkText, formatData,
+  createTabsLinkText, createLinkText, formatData,
 } from "./format.js";
 import {
   notifyOnCopy,
@@ -25,7 +25,7 @@ const {runtime, tabs} = browser;
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, HTML_HYPER, HTML_PLAIN,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, HTML_HYPER, HTML_PLAIN,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
   TEXT_SEP_LINES, TEXT_TEXT_URL,
@@ -65,8 +65,8 @@ export const getFormatId = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  if (id.startsWith(COPY_ALL_TABS)) {
-    id = id.replace(COPY_ALL_TABS, "");
+  if (id.startsWith(COPY_TABS_ALL)) {
+    id = id.replace(COPY_TABS_ALL, "");
   } else if (id.startsWith(COPY_LINK)) {
     id = id.replace(COPY_LINK, "");
   } else if (id.startsWith(COPY_PAGE)) {
@@ -241,14 +241,14 @@ export const createCopyData = async evt => {
   const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
   const func = [];
   let text;
-  if (menuItemId.startsWith(COPY_ALL_TABS)) {
+  if (menuItemId.startsWith(COPY_TABS_ALL)) {
     const allTabs = await getAllTabsInfo(menuItemId);
     const arr = [];
     for (const tabData of allTabs) {
       arr.push(createLinkText(tabData));
     }
     const tmplArr = await Promise.all(arr);
-    text = await createAllTabsLinkText(tmplArr, mimeType);
+    text = await createTabsLinkText(tmplArr, mimeType);
   } else {
     const template = await getFormatTemplate(formatId);
     let content, title, url;

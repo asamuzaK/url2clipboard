@@ -12,7 +12,7 @@ import {
   getActiveTabId, getAllTabsInWindow, getEnabledTheme, isTab, sendMessage,
 } from "./browser.js";
 import {
-  createAllTabsLinkText, createLinkText, formatData,
+  createLinkText, createTabsLinkText, formatData,
 } from "./format.js";
 import {
   notifyOnCopy,
@@ -24,8 +24,8 @@ const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
 /* constants */
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB,
-  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS_ALL, EXEC_COPY_TABS_ALL_POPUP,
   EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
   ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
@@ -61,8 +61,8 @@ export const getFormatId = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  if (id.startsWith(COPY_ALL_TABS)) {
-    id = id.replace(COPY_ALL_TABS, "");
+  if (id.startsWith(COPY_TABS_ALL)) {
+    id = id.replace(COPY_TABS_ALL, "");
   } else if (id.startsWith(COPY_LINK)) {
     id = id.replace(COPY_LINK, "");
   } else if (id.startsWith(COPY_PAGE)) {
@@ -197,8 +197,8 @@ export const menuItems = {
     contexts: ["tab"],
     key: "(&T)",
   },
-  [COPY_ALL_TABS]: {
-    id: COPY_ALL_TABS,
+  [COPY_TABS_ALL]: {
+    id: COPY_TABS_ALL,
     contexts: ["tab"],
     key: "(&A)",
   },
@@ -252,7 +252,7 @@ export const createContextMenu = async () => {
       // FIXME: depends on Issue #39
       const enabled = !promptContent;
       const itemData = {contexts, enabled};
-      if (itemId === COPY_ALL_TABS) {
+      if (itemId === COPY_TABS_ALL) {
         itemData.enabled = true;
       }
       if (enabledFormats.size === 1) {
@@ -316,7 +316,7 @@ export const updateContextMenu = async tabId => {
         if (isWebExt) {
           // FIXME: depends on Issue #39
           let enabled;
-          if (itemId === COPY_ALL_TABS) {
+          if (itemId === COPY_TABS_ALL) {
             enabled = true;
           } else {
             enabled = !promptContent || enabledTabs.get(tabId) || false;
@@ -529,14 +529,14 @@ export const extractClickedData = async (info, tab) => {
       const formatTitle = await getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
       let text;
-      if (menuItemId.startsWith(COPY_ALL_TABS)) {
+      if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of allTabs) {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = await createAllTabsLinkText(tmplArr, mimeType);
+        text = await createTabsLinkText(tmplArr, mimeType);
       } else {
         const template = await getFormatTemplate(formatId);
         let content, title, url;
@@ -700,9 +700,9 @@ export const handleMsg = async (msg, sender = {}) => {
             [EXEC_COPY_POPUP]: value,
           }));
           break;
-        case EXEC_COPY_TABS:
+        case EXEC_COPY_TABS_ALL:
           func.push(sendMessage(null, {
-            [EXEC_COPY_TABS_POPUP]: value,
+            [EXEC_COPY_TABS_ALL_POPUP]: value,
           }));
           break;
         case NOTIFY_COPY: {

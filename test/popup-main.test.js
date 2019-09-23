@@ -12,7 +12,7 @@ import * as mjs from "../src/mjs/popup-main.js";
 import {formatData} from "../src/mjs/format.js";
 import {
   CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
-  CONTEXT_INFO, COPY_ALL_TABS, COPY_LINK, COPY_PAGE,
+  CONTEXT_INFO, COPY_LINK, COPY_PAGE, COPY_TABS_ALL,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
@@ -104,7 +104,7 @@ describe("popup-main", () => {
     });
 
     it("should get result", async () => {
-      const res = func(`${COPY_ALL_TABS}foo`);
+      const res = func(`${COPY_TABS_ALL}foo`);
       assert.strictEqual(res, "foo", "result");
     });
 
@@ -145,7 +145,7 @@ describe("popup-main", () => {
 
     it("should get null", async () => {
       await mjs.setFormatData();
-      const res = await func(`${COPY_ALL_TABS}foo`);
+      const res = await func(`${COPY_TABS_ALL}foo`);
       assert.isNull(res, "result");
     });
 
@@ -164,7 +164,7 @@ describe("popup-main", () => {
     it("should get value", async () => {
       const value = formatData.TextURL;
       await mjs.setFormatData();
-      const res = await func(`${COPY_ALL_TABS}TextURL`);
+      const res = await func(`${COPY_TABS_ALL}TextURL`);
       assert.deepEqual(res, value, "result");
     });
 
@@ -775,7 +775,7 @@ describe("popup-main", () => {
     it("should call function", async () => {
       const evt = {
         target: {
-          id: `${COPY_ALL_TABS}TextURL`,
+          id: `${COPY_TABS_ALL}TextURL`,
         },
       };
       const i = navigator.clipboard.writeText.callCount;

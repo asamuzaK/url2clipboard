@@ -9,8 +9,8 @@
   /* constants */
   const EXEC_COPY = "executeCopy";
   const EXEC_COPY_POPUP = "executeCopyPopup";
-  const EXEC_COPY_TABS = "executeCopyAllTabs";
-  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
+  const EXEC_COPY_TABS_ALL = "executeCopyAllTabs";
+  const EXEC_COPY_TABS_ALL_POPUP = "executeCopyAllTabsPopup";
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
   const NOTIFY_COPY = "notifyOnCopy";
@@ -283,11 +283,11 @@
   };
 
   /**
-   * create all tabs link text
+   * create multiple tabs link text
    * @param {Array} arr - array of link text
    * @returns {string} - joined link text
    */
-  const createAllTabsLinkText = async arr => {
+  const createTabsLinkText = async arr => {
     const {mimeType} = vars;
     const joiner = mimeType === MIME_HTML && "<br />\n" || "\n";
     return arr.filter(i => i).join(joiner);
@@ -306,7 +306,7 @@
       for (const tabData of allTabs) {
         func.push(createLinkText(tabData));
       }
-      text = await Promise.all(func).then(createAllTabsLinkText);
+      text = await Promise.all(func).then(createTabsLinkText);
     } else {
       text = await createLinkText(data);
     }
@@ -326,11 +326,11 @@
         const obj = msg[item];
         switch (item) {
           case EXEC_COPY:
-          case EXEC_COPY_TABS:
+          case EXEC_COPY_TABS_ALL:
             func.push(extractCopyData(obj).then(copyToClipboard));
             break;
           case EXEC_COPY_POPUP:
-          case EXEC_COPY_TABS_POPUP:
+          case EXEC_COPY_TABS_ALL_POPUP:
             func.push(
               extractCopyData(obj).then(copyToClipboard).then(closeWindow)
             );

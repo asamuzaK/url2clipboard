@@ -114,12 +114,12 @@ export const formatData = {
 };
 
 /**
- * create all tabs link text
+ * create multiple tabs link text
  * @param {Array} arr - array of link text
  * @param {string} mime - mime type
  * @returns {string} - joined link text
  */
-export const createAllTabsLinkText = async (arr, mime = MIME_PLAIN) => {
+export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }

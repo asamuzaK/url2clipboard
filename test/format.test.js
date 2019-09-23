@@ -46,8 +46,8 @@ describe("format", () => {
     });
   });
 
-  describe("create all tabs link text", () => {
-    const func = mjs.createAllTabsLinkText;
+  describe("create multiple tabs link text", () => {
+    const func = mjs.createTabsLinkText;
 
     it("should throw", async () => {
       await func().catch(e => {

@@ -14,8 +14,8 @@ import * as mjs from "../src/mjs/main.js";
 import {formatData} from "../src/mjs/format.js";
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB, EXEC_COPY,
-  EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, EXEC_COPY,
+  EXEC_COPY_POPUP, EXEC_COPY_TABS_ALL, EXEC_COPY_TABS_ALL_POPUP,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
@@ -84,7 +84,7 @@ describe("main", () => {
     });
 
     it("should get result", async () => {
-      const res = func(`${COPY_ALL_TABS}foo`);
+      const res = func(`${COPY_TABS_ALL}foo`);
       assert.strictEqual(res, "foo", "result");
     });
 
@@ -156,7 +156,7 @@ describe("main", () => {
 
     it("should set map", async () => {
       const {enabledFormats} = mjs;
-      await func(`${COPY_ALL_TABS}TextURL`, true);
+      await func(`${COPY_TABS_ALL}TextURL`, true);
       assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
   });
@@ -230,7 +230,7 @@ describe("main", () => {
 
     it("should get result", async () => {
       const value = formatData.TextURL;
-      const res = await func(`${COPY_ALL_TABS}TextURL`);
+      const res = await func(`${COPY_TABS_ALL}TextURL`);
       assert.deepEqual(res, value, "result");
     });
   });
@@ -2000,7 +2000,7 @@ describe("main", () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
       const info = {
-        menuItemId: `${COPY_ALL_TABS}TextURL`,
+        menuItemId: `${COPY_TABS_ALL}TextURL`,
         selectionText: "foo",
       };
       const tab = {
@@ -2044,7 +2044,7 @@ describe("main", () => {
       const i = document.execCommand.callCount;
       const j = browser.tabs.query.callCount;
       const info = {
-        menuItemId: `${COPY_ALL_TABS}HTMLHyper`,
+        menuItemId: `${COPY_TABS_ALL}HTMLHyper`,
         selectionText: "foo",
       };
       const tab = {
@@ -3053,7 +3053,7 @@ describe("main", () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.callsFake((...args) => args);
       const res = await func({
-        [EXEC_COPY_TABS]: {
+        [EXEC_COPY_TABS_ALL]: {
           foo: "bar",
         },
       });
@@ -3063,7 +3063,7 @@ describe("main", () => {
         [
           browser.runtime.id,
           {
-            [EXEC_COPY_TABS_POPUP]: {
+            [EXEC_COPY_TABS_ALL_POPUP]: {
               foo: "bar",
             },
           },
