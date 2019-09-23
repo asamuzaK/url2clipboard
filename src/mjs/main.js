@@ -293,6 +293,7 @@ export const updateContextMenu = async tabId => {
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
     const items = Object.keys(menuItems);
+    const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
     const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
     const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
@@ -306,7 +307,8 @@ export const updateContextMenu = async tabId => {
           let enabled, visible;
           if (itemId === COPY_TABS_ALL) {
             enabled = true;
-            visible = true;
+            visible =
+              highlightedTabs.length !== allTabs.length && allTabs.length > 1;
           } else if (itemId === COPY_TABS_SELECTED) {
             enabled = true;
             visible = isHighlighted;

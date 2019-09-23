@@ -552,126 +552,190 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}]);
       const i = browser.contextMenus.update.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       enabledFormats.clear();
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i,
                          "not called");
       assert.deepEqual(res, [], "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const stub = browser.tabs.query.callsFake(() => [{}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 1,
+      assert.strictEqual(browser.tabs.query.callCount, j + 2,
                          "called");
       assert.strictEqual(res.length, 5, "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const stub = browser.tabs.query.callsFake(() => [{}, {}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 1,
+      assert.strictEqual(browser.tabs.query.callCount, j + 2,
                          "called");
       assert.strictEqual(res.length, 5, "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}, {}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       vars.promptContent = true;
       const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 1,
+      assert.strictEqual(browser.tabs.query.callCount, j + 2,
                          "called");
       assert.strictEqual(res.length, 5, "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}, {}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.tabs.query.callCount;
-      vars.promptContent = true;
-      const res = await func(2);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 1,
-                         "called");
-      assert.strictEqual(res.length, 5, "result");
-      stub.flush();
-    });
-
-    it("should call function", async () => {
-      const {vars} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}]);
-      const i = browser.contextMenus.update.callCount;
-      const j = browser.runtime.sendMessage.callCount;
-      const k = browser.tabs.query.callCount;
-      vars.isWebExt = false;
-      const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
-                         "called");
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-                         "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 1,
-                         "called");
-      assert.strictEqual(res.length, 2, "result");
-      stub.flush();
-    });
-
-    it("should call function", async () => {
-      const {vars} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}]);
-      const i = browser.contextMenus.update.callCount;
-      const j = browser.runtime.sendMessage.callCount;
-      const k = browser.tabs.query.callCount;
-      vars.isWebExt = false;
-      vars.promptContent = true;
-      const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
-                         "called");
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-                         "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 1,
-                         "called");
-      assert.strictEqual(res.length, 2, "result");
-      stub.flush();
-    });
-
-    it("should call function", async () => {
-      const {vars} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}]);
-      const i = browser.contextMenus.update.callCount;
-      const j = browser.runtime.sendMessage.callCount;
-      const k = browser.tabs.query.callCount;
-      vars.isWebExt = false;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       vars.promptContent = true;
       const res = await func(2);
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
+                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 2,
+                         "called");
+      assert.strictEqual(res.length, 5, "result");
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.contextMenus.update.callCount;
+      const j = browser.runtime.sendMessage.callCount;
+      const k = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
+      vars.isWebExt = false;
+      const res = await func(1);
       assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
                          "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 1,
+      assert.strictEqual(browser.tabs.query.callCount, k + 2,
                          "called");
       assert.strictEqual(res.length, 2, "result");
-      stub.flush();
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.contextMenus.update.callCount;
+      const j = browser.runtime.sendMessage.callCount;
+      const k = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
+      vars.isWebExt = false;
+      vars.promptContent = true;
+      const res = await func(1);
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
+                         "called");
+      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
+                         "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2,
+                         "called");
+      assert.strictEqual(res.length, 2, "result");
+      browser.tabs.query.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.contextMenus.update.callCount;
+      const j = browser.runtime.sendMessage.callCount;
+      const k = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
+      vars.isWebExt = false;
+      vars.promptContent = true;
+      const res = await func(2);
+      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
+                         "called");
+      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
+                         "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2,
+                         "called");
+      assert.strictEqual(res.length, 2, "result");
+      browser.tabs.query.flush();
     });
   });
 
@@ -714,10 +778,18 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
-      const stub = browser.tabs.query.callsFake(() => [{}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.contextMenus.refresh.callCount;
       const k = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       enabledFormats.clear();
       const res = await func({contexts: ["tab"]}, {id: 1});
       assert.strictEqual(browser.contextMenus.update.callCount, i,
@@ -727,23 +799,31 @@ describe("main", () => {
       assert.strictEqual(browser.tabs.query.callCount, k,
                          "not called");
       assert.isNull(res, "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const stub = browser.tabs.query.callsFake(() => [{}]);
       const i = browser.contextMenus.update.callCount;
       const j = browser.contextMenus.refresh.callCount;
       const k = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([{}, {}]);
       const res = await func({contexts: ["tab"]}, {id: 1});
       assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
                          "called");
       assert.strictEqual(browser.contextMenus.refresh.callCount, j + 1,
                          "called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 1,
+      assert.strictEqual(browser.tabs.query.callCount, k + 2,
                          "called");
       assert.isNull(res, "result");
-      stub.flush();
+      browser.tabs.query.flush();
     });
   });
 
