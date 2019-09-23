@@ -71,44 +71,6 @@ describe("main", () => {
     assert.isObject(browser, "browser");
   });
 
-  describe("get format id", () => {
-    const func = mjs.getFormatId;
-
-    it("should throw", async () => {
-      assert.throws(() => func(), "Expected String but got Undefined.");
-    });
-
-    it("should get result", async () => {
-      const res = func("foo");
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TABS_ALL}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TABS_SELECTED}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_LINK}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_PAGE}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TAB}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-  });
-
   describe("toggle enabled formats", () => {
     const func = mjs.toggleEnabledFormats;
     beforeEach(() => {

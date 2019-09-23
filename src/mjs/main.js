@@ -13,7 +13,7 @@ import {
   sendMessage,
 } from "./browser.js";
 import {
-  createLinkText, createTabsLinkText, formatData,
+  createLinkText, createTabsLinkText, formatData, getFormatId,
 } from "./format.js";
 import {
   notifyOnCopy,
@@ -34,6 +34,7 @@ import {
   TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
+const {WINDOW_ID_CURRENT} = windows;
 
 /* variables */
 export const vars = {
@@ -52,29 +53,6 @@ export const formats = new Map();
 
 /* enabled formats */
 export const enabledFormats = new Set();
-
-/**
- * get format id
- * @param {string} id - id
- * @returns {string} - format id
- */
-export const getFormatId = id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  if (id.startsWith(COPY_TABS_ALL)) {
-    id = id.replace(COPY_TABS_ALL, "");
-  } else if (id.startsWith(COPY_TABS_SELECTED)) {
-    id = id.replace(COPY_TABS_SELECTED, "");
-  } else if (id.startsWith(COPY_LINK)) {
-    id = id.replace(COPY_LINK, "");
-  } else if (id.startsWith(COPY_PAGE)) {
-    id = id.replace(COPY_PAGE, "");
-  } else if (id.startsWith(COPY_TAB)) {
-    id = id.replace(COPY_TAB, "");
-  }
-  return id;
-};
 
 /**
  * toggle enabled formats
@@ -315,7 +293,7 @@ export const updateContextMenu = async tabId => {
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
     const items = Object.keys(menuItems);
-    const highlightedTabs = await getHighlightedTab(windows.WINDOW_ID_CURRENT);
+    const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
     const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
@@ -504,7 +482,7 @@ export const getAllTabsInfo = async menuItemId => {
   }
   const tabsInfo = [];
   const template = await getFormatTemplate(menuItemId);
-  const arr = await getAllTabsInWindow();
+  const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const {id, title, url} = tab;
     const formatId = getFormatId(menuItemId);
@@ -527,7 +505,7 @@ export const getSelectedTabsInfo = async menuItemId => {
   }
   const tabsInfo = [];
   const template = await getFormatTemplate(menuItemId);
-  const arr = await getHighlightedTab(windows.WINDONW_ID_CURRENT);
+  const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const {id, title, url} = tab;
     const formatId = getFormatId(menuItemId);

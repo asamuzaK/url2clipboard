@@ -10,8 +10,10 @@ import {
 
 /* constants */
 import {
-  ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-  MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, REST, TEXTILE,
+  ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
+  MIME_HTML, MIME_PLAIN, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
 } from "./constant.js";
 
@@ -184,4 +186,27 @@ export const createLinkText = async (data = {}) => {
   return template.replace(/%content%/g, content.trim())
     .replace(/%title%/g, linkTitle.trim())
     .replace(/%url%/g, linkUrl.trim());
+};
+
+/**
+ * get format id
+ * @param {string} id - id
+ * @returns {string} - format id
+ */
+export const getFormatId = id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  if (id.startsWith(COPY_TABS_ALL)) {
+    id = id.replace(COPY_TABS_ALL, "");
+  } else if (id.startsWith(COPY_TABS_SELECTED)) {
+    id = id.replace(COPY_TABS_SELECTED, "");
+  } else if (id.startsWith(COPY_LINK)) {
+    id = id.replace(COPY_LINK, "");
+  } else if (id.startsWith(COPY_PAGE)) {
+    id = id.replace(COPY_PAGE, "");
+  } else if (id.startsWith(COPY_TAB)) {
+    id = id.replace(COPY_TAB, "");
+  }
+  return id;
 };
