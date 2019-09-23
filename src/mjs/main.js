@@ -9,30 +9,31 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getEnabledTheme, isTab, sendMessage,
+  getActiveTabId, getAllTabsInWindow, getEnabledTheme, getHighlightedTab, isTab,
+  sendMessage,
 } from "./browser.js";
 import {
-  createAllTabsLinkText, createLinkText, formatData,
+  createLinkText, createTabsLinkText, formatData, getFormatId,
 } from "./format.js";
 import {
   notifyOnCopy,
 } from "./notify.js";
 
 /* api */
-const {browserAction, contextMenus, i18n, runtime, tabs} = browser;
+const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
 
 /* constants */
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_ALL_TABS, COPY_LINK, COPY_PAGE, COPY_TAB,
-  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS, EXEC_COPY_TABS_POPUP,
-  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
-  ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
+  ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
   TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
+const {WINDOW_ID_CURRENT} = windows;
 
 /* variables */
 export const vars = {
@@ -51,27 +52,6 @@ export const formats = new Map();
 
 /* enabled formats */
 export const enabledFormats = new Set();
-
-/**
- * get format id
- * @param {string} id - id
- * @returns {string} - format id
- */
-export const getFormatId = id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  if (id.startsWith(COPY_ALL_TABS)) {
-    id = id.replace(COPY_ALL_TABS, "");
-  } else if (id.startsWith(COPY_LINK)) {
-    id = id.replace(COPY_LINK, "");
-  } else if (id.startsWith(COPY_PAGE)) {
-    id = id.replace(COPY_PAGE, "");
-  } else if (id.startsWith(COPY_TAB)) {
-    id = id.replace(COPY_TAB, "");
-  }
-  return id;
-};
 
 /**
  * toggle enabled formats
@@ -197,8 +177,13 @@ export const menuItems = {
     contexts: ["tab"],
     key: "(&T)",
   },
-  [COPY_ALL_TABS]: {
-    id: COPY_ALL_TABS,
+  [COPY_TABS_SELECTED]: {
+    id: COPY_TABS_SELECTED,
+    contexts: ["tab"],
+    key: "(&S)",
+  },
+  [COPY_TABS_ALL]: {
+    id: COPY_TABS_ALL,
     contexts: ["tab"],
     key: "(&A)",
   },
@@ -252,7 +237,7 @@ export const createContextMenu = async () => {
       // FIXME: depends on Issue #39
       const enabled = !promptContent;
       const itemData = {contexts, enabled};
-      if (itemId === COPY_ALL_TABS) {
+      if (itemId === COPY_TABS_ALL) {
         itemData.enabled = true;
       }
       if (enabledFormats.size === 1) {
@@ -307,6 +292,9 @@ export const updateContextMenu = async tabId => {
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
     const items = Object.keys(menuItems);
+    const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
+    const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
+    const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
       if (contexts.includes("link")) {
@@ -315,13 +303,19 @@ export const updateContextMenu = async tabId => {
       } else if (contexts.includes("tab")) {
         if (isWebExt) {
           // FIXME: depends on Issue #39
-          let enabled;
-          if (itemId === COPY_ALL_TABS) {
+          let enabled, visible;
+          if (itemId === COPY_TABS_ALL) {
             enabled = true;
+            visible =
+              highlightedTabs.length !== allTabs.length && allTabs.length > 1;
+          } else if (itemId === COPY_TABS_SELECTED) {
+            enabled = true;
+            visible = isHighlighted;
           } else {
             enabled = !promptContent || enabledTabs.get(tabId) || false;
+            visible = !isHighlighted;
           }
-          func.push(contextMenus.update(itemId, {enabled}));
+          func.push(contextMenus.update(itemId, {enabled, visible}));
         }
       } else {
         // FIXME: depends on Issue #39
@@ -489,7 +483,30 @@ export const getAllTabsInfo = async menuItemId => {
   }
   const tabsInfo = [];
   const template = await getFormatTemplate(menuItemId);
-  const arr = await getAllTabsInWindow();
+  const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
+    tabsInfo.push({
+      id, formatId, template, title, url,
+      content: title,
+    });
+  });
+  return tabsInfo;
+};
+
+/**
+ * get selected tabs info
+ * @param {string} menuItemId - menu item ID
+ * @returns {Array} - tabs info
+ */
+export const getSelectedTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
+  const tabsInfo = [];
+  const template = await getFormatTemplate(menuItemId);
+  const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const {id, title, url} = tab;
     const formatId = getFormatId(menuItemId);
@@ -529,14 +546,22 @@ export const extractClickedData = async (info, tab) => {
       const formatTitle = await getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
       let text;
-      if (menuItemId.startsWith(COPY_ALL_TABS)) {
+      if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of allTabs) {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = await createAllTabsLinkText(tmplArr, mimeType);
+        text = await createTabsLinkText(tmplArr, mimeType);
+      } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
+        const selectedTabs = await getSelectedTabsInfo(menuItemId);
+        const arr = [];
+        for (const tabData of selectedTabs) {
+          arr.push(createLinkText(tabData));
+        }
+        const tmplArr = await Promise.all(arr);
+        text = await createTabsLinkText(tmplArr, mimeType);
       } else {
         const template = await getFormatTemplate(formatId);
         let content, title, url;
@@ -695,16 +720,6 @@ export const handleMsg = async (msg, sender = {}) => {
           }
           break;
         }
-        case EXEC_COPY:
-          func.push(sendMessage(null, {
-            [EXEC_COPY_POPUP]: value,
-          }));
-          break;
-        case EXEC_COPY_TABS:
-          func.push(sendMessage(null, {
-            [EXEC_COPY_TABS_POPUP]: value,
-          }));
-          break;
         case NOTIFY_COPY: {
           const {notifyOnCopy: notify} = vars;
           notify && value && func.push(notifyOnCopy());

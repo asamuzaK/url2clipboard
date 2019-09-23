@@ -8,9 +8,6 @@
 
   /* constants */
   const EXEC_COPY = "executeCopy";
-  const EXEC_COPY_POPUP = "executeCopyPopup";
-  const EXEC_COPY_TABS = "executeCopyAllTabs";
-  const EXEC_COPY_TABS_POPUP = "executeCopyAllTabsPopup";
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
   const NOTIFY_COPY = "notifyOnCopy";
@@ -151,14 +148,6 @@
   };
 
   /**
-   * close window
-   * @returns {void}
-   */
-  const closeWindow = () => {
-    window.close();
-  };
-
-  /**
    * copy to clipboard
    * @param {string} text - text to copy
    * @returns {void}
@@ -283,37 +272,6 @@
   };
 
   /**
-   * create all tabs link text
-   * @param {Array} arr - array of link text
-   * @returns {string} - joined link text
-   */
-  const createAllTabsLinkText = async arr => {
-    const {mimeType} = vars;
-    const joiner = mimeType === MIME_HTML && "<br />\n" || "\n";
-    return arr.filter(i => i).join(joiner);
-  };
-
-  /**
-   * extract copy data
-   * @param {Object} data - copy data
-   * @returns {?string} - link text
-   */
-  const extractCopyData = async (data = {}) => {
-    const {allTabs} = data;
-    let text;
-    if (Array.isArray(allTabs)) {
-      const func = [];
-      for (const tabData of allTabs) {
-        func.push(createLinkText(tabData));
-      }
-      text = await Promise.all(func).then(createAllTabsLinkText);
-    } else {
-      text = await createLinkText(data);
-    }
-    return text || null;
-  };
-
-  /**
    * handle message
    * @param {*} msg - message
    * @returns {Promise.<Array>} - results of each handler
@@ -324,18 +282,9 @@
     if (items && items.length) {
       for (const item of items) {
         const obj = msg[item];
-        switch (item) {
-          case EXEC_COPY:
-          case EXEC_COPY_TABS:
-            func.push(extractCopyData(obj).then(copyToClipboard));
-            break;
-          case EXEC_COPY_POPUP:
-          case EXEC_COPY_TABS_POPUP:
-            func.push(
-              extractCopyData(obj).then(copyToClipboard).then(closeWindow)
-            );
-            break;
-          default:
+        if (item === EXEC_COPY) {
+          func.push(createLinkText(obj).then(copyToClipboard));
+          break;
         }
       }
     }

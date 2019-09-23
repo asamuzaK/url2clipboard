@@ -155,6 +155,40 @@
       }
     }
   },
+  "copyTabsURL": {
+    "message": "Copy Tabs URLs"
+  },
+  "copyTabsURL_key": {
+    "message": "&Copy Tabs URLs",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
+  "copyTabsURL_format": {
+    "message": "Copy Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
+  "copyTabsURL_format_key": {
+    "message": "&Copy Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyTabURL": {
     "message": "复制标签页 URL"
   },
