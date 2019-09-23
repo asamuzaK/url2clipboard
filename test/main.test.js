@@ -1184,7 +1184,7 @@ describe("main", () => {
     });
   });
 
-  describe("get all tabs info", () => {
+  describe("get selected tabs info", () => {
     const func = mjs.getSelectedTabsInfo;
 
     it("should throw", async () => {
