@@ -155,11 +155,11 @@
       }
     }
   },
-  "copySelectedTabsURL": {
-    "message": "Copy Selected Tabs URLs"
+  "copyTabsURL": {
+    "message": "Copy Tabs URLs"
   },
-  "copySelectedTabsURL_key": {
-    "message": "&Copy Selected Tabs URLs",
+  "copyTabsURL_key": {
+    "message": "&Copy Tabs URLs",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -167,8 +167,8 @@
       }
     }
   },
-  "copySelectedTabsURL_format": {
-    "message": "Copy Selected Tabs URLs as $FORMAT$",
+  "copyTabsURL_format": {
+    "message": "Copy Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -176,8 +176,8 @@
       }
     }
   },
-  "copySelectedTabsURL_format_key": {
-    "message": "&Copy Selected Tabs URLs as $FORMAT$",
+  "copyTabsURL_format_key": {
+    "message": "&Copy Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",

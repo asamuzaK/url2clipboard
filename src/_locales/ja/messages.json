@@ -155,10 +155,10 @@
       }
     }
   },
-  "copySelectedTabsURL": {
+  "copyTabsURL": {
     "message": "選択したタブの URL をコピー"
   },
-  "copyAllTabsURL_key": {
+  "copyTabsURL_key": {
     "message": "選択したタブの URL をコピー$KEY$",
     "placeholders": {
       "key": {
@@ -167,7 +167,7 @@
       }
     }
   },
-  "copyAllTabsURL_format": {
+  "copyTabsURL_format": {
     "message": "選択したタブの URL を $FORMAT$ でコピー",
     "placeholders": {
       "format": {
@@ -176,7 +176,7 @@
       }
     }
   },
-  "copyAllTabsURL_format_key": {
+  "copyTabsURL_format_key": {
     "message": "選択したタブの URL を $FORMAT$ でコピー$KEY$",
     "placeholders": {
       "format": {
