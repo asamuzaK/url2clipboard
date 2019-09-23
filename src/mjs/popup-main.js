@@ -9,28 +9,30 @@ import {
   closeWindow, getType, isString, throwErr,
 } from "./common.js";
 import {
-  sendMessage,
+  getAllTabsInWindow, getHighlightedTab, sendMessage,
 } from "./browser.js";
 import {
-  createTabsLinkText, createLinkText, formatData,
+  createTabsLinkText, createLinkText, formatData, getFormatId,
 } from "./format.js";
 import {
   notifyOnCopy,
 } from "./notify.js";
 
 /* api */
-const {runtime, tabs} = browser;
+const {runtime, tabs, windows} = browser;
 
 /* constants */
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, HTML_HYPER, HTML_PLAIN,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  HTML_HYPER, HTML_PLAIN,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
   TEXT_SEP_LINES, TEXT_TEXT_URL,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
+const {WINDOW_ID_CURRENT} = windows;
 const OPTIONS_OPEN = "openOptions";
 
 /* variables */
@@ -54,25 +56,6 @@ export const setFormatData = async () => {
   for (const [key, value] of items) {
     formats.set(key, value);
   }
-};
-
-/**
- * get format id
- * @param {string} id - id
- * @returns {string} - format id
- */
-export const getFormatId = id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  if (id.startsWith(COPY_TABS_ALL)) {
-    id = id.replace(COPY_TABS_ALL, "");
-  } else if (id.startsWith(COPY_LINK)) {
-    id = id.replace(COPY_LINK, "");
-  } else if (id.startsWith(COPY_PAGE)) {
-    id = id.replace(COPY_PAGE, "");
-  }
-  return id;
 };
 
 /**
@@ -213,7 +196,30 @@ export const initContextInfo = async () => {
 export const getAllTabsInfo = async menuItemId => {
   const tabsInfo = [];
   const template = await getFormatTemplate(menuItemId);
-  const arr = await tabs.query({currentWindow: true});
+  const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
+    tabsInfo.push({
+      id, formatId, template, title, url,
+      content: title,
+    });
+  });
+  return tabsInfo;
+};
+
+/**
+ * get selected tabs info
+ * @param {string} menuItemId - menu item ID
+ * @returns {Array} - tabs info
+ */
+export const getSelectedTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
+  const tabsInfo = [];
+  const template = await getFormatTemplate(menuItemId);
+  const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const {id, title, url} = tab;
     const formatId = getFormatId(menuItemId);
@@ -245,6 +251,14 @@ export const createCopyData = async evt => {
     const allTabs = await getAllTabsInfo(menuItemId);
     const arr = [];
     for (const tabData of allTabs) {
+      arr.push(createLinkText(tabData));
+    }
+    const tmplArr = await Promise.all(arr);
+    text = await createTabsLinkText(tmplArr, mimeType);
+  } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
+    const selectedTabs = await getSelectedTabsInfo(menuItemId);
+    const arr = [];
+    for (const tabData of selectedTabs) {
       arr.push(createLinkText(tabData));
     }
     const tmplArr = await Promise.all(arr);
