@@ -15,7 +15,6 @@ import {formatData} from "../src/mjs/format.js";
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
-  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS_ALL, EXEC_COPY_TABS_ALL_POPUP,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
@@ -3266,54 +3265,6 @@ describe("main", () => {
           canonicalUrl: "https://example.com",
         },
       ], "result");
-    });
-
-    it("should get result", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      browser.runtime.sendMessage.callsFake((...args) => args);
-      const res = await func({
-        [EXEC_COPY_TABS_ALL]: {
-          foo: "bar",
-        },
-      });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-      assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY_TABS_ALL_POPUP]: {
-              foo: "bar",
-            },
-          },
-          null,
-        ],
-      ], "result");
-      browser.runtime.sendMessage.flush();
-    });
-
-    it("should get result", async () => {
-      const i = browser.runtime.sendMessage.callCount;
-      browser.runtime.sendMessage.callsFake((...args) => args);
-      const res = await func({
-        [EXEC_COPY]: {
-          foo: "bar",
-        },
-      });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-                         "called");
-      assert.deepEqual(res, [
-        [
-          browser.runtime.id,
-          {
-            [EXEC_COPY_POPUP]: {
-              foo: "bar",
-            },
-          },
-          null,
-        ],
-      ], "result");
-      browser.runtime.sendMessage.flush();
     });
 
     it("should call function", async () => {

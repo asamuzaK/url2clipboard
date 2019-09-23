@@ -8,9 +8,6 @@
 
   /* constants */
   const EXEC_COPY = "executeCopy";
-  const EXEC_COPY_POPUP = "executeCopyPopup";
-  const EXEC_COPY_TABS_ALL = "executeCopyAllTabs";
-  const EXEC_COPY_TABS_ALL_POPUP = "executeCopyAllTabsPopup";
   const MIME_HTML = "text/html";
   const MIME_PLAIN = "text/plain";
   const NOTIFY_COPY = "notifyOnCopy";
@@ -148,14 +145,6 @@
       }
     }
     return encodedUrl && encodedUrl.href || null;
-  };
-
-  /**
-   * close window
-   * @returns {void}
-   */
-  const closeWindow = () => {
-    window.close();
   };
 
   /**
@@ -326,14 +315,7 @@
         const obj = msg[item];
         switch (item) {
           case EXEC_COPY:
-          case EXEC_COPY_TABS_ALL:
             func.push(extractCopyData(obj).then(copyToClipboard));
-            break;
-          case EXEC_COPY_POPUP:
-          case EXEC_COPY_TABS_ALL_POPUP:
-            func.push(
-              extractCopyData(obj).then(copyToClipboard).then(closeWindow)
-            );
             break;
           default:
         }

@@ -26,9 +26,8 @@ const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
-  EXEC_COPY, EXEC_COPY_POPUP, EXEC_COPY_TABS_ALL, EXEC_COPY_TABS_ALL_POPUP,
-  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR,
-  ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
+  EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
+  ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
   TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
@@ -721,16 +720,6 @@ export const handleMsg = async (msg, sender = {}) => {
           }
           break;
         }
-        case EXEC_COPY:
-          func.push(sendMessage(null, {
-            [EXEC_COPY_POPUP]: value,
-          }));
-          break;
-        case EXEC_COPY_TABS_ALL:
-          func.push(sendMessage(null, {
-            [EXEC_COPY_TABS_ALL_POPUP]: value,
-          }));
-          break;
         case NOTIFY_COPY: {
           const {notifyOnCopy: notify} = vars;
           notify && value && func.push(notifyOnCopy());
