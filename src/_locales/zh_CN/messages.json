@@ -344,7 +344,7 @@
     "message": "编辑链接标题"
   },
   "optionsPromptContentDetail": {
-    "message": "从右键菜单复制链接时提示修改链接信息"
+    "message": "从右键菜单复制链接时提示修改链接信息。Note that in a privileged URL, the prompt window may not appear so that you may not be able to edit."
   },
   "optionsSeparateTextURL": {
     "message": "分行复制文本和链接"

@@ -235,11 +235,17 @@ export const createContextMenu = async () => {
     for (const item of items) {
       const {contexts, id: itemId, key: itemKey} = menuItems[item];
       // FIXME: depends on Issue #39
-      const enabled = !promptContent;
-      const itemData = {contexts, enabled};
-      if (itemId === COPY_TABS_ALL) {
-        itemData.enabled = true;
+      let enabled;
+      switch (itemId) {
+        case COPY_TAB:
+        case COPY_TABS_ALL:
+        case COPY_TABS_SELECTED:
+          enabled = true;
+          break;
+        default:
+          enabled = !promptContent;
       }
+      const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
         const {id: keyId, title: keyTitle} = formats.get(key);
@@ -302,17 +308,14 @@ export const updateContextMenu = async tabId => {
         func.push(contextMenus.update(itemId, {enabled}));
       } else if (contexts.includes("tab")) {
         if (isWebExt) {
-          // FIXME: depends on Issue #39
-          let enabled, visible;
+          const enabled = true;
+          let visible;
           if (itemId === COPY_TABS_ALL) {
-            enabled = true;
             visible =
               highlightedTabs.length !== allTabs.length && allTabs.length > 1;
           } else if (itemId === COPY_TABS_SELECTED) {
-            enabled = true;
             visible = isHighlighted;
           } else {
-            enabled = !promptContent || enabledTabs.get(tabId) || false;
             visible = !isHighlighted;
           }
           func.push(contextMenus.update(itemId, {enabled, visible}));
@@ -562,6 +565,20 @@ export const extractClickedData = async (info, tab) => {
         }
         const tmplArr = await Promise.all(arr);
         text = await createTabsLinkText(tmplArr, mimeType);
+      } else if (menuItemId.startsWith(COPY_TAB)) {
+        const template = await getFormatTemplate(formatId);
+        let content, title, url;
+        if (formatId === BBCODE_URL) {
+          content = tabUrl;
+          url = tabUrl;
+        } else {
+          content = tabTitle;
+          title = tabTitle;
+          url = tabUrl;
+        }
+        text = await createLinkText({
+          content, formatId, template, title, url,
+        });
       } else {
         const template = await getFormatTemplate(formatId);
         let content, title, url;
@@ -575,8 +592,7 @@ export const extractClickedData = async (info, tab) => {
             title = contextTitle;
             url = contextUrl;
           }
-        } else if (menuItemId.startsWith(COPY_PAGE) ||
-                   menuItemId.startsWith(COPY_TAB)) {
+        } else if (menuItemId.startsWith(COPY_PAGE)) {
           if (formatId === BBCODE_URL) {
             content = !tabUrlHash && contextCanonicalUrl || tabUrl;
             url = !tabUrlHash && contextCanonicalUrl || tabUrl;
@@ -606,7 +622,7 @@ export const extractClickedData = async (info, tab) => {
         }
         if (isString(content) && isString(url)) {
           // FIXME: depends on Issue #39
-          if (promptContent) {
+          if (promptContent && enabledTabs.get(tabId)) {
             func.push(sendMessage(tabId, {
               [EXEC_COPY]: {
                 content, formatId, formatTitle, promptContent, template, title,

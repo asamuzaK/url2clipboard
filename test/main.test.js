@@ -1318,7 +1318,7 @@ describe("main", () => {
   describe("extract clicked data", () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
-      const {contextInfo, enabledFormats, formats, vars} = mjs;
+      const {contextInfo, enabledFormats, enabledTabs, formats, vars} = mjs;
       const items = Object.entries(formatData);
       contextInfo.isLink = false;
       contextInfo.content = null;
@@ -1329,12 +1329,13 @@ describe("main", () => {
       vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
+      enabledTabs.set(1, true);
       for (const [key, value] of items) {
         formats.set(key, value);
       }
     });
     afterEach(() => {
-      const {contextInfo, enabledFormats, formats, vars} = mjs;
+      const {contextInfo, enabledFormats, enabledTabs, formats, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.selectionText = "";
@@ -1344,6 +1345,7 @@ describe("main", () => {
       vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
+      enabledTabs.clear();
       formats.clear();
     });
 
@@ -1444,6 +1446,65 @@ describe("main", () => {
           },
           null,
         ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {enabledTabs, vars} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
+      enabledTabs.set(1, false);
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+      browser.tabs.sendMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        menuItemId: `${COPY_PAGE}TextURL`,
+        selectionText: "foo",
+      };
+      const tab = {
+        id: 2,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      vars.promptContent = true;
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
+      assert.deepEqual(res, [
         {
           canonicalUrl: null,
           content: null,
@@ -1639,23 +1700,8 @@ describe("main", () => {
       browser.tabs.sendMessage.callsFake((...args) => args);
       vars.promptContent = true;
       const res = await func(info, tab);
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
       assert.deepEqual(res, [
-        [
-          1,
-          {
-            executeCopy: {
-              content: "foo",
-              formatId: "TextURL",
-              formatTitle: "Text & URL",
-              promptContent: true,
-              template: "%content% %url%",
-              title: "bar",
-              url: "https://example.com/#baz",
-            },
-          },
-          null,
-        ],
         {
           canonicalUrl: null,
           content: null,
@@ -1859,23 +1905,8 @@ describe("main", () => {
       browser.tabs.sendMessage.callsFake((...args) => args);
       vars.promptContent = true;
       const res = await func(info, tab);
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
       assert.deepEqual(res, [
-        [
-          1,
-          {
-            executeCopy: {
-              content: "https://example.com/#baz",
-              formatId: BBCODE_URL,
-              formatTitle: "BBCode (URL)",
-              promptContent: true,
-              template: "[url]%content%[/url]",
-              title: undefined,
-              url: "https://example.com/#baz",
-            },
-          },
-          null,
-        ],
         {
           canonicalUrl: null,
           content: null,
