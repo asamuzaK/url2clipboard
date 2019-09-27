@@ -31,6 +31,9 @@ ul {
 ul + ul {
   border-top: 1px dotted #CCC;
 }
+ul + ul[hidden] {
+  display: none;
+}
 li {
   display: block;
   margin: 0;
@@ -68,6 +71,6 @@ button:not([disabled]):focus:active {
   background-color: #D7D7D8;
   color: #000;
 }
-[hidden] > button {
+[hidden] label, [hidden] input, [hidden] button {
   display: none;
 }

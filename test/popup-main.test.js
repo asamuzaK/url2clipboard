@@ -11,8 +11,9 @@ import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/popup-main.js";
 import {formatData} from "../src/mjs/format.js";
 import {
-  CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE, CONTENT_PAGE_BBCODE,
-  CONTEXT_INFO, COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
+  CONTENT_PAGE_BBCODE, CONTEXT_INFO,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
@@ -1016,10 +1017,37 @@ describe("popup-main", () => {
       const elm = document.createElement("button");
       const p = document.createElement("p");
       const body = document.querySelector("body");
+      elm.id = BBCODE_URL;
+      p.appendChild(elm);
+      body.appendChild(p);
+      await func();
+      assert.isTrue(body.hasAttribute("hidden"), "result");
+      assert.isFalse(p.hasAttribute("hidden"), "result");
+    });
+
+    it("should remove attribute", async () => {
+      const {enabledFormats} = mjs;
+      const elm = document.createElement("button");
+      const p = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = BBCODE_URL;
+      enabledFormats.add(BBCODE_URL);
+      p.appendChild(elm);
+      body.appendChild(p);
+      await func();
+      assert.isFalse(body.hasAttribute("hidden"), "result");
+      assert.isFalse(p.hasAttribute("hidden"), "result");
+    });
+
+    it("should add attribute", async () => {
+      const elm = document.createElement("button");
+      const p = document.createElement("p");
+      const body = document.querySelector("body");
       elm.id = "TextURL";
       p.appendChild(elm);
       body.appendChild(p);
       await func();
+      assert.isFalse(body.hasAttribute("hidden"), "result");
       assert.isTrue(p.hasAttribute("hidden"), "result");
     });
 
@@ -1033,6 +1061,7 @@ describe("popup-main", () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
+      assert.isFalse(body.hasAttribute("hidden"), "result");
       assert.isFalse(p.hasAttribute("hidden"), "result");
     });
   });

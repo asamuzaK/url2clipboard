@@ -364,7 +364,13 @@ export const toggleMenuItem = async () => {
     const {id, parentNode} = node;
     const formatId = getFormatId(id);
     if (formats.has(formatId)) {
-      if (enabledFormats.has(formatId)) {
+      if (formatId === BBCODE_URL) {
+        if (enabledFormats.has(formatId)) {
+          parentNode.parentNode.removeAttribute("hidden");
+        } else {
+          parentNode.parentNode.setAttribute("hidden", "hidden");
+        }
+      } else if (enabledFormats.has(formatId)) {
         parentNode.removeAttribute("hidden");
       } else {
         parentNode.setAttribute("hidden", "hidden");
