@@ -68,3 +68,6 @@ button:not([disabled]):focus:active {
   background-color: #D7D7D8;
   color: #000;
 }
+[hidden] > button {
+  display: none;
+}

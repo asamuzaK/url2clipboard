@@ -67,6 +67,45 @@ describe("popup-main", () => {
     assert.isObject(browser, "browser");
   });
 
+  describe("toggle enabled formats", () => {
+    const func = mjs.toggleEnabledFormats;
+    beforeEach(() => {
+      const {formats} = mjs;
+      formats.set("TextURL", {
+        foo: "bar",
+      });
+    });
+    afterEach(() => {
+      const {formats} = mjs;
+      formats.clear();
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should not set map", async () => {
+      const {enabledFormats} = mjs;
+      await func("foo");
+      assert.isFalse(enabledFormats.has("foo"), "result");
+    });
+
+    it("should not set map", async () => {
+      const {enabledFormats} = mjs;
+      await func("TextURL", false);
+      assert.isFalse(enabledFormats.has("TextURL"), "result");
+    });
+
+    it("should set map", async () => {
+      const {enabledFormats} = mjs;
+      await func("TextURL", true);
+      assert.isTrue(enabledFormats.has("TextURL"), "result");
+    });
+  });
+
   describe("set format data", () => {
     const func = mjs.setFormatData;
     beforeEach(() => {
@@ -946,6 +985,58 @@ describe("popup-main", () => {
     });
   });
 
+  describe("toggle menu item", () => {
+    const func = mjs.toggleMenuItem;
+    beforeEach(() => {
+      const {enabledFormats, formats} = mjs;
+      const items = Object.entries(formatData);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+      enabledFormats.clear();
+    });
+    afterEach(() => {
+      const {enabledFormats, formats} = mjs;
+      enabledFormats.clear();
+      formats.clear();
+    });
+
+    it("should not add attribute", async () => {
+      const elm = document.createElement("button");
+      const p = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = "foo";
+      p.appendChild(elm);
+      body.appendChild(p);
+      await func();
+      assert.isFalse(p.hasAttribute("hidden"), "result");
+    });
+
+    it("should add attribute", async () => {
+      const elm = document.createElement("button");
+      const p = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = "TextURL";
+      p.appendChild(elm);
+      body.appendChild(p);
+      await func();
+      assert.isTrue(p.hasAttribute("hidden"), "result");
+    });
+
+    it("should remove attribute", async () => {
+      const {enabledFormats} = mjs;
+      const elm = document.createElement("button");
+      const p = document.createElement("p");
+      const body = document.querySelector("body");
+      elm.id = "TextURL";
+      enabledFormats.add("TextURL");
+      p.appendChild(elm);
+      body.appendChild(p);
+      await func();
+      assert.isFalse(p.hasAttribute("hidden"), "result");
+    });
+  });
+
   describe("update menu", () => {
     const func = mjs.updateMenu;
     beforeEach(() => {
@@ -1121,14 +1212,21 @@ describe("popup-main", () => {
   describe("set variable", () => {
     const func = mjs.setVar;
     beforeEach(() => {
-      const {vars} = mjs;
+      const {enabledFormats, formats, vars} = mjs;
+      const items = Object.entries(formatData);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+      enabledFormats.clear();
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.separateTextURL = false;
     });
     afterEach(() => {
-      const {vars} = mjs;
+      const {enabledFormats, formats, vars} = mjs;
+      enabledFormats.clear();
+      formats.clear();
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
@@ -1214,6 +1312,25 @@ describe("popup-main", () => {
       });
       assert.isFalse(vars.separateTextURL, "variable");
     });
+
+    it("should set variable", async () => {
+      const {enabledFormats} = mjs;
+      const res = await func("TextURL", {
+        checked: true,
+      });
+      assert.isTrue(enabledFormats.has("TextURL"), "variable");
+      assert.isUndefined(res, "result");
+    });
+
+    it("should set variable", async () => {
+      const {enabledFormats} = mjs;
+      enabledFormats.add("TextURL");
+      const res = await func("TextURL", {
+        checked: false,
+      });
+      assert.isFalse(enabledFormats.has("TextURL"), "variable");
+      assert.isUndefined(res, "result");
+    });
   });
 
   describe("set variables", () => {
@@ -1230,7 +1347,7 @@ describe("popup-main", () => {
           checked: true,
         },
       });
-      assert.deepEqual(res, [undefined], "result");
+      assert.deepEqual(res, [null], "result");
     });
   });
 });
