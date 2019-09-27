@@ -12,14 +12,16 @@ import {
 import {localizeHtml} from "./localize.js";
 import {
   addListenerToMenu, handleMsg, requestContextInfo, setFormatData, setTabInfo,
-  setVars,
+  setVars, toggleMenuItem,
 } from "./popup-main.js";
 
 /* api */
 const {runtime, storage} = browser;
 
 /* listeners */
-storage.onChanged.addListener(data => setVars(data).catch(throwErr));
+storage.onChanged.addListener(data =>
+  setVars(data).then(toggleMenuItem).catch(throwErr)
+);
 runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
 
 /* startup */
@@ -30,5 +32,5 @@ Promise.all([
     requestContextInfo(tab),
     setTabInfo(tab),
   ])),
-  setFormatData().then(getAllStorage).then(setVars),
+  setFormatData().then(getAllStorage).then(setVars).then(toggleMenuItem),
 ]).catch(throwErr);

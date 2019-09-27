@@ -47,15 +47,40 @@ export const vars = {
 /* formats */
 export const formats = new Map();
 
+/* enabled formats */
+export const enabledFormats = new Set();
+
+/**
+ * toggle enabled formats
+ * @param {string} id - format id
+ * @param {boolean} enabled - format is enabled
+ * @returns {void}
+ */
+export const toggleEnabledFormats = async (id, enabled) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const formatId = getFormatId(id);
+  if (formats.has(formatId) && enabled) {
+    enabledFormats.add(formatId);
+  } else {
+    enabledFormats.delete(formatId);
+  }
+};
+
 /**
  * set format data
- * @returns {void}
+ * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
   const items = Object.entries(formatData);
+  const func = [];
   for (const [key, value] of items) {
+    const {enabled} = value;
     formats.set(key, value);
+    func.push(toggleEnabledFormats(key, enabled));
   }
+  return Promise.all(func);
 };
 
 /**
@@ -330,6 +355,25 @@ export const addListenerToMenu = async () => {
 };
 
 /**
+ * toggle menu item
+ * @returns {void}
+ */
+export const toggleMenuItem = async () => {
+  const nodes = document.querySelectorAll("button");
+  for (const node of nodes) {
+    const {id, parentNode} = node;
+    const formatId = getFormatId(id);
+    if (formats.has(formatId)) {
+      if (enabledFormats.has(formatId)) {
+        parentNode.removeAttribute("hidden");
+      } else {
+        parentNode.setAttribute("hidden", "hidden");
+      }
+    }
+  }
+};
+
+/**
  * update menu
  * @param {Object} data - context data;
  * @returns {void}
@@ -414,9 +458,10 @@ export const handleMsg = async msg => {
  * @param {string} item - item
  * @param {Object} obj - value object
  * @param {boolean} changed - changed
- * @returns {void}
+ * @returns {?AsyncFunction} - toggleEnabledFormats()
  */
 export const setVar = async (item, obj) => {
+  let func;
   if (item && obj) {
     const {checked} = obj;
     switch (item) {
@@ -427,9 +472,17 @@ export const setVar = async (item, obj) => {
       case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
-      default:
+      default: {
+        if (formats.has(item)) {
+          const formatItem = formats.get(item);
+          formatItem.enabled = !!checked;
+          formats.set(item, formatItem);
+          func = toggleEnabledFormats(item, !!checked);
+        }
+      }
     }
   }
+  return func || null;
 };
 
 /**
