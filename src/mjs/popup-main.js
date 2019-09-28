@@ -364,7 +364,8 @@ export const toggleMenuItem = async () => {
     const {id, parentNode} = node;
     const formatId = getFormatId(id);
     if (formats.has(formatId)) {
-      if (formatId === BBCODE_URL) {
+      if (formatId === BBCODE_URL &&
+          (id.startsWith(COPY_LINK) || id.startsWith(COPY_PAGE))) {
         if (enabledFormats.has(formatId)) {
           parentNode.parentNode.removeAttribute("hidden");
         } else {
