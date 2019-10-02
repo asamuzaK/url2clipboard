@@ -301,7 +301,7 @@ export const createCopyData = async evt => {
     }
   }
   if (isString(text)) {
-    await (new Clip(text, mimeType)).copy();
+    await new Clip(text, mimeType).copy();
     notify && func.push(notifyOnCopy(formatTitle));
   }
   func.push(initContextInfo());
