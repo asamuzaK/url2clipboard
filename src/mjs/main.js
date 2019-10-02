@@ -13,7 +13,8 @@ import {
   sendMessage,
 } from "./browser.js";
 import {
-  createLinkText, createTabsLinkText, formatData, getFormatId,
+  createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
+  getFormatsKeys, hasFormat, setFormat,
 } from "./format.js";
 import {
   notifyOnCopy,
@@ -48,7 +49,7 @@ export const vars = {
 };
 
 /* formats */
-export const formats = new Map();
+export const _formats = new Map();
 
 /* enabled formats */
 export const enabledFormats = new Set();
@@ -63,8 +64,9 @@ export const toggleEnabledFormats = async (id, enabled) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
+  const keys = await getFormatsKeys(true);
   const formatId = getFormatId(id);
-  if (formats.has(formatId) && enabled) {
+  if (keys.includes(formatId) && enabled) {
     enabledFormats.add(formatId);
   } else {
     enabledFormats.delete(formatId);
@@ -76,28 +78,13 @@ export const toggleEnabledFormats = async (id, enabled) => {
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
-  const items = Object.entries(formatData);
+  const items = await getFormats(true);
   const func = [];
   for (const [key, value] of items) {
     const {enabled} = value;
-    formats.set(key, value);
     func.push(toggleEnabledFormats(key, enabled));
   }
   return Promise.all(func);
-};
-
-/**
- * get format item from menu item ID
- * @param {string} id - menu item id
- * @returns {Object} - format item
- */
-export const getFormatItemFromId = async id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const formatId = getFormatId(id);
-  const item = formatId && formats.get(formatId);
-  return item || null;
 };
 
 /**
@@ -109,7 +96,7 @@ export const getFormatTemplate = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const item = await getFormatItemFromId(id);
+  const item = await getFormat(id);
   let template;
   if (item) {
     const {
@@ -148,7 +135,7 @@ export const getFormatTitle = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const item = await getFormatItemFromId(id);
+  const item = await getFormat(id);
   let title;
   if (item) {
     const {id: itemId, title: itemTitle} = item;
@@ -224,6 +211,36 @@ export const createMenuItem = async (id, title, data = {}) => {
 };
 
 /**
+ * create single menu item
+ * @param {string} key - key
+ * @param {string} itemId - item ID
+ * @param {string} itemKey - item key
+ * @param {Object} itemData - item data
+ * @returns {AsyncFunction} - createMenuItem()
+ */
+export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
+  if (!isString(key)) {
+    throw new TypeError(`Expected String but got ${getType(key)}.`);
+  }
+  if (!isString(itemId)) {
+    throw new TypeError(`Expected String but got ${getType(itemId)}.`);
+  }
+  if (!isString(itemKey)) {
+    throw new TypeError(`Expected String but got ${getType(itemKey)}.`);
+  }
+  const {isWebExt} = vars;
+  const {id: keyId, title: keyTitle} = await getFormat(key);
+  const formatTitle = i18n.getMessage(
+    `${itemId}_format_key`,
+    [
+      keyTitle || keyId,
+      isWebExt && itemKey || ` ${itemKey}`,
+    ],
+  );
+  return createMenuItem(`${itemId}${key}`, formatTitle, itemData);
+};
+
+/**
  * create context menu items
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -231,6 +248,7 @@ export const createContextMenu = async () => {
   const func = [];
   if (enabledFormats.size) {
     const {isWebExt, promptContent} = vars;
+    const formats = await getFormats(true);
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id: itemId, key: itemKey} = menuItems[item];
@@ -248,22 +266,14 @@ export const createContextMenu = async () => {
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
-        const {id: keyId, title: keyTitle} = formats.get(key);
-        const formatTitle = i18n.getMessage(
-          `${itemId}_format_key`,
-          [
-            keyTitle || keyId,
-            isWebExt && itemKey || ` ${itemKey}`,
-          ],
-        );
-        func.push(createMenuItem(`${itemId}${key}`, formatTitle, itemData));
+        func.push(createSingleMenuItem(key, itemKey, itemId, itemData));
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
           isWebExt && itemKey || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
-        formats.forEach((value, key) => {
+        for (const [key, value] of formats) {
           const {
             enabled: formatEnabled, id: formatId, menu: formatMenuTitle,
             title: formatTitle,
@@ -278,7 +288,7 @@ export const createContextMenu = async () => {
             };
             func.push(createMenuItem(subItemId, subItemTitle, subItemData));
           }
-        });
+        }
       }
     }
   }
@@ -808,10 +818,10 @@ export const setVar = async (item, obj, changed = false) => {
         }
         break;
       default: {
-        if (formats.has(item)) {
-          const formatItem = formats.get(item);
+        if (await hasFormat(item)) {
+          const formatItem = await getFormat(item);
           formatItem.enabled = !!checked;
-          formats.set(item, formatItem);
+          setFormat(item, formatItem);
           if (changed) {
             func.push(
               toggleEnabledFormats(item, !!checked).then(removeContextMenu)

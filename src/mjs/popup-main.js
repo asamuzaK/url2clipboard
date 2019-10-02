@@ -12,7 +12,8 @@ import {
   getAllTabsInWindow, getHighlightedTab, sendMessage,
 } from "./browser.js";
 import {
-  createTabsLinkText, createLinkText, formatData, getFormatId,
+  createTabsLinkText, createLinkText, getFormat, getFormatId, getFormats,
+  getFormatsKeys, hasFormat, setFormat,
 } from "./format.js";
 import {
   notifyOnCopy,
@@ -44,9 +45,6 @@ export const vars = {
   separateTextURL: false,
 };
 
-/* formats */
-export const formats = new Map();
-
 /* enabled formats */
 export const enabledFormats = new Set();
 
@@ -60,8 +58,9 @@ export const toggleEnabledFormats = async (id, enabled) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const formatId = getFormatId(id);
-  if (formats.has(formatId) && enabled) {
+  const keys = await getFormatsKeys(true);
+  const formatId = await getFormatId(id);
+  if (keys.includes(formatId) && enabled) {
     enabledFormats.add(formatId);
   } else {
     enabledFormats.delete(formatId);
@@ -73,28 +72,13 @@ export const toggleEnabledFormats = async (id, enabled) => {
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
-  const items = Object.entries(formatData);
+  const items = await getFormats(true);
   const func = [];
   for (const [key, value] of items) {
     const {enabled} = value;
-    formats.set(key, value);
     func.push(toggleEnabledFormats(key, enabled));
   }
   return Promise.all(func);
-};
-
-/**
- * get format item from menu item ID
- * @param {string} id - menu item id
- * @returns {Object} - format item
- */
-export const getFormatItemFromId = async id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const formatId = getFormatId(id);
-  const item = formatId && formats.get(formatId);
-  return item || null;
 };
 
 /**
@@ -106,7 +90,7 @@ export const getFormatTemplate = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const item = await getFormatItemFromId(id);
+  const item = await getFormat(id);
   let template;
   if (item) {
     const {
@@ -145,7 +129,7 @@ export const getFormatTitle = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const item = await getFormatItemFromId(id);
+  const item = await getFormat(id);
   let title;
   if (item) {
     const {id: itemId, title: itemTitle} = item;
@@ -360,10 +344,11 @@ export const addListenerToMenu = async () => {
  */
 export const toggleMenuItem = async () => {
   const nodes = document.querySelectorAll("button");
+  const formatsKeys = await getFormatsKeys(true);
   for (const node of nodes) {
     const {id, parentNode} = node;
     const formatId = getFormatId(id);
-    if (formats.has(formatId)) {
+    if (formatsKeys.includes(formatId)) {
       if (formatId === BBCODE_URL &&
           (id.startsWith(COPY_LINK) || id.startsWith(COPY_PAGE))) {
         if (enabledFormats.has(formatId)) {
@@ -480,10 +465,10 @@ export const setVar = async (item, obj) => {
         vars[item] = !!checked;
         break;
       default: {
-        if (formats.has(item)) {
-          const formatItem = formats.get(item);
+        if (await hasFormat(item)) {
+          const formatItem = await getFormat(item);
           formatItem.enabled = !!checked;
-          formats.set(item, formatItem);
+          await setFormat(item, formatItem);
           func = toggleEnabledFormats(item, !!checked);
         }
       }

@@ -116,6 +116,94 @@ export const formatData = {
 };
 
 /**
+ * get format id
+ * @param {string} id - id
+ * @returns {?string} - format id
+ */
+export const getFormatId = id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  if (id.startsWith(COPY_TABS_ALL)) {
+    id = id.replace(COPY_TABS_ALL, "");
+  } else if (id.startsWith(COPY_TABS_SELECTED)) {
+    id = id.replace(COPY_TABS_SELECTED, "");
+  } else if (id.startsWith(COPY_LINK)) {
+    id = id.replace(COPY_LINK, "");
+  } else if (id.startsWith(COPY_PAGE)) {
+    id = id.replace(COPY_PAGE, "");
+  } else if (id.startsWith(COPY_TAB)) {
+    id = id.replace(COPY_TAB, "");
+  }
+  return id || null;
+};
+
+/* formats */
+export const formats = new Map(Object.entries(formatData));
+
+/**
+ * get formats
+ * @param {boolean} inArray - return in an array
+ * @returns {Object|Array} - formats
+ */
+export const getFormats = async (inArray = false) =>
+  inArray && Array.from(formats.entries()) || formats.entries();
+
+/**
+ * get formats keys
+ * @param {boolean} inArray - return in an array
+ * @returns {Object|Array} - formats
+ */
+export const getFormatsKeys = async (inArray = false) =>
+  inArray && Array.from(formats.keys()) || formats.keys();
+
+/**
+ * has format
+ * @param {string} id - id
+ * @returns {boolean} - result
+ */
+export const hasFormat = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const key = getFormatId(id);
+  return formats.has(key);
+};
+
+/**
+ * get format
+ * @param {string} id - id
+ * @returns {*|null} - format item
+ */
+export const getFormat = async id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  let item;
+  const key = getFormatId(id);
+  if (key) {
+    item = formats.get(key);
+  }
+  return item || null;
+};
+
+/**
+ * set format
+ * @param {string} id - id
+ * @param {*} value - value
+ * @returns {void}
+ */
+export const setFormat = async (id, value) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const key = getFormatId(id);
+  if (key && formats.has(key)) {
+    formats.set(key, value);
+  }
+};
+
+/**
  * create multiple tabs link text
  * @param {Array} arr - array of link text
  * @param {string} mime - mime type
@@ -186,27 +274,4 @@ export const createLinkText = async (data = {}) => {
   return template.replace(/%content%/g, content.trim())
     .replace(/%title%/g, linkTitle.trim())
     .replace(/%url%/g, linkUrl.trim());
-};
-
-/**
- * get format id
- * @param {string} id - id
- * @returns {string} - format id
- */
-export const getFormatId = id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  if (id.startsWith(COPY_TABS_ALL)) {
-    id = id.replace(COPY_TABS_ALL, "");
-  } else if (id.startsWith(COPY_TABS_SELECTED)) {
-    id = id.replace(COPY_TABS_SELECTED, "");
-  } else if (id.startsWith(COPY_LINK)) {
-    id = id.replace(COPY_LINK, "");
-  } else if (id.startsWith(COPY_PAGE)) {
-    id = id.replace(COPY_PAGE, "");
-  } else if (id.startsWith(COPY_TAB)) {
-    id = id.replace(COPY_TAB, "");
-  }
-  return id;
 };

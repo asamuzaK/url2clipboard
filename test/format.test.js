@@ -16,6 +16,11 @@ import {
 } from "../src/mjs/constant.js";
 
 describe("format", () => {
+  const itemKeys = [
+    ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
+    MARKDOWN, MEDIAWIKI, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL,
+    TEXT_URL_ONLY,
+  ];
   beforeEach(() => {
     global.browser = browser;
   });
@@ -28,11 +33,6 @@ describe("format", () => {
   });
 
   describe("keys", () => {
-    const itemKeys = [
-      ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-      MARKDOWN, MEDIAWIKI, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL,
-      TEXT_URL_ONLY,
-    ];
     const items = Object.entries(mjs.formatData);
 
     it("should get equal length", () => {
@@ -45,6 +45,224 @@ describe("format", () => {
         assert.isString(key, "key");
         assert.isObject(value, "value");
       }
+    });
+  });
+
+  describe("get format id", () => {
+    const func = mjs.getFormatId;
+
+    it("should throw", async () => {
+      assert.throws(() => func(), "Expected String but got Undefined.");
+    });
+
+    it("should get null", async () => {
+      const res = func("");
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", async () => {
+      const res = func(COPY_LINK);
+      assert.isNull(res, "result");
+    });
+
+    it("should get result", async () => {
+      const res = func("foo");
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_TABS_ALL}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_TABS_SELECTED}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_LINK}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_PAGE}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_TAB}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+  });
+
+  describe("formats", () => {
+    const {formats} = mjs;
+
+    it("should have entries", () => {
+      const items = formats.entries();
+      assert.strictEqual(formats.size, itemKeys.length, "size");
+      for (const [key, value] of items) {
+        assert.isTrue(itemKeys.includes(key), "key");
+        assert.isObject(value, "value");
+      }
+    });
+  });
+
+  describe("get formats", () => {
+    const {formats} = mjs;
+    const func = mjs.getFormats;
+
+    it("should get entries", async () => {
+      const res = await func();
+      const data = new Map(res);
+      const items = data.entries();
+      assert.strictEqual(data.size, formats.size, "size");
+      for (const [key, value] of items) {
+        assert.isTrue(itemKeys.includes(key), "key");
+        assert.isObject(value, "value");
+      }
+    });
+
+    it("should get entries", async () => {
+      const res = await func(true);
+      assert.isTrue(Array.isArray(res), "result");
+      for (const [key, value] of res) {
+        assert.isTrue(itemKeys.includes(key), "key");
+        assert.isObject(value, "value");
+      }
+    });
+  });
+
+  describe("get formats keys", () => {
+    const {formats} = mjs;
+    const func = mjs.getFormatsKeys;
+
+    it("should get keys", async () => {
+      const res = await func();
+      const data = new Set(res);
+      const items = data.keys();
+      assert.strictEqual(data.size, formats.size, "size");
+      for (const key of items) {
+        assert.isTrue(itemKeys.includes(key), "key");
+      }
+    });
+
+    it("should get keys", async () => {
+      const res = await func(true);
+      assert.isTrue(Array.isArray(res), "result");
+      for (const key of res) {
+        assert.isTrue(itemKeys.includes(key), "key");
+      }
+    });
+  });
+
+  describe("has format", () => {
+    const func = mjs.hasFormat;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
+    });
+
+    it("should get result", async () => {
+      const res = await func("foo");
+      assert.isFalse(res, "result");
+    });
+
+    it("should get result", async () => {
+      const res = await func(TEXT_TEXT_URL);
+      assert.isTrue(res, "result");
+    });
+
+    it("should get result", async () => {
+      const res = await func(`${COPY_PAGE}${TEXT_TEXT_URL}`);
+      assert.isTrue(res, "result");
+    });
+  });
+
+  describe("get format", () => {
+    const func = mjs.getFormat;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
+    });
+
+    it("should get null", async () => {
+      const res = await func("");
+      assert.isNull(res, "result");
+    });
+
+    it("should get null", async () => {
+      const res = await func("foo");
+      assert.isNull(res, "result");
+    });
+
+    it("should get result", async () => {
+      const res = await func(TEXT_TEXT_URL);
+      assert.isObject(res, "result");
+    });
+
+    it("should get result", async () => {
+      const res = await func(`${COPY_PAGE}${TEXT_TEXT_URL}`);
+      assert.isObject(res, "result");
+    });
+  });
+
+  describe("set format", () => {
+    const {formats} = mjs;
+    const func = mjs.setFormat;
+    beforeEach(() => {
+      formats.clear();
+    });
+    afterEach(() => {
+      const items = Object.entries(mjs.formatData);
+      for (const [key, value] of items) {
+        formats.set(key, value);
+      }
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, "Expected String but got Undefined.");
+      });
+    });
+
+    it("should not set key/value", async () => {
+      await func("foo");
+      assert.isFalse(formats.has("foo"), "result");
+    });
+
+    it("should set key/value", async () => {
+      formats.set(TEXT_TEXT_URL, {
+        foo: "bar",
+      });
+      await func(TEXT_TEXT_URL, {
+        foo: "baz",
+      });
+      assert.isTrue(formats.has(TEXT_TEXT_URL), "key");
+      assert.deepEqual(formats.get(TEXT_TEXT_URL), {
+        foo: "baz",
+      }, "value");
+    });
+
+    it("should set key/value", async () => {
+      formats.set(TEXT_TEXT_URL, {
+        foo: "bar",
+      });
+      await func(`${COPY_PAGE}${TEXT_TEXT_URL}`, {
+        foo: "baz",
+      });
+      assert.isTrue(formats.has(TEXT_TEXT_URL), "key");
+      assert.deepEqual(formats.get(TEXT_TEXT_URL), {
+        foo: "baz",
+      }, "value");
     });
   });
 
@@ -379,44 +597,6 @@ describe("format", () => {
       };
       const res = await func(data);
       assert.strictEqual(res, "\"\":https://example.com/foo", "result");
-    });
-  });
-
-  describe("get format id", () => {
-    const func = mjs.getFormatId;
-
-    it("should throw", async () => {
-      assert.throws(() => func(), "Expected String but got Undefined.");
-    });
-
-    it("should get result", async () => {
-      const res = func("foo");
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TABS_ALL}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TABS_SELECTED}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_LINK}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_PAGE}foo`);
-      assert.strictEqual(res, "foo", "result");
-    });
-
-    it("should get result", async () => {
-      const res = func(`${COPY_TAB}foo`);
-      assert.strictEqual(res, "foo", "result");
     });
   });
 });

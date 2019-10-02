@@ -1,9 +1,7 @@
 /**
  * main.test.js
  */
-/*
-  eslint-disable array-bracket-newline, no-magic-numbers, require-atomic-updates
-*/
+/* eslint-disable array-bracket-newline, no-magic-numbers */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";
@@ -73,14 +71,12 @@ describe("main", () => {
   describe("toggle enabled formats", () => {
     const func = mjs.toggleEnabledFormats;
     beforeEach(() => {
-      const {formats} = mjs;
-      formats.set("TextURL", {
-        foo: "bar",
-      });
+      const {enabledFormats} = mjs;
+      enabledFormats.clear();
     });
     afterEach(() => {
-      const {formats} = mjs;
-      formats.clear();
+      const {enabledFormats} = mjs;
+      enabledFormats.clear();
     });
 
     it("should throw", async () => {
@@ -90,37 +86,37 @@ describe("main", () => {
       });
     });
 
-    it("should not set map", async () => {
+    it("should not add", async () => {
       const {enabledFormats} = mjs;
       await func("foo");
       assert.isFalse(enabledFormats.has("foo"), "result");
     });
 
-    it("should not set map", async () => {
+    it("should not add", async () => {
       const {enabledFormats} = mjs;
       await func(`${COPY_PAGE}TextURL`, false);
       assert.isFalse(enabledFormats.has("TextURL"), "result");
     });
 
-    it("should set map", async () => {
+    it("should add", async () => {
       const {enabledFormats} = mjs;
       await func(`${COPY_TAB}TextURL`, true);
       assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
-    it("should set map", async () => {
+    it("should add", async () => {
       const {enabledFormats} = mjs;
       await func(`${COPY_PAGE}TextURL`, true);
       assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
-    it("should set map", async () => {
+    it("should add", async () => {
       const {enabledFormats} = mjs;
       await func(`${COPY_LINK}TextURL`, true);
       assert.isTrue(enabledFormats.has("TextURL"), "result");
     });
 
-    it("should set map", async () => {
+    it("should add", async () => {
       const {enabledFormats} = mjs;
       await func(`${COPY_TABS_ALL}TextURL`, true);
       assert.isTrue(enabledFormats.has("TextURL"), "result");
@@ -130,93 +126,34 @@ describe("main", () => {
   describe("set format data", () => {
     const func = mjs.setFormatData;
     beforeEach(() => {
-      const {enabledFormats, formats} = mjs;
+      const {enabledFormats} = mjs;
       enabledFormats.clear();
-      formats.clear();
     });
     afterEach(() => {
-      const {enabledFormats, formats} = mjs;
+      const {enabledFormats} = mjs;
       enabledFormats.clear();
-      formats.clear();
     });
 
     it("should set map", async () => {
-      const {enabledFormats, formats} = mjs;
+      const {enabledFormats} = mjs;
       const items = Object.keys(formatData);
       const res = await func();
       assert.strictEqual(res.length, items.length, "result");
-      assert.strictEqual(formats.size, items.length, "formats");
       assert.strictEqual(enabledFormats.size, items.length, "enabled formats");
-    });
-  });
-
-  describe("get format item from menu item ID", () => {
-    const func = mjs.getFormatItemFromId;
-    beforeEach(() => {
-      const {formats} = mjs;
-      const items = Object.entries(formatData);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
-    });
-    afterEach(() => {
-      const {formats} = mjs;
-      formats.clear();
-    });
-
-    it("should throw", async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, "Expected String but got Undefined.",
-                           "throw");
-      });
-    });
-
-    it("should get null", async () => {
-      const res = await func("foo");
-      assert.isNull(res, "result");
-    });
-
-    it("should get result", async () => {
-      const value = formatData.TextURL;
-      const res = await func(`${COPY_TAB}TextURL`);
-      assert.deepEqual(res, value, "result");
-    });
-
-    it("should get result", async () => {
-      const value = formatData.TextURL;
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.deepEqual(res, value, "result");
-    });
-
-    it("should get result", async () => {
-      const value = formatData.TextURL;
-      const res = await func(`${COPY_LINK}TextURL`);
-      assert.deepEqual(res, value, "result");
-    });
-
-    it("should get result", async () => {
-      const value = formatData.TextURL;
-      const res = await func(`${COPY_TABS_ALL}TextURL`);
-      assert.deepEqual(res, value, "result");
     });
   });
 
   describe("get format template", () => {
     const func = mjs.getFormatTemplate;
     beforeEach(() => {
-      const {formats, vars} = mjs;
-      const items = Object.entries(formatData);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
+      const {vars} = mjs;
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
       vars.separateTextURL = false;
     });
     afterEach(() => {
-      const {formats, vars} = mjs;
-      formats.clear();
+      const {vars} = mjs;
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
@@ -286,13 +223,11 @@ describe("main", () => {
     });
 
     it("should get value", async () => {
-      await mjs.setFormatData();
       const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, "%content% %url%", "result");
     });
 
     it("should get value", async () => {
-      await mjs.setFormatData();
       mjs.vars.separateTextURL = true;
       const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, "%content%\n%url%", "result");
@@ -301,17 +236,6 @@ describe("main", () => {
 
   describe("get format title", () => {
     const func = mjs.getFormatTitle;
-    beforeEach(() => {
-      const {formats} = mjs;
-      const items = Object.entries(formatData);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
-    });
-    afterEach(() => {
-      const {formats} = mjs;
-      formats.clear();
-    });
 
     it("should throw", async () => {
       await func().catch(e => {
@@ -426,24 +350,91 @@ describe("main", () => {
     });
   });
 
+  describe("create single menu item", () => {
+    const func = mjs.createSingleMenuItem;
+    beforeEach(() => {
+      const {vars} = mjs;
+      vars.isWebExt = true;
+    });
+    afterEach(() => {
+      const {vars} = mjs;
+      vars.isWebExt = false;
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      await func("foo").catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      await func("foo", "bar").catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.contextMenus.create.callCount;
+      const k = browser.i18n.getMessage.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      vars.isWebExt = false;
+      const res = await func("TextURL", COPY_PAGE, "(&C)", {
+        contexts: ["page", "selection"],
+        enabled: true,
+      });
+      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1,
+                         "called");
+      assert.isUndefined(res, "result");
+      browser.i18n.getMessage.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.contextMenus.create.callCount;
+      const k = browser.i18n.getMessage.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      vars.isWebExt = true;
+      const res = await func("TextURL", COPY_PAGE, "(&C)", {
+        contexts: ["page", "selection"],
+        enabled: true,
+      });
+      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1,
+                         "called");
+      assert.isUndefined(res, "result");
+      browser.i18n.getMessage.flush();
+    });
+  });
+
   describe("create context menu items", () => {
     const func = mjs.createContextMenu;
     beforeEach(() => {
-      const {enabledFormats, formats, vars} = mjs;
-      const items = Object.entries(formatData);
+      const {enabledFormats, vars} = mjs;
       vars.isWebExt = true;
       enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
       enabledFormats.add("TextURL");
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
     });
     afterEach(() => {
-      const {enabledFormats, formats, vars} = mjs;
+      const {enabledFormats, vars} = mjs;
       vars.isWebExt = false;
       enabledFormats.clear();
-      formats.clear();
     });
 
     it("should not call function", async () => {
@@ -521,25 +512,20 @@ describe("main", () => {
   describe("update context menu", () => {
     const func = mjs.updateContextMenu;
     beforeEach(() => {
-      const {enabledFormats, enabledTabs, formats, vars} = mjs;
-      const items = Object.entries(formatData);
+      const {enabledFormats, enabledTabs, vars} = mjs;
       vars.isWebExt = true;
       vars.promptContent = false;
       enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
       enabledFormats.add("TextURL");
       enabledTabs.set(1, true);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
     });
     afterEach(() => {
-      const {enabledFormats, enabledTabs, formats, vars} = mjs;
+      const {enabledFormats, enabledTabs, vars} = mjs;
       vars.isWebExt = false;
       vars.promptContent = false;
       enabledFormats.clear();
       enabledTabs.clear();
-      formats.clear();
     });
 
     it("should throw", async () => {
@@ -741,23 +727,18 @@ describe("main", () => {
   describe("handle menus on shown", () => {
     const func = mjs.handleMenusOnShown;
     beforeEach(() => {
-      const {enabledFormats, enabledTabs, formats, vars} = mjs;
-      const items = Object.entries(formatData);
+      const {enabledFormats, enabledTabs, vars} = mjs;
       vars.isWebExt = true;
       enabledFormats.add("HTMLPlain");
       enabledFormats.add("Markdown");
       enabledFormats.add("TextURL");
       enabledTabs.set(1, true);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
     });
     afterEach(() => {
-      const {enabledFormats, enabledTabs, formats, vars} = mjs;
+      const {enabledFormats, enabledTabs, vars} = mjs;
       vars.isWebExt = false;
       enabledFormats.clear();
       enabledTabs.clear();
-      formats.clear();
     });
 
     it("should get null", async () => {
@@ -1318,8 +1299,7 @@ describe("main", () => {
   describe("extract clicked data", () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
-      const {contextInfo, enabledFormats, enabledTabs, formats, vars} = mjs;
-      const items = Object.entries(formatData);
+      const {contextInfo, enabledFormats, enabledTabs, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.selectionText = "";
@@ -1330,12 +1310,9 @@ describe("main", () => {
       vars.promptContent = false;
       enabledFormats.clear();
       enabledTabs.set(1, true);
-      for (const [key, value] of items) {
-        formats.set(key, value);
-      }
     });
     afterEach(() => {
-      const {contextInfo, enabledFormats, enabledTabs, formats, vars} = mjs;
+      const {contextInfo, enabledFormats, enabledTabs, vars} = mjs;
       contextInfo.isLink = false;
       contextInfo.content = null;
       contextInfo.selectionText = "";
@@ -1346,7 +1323,6 @@ describe("main", () => {
       vars.promptContent = false;
       enabledFormats.clear();
       enabledTabs.clear();
-      formats.clear();
     });
 
     it("should get empty array", async () => {
@@ -3366,7 +3342,7 @@ describe("main", () => {
   describe("set variable", () => {
     const func = mjs.setVar;
     beforeEach(() => {
-      const {enabledFormats, formats, vars} = mjs;
+      const {enabledFormats, vars} = mjs;
       vars.iconId = "";
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
@@ -3375,10 +3351,9 @@ describe("main", () => {
       vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
-      formats.clear();
     });
     afterEach(() => {
-      const {enabledFormats, formats, vars} = mjs;
+      const {enabledFormats, vars} = mjs;
       vars.iconId = "";
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
@@ -3387,7 +3362,6 @@ describe("main", () => {
       vars.notifyOnCopy = false;
       vars.promptContent = false;
       enabledFormats.clear();
-      formats.clear();
     });
 
     it("should throw", async () => {
@@ -3421,6 +3395,27 @@ describe("main", () => {
       assert.isFalse(enabledFormats.has("TextURL"), "value");
       assert.strictEqual(res.length, 1, "result");
       assert.strictEqual(res[0].length, 70, "result");
+    });
+
+    it("should set variable", async () => {
+      await mjs.setFormatData();
+      const res = await func("TextURL", {
+        checked: true,
+      });
+      const {enabledFormats} = mjs;
+      assert.isTrue(enabledFormats.has("TextURL"), "value");
+      assert.deepEqual(res, [undefined], "result");
+    });
+
+    it("should set variable", async () => {
+      await mjs.setFormatData();
+      const res = await func("TextURL", {
+        checked: true,
+      }, true);
+      const {enabledFormats} = mjs;
+      assert.isTrue(enabledFormats.has("TextURL"), "value");
+      assert.strictEqual(res.length, 1, "result");
+      assert.strictEqual(res[0].length, 75, "result");
     });
 
     it("should set variable", async () => {
