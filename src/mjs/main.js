@@ -48,9 +48,6 @@ export const vars = {
   separateTextURL: false,
 };
 
-/* formats */
-export const _formats = new Map();
-
 /* enabled formats */
 export const enabledFormats = new Set();
 
