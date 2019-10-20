@@ -79,7 +79,6 @@
       "all_frames": false,
       "js": [
         "lib/browser-polyfill.min.js",
-        "js/clipboard.js",
         "js/content.js"
       ],
       "matches": [
