@@ -7,10 +7,10 @@
   const {i18n, runtime} = browser;
 
   /* constants */
-  const CONTENT_EDIT = "editContent";
+  const CONTENT_EDITED = "editedContent";
+  const CONTENT_EDITED_GET = "getEditedContent";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
-  const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
   const NS_HTML = "http://www.w3.org/1999/xhtml";
   const TYPE_FROM = 8;
@@ -220,7 +220,7 @@
   };
 
   /**
-   * get edited content
+   * send edited content
    * @param {string} data - data
    * @returns {AsyncFunction} - sendMsg()
    */
@@ -234,7 +234,7 @@
       const content = await editContent(contentText, formatTitle || formatId) ||
                       "";
       func = sendMsg({
-        [EXEC_COPY]: {
+        [CONTENT_EDITED]: {
           content, formatId, formatTitle, mimeType, template, title, url,
         },
       });
@@ -253,7 +253,7 @@
     if (items && items.length) {
       for (const [key, value] of items) {
         switch (key) {
-          case CONTENT_EDIT:
+          case CONTENT_EDITED_GET:
             if (value) {
               func.push(sendEditedContent(value));
             }

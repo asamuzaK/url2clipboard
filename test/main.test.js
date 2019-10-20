@@ -11,8 +11,8 @@ import sinon from "sinon";
 import * as mjs from "../src/mjs/main.js";
 import {formatData} from "../src/mjs/format.js";
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED, EXEC_COPY,
+  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTENT_EDITED, CONTENT_EDITED_GET,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
@@ -1410,7 +1410,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -1611,7 +1611,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -1739,7 +1739,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -1819,7 +1819,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -1954,7 +1954,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2034,7 +2034,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "qux",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2114,7 +2114,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://www.example.com/#corge",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -2393,7 +2393,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2468,7 +2468,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2545,7 +2545,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -2620,7 +2620,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -2701,7 +2701,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2783,7 +2783,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2865,7 +2865,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
@@ -2947,7 +2947,7 @@ describe("main", () => {
         [
           1,
           {
-            editContent: {
+            [CONTENT_EDITED_GET]: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
@@ -3403,7 +3403,7 @@ describe("main", () => {
     it("should not call function", async () => {
       const i = navigator.clipboard.writeText.callCount;
       const res = await func({
-        [EXEC_COPY]: {
+        [CONTENT_EDITED]: {
           content: "foo",
           formatId: "TextURL",
           mimeType: "text/plain",
@@ -3419,7 +3419,7 @@ describe("main", () => {
 
     it("should call function", async () => {
       const res = await func({
-        [EXEC_COPY]: {},
+        [CONTENT_EDITED]: {},
       });
       assert.deepEqual(res, [], "result");
     });

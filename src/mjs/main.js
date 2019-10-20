@@ -25,9 +25,10 @@ const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
 
 /* constants */
 import {
-  BBCODE_URL, CMD_COPY, CONTENT_EDIT, CONTEXT_INFO, CONTEXT_INFO_GET,
+  BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET,
+  CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
-  EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
+  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
   ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
@@ -631,7 +632,7 @@ export const extractClickedData = async (info, tab) => {
           // FIXME: depends on Issue #39
           if (promptContent && enabledTabs.get(tabId)) {
             func.push(sendMessage(tabId, {
-              [CONTENT_EDIT]: {
+              [CONTENT_EDITED_GET]: {
                 content, formatId, formatTitle, mimeType, promptContent,
                 template, title, url,
               },
@@ -774,7 +775,7 @@ export const handleMsg = async (msg, sender = {}) => {
           }
           break;
         }
-        case EXEC_COPY: {
+        case CONTENT_EDITED: {
           if (isObjectNotEmpty(value)) {
             func.push(execCopy(value));
           }
