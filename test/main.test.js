@@ -12,7 +12,7 @@ import * as mjs from "../src/mjs/main.js";
 import {formatData} from "../src/mjs/format.js";
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED, EXEC_COPY,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
   ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
@@ -1410,10 +1410,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -1610,10 +1611,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -1737,10 +1739,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1816,10 +1819,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -1950,10 +1954,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "quux",
@@ -2029,10 +2034,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "qux",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "quux",
@@ -2108,10 +2114,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://www.example.com/#corge",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2386,10 +2393,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2460,10 +2468,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2536,10 +2545,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2610,10 +2620,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://example.com/",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2690,10 +2701,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2771,10 +2783,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "foo",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2852,10 +2865,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "bar",
               formatId: "TextURL",
               formatTitle: "Text & URL",
+              mimeType: "text/plain",
               promptContent: true,
               template: "%content% %url%",
               title: "bar",
@@ -2933,10 +2947,11 @@ describe("main", () => {
         [
           1,
           {
-            executeCopy: {
+            editContent: {
               content: "https://example.com/#baz",
               formatId: BBCODE_URL,
               formatTitle: "BBCode (URL)",
+              mimeType: "text/plain",
               promptContent: true,
               template: "[url]%content%[/url]",
               title: undefined,
@@ -2955,6 +2970,117 @@ describe("main", () => {
         },
       ], "result");
       browser.tabs.sendMessage.flush();
+    });
+  });
+
+  describe("exec copy", () => {
+    const func = mjs.execCopy;
+    beforeEach(() => {
+      const {vars} = mjs;
+      vars.notifyOnCopy = false;
+    });
+    afterEach(() => {
+      const {vars} = mjs;
+      vars.notifyOnCopy = false;
+    });
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      await func({
+        content: "foo",
+      }).catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      await func({
+        content: "foo",
+        formatId: "TextURL",
+      }).catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      await func({
+        content: "foo",
+        formatId: "TextURL",
+        mimeType: "text/plain",
+      }).catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should throw", async () => {
+      const {vars} = mjs;
+      vars.notifyOnCopy = true;
+      await func({
+        content: "foo",
+        formatId: "TextURL",
+        mimeType: "text/plain",
+        template: "%content% %url%",
+      }).catch(e => {
+        assert.instanceOf(e, TypeError, "error");
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "message");
+      });
+    });
+
+    it("should call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.notifications.create.callCount;
+      browser.notifications.create.resolves(true);
+      const res = await func({
+        content: "foo",
+        formatId: "TextURL",
+        mimeType: "text/plain",
+        template: "%content% %url%",
+        title: "bar",
+        url: "https://example.com/#baz",
+      });
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.notifications.create.callCount, j,
+                         "not called");
+      assert.isNull(res, "result");
+      browser.notifications.create.flush();
+    });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.notifications.create.callCount;
+      browser.notifications.create.resolves(true);
+      vars.notifyOnCopy = true;
+      const res = await func({
+        content: "foo",
+        formatId: "TextURL",
+        formatTitle: "Text & URL",
+        mimeType: "text/plain",
+        template: "%content% %url%",
+        title: "bar",
+        url: "https://example.com/#baz",
+      });
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.notifications.create.callCount, j + 1,
+                         "called");
+      assert.isTrue(res, "result");
+      browser.notifications.create.flush();
     });
   });
 
@@ -3272,6 +3398,30 @@ describe("main", () => {
           canonicalUrl: "https://example.com",
         },
       ], "result");
+    });
+
+    it("should not call function", async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const res = await func({
+        [EXEC_COPY]: {
+          content: "foo",
+          formatId: "TextURL",
+          mimeType: "text/plain",
+          template: "%content% %url%",
+          title: "bar",
+          url: "https://example.com/#baz",
+        },
+      });
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.deepEqual(res, [null], "result");
+    });
+
+    it("should call function", async () => {
+      const res = await func({
+        [EXEC_COPY]: {},
+      });
+      assert.deepEqual(res, [], "result");
     });
 
     it("should call function", async () => {

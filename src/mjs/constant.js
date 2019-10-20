@@ -6,6 +6,7 @@ export const ASCIIDOC = "AsciiDoc";
 export const BBCODE_TEXT = "BBCodeText";
 export const BBCODE_URL = "BBCodeURL";
 export const CMD_COPY = "commandCopy";
+export const CONTENT_EDIT = "editContent";
 export const CONTENT_LINK = "copyLinkContent";
 export const CONTENT_LINK_BBCODE = "copyLinkBBCodeURLContent";
 export const CONTENT_PAGE = "copyPageContent";

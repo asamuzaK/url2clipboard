@@ -25,7 +25,7 @@ const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
 
 /* constants */
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
+  BBCODE_URL, CMD_COPY, CONTENT_EDIT, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
   EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
   ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
@@ -631,9 +631,9 @@ export const extractClickedData = async (info, tab) => {
           // FIXME: depends on Issue #39
           if (promptContent && enabledTabs.get(tabId)) {
             func.push(sendMessage(tabId, {
-              [EXEC_COPY]: {
-                content, formatId, formatTitle, promptContent, template, title,
-                url,
+              [CONTENT_EDIT]: {
+                content, formatId, formatTitle, mimeType, promptContent,
+                template, title, url,
               },
             }));
           } else {
@@ -651,6 +651,37 @@ export const extractClickedData = async (info, tab) => {
     }
   }
   return Promise.all(func);
+};
+
+/**
+ * exec copy
+ * @param {Object} data - data
+ * @returns {?AsyncFunction} - notifyOnCopy()
+ */
+export const execCopy = async (data = {}) => {
+  const {content, formatId, formatTitle, mimeType, template, title, url} = data;
+  const {notifyOnCopy: notify} = vars;
+  if (!isString(formatId)) {
+    throw new TypeError(`Expected String but got ${getType(formatId)}.`);
+  }
+  if (!isString(mimeType)) {
+    throw new TypeError(`Expected String but got ${getType(mimeType)}.`);
+  }
+  if (!isString(template)) {
+    throw new TypeError(`Expected String but got ${getType(template)}.`);
+  }
+  if (notify && !isString(formatTitle)) {
+    throw new TypeError(`Expected String but got ${getType(formatTitle)}.`);
+  }
+  const text = await createLinkText({
+    content, formatId, template, title, url,
+  });
+  let func;
+  await new Clip(text, mimeType).copy();
+  if (notify) {
+    func = notifyOnCopy(formatTitle);
+  }
+  return func || null;
 };
 
 /**
@@ -740,6 +771,12 @@ export const handleMsg = async (msg, sender = {}) => {
             const {format} = data;
             info.menuItemId = format;
             func.push(extractClickedData(info, tab));
+          }
+          break;
+        }
+        case EXEC_COPY: {
+          if (isObjectNotEmpty(value)) {
+            func.push(execCopy(value));
           }
           break;
         }

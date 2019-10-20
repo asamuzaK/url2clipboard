@@ -4,13 +4,19 @@
 "use strict";
 {
   /* api */
-  const {runtime} = browser;
+  const {i18n, runtime} = browser;
 
   /* constants */
+  const CONTENT_EDIT = "editContent";
   const CONTEXT_INFO = "contextInfo";
   const CONTEXT_INFO_GET = "getContextInfo";
+  const EXEC_COPY = "executeCopy";
   const MOUSE_BUTTON_RIGHT = 2;
   const NS_HTML = "http://www.w3.org/1999/xhtml";
+  const TYPE_FROM = 8;
+  const TYPE_TO = -1;
+  const USER_INPUT = "userInput";
+  const USER_INPUT_DEFAULT = "Edit content text of the link";
 
   /**
    * throw error
@@ -20,6 +26,21 @@
   const throwErr = e => {
     throw e;
   };
+
+  /**
+   * get type
+   * @param {*} o - object to check
+   * @returns {string} - type of object
+   */
+  const getType = o =>
+    Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+  /**
+   * is string
+   * @param {*} o - object to check
+   * @returns {boolean} - result
+   */
+  const isString = o => typeof o === "string" || o instanceof String;
 
   /**
    * send message
@@ -180,6 +201,48 @@
   };
 
   /**
+   * edit content
+   * @param {string} content - content to edit
+   * @param {string} label - format label
+   * @returns {?string} - edited content
+   */
+  const editContent = async (content = "", label = "") => {
+    if (!isString(content)) {
+      throw new TypeError(`Expected String but got ${getType(content)}.`);
+    }
+    if (!isString(label)) {
+      throw new TypeError(`Expected String but got ${getType(label)}.`);
+    }
+    const msg = label && await i18n.getMessage(USER_INPUT, label) ||
+                USER_INPUT_DEFAULT;
+    content = window.prompt(msg, content.replace(/\s+/g, " ").trim());
+    return content;
+  };
+
+  /**
+   * get edited content
+   * @param {string} data - data
+   * @returns {AsyncFunction} - sendMsg()
+   */
+  const sendEditedContent = async (data = {}) => {
+    const {
+      content: contentText, formatId, formatTitle, mimeType, promptContent,
+      template, title, url,
+    } = data;
+    let func;
+    if (promptContent) {
+      const content = await editContent(contentText, formatTitle || formatId) ||
+                      "";
+      func = sendMsg({
+        [EXEC_COPY]: {
+          content, formatId, formatTitle, mimeType, template, title, url,
+        },
+      });
+    }
+    return func || null;
+  };
+
+  /**
    * handle message
    * @param {*} msg - message
    * @returns {Promise.<Array>} - results of each handler
@@ -190,6 +253,11 @@
     if (items && items.length) {
       for (const [key, value] of items) {
         switch (key) {
+          case CONTENT_EDIT:
+            if (value) {
+              func.push(sendEditedContent(value));
+            }
+            break;
           case CONTEXT_INFO_GET:
             if (value) {
               func.push(sendContextInfo(value));
