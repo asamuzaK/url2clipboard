@@ -250,16 +250,13 @@ export const createContextMenu = async () => {
     const items = Object.keys(menuItems);
     for (const item of items) {
       const {contexts, id: itemId, key: itemKey} = menuItems[item];
-      // FIXME: depends on Issue #39
       let enabled;
       switch (itemId) {
-        case COPY_TAB:
-        case COPY_TABS_ALL:
-        case COPY_TABS_SELECTED:
-          enabled = true;
+        case COPY_LINK:
+          enabled = !promptContent;
           break;
         default:
-          enabled = !promptContent;
+          enabled = true;
       }
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
@@ -314,24 +311,25 @@ export const updateContextMenu = async tabId => {
       if (contexts.includes("link")) {
         const enabled = enabledTabs.get(tabId) || false;
         func.push(contextMenus.update(itemId, {enabled}));
-      } else if (contexts.includes("tab")) {
-        if (isWebExt) {
-          const enabled = true;
-          let visible;
-          if (itemId === COPY_TABS_ALL) {
-            visible =
-              highlightedTabs.length !== allTabs.length && allTabs.length > 1;
-          } else if (itemId === COPY_TABS_SELECTED) {
-            visible = isHighlighted;
-          } else {
-            visible = !isHighlighted;
-          }
-          func.push(contextMenus.update(itemId, {enabled, visible}));
-        }
       } else {
-        // FIXME: depends on Issue #39
-        const enabled = !promptContent || enabledTabs.get(tabId) || false;
-        func.push(contextMenus.update(itemId, {enabled}));
+        const enabled = true;
+        if (contexts.includes("tab")) {
+          if (isWebExt) {
+            const enabled = true;
+            let visible;
+            if (itemId === COPY_TABS_ALL) {
+              visible =
+                highlightedTabs.length !== allTabs.length && allTabs.length > 1;
+            } else if (itemId === COPY_TABS_SELECTED) {
+              visible = isHighlighted;
+            } else {
+              visible = !isHighlighted;
+            }
+            func.push(contextMenus.update(itemId, {enabled, visible}));
+          }
+        } else {
+          func.push(contextMenus.update(itemId, {enabled}));
+        }
       }
     }
   }
@@ -629,7 +627,6 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          // FIXME: depends on Issue #39
           if (promptContent && enabledTabs.get(tabId)) {
             func.push(sendMessage(tabId, {
               [CONTENT_EDITED_GET]: {
@@ -844,7 +841,6 @@ export const setVar = async (item, obj, changed = false) => {
         break;
       case PROMPT:
         vars[item] = !!checked;
-        // FIXME: depends on Issue #39
         if (changed) {
           func.push(
             removeContextMenu().then(createContextMenu).then(getActiveTabId)
