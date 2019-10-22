@@ -255,6 +255,9 @@ export const createContextMenu = async () => {
         case COPY_LINK:
           enabled = !promptContent;
           break;
+        case COPY_PAGE:
+          enabled = isWebExt || !promptContent;
+          break;
         default:
           enabled = true;
       }
@@ -308,27 +311,31 @@ export const updateContextMenu = async tabId => {
     const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
       const {contexts, id: itemId} = menuItems[item];
-      if (contexts.includes("link")) {
-        const enabled = enabledTabs.get(tabId) || false;
-        func.push(contextMenus.update(itemId, {enabled}));
-      } else {
-        const enabled = true;
-        if (contexts.includes("tab")) {
-          if (isWebExt) {
-            const enabled = true;
+      switch (itemId) {
+        case COPY_LINK: {
+          const enabled = enabledTabs.get(tabId) || false;
+          func.push(contextMenus.update(itemId, {enabled}));
+          break;
+        }
+        case COPY_PAGE: {
+          const enabled = isWebExt || !promptContent ||
+                          enabledTabs.get(tabId) || false;
+          func.push(contextMenus.update(itemId, {enabled}));
+          break;
+        }
+        default: {
+          if (contexts.includes("tab") && isWebExt) {
             let visible;
             if (itemId === COPY_TABS_ALL) {
-              visible =
-                highlightedTabs.length !== allTabs.length && allTabs.length > 1;
+              visible = highlightedTabs.length !== allTabs.length &&
+                        allTabs.length > 1;
             } else if (itemId === COPY_TABS_SELECTED) {
               visible = isHighlighted;
             } else {
               visible = !isHighlighted;
             }
-            func.push(contextMenus.update(itemId, {enabled, visible}));
+            func.push(contextMenus.update(itemId, {visible}));
           }
-        } else {
-          func.push(contextMenus.update(itemId, {enabled}));
         }
       }
     }
