@@ -3,6 +3,7 @@ dist: trusty
 node_js:
   - "10"
   - "12"
+  - "13"
 
 before_script:
   - npm install
