@@ -390,7 +390,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "<a href=\"https://example.com/foo?key=1&amp;key2=2\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
-        "result"
+        "result",
       );
     });
 
@@ -405,7 +405,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "<a href=\"https://example.com/foo?key=1&amp;key2=2\">foo &quot;bar&quot; baz</a>",
-        "result"
+        "result",
       );
     });
 
@@ -433,7 +433,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "<a href=\"https://example.com/foo?key=1&amp;key2=2\" title=\"foo&amp;bar\">foo &quot;bar&quot; baz</a>",
-        "result"
+        "result",
       );
     });
 
@@ -448,7 +448,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "<a href=\"https://example.com/foo?key=1&amp;key2=2\">foo &quot;bar&quot; baz</a>",
-        "result"
+        "result",
       );
     });
 
@@ -464,7 +464,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "\\href{https://example.com/foo}{\\textbackslash{}backslash}",
-        "result"
+        "result",
       );
     });
 
@@ -492,7 +492,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "[foo &quot;bar&quot; \\[baz\\]](https://example.com/foo \"foo&amp;&quot;bar&quot;\")",
-        "result"
+        "result",
       );
     });
 
@@ -507,7 +507,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "[foo &quot;bar&quot; \\[baz\\]](https://example.com/foo)",
-        "result"
+        "result",
       );
     });
 
@@ -584,7 +584,7 @@ describe("format", () => {
       assert.strictEqual(
         res,
         "\"foo &#40;bar&#41; &lt;baz&gt;\":https://example.com/foo",
-        "result"
+        "result",
       );
     });
 

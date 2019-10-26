@@ -191,11 +191,11 @@ export const convertLaTeXChar = str => {
     str.replace(/\\/g, "\\textbackslash[]")
       .replace(/\^/g, "\\textasciicircum[]")
       .replace(/~/g, "\\textasciitilde[]"),
-    /([%$#&_{}])/g
+    /([%$#&_{}])/g,
   );
   return spChar && spChar.replace(
     /(\\text(?:backslash|ascii(?:circum|tilde)))\[\]/g,
-    (m, c) => `${c}{}`
+    (m, c) => `${c}{}`,
   ) || null;
 };
 
@@ -285,7 +285,7 @@ export const encodeUrlSpecialChar = str => {
   const base = protocol === "file:" && `${protocol}//` || origin;
   const encodedUrl = new URL(
     `${encodeUrlPart(path)}${encodeUrlPart(query)}${encodeUrlPart(frag)}`,
-    base
+    base,
   );
   const {href} = encodedUrl;
   return href;

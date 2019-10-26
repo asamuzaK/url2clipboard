@@ -194,7 +194,7 @@ describe("popup-main", () => {
       mjs.vars.includeTitleHTMLHyper = true;
       const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(
-        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
+        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result",
       );
     });
 
@@ -207,7 +207,7 @@ describe("popup-main", () => {
       mjs.vars.includeTitleHTMLPlain = true;
       const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
-        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result"
+        res, "<a href=\"%url%\" title=\"%title%\">%content%</a>", "result",
       );
     });
 

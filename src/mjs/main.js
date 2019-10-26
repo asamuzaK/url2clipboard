@@ -268,7 +268,7 @@ export const createContextMenu = async () => {
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
-          isWebExt && itemKey || ` ${itemKey}`
+          isWebExt && itemKey || ` ${itemKey}`,
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         for (const [key, value] of formats) {
@@ -798,7 +798,7 @@ export const handleMsg = async (msg, sender = {}) => {
           if (tab) {
             const {id: tabId} = tab;
             func.push(
-              setEnabledTab(tabId, tab, value).then(handleActiveTab)
+              setEnabledTab(tabId, tab, value).then(handleActiveTab),
             );
           }
           func.push(updateContextInfo(value));
@@ -851,7 +851,7 @@ export const setVar = async (item, obj, changed = false) => {
         if (changed) {
           func.push(
             removeContextMenu().then(createContextMenu).then(getActiveTabId)
-              .then(updateContextMenu)
+              .then(updateContextMenu),
           );
         }
         break;
@@ -863,7 +863,7 @@ export const setVar = async (item, obj, changed = false) => {
           if (changed) {
             func.push(
               toggleEnabledFormats(item, !!checked).then(removeContextMenu)
-                .then(createContextMenu)
+                .then(createContextMenu),
             );
           } else {
             func.push(toggleEnabledFormats(item, !!checked));

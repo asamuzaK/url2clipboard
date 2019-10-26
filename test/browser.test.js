@@ -1342,7 +1342,7 @@ describe("browser", () => {
       await func(1, {foo: "bar"});
       assert.strictEqual(
         browser.tabs.reload.withArgs(1, {foo: "bar"}).callCount,
-        i + 1, "res"
+        i + 1, "res",
       );
     });
   });
@@ -1422,7 +1422,7 @@ describe("browser", () => {
       assert.strictEqual(
         browser.tabs.update.withArgs(1, {foo: "bar"}).callCount,
         i + 1,
-        "called"
+        "called",
       );
       assert.isObject(res, "res");
       browser.tabs.update.flush();

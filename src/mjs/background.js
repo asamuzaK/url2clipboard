@@ -18,29 +18,29 @@ import {
 const {commands, contextMenus, runtime, storage, tabs} = browser;
 
 commands.onCommand.addListener(cmd =>
-  handleCmd(cmd).catch(throwErr)
+  handleCmd(cmd).catch(throwErr),
 );
 contextMenus.onClicked.addListener((info, tab) =>
-  extractClickedData(info, tab).catch(throwErr)
+  extractClickedData(info, tab).catch(throwErr),
 );
 contextMenus.onShown &&
   contextMenus.onShown.addListener((info, tab) =>
-    handleMenusOnShown(info, tab).catch(throwErr)
+    handleMenusOnShown(info, tab).catch(throwErr),
   );
 storage.onChanged.addListener(data =>
-  setVars(data).catch(throwErr)
+  setVars(data).catch(throwErr),
 );
 runtime.onMessage.addListener((msg, sender) =>
-  handleMsg(msg, sender).catch(throwErr)
+  handleMsg(msg, sender).catch(throwErr),
 );
 tabs.onActivated.addListener(info =>
-  handleActiveTab(info).catch(throwErr)
+  handleActiveTab(info).catch(throwErr),
 );
 tabs.onRemoved.addListener(tabId =>
-  removeEnabledTab(tabId).catch(throwErr)
+  removeEnabledTab(tabId).catch(throwErr),
 );
 tabs.onUpdated.addListener((tabId, info, tab) =>
-  handleUpdatedTab(tabId, info, tab).catch(throwErr)
+  handleUpdatedTab(tabId, info, tab).catch(throwErr),
 );
 
 /* startup */

@@ -112,7 +112,7 @@ export const getEnabledTheme = async () => {
   let res;
   if (Array.isArray(arr)) {
     res = arr.filter(info =>
-      info.type && info.type === "theme" && info.enabled && info
+      info.type && info.type === "theme" && info.enabled && info,
     );
   }
   return res || null;

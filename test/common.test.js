@@ -587,7 +587,7 @@ describe("common", () => {
       const res = func("https://example.com/foo bar?baz&qux#quux'corge");
       assert.strictEqual(
         res,
-        "https://example.com/foo%20bar?baz&amp;qux#quux%27corge"
+        "https://example.com/foo%20bar?baz&amp;qux#quux%27corge",
       );
     });
 
@@ -595,7 +595,7 @@ describe("common", () => {
       const res = func("file:///foo bar?baz&qux#quux'corge");
       assert.strictEqual(
         res,
-        "file:///foo%20bar?baz&amp;qux#quux%27corge"
+        "file:///foo%20bar?baz&amp;qux#quux%27corge",
       );
     });
   });

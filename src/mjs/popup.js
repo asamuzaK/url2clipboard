@@ -20,7 +20,7 @@ const {runtime, storage} = browser;
 
 /* listeners */
 storage.onChanged.addListener(data =>
-  setVars(data).then(toggleMenuItem).catch(throwErr)
+  setVars(data).then(toggleMenuItem).catch(throwErr),
 );
 runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
 
