@@ -264,7 +264,7 @@ export const createContextMenu = async () => {
       const itemData = {contexts, enabled};
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
-        func.push(createSingleMenuItem(key, itemKey, itemId, itemData));
+        func.push(createSingleMenuItem(key, itemId, itemKey, itemData));
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
