@@ -53,7 +53,7 @@ export class Clip {
   }
 
   /**
-   * copy to clipborad sync (for fallback)
+   * copy to clipboard sync (for fallback)
    * @returns {void}
    */
   _copySync() {
