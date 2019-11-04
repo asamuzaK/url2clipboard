@@ -269,10 +269,9 @@ describe("main", () => {
     const func = mjs.removeContextMenu;
 
     it("should call function", async () => {
-      const i = browser.contextMenus.removeAll.callCount;
+      const i = browser.menus.removeAll.callCount;
       const res = await func();
-      assert.strictEqual(browser.contextMenus.removeAll.callCount, i + 1,
-                         "called");
+      assert.strictEqual(browser.menus.removeAll.callCount, i + 1, "called");
       assert.isUndefined(res, "result");
     });
   });
@@ -281,72 +280,64 @@ describe("main", () => {
     const func = mjs.createMenuItem;
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
     });
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo");
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
     });
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo", "bar");
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
     });
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo", "bar", {
         contexts: "baz",
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
     });
 
     it("should call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo", "bar", {
         contexts: ["baz"],
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
     });
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo", "bar", {
         contexts: ["tab"],
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
     });
 
     it("should not call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       vars.isWebExt = true;
       await func("foo", "bar", {
         contexts: ["tab"],
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
     });
 
     it("should not call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       await func("foo", "bar", {
         contexts: ["baz"],
         parentId: "qux",
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
     });
   });
 
@@ -387,7 +378,7 @@ describe("main", () => {
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
@@ -395,17 +386,15 @@ describe("main", () => {
         contexts: ["page", "selection"],
         enabled: true,
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
       assert.isUndefined(res, "result");
       browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = true;
@@ -413,10 +402,8 @@ describe("main", () => {
         contexts: ["page", "selection"],
         enabled: true,
       });
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 1,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
       assert.isUndefined(res, "result");
       browser.i18n.getMessage.flush();
     });
@@ -439,71 +426,62 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       enabledFormats.clear();
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.create.callCount, i, "not called");
       assert.deepEqual(res, [], "result");
     });
 
     it("should call function", async () => {
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 75,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 75, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 75, "result");
       browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 30,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 30, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 75, "result");
       browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
       const {enabledFormats} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       enabledFormats.delete("HTMLPlain");
       enabledFormats.delete("Markdown");
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 5, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
       const {enabledFormats, vars} = mjs;
-      const i = browser.contextMenus.create.callCount;
+      const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       enabledFormats.delete("HTMLPlain");
       enabledFormats.delete("Markdown");
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
       const res = await func();
-      assert.strictEqual(browser.contextMenus.create.callCount, i + 2,
-                         "called");
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5,
-                         "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 2, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.i18n.getMessage.flush();
     });
@@ -537,7 +515,7 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: "normal",
@@ -549,14 +527,13 @@ describe("main", () => {
       }).resolves([{}, {}]);
       enabledFormats.clear();
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i,
-                         "not called");
+      assert.strictEqual(browser.menus.update.callCount, i, "not called");
       assert.deepEqual(res, [], "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -568,16 +545,14 @@ describe("main", () => {
         windowType: "normal",
       }).resolves([{}, {}]);
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -589,17 +564,15 @@ describe("main", () => {
         windowType: "normal",
       }).resolves([{}, {}]);
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -612,17 +585,15 @@ describe("main", () => {
       }).resolves([{}, {}]);
       vars.promptContent = true;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -635,17 +606,15 @@ describe("main", () => {
       }).resolves([{}, {}]);
       vars.promptContent = true;
       const res = await func(2);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, j + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.runtime.sendMessage.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
@@ -659,19 +628,17 @@ describe("main", () => {
       }).resolves([{}, {}]);
       vars.isWebExt = false;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 2, "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 2,
-                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.runtime.sendMessage.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
@@ -686,19 +653,17 @@ describe("main", () => {
       vars.isWebExt = false;
       vars.promptContent = true;
       const res = await func(1);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 2, "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 2,
-                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
       const {vars} = mjs;
-      const i = browser.contextMenus.update.callCount;
+      const i = browser.menus.update.callCount;
       const j = browser.runtime.sendMessage.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
@@ -713,12 +678,10 @@ describe("main", () => {
       vars.isWebExt = false;
       vars.promptContent = true;
       const res = await func(2);
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 2, "called");
       assert.strictEqual(browser.runtime.sendMessage.callCount, j,
                          "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 2,
-                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
       browser.tabs.query.flush();
     });
@@ -758,8 +721,8 @@ describe("main", () => {
 
     it("should not call function", async () => {
       const {enabledFormats} = mjs;
-      const i = browser.contextMenus.update.callCount;
-      const j = browser.contextMenus.refresh.callCount;
+      const i = browser.menus.update.callCount;
+      const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -772,19 +735,16 @@ describe("main", () => {
       }).resolves([{}, {}]);
       enabledFormats.clear();
       const res = await func({contexts: ["tab"]}, {id: 1});
-      assert.strictEqual(browser.contextMenus.update.callCount, i,
-                         "not called");
-      assert.strictEqual(browser.contextMenus.refresh.callCount, j,
-                         "not called");
-      assert.strictEqual(browser.tabs.query.callCount, k,
-                         "not called");
+      assert.strictEqual(browser.menus.update.callCount, i, "not called");
+      assert.strictEqual(browser.menus.refresh.callCount, j, "not called");
+      assert.strictEqual(browser.tabs.query.callCount, k, "not called");
       assert.isNull(res, "result");
       browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
-      const i = browser.contextMenus.update.callCount;
-      const j = browser.contextMenus.refresh.callCount;
+      const i = browser.menus.update.callCount;
+      const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -796,12 +756,9 @@ describe("main", () => {
         windowType: "normal",
       }).resolves([{}, {}]);
       const res = await func({contexts: ["tab"]}, {id: 1});
-      assert.strictEqual(browser.contextMenus.update.callCount, i + 5,
-                         "called");
-      assert.strictEqual(browser.contextMenus.refresh.callCount, j + 1,
-                         "called");
-      assert.strictEqual(browser.tabs.query.callCount, k + 2,
-                         "called");
+      assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
+      assert.strictEqual(browser.menus.refresh.callCount, j + 1, "called");
+      assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.isNull(res, "result");
       browser.tabs.query.flush();
     });

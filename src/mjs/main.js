@@ -21,7 +21,8 @@ import {
 } from "./notify.js";
 
 /* api */
-const {browserAction, contextMenus, i18n, runtime, tabs, windows} = browser;
+const {browserAction, i18n, runtime, tabs, windows} = browser;
+const menus = browser.menus || browser.contextMenus;
 
 /* constants */
 import {
@@ -176,9 +177,9 @@ export const menuItems = {
 
 /**
  * remove context menu
- * @returns {AsyncFunction} - contextMenus.removeAll()
+ * @returns {AsyncFunction} - menus.removeAll()
  */
-export const removeContextMenu = async () => contextMenus.removeAll();
+export const removeContextMenu = async () => menus.removeAll();
 
 /**
  * create context menu item
@@ -199,11 +200,9 @@ export const createMenuItem = async (id, title, data = {}) => {
       opt.parentId = parentId;
     }
     if (contexts.includes("tab")) {
-      if (isWebExt) {
-        contextMenus.create(opt);
-      }
+      isWebExt && menus.create(opt);
     } else {
-      contextMenus.create(opt);
+      menus.create(opt);
     }
   }
 };
@@ -314,13 +313,13 @@ export const updateContextMenu = async tabId => {
       switch (itemId) {
         case COPY_LINK: {
           const enabled = enabledTabs.get(tabId) || false;
-          func.push(contextMenus.update(itemId, {enabled}));
+          func.push(menus.update(itemId, {enabled}));
           break;
         }
         case COPY_PAGE: {
           const enabled = isWebExt || !promptContent ||
                           enabledTabs.get(tabId) || false;
-          func.push(contextMenus.update(itemId, {enabled}));
+          func.push(menus.update(itemId, {enabled}));
           break;
         }
         default: {
@@ -334,7 +333,7 @@ export const updateContextMenu = async tabId => {
             } else {
               visible = !isHighlighted;
             }
-            func.push(contextMenus.update(itemId, {visible}));
+            func.push(menus.update(itemId, {visible}));
           }
         }
       }
@@ -347,17 +346,17 @@ export const updateContextMenu = async tabId => {
  * handle menus on shown
  * @param {Object} info - menu info
  * @param {Object} tab - tabs.Tab
- * @returns {?AsyncFunction} - contextMenus.reflesh()
+ * @returns {?AsyncFunction} - menus.reflesh()
  */
 export const handleMenusOnShown = async (info, tab) => {
   const {contexts} = info;
   const {id: tabId} = tab;
   let func;
   if (Array.isArray(contexts) && contexts.includes("tab") &&
-      Number.isInteger(tabId) && typeof contextMenus.refresh === "function") {
+      Number.isInteger(tabId) && typeof menus.refresh === "function") {
     const arr = await updateContextMenu(tabId);
     if (Array.isArray(arr) && arr.length) {
-      func = contextMenus.refresh();
+      func = menus.refresh();
     }
   }
   return func || null;

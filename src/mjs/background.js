@@ -15,18 +15,20 @@ import {
 } from "./main.js";
 
 /* api */
-const {commands, contextMenus, runtime, storage, tabs} = browser;
+const {
+  commands, runtime, storage, tabs,
+} = browser;
+const menus = browser.menus || browser.contextMenus;
 
 commands.onCommand.addListener(cmd =>
   handleCmd(cmd).catch(throwErr),
 );
-contextMenus.onClicked.addListener((info, tab) =>
+menus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr),
 );
-contextMenus.onShown &&
-  contextMenus.onShown.addListener((info, tab) =>
-    handleMenusOnShown(info, tab).catch(throwErr),
-  );
+menus.onShown && menus.onShown.addListener((info, tab) =>
+  handleMenusOnShown(info, tab).catch(throwErr),
+);
 storage.onChanged.addListener(data =>
   setVars(data).catch(throwErr),
 );
