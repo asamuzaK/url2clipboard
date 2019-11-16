@@ -21,10 +21,10 @@
     "test": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --require @babel/register --exit"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.0",
+    "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
     "@babel/register": "^7.7.0",
-    "addons-linter": "^1.15.3",
+    "addons-linter": "^1.16.0",
     "chai": "^4.2.0",
     "eslint": "^6.6.0",
     "jsdom": "^15.2.1",
