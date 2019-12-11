@@ -22,9 +22,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
-    "@babel/preset-env": "^7.7.5",
+    "@babel/preset-env": "^7.7.6",
     "@babel/register": "^7.7.4",
-    "addons-linter": "^1.18.0",
+    "addons-linter": "^1.19.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
     "eslint-plugin-no-unsanitized": "^3.0.2",
