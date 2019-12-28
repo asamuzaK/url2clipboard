@@ -9,8 +9,7 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getEnabledTheme, getHighlightedTab, isTab,
-  sendMessage,
+  getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, sendMessage,
 } from "./browser.js";
 import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
@@ -30,17 +29,17 @@ import {
   CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
   EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
-  ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
+  ICON_COLOR, ICON_COLOR_ID, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
-  TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const {WINDOW_ID_CURRENT} = windows;
 
 /* variables */
 export const vars = {
-  iconId: "",
+  iconId: null,
   includeTitleHTMLHyper: false,
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
@@ -405,14 +404,18 @@ export const removeEnabledTab = async tabId => {
  */
 export const setIcon = async () => {
   const {iconId} = vars;
-  const name = i18n.getMessage(EXT_NAME);
-  const icon = runtime.getURL(ICON);
-  const path = iconId && `${icon}${iconId}` || icon;
-  const title = name;
-  return Promise.all([
-    browserAction.setIcon({path}),
-    browserAction.setTitle({title}),
-  ]);
+  const func = [];
+  if (iconId) {
+    const name = i18n.getMessage(EXT_NAME);
+    const icon = runtime.getURL(ICON);
+    const path = `${icon}${iconId}`;
+    const title = name;
+    func.push(
+      browserAction.setIcon({path}),
+      browserAction.setTitle({title}),
+    );
+  }
+  return Promise.all(func);
 };
 
 /**
@@ -420,29 +423,9 @@ export const setIcon = async () => {
  * @returns {void}
  */
 export const setDefaultIcon = async () => {
-  const items = await getEnabledTheme();
-  if (Array.isArray(items) && items.length) {
-    for (const item of items) {
-      const {id} = item;
-      switch (id) {
-        case THEME_DARK:
-          vars.iconId = ICON_LIGHT_ID;
-          break;
-        case THEME_LIGHT:
-          vars.iconId = ICON_DARK_ID;
-          break;
-        default: {
-          const {isWebExt} = vars;
-          if (isWebExt) {
-            vars.iconId = ICON_DARK_ID;
-          } else {
-            vars.iconId = "";
-          }
-        }
-      }
-    }
-  } else {
-    vars.iconId = "";
+  const {isWebExt} = vars;
+  if (!isWebExt) {
+    vars.iconId = ICON_COLOR_ID;
   }
 };
 

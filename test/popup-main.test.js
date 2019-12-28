@@ -1,7 +1,7 @@
 /**
  * popup-main.test.js
  */
-/* eslint-disable no-magic-numbers, require-atomic-updates */
+/* eslint-disable no-magic-numbers */
 
 import {JSDOM} from "jsdom";
 import {assert} from "chai";
