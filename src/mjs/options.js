@@ -9,15 +9,17 @@ import {
   localizeHtml,
 } from "./localize.js";
 import {
+  disableIncompatibleInputs,
+} from "./compat.js";
+import {
   addInputChangeListener,
-  disableIncompatItems,
   setValuesFromStorage,
 } from "./options-main.js";
 
 /* startup */
 Promise.all([
-  disableIncompatItems(),
   localizeHtml(),
   setValuesFromStorage(),
   addInputChangeListener(),
+  disableIncompatibleInputs(),
 ]).catch(throwErr);

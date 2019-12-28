@@ -9,10 +9,8 @@ import {
   getStorage, setStorage, removePermission, requestPermission,
 } from "./browser.js";
 import {
-  ICON_AUTO, NOTIFY_COPY, WEBEXT_ID,
+  NOTIFY_COPY,
 } from "./constant.js";
-
-const {runtime} = browser;
 
 /**
  * create pref
@@ -121,20 +119,4 @@ export const setValuesFromStorage = async () => {
     }
   }
   return Promise.all(func);
-};
-
-/**
- * disable incompatible items
- * @returns {void}
- */
-export const disableIncompatItems = async () => {
-  if (runtime.id !== WEBEXT_ID) {
-    const items = [ICON_AUTO];
-    for (const item of items) {
-      const elm = document.getElementById(item);
-      if (elm) {
-        elm.disabled = true;
-      }
-    }
-  }
 };

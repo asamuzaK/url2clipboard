@@ -9,7 +9,7 @@ import {afterEach, beforeEach, describe, it} from "mocha";
 import sinon from "sinon";
 import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/options-main.js";
-import {ICON_AUTO, NOTIFY_COPY, WEBEXT_ID} from "../src/mjs/constant.js";
+import {NOTIFY_COPY} from "../src/mjs/constant.js";
 
 describe("options-main", () => {
   /**
@@ -367,32 +367,6 @@ describe("options-main", () => {
       assert.strictEqual(browser.storage.local.get.callCount, i + 1, "called");
       assert.strictEqual(res.length, 2, "array length");
       assert.deepEqual(res, [undefined, undefined], "result");
-    });
-  });
-
-  describe("disable incompatible items", () => {
-    const func = mjs.disableIncompatItems;
-
-    it("should set value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = ICON_AUTO;
-      browser.runtime.id = "foo";
-      body.appendChild(elm);
-      await func();
-      assert.isTrue(elm.disabled, "value");
-      browser.runtime.id = null;
-    });
-
-    it("should not set value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = ICON_AUTO;
-      browser.runtime.id = WEBEXT_ID;
-      body.appendChild(elm);
-      await func();
-      assert.isFalse(elm.disabled, "value");
-      browser.runtime.id = null;
     });
   });
 });
