@@ -10,11 +10,13 @@ import {
 } from "./localize.js";
 import {
   addInputChangeListener,
+  disableIncompatItems,
   setValuesFromStorage,
 } from "./options-main.js";
 
 /* startup */
 Promise.all([
+  disableIncompatItems(),
   localizeHtml(),
   setValuesFromStorage(),
   addInputChangeListener(),
