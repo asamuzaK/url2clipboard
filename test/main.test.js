@@ -13,10 +13,10 @@ import {formatData} from "../src/mjs/format.js";
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTENT_EDITED, CONTENT_EDITED_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
-  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_COLOR_ID, ICON_DARK,
-  ICON_LIGHT, ICON_WHITE,
+  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT,
+  ICON_LIGHT_ID, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  NOTIFY_COPY, PROMPT,
+  NOTIFY_COPY, PROMPT, THEME_DARK, THEME_LIGHT,
 } from "../src/mjs/constant.js";
 
 describe("main", () => {
@@ -867,17 +867,8 @@ describe("main", () => {
 
   describe("set icon", () => {
     const func = mjs.setIcon;
-    beforeEach(() => {
-      const {vars} = mjs;
-      vars.iconId = null;
-    });
-    afterEach(() => {
-      const {vars} = mjs;
-      vars.iconId = null;
-    });
 
-    it("should not call function", async () => {
-      const {vars} = mjs;
+    it("should get result", async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
       const k = browser.browserAction.setIcon.callCount;
@@ -886,22 +877,32 @@ describe("main", () => {
       browser.runtime.getURL.withArgs(ICON).returns("foo/bar");
       browser.browserAction.setIcon.callsFake((...args) => args);
       browser.browserAction.setTitle.callsFake((...args) => args);
-      vars.iconId = null;
       const res = await func();
-      assert.strictEqual(browser.i18n.getMessage.callCount, i, "not called");
-      assert.strictEqual(browser.runtime.getURL.callCount, j, "not called");
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
-                         "not called");
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
-                         "not called");
-      assert.deepEqual(res, [], "result");
+      assert.strictEqual(browser.i18n.getMessage.callCount, i + 1, "called");
+      assert.strictEqual(browser.runtime.getURL.callCount, j + 1, "called");
+      assert.strictEqual(browser.browserAction.setIcon.callCount, k + 1,
+                         "called");
+      assert.strictEqual(browser.browserAction.setTitle.callCount, l + 1,
+                         "called");
+      assert.deepEqual(res, [
+        [
+          {
+            path: "foo/bar",
+          },
+        ],
+        [
+          {
+            title: "extensionName",
+          },
+        ],
+      ], "result");
       browser.i18n.getMessage.flush();
       browser.runtime.getURL.flush();
       browser.browserAction.setIcon.flush();
       browser.browserAction.setTitle.flush();
     });
 
-    it("should call function", async () => {
+    it("should get result", async () => {
       const {vars} = mjs;
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
@@ -942,27 +943,126 @@ describe("main", () => {
     const func = mjs.setDefaultIcon;
     beforeEach(() => {
       const {vars} = mjs;
-      vars.iconId = null;
-      vars.isWebExt = false;
+      vars.iconId = "#foo";
     });
     afterEach(() => {
       const {vars} = mjs;
-      vars.iconId = null;
-      vars.isWebExt = false;
-    });
-
-    it("should not set value", async () => {
-      const {vars} = mjs;
-      vars.isWebExt = true;
-      await func();
-      assert.isNull(vars.iconId, "value");
+      vars.iconId = "";
     });
 
     it("should set value", async () => {
       const {vars} = mjs;
-      vars.isWebExt = false;
+      const i = browser.management.getAll.callCount;
+      browser.management.getAll.resolves([]);
       await func();
-      assert.strictEqual(vars.iconId, ICON_COLOR_ID, "value");
+      assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
+      assert.strictEqual(vars.iconId, "", "value");
+      browser.management.getAll.flush();
+    });
+
+    it("should set value", async () => {
+      const {vars} = mjs;
+      const i = browser.management.getAll.callCount;
+      browser.management.getAll.resolves([
+        {
+          type: "theme",
+          enabled: true,
+          id: "bar",
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_DARK,
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_LIGHT,
+        },
+      ]);
+      await func();
+      assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
+      assert.strictEqual(vars.iconId, "", "value");
+      browser.management.getAll.flush();
+    });
+
+    it("should set value", async () => {
+      const {vars} = mjs;
+      const i = browser.management.getAll.callCount;
+      browser.management.getAll.resolves([
+        {
+          type: "theme",
+          enabled: true,
+          id: "bar",
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_DARK,
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_LIGHT,
+        },
+      ]);
+      vars.isWebExt = true;
+      await func();
+      assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
+      assert.strictEqual(vars.iconId, ICON_DARK_ID, "value");
+      browser.management.getAll.flush();
+    });
+
+    it("should set value", async () => {
+      const {vars} = mjs;
+      const i = browser.management.getAll.callCount;
+      browser.management.getAll.resolves([
+        {
+          type: "theme",
+          enabled: false,
+          id: "bar",
+        },
+        {
+          type: "theme",
+          enabled: true,
+          id: THEME_DARK,
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_LIGHT,
+        },
+      ]);
+      await func();
+      assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
+      assert.strictEqual(vars.iconId, ICON_LIGHT_ID, "value");
+      browser.management.getAll.flush();
+    });
+
+    it("should set value", async () => {
+      const {vars} = mjs;
+      const i = browser.management.getAll.callCount;
+      browser.management.getAll.resolves([
+        {
+          type: "theme",
+          enabled: false,
+          id: "bar",
+        },
+        {
+          type: "theme",
+          enabled: false,
+          id: THEME_DARK,
+        },
+        {
+          type: "theme",
+          enabled: true,
+          id: THEME_LIGHT,
+        },
+      ]);
+      await func();
+      assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
+      assert.strictEqual(vars.iconId, ICON_DARK_ID, "value");
+      browser.management.getAll.flush();
     });
   });
 
@@ -3021,7 +3121,7 @@ describe("main", () => {
 
     it("should call function", async () => {
       const res = await func();
-      assert.deepEqual(res, [[], []], "result");
+      assert.deepEqual(res, [[undefined, undefined], []], "result");
     });
   });
 

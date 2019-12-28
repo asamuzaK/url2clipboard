@@ -28,7 +28,6 @@ export const ICON = "img/icon.svg";
 export const ICON_AUTO = "buttonIconAuto";
 export const ICON_BLACK = "buttonIconBlack";
 export const ICON_COLOR = "buttonIconColor";
-export const ICON_COLOR_ID = "#color";
 export const ICON_DARK = "buttonIconDark";
 export const ICON_DARK_ID = "#dark";
 export const ICON_LIGHT = "buttonIconLight";

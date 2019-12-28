@@ -4,7 +4,6 @@
   },
   "browser_action": {
     "browser_style": true,
-    "default_icon": "img/icon.svg#dark",
     "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__",
     "theme_icons": [
@@ -110,6 +109,7 @@
     "activeTab",
     "clipboardWrite",
     "contextMenus",
+    "management",
     "storage",
     "tabs"
   ],
