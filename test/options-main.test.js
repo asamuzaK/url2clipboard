@@ -239,7 +239,7 @@ describe("options-main", () => {
       const elm = document.createElement("input");
       const body = document.querySelector("body");
       elm.id = "foo";
-      elm.type = "bar";
+      elm.type = "search";
       elm.checked = false;
       elm.value = "baz";
       body.appendChild(elm);
