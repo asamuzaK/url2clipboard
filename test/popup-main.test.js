@@ -49,6 +49,9 @@ describe("popup-main", () => {
         writeText: sinon.fake(),
       };
     }
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
     global.window = window;
     global.document = document;
@@ -62,6 +65,7 @@ describe("popup-main", () => {
     delete global.window;
     delete global.document;
     delete global.navigator;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {
@@ -367,7 +371,6 @@ describe("popup-main", () => {
           content: "bar",
         },
       ], "result");
-      browser.tabs.query.flush();
     });
   });
 
@@ -782,7 +785,6 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -823,7 +825,6 @@ describe("popup-main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
   });
 
@@ -1209,7 +1210,6 @@ describe("popup-main", () => {
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
                          "called sendMessage");
       assert.isTrue(calledOnce, "called console");
-      browser.tabs.sendMessage.flush();
     });
   });
 

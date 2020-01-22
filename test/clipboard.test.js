@@ -28,6 +28,9 @@ describe("clipboard", () => {
     window = dom && dom.window;
     document = window && window.document;
     navigator = window && window.navigator;
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
     global.window = window;
     global.document = document;
@@ -41,6 +44,7 @@ describe("clipboard", () => {
     delete global.window;
     delete global.document;
     delete global.navigator;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {

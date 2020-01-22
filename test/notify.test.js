@@ -10,10 +10,14 @@ import * as mjs from "../src/mjs/notify.js";
 
 describe("notify", () => {
   beforeEach(() => {
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
   });
   afterEach(() => {
     delete global.browser;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {
@@ -35,9 +39,6 @@ describe("notify", () => {
       }).resolves(true);
       const res = await func();
       assert.isTrue(res, "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
-      browser.notifications.create.flush();
     });
 
     it("should call function", async () => {
@@ -53,9 +54,6 @@ describe("notify", () => {
       }).resolves(true);
       const res = await func("foo");
       assert.isTrue(res, "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
-      browser.notifications.create.flush();
     });
   });
 });

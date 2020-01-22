@@ -384,19 +384,15 @@ export const setEnabledTab = async (tabId, tab, data = {}) => {
 /**
  * remove enabled tab
  * @param {number} tabId - tab ID
- * @returns {?AsyncFunction} - updateContextMenu()
+ * @returns {AsyncFunction} - updateContextMenu()
  */
 export const removeEnabledTab = async tabId => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  let func;
   const id = await getActiveTabId();
   await enabledTabs.delete(tabId);
-  if (Number.isInteger(id)) {
-    func = updateContextMenu(id);
-  }
-  return func || null;
+  return updateContextMenu(id);
 };
 
 /**

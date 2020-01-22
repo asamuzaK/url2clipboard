@@ -49,6 +49,9 @@ describe("main", () => {
         writeText: sinon.fake(),
       };
     }
+    browser._sandbox.reset();
+    browser.i18n.getMessage.callsFake((...args) => args.toString());
+    browser.permissions.contains.resolves(true);
     global.browser = browser;
     global.window = window;
     global.document = document;
@@ -62,6 +65,7 @@ describe("main", () => {
     delete global.window;
     delete global.document;
     delete global.navigator;
+    browser._sandbox.reset();
   });
 
   it("should get browser object", () => {
@@ -389,7 +393,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
       assert.isUndefined(res, "result");
-      browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
@@ -405,7 +408,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
       assert.isUndefined(res, "result");
-      browser.i18n.getMessage.flush();
     });
   });
 
@@ -441,7 +443,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 75, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 75, "result");
-      browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
@@ -454,7 +455,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 30, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 75, "result");
-      browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
@@ -468,7 +468,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 5, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.i18n.getMessage.flush();
     });
 
     it("should call function", async () => {
@@ -483,7 +482,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.create.callCount, i + 2, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.i18n.getMessage.flush();
     });
   });
 
@@ -529,7 +527,6 @@ describe("main", () => {
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i, "not called");
       assert.deepEqual(res, [], "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -548,7 +545,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -567,7 +563,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -588,7 +583,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -609,7 +603,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.update.callCount, i + 5, "called");
       assert.strictEqual(browser.tabs.query.callCount, j + 2, "called");
       assert.strictEqual(res.length, 5, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -633,7 +626,6 @@ describe("main", () => {
                          "not called");
       assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -658,7 +650,6 @@ describe("main", () => {
                          "not called");
       assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -683,7 +674,6 @@ describe("main", () => {
                          "not called");
       assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.strictEqual(res.length, 2, "result");
-      browser.tabs.query.flush();
     });
   });
 
@@ -739,7 +729,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.refresh.callCount, j, "not called");
       assert.strictEqual(browser.tabs.query.callCount, k, "not called");
       assert.isNull(res, "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -760,7 +749,6 @@ describe("main", () => {
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, "called");
       assert.strictEqual(browser.tabs.query.callCount, k + 2, "called");
       assert.isNull(res, "result");
-      browser.tabs.query.flush();
     });
   });
 
@@ -794,7 +782,6 @@ describe("main", () => {
         tabId: 1,
         enabled: undefined,
       }, "result");
-      browser.tabs.get.flush();
     });
 
     it("should set map", async () => {
@@ -813,7 +800,6 @@ describe("main", () => {
         tabId: 1,
         enabled: true,
       }, "result");
-      browser.tabs.get.flush();
     });
 
     it("should set map", async () => {
@@ -828,7 +814,6 @@ describe("main", () => {
         tabId: 1,
         enabled: undefined,
       }, "result");
-      browser.tabs.get.flush();
     });
   });
 
@@ -840,11 +825,6 @@ describe("main", () => {
         assert.strictEqual(e.message, "Expected Number but got Undefined.",
                            "throw");
       });
-    });
-
-    it("should get null", async () => {
-      const res = await func(1);
-      assert.isNull(res, "result");
     });
 
     it("should call function", async () => {
@@ -896,10 +876,6 @@ describe("main", () => {
           },
         ],
       ], "result");
-      browser.i18n.getMessage.flush();
-      browser.runtime.getURL.flush();
-      browser.browserAction.setIcon.flush();
-      browser.browserAction.setTitle.flush();
     });
 
     it("should get result", async () => {
@@ -932,10 +908,6 @@ describe("main", () => {
           },
         ],
       ], "result");
-      browser.i18n.getMessage.flush();
-      browser.runtime.getURL.flush();
-      browser.browserAction.setIcon.flush();
-      browser.browserAction.setTitle.flush();
     });
   });
 
@@ -957,7 +929,6 @@ describe("main", () => {
       await func();
       assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
       assert.strictEqual(vars.iconId, "", "value");
-      browser.management.getAll.flush();
     });
 
     it("should set value", async () => {
@@ -983,7 +954,6 @@ describe("main", () => {
       await func();
       assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
       assert.strictEqual(vars.iconId, "", "value");
-      browser.management.getAll.flush();
     });
 
     it("should set value", async () => {
@@ -1010,7 +980,6 @@ describe("main", () => {
       await func();
       assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
       assert.strictEqual(vars.iconId, ICON_DARK_ID, "value");
-      browser.management.getAll.flush();
     });
 
     it("should set value", async () => {
@@ -1036,7 +1005,6 @@ describe("main", () => {
       await func();
       assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
       assert.strictEqual(vars.iconId, ICON_LIGHT_ID, "value");
-      browser.management.getAll.flush();
     });
 
     it("should set value", async () => {
@@ -1062,7 +1030,6 @@ describe("main", () => {
       await func();
       assert.strictEqual(browser.management.getAll.callCount, i + 1, "called");
       assert.strictEqual(vars.iconId, ICON_DARK_ID, "value");
-      browser.management.getAll.flush();
     });
   });
 
@@ -1344,7 +1311,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.notifications.create.flush();
     });
 
     it("should call function", async () => {
@@ -1389,7 +1355,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1419,7 +1384,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1448,7 +1412,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should not call function", async () => {
@@ -1483,7 +1446,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should not call function", async () => {
@@ -1509,7 +1471,6 @@ describe("main", () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, j,
                          "not called");
       assert.deepEqual(res, [], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1541,7 +1502,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1590,7 +1550,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1617,7 +1576,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1646,7 +1604,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1673,7 +1630,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1718,7 +1674,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1798,7 +1753,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1853,7 +1807,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -1933,7 +1886,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2013,7 +1965,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2093,7 +2044,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2137,7 +2087,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -2180,7 +2129,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -2225,7 +2173,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -2269,7 +2216,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.query.flush();
     });
 
     it("should not call function", async () => {
@@ -2296,7 +2242,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2372,7 +2317,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2401,7 +2345,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2447,7 +2390,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2477,7 +2419,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2524,7 +2465,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2553,7 +2493,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2599,7 +2538,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2631,7 +2569,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2680,7 +2617,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2762,7 +2698,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2844,7 +2779,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
 
     it("should call function", async () => {
@@ -2926,7 +2860,6 @@ describe("main", () => {
           url: null,
         },
       ], "result");
-      browser.tabs.sendMessage.flush();
     });
   });
 
@@ -3014,7 +2947,6 @@ describe("main", () => {
       assert.strictEqual(browser.notifications.create.callCount, j,
                          "not called");
       assert.isNull(res, "result");
-      browser.notifications.create.flush();
     });
 
     it("should call function", async () => {
@@ -3037,7 +2969,6 @@ describe("main", () => {
       assert.strictEqual(browser.notifications.create.callCount, j + 1,
                          "called");
       assert.isTrue(res, "result");
-      browser.notifications.create.flush();
     });
   });
 
@@ -3065,7 +2996,6 @@ describe("main", () => {
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, "called");
       assert.deepEqual(res, [], "result");
-      browser.tabs.get.flush();
     });
   });
 
@@ -3112,7 +3042,6 @@ describe("main", () => {
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, "called");
       assert.deepEqual(res, [], "result");
-      browser.tabs.get.flush();
     });
   });
 
@@ -3169,7 +3098,6 @@ describe("main", () => {
       enabledFormats.add("HTMLPlain");
       await func("HTMLPlain");
       assert.strictEqual(browser.tabs.sendMessage.callCount, i, "not called");
-      browser.tabs.query.flush();
     });
 
     it("should call function", async () => {
@@ -3185,7 +3113,6 @@ describe("main", () => {
       enabledFormats.add("HTMLPlain");
       await func(`${CMD_COPY}HTMLPlain`);
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
-      browser.tabs.query.flush();
     });
 
     it("should log error", async () => {
@@ -3207,8 +3134,6 @@ describe("main", () => {
       assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
                          "called sendMessage");
       assert.isTrue(calledOnce, "called console");
-      browser.tabs.query.flush();
-      browser.tabs.sendMessage.flush();
     });
   });
 
@@ -3304,7 +3229,6 @@ describe("main", () => {
           canonicalUrl: "https://example.com",
         },
       ], "result");
-      browser.tabs.get.flush();
     });
 
     it("should get result", async () => {
@@ -3393,9 +3317,6 @@ describe("main", () => {
       assert.strictEqual(browser.notifications.create.callCount, i + 1,
                          "called");
       assert.deepEqual(res, [true], "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
-      browser.notifications.create.flush();
     });
 
     it("should not call function", async () => {
@@ -3409,8 +3330,6 @@ describe("main", () => {
       assert.strictEqual(browser.notifications.create.callCount, i,
                          "not called");
       assert.deepEqual(res, [], "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
     });
 
     it("should not call function", async () => {
@@ -3424,8 +3343,6 @@ describe("main", () => {
       assert.strictEqual(browser.notifications.create.callCount, i,
                          "not called");
       assert.deepEqual(res, [], "result");
-      browser.runtime.getURL.flush();
-      browser.i18n.getMessage.flush();
     });
 
     it("should get empty array", async () => {
