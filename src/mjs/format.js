@@ -13,7 +13,7 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
-  MIME_HTML, MIME_PLAIN, REST, TEXTILE,
+  MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
 } from "./constant.js";
 
@@ -90,6 +90,12 @@ export const formatData = {
     enabled: true,
     menu: "&LaTeX",
     template: "\\href{%url%}{%content%}",
+  },
+  [ORG_MODE]: {
+    id: ORG_MODE,
+    enabled: true,
+    menu: "&Org Mode",
+    template: "[[%url%][%content%]]",
   },
   [TEXT_TEXT_URL]: {
     id: TEXT_TEXT_URL,

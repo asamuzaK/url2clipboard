@@ -440,9 +440,9 @@ describe("main", () => {
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 75, "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 80, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
-      assert.strictEqual(res.length, 75, "result");
+      assert.strictEqual(res.length, 80, "result");
     });
 
     it("should call function", async () => {
@@ -452,9 +452,9 @@ describe("main", () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       vars.isWebExt = false;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 30, "called");
+      assert.strictEqual(browser.menus.create.callCount, i + 32, "called");
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 5, "called");
-      assert.strictEqual(res.length, 75, "result");
+      assert.strictEqual(res.length, 80, "result");
     });
 
     it("should call function", async () => {
@@ -3418,7 +3418,7 @@ describe("main", () => {
       const {enabledFormats} = mjs;
       assert.isFalse(enabledFormats.has("TextURL"), "value");
       assert.strictEqual(res.length, 1, "result");
-      assert.strictEqual(res[0].length, 70, "result");
+      assert.strictEqual(res[0].length, 75, "result");
     });
 
     it("should set variable", async () => {
@@ -3439,7 +3439,7 @@ describe("main", () => {
       const {enabledFormats} = mjs;
       assert.isTrue(enabledFormats.has("TextURL"), "value");
       assert.strictEqual(res.length, 1, "result");
-      assert.strictEqual(res[0].length, 75, "result");
+      assert.strictEqual(res[0].length, 80, "result");
     });
 
     it("should set variable", async () => {
