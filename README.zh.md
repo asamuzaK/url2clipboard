@@ -8,7 +8,7 @@
 # 复制链接到剪贴板
 
 适用于 Gecko 和 Blink 内核的浏览器。
-将 URL 格式化为多种格式（目前支持HTML、Markdown、BBCode、Textile、AsciiDoc、MediaWiki、Jira、reStructuredText、LaTeX、纯文本），然后再复制到剪贴板。
+将 URL 格式化为多种格式（目前支持HTML、Markdown、BBCode、Textile、AsciiDoc、MediaWiki、Jira、reStructuredText、LaTeX、Org Mode、纯文本），然后再复制到剪贴板。
 
 * 在页面上点击右键调出菜单即可将当前页面的链接格式化为不同形式。
 * 右键链接以复制链接的 URL。
