@@ -271,13 +271,10 @@ export const createContextMenu = async () => {
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         for (const [key, value] of formats) {
-          const {
-            enabled: formatEnabled, id: formatId, menu: formatMenuTitle,
-            title: formatTitle,
-          } = value;
+          const {enabled: formatEnabled, menu: formatMenuTitle} = value;
           if (formatEnabled) {
             const subItemId = `${itemId}${key}`;
-            const subItemTitle = formatMenuTitle || formatTitle || formatId;
+            const subItemTitle = formatMenuTitle;
             const subItemData = {
               contexts,
               enabled: formatEnabled,

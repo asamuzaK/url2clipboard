@@ -409,6 +409,22 @@ describe("main", () => {
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
       assert.isUndefined(res, "result");
     });
+
+    it("should call function", async () => {
+      const {vars} = mjs;
+      const i = browser.menus.create.callCount;
+      const k = browser.i18n.getMessage.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      vars.isWebExt = false;
+      const res = await func("Markdown", COPY_PAGE, "(&C)", {
+        contexts: ["page", "selection"],
+        enabled: true,
+      });
+      assert.strictEqual(browser.menus.create.callCount, i + 1, "called");
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, "called");
+      assert.isUndefined(res, "result");
+    });
+
   });
 
   describe("create context menu items", () => {
@@ -1866,6 +1882,102 @@ describe("main", () => {
           {
             [CONTENT_EDITED_GET]: {
               content: "foo",
+              formatId: "TextURL",
+              formatTitle: "Text & URL",
+              mimeType: "text/plain",
+              promptContent: true,
+              template: "%content% %url%",
+              title: "quux",
+              url: "https://www.example.com/#corge",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        menuItemId: `${COPY_LINK}TextURL`,
+        selectionText: "",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.content = "qux";
+      contextInfo.selectionText = "foobar";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/#corge";
+      vars.promptContent = true;
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            [CONTENT_EDITED_GET]: {
+              content: "foobar",
+              formatId: "TextURL",
+              formatTitle: "Text & URL",
+              mimeType: "text/plain",
+              promptContent: true,
+              template: "%content% %url%",
+              title: "quux",
+              url: "https://www.example.com/#corge",
+            },
+          },
+          null,
+        ],
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          selectionText: "",
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const {contextInfo, vars} = mjs;
+      const i = browser.tabs.sendMessage.callCount;
+      const info = {
+        menuItemId: `${COPY_LINK}TextURL`,
+        selectionText: "",
+      };
+      const tab = {
+        id: 1,
+        title: "bar",
+        url: "https://example.com/#baz",
+      };
+      browser.tabs.sendMessage.callsFake((...args) => args);
+      contextInfo.canonicalUrl = "https://example.com/";
+      contextInfo.title = "quux";
+      contextInfo.url = "https://www.example.com/#corge";
+      vars.promptContent = true;
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        [
+          1,
+          {
+            [CONTENT_EDITED_GET]: {
+              content: "quux",
               formatId: "TextURL",
               formatTitle: "Text & URL",
               mimeType: "text/plain",
