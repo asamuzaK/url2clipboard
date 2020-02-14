@@ -22,6 +22,7 @@ describe("clipboard", () => {
     };
     return new JSDOM(domstr, opt);
   };
+  const globalKeys = ["DOMParser"];
   let window, document, navigator;
   beforeEach(() => {
     const dom = createJsdom();
@@ -35,6 +36,9 @@ describe("clipboard", () => {
     global.window = window;
     global.document = document;
     global.navigator = navigator;
+    for (const key of globalKeys) {
+      global[key] = window[key];
+    }
   });
   afterEach(() => {
     window = null;
@@ -44,6 +48,9 @@ describe("clipboard", () => {
     delete global.window;
     delete global.document;
     delete global.navigator;
+    for (const key of globalKeys) {
+      delete global[key];
+    }
     browser._sandbox.reset();
   });
 
@@ -154,6 +161,42 @@ describe("clipboard", () => {
         assert.isTrue(stubPropagate.calledOnce, "called");
         assert.isTrue(stubPreventDefault.calledOnce, "called");
         assert.isTrue(stubSetData.calledOnce, "called");
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+
+      it("should call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.stub();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip =
+          new Clip("<a href=\"https://example.com\">foo bar</a>", "text/html");
+        const i = stubSetData.withArgs("text/plain", "foo bar").callCount;
+        await clip._copySync();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.isTrue(stubSetData.calledTwice, "called");
+        assert.strictEqual(
+          stubSetData.withArgs("text/plain", "foo bar").callCount, i + 1,
+          "called",
+        );
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;

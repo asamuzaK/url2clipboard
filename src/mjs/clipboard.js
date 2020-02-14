@@ -67,6 +67,10 @@ export class Clip {
       evt.stopImmediatePropagation();
       evt.preventDefault();
       evt.clipboardData.setData(this._mime, this._content);
+      if (this._mime === MIME_HTML) {
+        const doc = new DOMParser().parseFromString(this._content, this._mime);
+        evt.clipboardData.setData(MIME_PLAIN, doc.body.textContent);
+      }
     };
     document.addEventListener("copy", setClipboardData, true);
     document.execCommand("copy");
