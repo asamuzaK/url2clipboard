@@ -584,6 +584,11 @@ describe("common", () => {
     });
 
     it("should get string", () => {
+      const res = func("about:newtab");
+      assert.strictEqual(res, "about:newtab");
+    });
+
+    it("should get string", () => {
       const res = func("https://example.com/foo bar?baz&qux#quux'corge");
       assert.strictEqual(
         res,
