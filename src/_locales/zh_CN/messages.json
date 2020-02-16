@@ -38,6 +38,9 @@
   "commandCopyMediaWiki": {
     "message": "复制链接为 MediaWiki"
   },
+  "commandCopyOrgMode": {
+    "message": "复制链接为 Org Mode"
+  },
   "commandCopyreStructuredText": {
     "message": "复制链接为 reStructuredText"
   },

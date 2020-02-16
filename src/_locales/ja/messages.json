@@ -38,6 +38,9 @@
   "commandCopyMediaWiki": {
     "message": "MediaWiki でコピー"
   },
+  "commandCopyOrgMode": {
+    "message": "Org Mode でコピー"
+  },
   "commandCopyreStructuredText": {
     "message": "reStructuredText でコピー"
   },

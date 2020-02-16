@@ -64,6 +64,9 @@
     "commandCopyLaTeX": {
       "description": "__MSG_commandCopyLaTeX__"
     },
+    "commandCopyOrgMode": {
+      "description": "__MSG_commandCopyOrgMode__"
+    },
     "commandCopyTextURL": {
       "description": "__MSG_commandCopyTextURL__"
     },
