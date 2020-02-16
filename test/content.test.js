@@ -673,20 +673,10 @@ describe("content", () => {
     });
 
     it("should call function", async () => {
-      const tmpDom = new JSDOM(
-        "<!DOCTYPE html><html><head></head><body></body></html>",
-        {
-          runScripts: "dangerously",
-          url: "https://localhost",
-          beforeParse(window) {
-            window.prompt = sinon.stub().returns(null);
-          },
-        },
-      );
-      window = tmpDom && tmpDom.window;
-      document = window && window.document;
-      global.window = window;
-      global.document = document;
+      window.prompt.reset();
+      window.prompt.returns(null);
+      global.window.prompt.reset();
+      global.window.prompt.returns(null);
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.sendMessage.callsFake(msg => msg);
       const i = browser.i18n.getMessage.callCount;
@@ -738,19 +728,21 @@ describe("content", () => {
       const res = await func({
         getContextInfo: {},
       });
-      assert.deepEqual(res, [{
-        contextInfo: {
+      assert.deepEqual(res, [
+        {
           contextInfo: {
-            canonicalUrl: null,
-            content: null,
-            isLink: false,
-            selectionText: "",
-            title: null,
-            url: null,
+            contextInfo: {
+              canonicalUrl: null,
+              content: null,
+              isLink: false,
+              selectionText: "",
+              title: null,
+              url: null,
+            },
+            data: {},
           },
-          data: {},
         },
-      }], "result");
+      ], "result");
     });
 
     it("should get array", async () => {
