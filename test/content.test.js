@@ -892,4 +892,30 @@ describe("content", () => {
       }, "result");
     });
   });
+
+  describe("runtime on message", () => {
+    const func = cjs.runtimeOnMsg;
+
+    it("should get empty array", async () => {
+      const res = await func();
+      assert.deepEqual(res, [], "result");
+    });
+  });
+
+  describe("window on load", () => {
+    const func = cjs.windowOnLoad;
+
+    it("should call function", async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      const body = document.querySelector("body");
+      const res = await func({
+        target: body,
+        type: "load",
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+                         "called");
+      assert.isObject(res, "result");
+      assert.isTrue(res.hasOwnProperty("load"), "prop");
+    });
+  });
 });

@@ -278,10 +278,23 @@ const handleUIEvt = evt => {
   return func || null;
 };
 
-/* listeners */
-runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
+/**
+ * runtime on message
+ * @param {*} msg - message
+ * @returns {AsyncFunction} - handleMsg()
+ */
+const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
-window.addEventListener("load", evt => sendStatus(evt).catch(throwErr));
+/**
+ * window on load
+ * @param {Object} evt - event
+ * @returns {AsyncFunction} - sendStatus()
+ */
+const windowOnLoad = evt => sendStatus(evt).catch(throwErr);
+
+/* listeners */
+runtime.onMessage.addListener(runtimeOnMsg);
+window.addEventListener("load", windowOnLoad);
 window.addEventListener("keydown", handleUIEvt, true);
 window.addEventListener("mousedown", handleUIEvt, true);
 
@@ -298,10 +311,12 @@ if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
     handleUIEvt,
     initContextInfo,
     isString,
+    runtimeOnMsg,
     sendContextInfo,
     sendEditedContent,
     sendMsg,
     sendStatus,
     throwErr,
+    windowOnLoad,
   };
 }
