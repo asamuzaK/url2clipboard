@@ -27,7 +27,7 @@
     "addons-linter": "^1.22.0",
     "chai": "^4.2.0",
     "eslint": "^6.8.0",
-    "eslint-plugin-no-unsanitized": "^3.0.2",
+    "eslint-plugin-no-unsanitized": "^3.1.0",
     "jsdom": "^16.2.1",
     "mocha": "^7.1.1",
     "npm-run-all": "^4.1.5",
