@@ -9,8 +9,7 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getEnabledTheme, getHighlightedTab, isTab,
-  sendMessage,
+  getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, sendMessage,
 } from "./browser.js";
 import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
@@ -26,14 +25,13 @@ const menus = browser.menus || browser.contextMenus;
 
 /* constants */
 import {
-  BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET,
-  CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
-  EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK,
-  ICON_COLOR, ICON_DARK, ICON_DARK_ID, ICON_LIGHT, ICON_LIGHT_ID, ICON_WHITE,
+  BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET, CONTEXT_INFO,
+  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO,
+  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT,
-  TEXT_SEP_LINES, TEXT_TEXT_URL, THEME_DARK, THEME_LIGHT, WEBEXT_ID,
+  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, TEXT_SEP_LINES,
+  TEXT_TEXT_URL, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const {WINDOW_ID_CURRENT} = windows;
@@ -408,37 +406,6 @@ export const setIcon = async () => {
   ]);
 };
 
-/**
- * set default icon
- * @returns {void}
- */
-export const setDefaultIcon = async () => {
-  const items = await getEnabledTheme();
-  if (Array.isArray(items) && items.length) {
-    for (const item of items) {
-      const {id} = item;
-      switch (id) {
-        case THEME_DARK:
-          vars.iconId = ICON_LIGHT_ID;
-          break;
-        case THEME_LIGHT:
-          vars.iconId = ICON_DARK_ID;
-          break;
-        default: {
-          const {isWebExt} = vars;
-          if (isWebExt) {
-            vars.iconId = ICON_DARK_ID;
-          } else {
-            vars.iconId = "";
-          }
-        }
-      }
-    }
-  } else {
-    vars.iconId = "";
-  }
-};
-
 /* context info */
 export const contextInfo = {
   isLink: false,
@@ -714,15 +681,6 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   }
   return func || null;
 };
-
-/**
- * prepare UI
- * @returns {Promise.<Array>} - results of each handler
- */
-export const prepareUI = async () => Promise.all([
-  setIcon(),
-  createContextMenu(),
-]);
 
 /**
  * handle command

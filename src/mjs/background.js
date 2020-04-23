@@ -9,9 +9,9 @@ import {
   getAllStorage,
 } from "./browser.js";
 import {
-  extractClickedData, handleActiveTab, handleCmd, handleMenusOnShown, handleMsg,
-  handleUpdatedTab, prepareUI, removeEnabledTab, setDefaultIcon, setFormatData,
-  setVars,
+  createContextMenu, extractClickedData, handleActiveTab, handleCmd,
+  handleMenusOnShown, handleMsg, handleUpdatedTab, removeEnabledTab,
+  setFormatData, setVars,
 } from "./main.js";
 
 /* api */
@@ -46,7 +46,6 @@ tabs.onUpdated.addListener((tabId, info, tab) =>
 );
 
 /* startup */
-document.addEventListener("DOMContentLoaded", () => Promise.all([
-  setFormatData(),
-  setDefaultIcon(),
-]).then(getAllStorage).then(setVars).then(prepareUI).catch(throwErr));
+document.addEventListener("DOMContentLoaded", () =>
+  setFormatData().then(getAllStorage).then(setVars).then(createContextMenu)
+    .catch(throwErr));
