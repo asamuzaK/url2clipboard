@@ -163,6 +163,141 @@ describe("browser", () => {
     });
   });
 
+  describe("set context menu on mouseup", () => {
+    const func = mjs.setContextMenuOnMouseup;
+
+    it("should get false if permission is not granted", async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.get.callCount, i,
+        "not called",
+      );
+      assert.isFalse(res, "result");
+    });
+
+    it("should get true", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
+      const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
+      browser.browserSettings.contextMenuShowEvent.get.resolves({
+        value: "mouseup",
+      });
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        "called",
+      );
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.set.callCount, j,
+        "not called",
+      );
+      assert.isTrue(res, "result");
+    });
+
+    it("should get true", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
+      const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
+      browser.browserSettings.contextMenuShowEvent.get.resolves({
+        value: "mousedown",
+        levelOfControl: "controllable_by_this_extension",
+      });
+      browser.browserSettings.contextMenuShowEvent.set.resolves(true);
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        "called",
+      );
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
+        "called",
+      );
+      assert.isTrue(res, "result");
+    });
+
+    it("should get false", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
+      const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
+      browser.browserSettings.contextMenuShowEvent.get.resolves({
+        value: "mousedown",
+        levelOfControl: "controllable_by_this_extension",
+      });
+      browser.browserSettings.contextMenuShowEvent.set.resolves(false);
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        "called",
+      );
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.set.callCount, j + 1,
+        "called",
+      );
+      assert.isFalse(res, "result");
+    });
+
+    it("should get false", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.get.callCount;
+      const j = browser.browserSettings.contextMenuShowEvent.set.callCount;
+      browser.browserSettings.contextMenuShowEvent.get.resolves({
+        value: "mousedown",
+        levelOfControl: "foo",
+      });
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.get.callCount, i + 1,
+        "called",
+      );
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.set.callCount, j,
+        "not called",
+      );
+      assert.isFalse(res, "result");
+    });
+  });
+
+  describe("clear context menu on mouseup", () => {
+    const func = mjs.clearContextMenuOnMouseup;
+
+    it("should get false if permission is not granted", async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.clear.callCount, i,
+        "not called",
+      );
+      assert.isFalse(res, "result");
+    });
+
+    it("should get true", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
+      browser.browserSettings.contextMenuShowEvent.clear.resolves(true);
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
+        "called",
+      );
+      assert.isTrue(res, "result");
+    });
+
+    it("should get false", async () => {
+      browser.permissions.contains.resolves(true);
+      const i = browser.browserSettings.contextMenuShowEvent.clear.callCount;
+      browser.browserSettings.contextMenuShowEvent.clear.resolves(false);
+      const res = await func();
+      assert.strictEqual(
+        browser.browserSettings.contextMenuShowEvent.clear.callCount, i + 1,
+        "called",
+      );
+      assert.isFalse(res, "result");
+    });
+  });
+
   describe("is command customizable", () => {
     const func = mjs.isCommandCustomizable;
 

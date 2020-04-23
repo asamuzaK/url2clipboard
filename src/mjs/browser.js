@@ -55,6 +55,47 @@ export const getCloseTabsByDoubleClickValue = async () => {
   return userValue || null;
 };
 
+/**
+ * set context menu on mouseup
+ * @returns {boolean} - result
+ */
+export const setContextMenuOnMouseup = async () => {
+  let res;
+  const isGranted = await isPermissionGranted({
+    permissions: ["browserSettings"],
+  });
+  if (isGranted) {
+    const {browserSettings} = browser;
+    const {contextMenuShowEvent} = browserSettings;
+    const {levelOfControl, value} = await contextMenuShowEvent.get({});
+    if (value === "mouseup") {
+      res = true;
+    } else if (levelOfControl === "controllable_by_this_extension") {
+      res = await contextMenuShowEvent.set({value: "mouseup"});
+    } else {
+      res = false;
+    }
+  }
+  return !!res;
+};
+
+/**
+ * clear context menu on mouseup
+ * @returns {boolean} - result
+ */
+export const clearContextMenuOnMouseup = async () => {
+  let res;
+  const isGranted = await isPermissionGranted({
+    permissions: ["browserSettings"],
+  });
+  if (isGranted) {
+    const {browserSettings} = browser;
+    const {contextMenuShowEvent} = browserSettings;
+    res = await contextMenuShowEvent.clear({});
+  }
+  return !!res;
+};
+
 /* commands */
 /**
  * is command customizable
