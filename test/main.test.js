@@ -3510,7 +3510,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
 
     it("should set variable", async () => {
@@ -3540,7 +3540,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
 
     it("should set variable", async () => {
@@ -3550,7 +3550,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
 
     it("should set variable", async () => {
@@ -3560,7 +3560,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
 
     it("should set variable", async () => {
@@ -3570,7 +3570,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
 
     it("should set variable", async () => {
@@ -3580,7 +3580,7 @@ describe("main", () => {
         value: "#foo",
       });
       assert.strictEqual(vars.iconId, "#foo", "value");
-      assert.deepEqual(res, [], "result");
+      assert.deepEqual(res, [[undefined, undefined]], "result");
     });
   });
 

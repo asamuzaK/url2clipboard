@@ -784,9 +784,7 @@ export const setVar = async (item, obj, changed = false) => {
       case ICON_WHITE:
         if (checked) {
           vars.iconId = value;
-          if (changed) {
-            func.push(setIcon());
-          }
+          func.push(setIcon());
         }
         break;
       case INCLUDE_TITLE_HTML_HYPER:
