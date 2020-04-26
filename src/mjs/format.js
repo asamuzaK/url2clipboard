@@ -11,7 +11,8 @@ import {
 /* constants */
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  COPY_LINK, COPY_PAGE, COPY_TAB,
+  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
@@ -132,6 +133,8 @@ export const getFormatId = id => {
   }
   if (id.startsWith(COPY_TABS_ALL)) {
     id = id.replace(COPY_TABS_ALL, "");
+  } else if (id.startsWith(COPY_TABS_OTHER)) {
+    id = id.replace(COPY_TABS_OTHER, "");
   } else if (id.startsWith(COPY_TABS_SELECTED)) {
     id = id.replace(COPY_TABS_SELECTED, "");
   } else if (id.startsWith(COPY_LINK)) {
