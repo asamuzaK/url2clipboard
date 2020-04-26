@@ -64,7 +64,7 @@
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&A)"
       }
     }
   },
@@ -86,7 +86,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&A)"
       }
     }
   },
@@ -132,7 +132,7 @@
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&O)"
       }
     }
   },
@@ -154,7 +154,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&O)"
       }
     }
   },
@@ -200,7 +200,7 @@
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&S)"
       }
     }
   },
@@ -222,7 +222,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&S)"
       }
     }
   },
@@ -234,7 +234,7 @@
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&T)"
       }
     }
   },
@@ -256,7 +256,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&T)"
       }
     }
   },

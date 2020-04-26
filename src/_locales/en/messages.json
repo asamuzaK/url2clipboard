@@ -60,11 +60,11 @@
     "message": "Copy All Tabs URLs"
   },
   "copyAllTabsURL_key": {
-    "message": "&Copy All Tabs URLs",
+    "message": "Copy &All Tabs URLs",
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&A)"
       }
     }
   },
@@ -78,7 +78,7 @@
     }
   },
   "copyAllTabsURL_format_key": {
-    "message": "&Copy All Tabs URLs as $FORMAT$",
+    "message": "Copy &All Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -86,7 +86,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&A)"
       }
     }
   },
@@ -128,11 +128,11 @@
     "message": "Copy Other Tabs URLs"
   },
   "copyOtherTabsURL_key": {
-    "message": "&Copy Other Tabs URLs",
+    "message": "Copy &Other Tabs URLs",
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&O)"
       }
     }
   },
@@ -146,7 +146,7 @@
     }
   },
   "copyOtherTabsURL_format_key": {
-    "message": "&Copy Other Tabs URLs as $FORMAT$",
+    "message": "Copy &Other Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -154,7 +154,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&O)"
       }
     }
   },
@@ -196,11 +196,11 @@
     "message": "Copy Tabs URLs"
   },
   "copyTabsURL_key": {
-    "message": "&Copy Tabs URLs",
+    "message": "Copy Tab&s URLs",
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&S)"
       }
     }
   },
@@ -214,7 +214,7 @@
     }
   },
   "copyTabsURL_format_key": {
-    "message": "&Copy Tabs URLs as $FORMAT$",
+    "message": "Copy Tab&s URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -222,7 +222,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&S)"
       }
     }
   },
@@ -230,11 +230,11 @@
     "message": "Copy Tab URL"
   },
   "copyTabURL_key": {
-    "message": "&Copy Tab URL",
+    "message": "Copy &Tab URL",
     "placeholders": {
       "key": {
         "content": "$1",
-        "example": "(&C)"
+        "example": "(&T)"
       }
     }
   },
@@ -248,7 +248,7 @@
     }
   },
   "copyTabURL_format_key": {
-    "message": "&Copy Tab URL as $FORMAT$",
+    "message": "Copy &Tab URL as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -256,7 +256,7 @@
       },
       "key": {
         "content": "$2",
-        "example": "(&C)"
+        "example": "(&T)"
       }
     }
   },
