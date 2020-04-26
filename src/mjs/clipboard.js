@@ -93,8 +93,7 @@ export class Clip {
         } catch (e) {
           this._copySync();
         }
-      // TODO: async clipboard.write
-      /*
+      /* TODO: async clipboard.write
       } else if (clipboard && typeof clipboard.write === "function") {
         const data = new Blob([this._content], {type: this._mime});
         await clipboard.write(data);
