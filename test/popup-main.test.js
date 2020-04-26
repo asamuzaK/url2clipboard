@@ -13,7 +13,7 @@ import {formatData} from "../src/mjs/format.js";
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
@@ -333,6 +333,13 @@ describe("popup-main", () => {
   describe("get all tabs info", () => {
     const func = mjs.getAllTabsInfo;
 
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
     it("should get result", async () => {
       const i = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
@@ -369,6 +376,58 @@ describe("popup-main", () => {
           title: "bar",
           url: "https://www.example.com",
           content: "bar",
+        },
+      ], "result");
+    });
+  });
+
+  describe("get other tabs info", () => {
+    const func = mjs.getOtherTabsInfo;
+
+    it("should throw", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected String but got Undefined.",
+                           "throw");
+      });
+    });
+
+    it("should get result", async () => {
+      const i = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        active: false,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      await mjs.setFormatData();
+      const res = await func(`${COPY_PAGE}TextURL`);
+      assert.strictEqual(browser.tabs.query.callCount, i + 1, "called");
+      assert.deepEqual(res, [
+        {
+          content: "foo",
+          formatId: "TextURL",
+          id: 1,
+          template: "%content% %url%",
+          title: "foo",
+          url: "https://example.com",
+        },
+        {
+          content: "bar",
+          formatId: "TextURL",
+          id: 2,
+          template: "%content% %url%",
+          title: "bar",
+          url: "https://www.example.com",
         },
       ], "result");
     });
@@ -756,6 +815,47 @@ describe("popup-main", () => {
       const j = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: "normal",
+      }).resolves([
+        {
+          id: 1,
+          title: "foo",
+          url: "https://example.com",
+        },
+        {
+          id: 2,
+          title: "bar",
+          url: "https://www.example.com",
+        },
+      ]);
+      await mjs.setFormatData();
+      const res = await func(evt);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, "called");
+      assert.strictEqual(res.length, 1, "result");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const evt = {
+        target: {
+          id: `${COPY_TABS_OTHER}TextURL`,
+        },
+      };
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        active: false,
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: "normal",
       }).resolves([

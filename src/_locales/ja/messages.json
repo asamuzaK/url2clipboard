@@ -124,6 +124,40 @@
       }
     }
   },
+  "copyOtherTabsURL": {
+    "message": "他のタブの URL をコピー"
+  },
+  "copyOtherTabsURL_key": {
+    "message": "他のタブの URL をコピー$KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
+  "copyOtherTabsURL_format": {
+    "message": "他のタブの URL を $FORMAT$ でコピー",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
+  "copyOtherTabsURL_format_key": {
+    "message": "他のタブの URL を $FORMAT$ でコピー$KEY$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyPageURL": {
     "message": "ページの URL をコピー"
   },

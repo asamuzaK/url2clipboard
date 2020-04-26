@@ -9,7 +9,7 @@ import {
   closeWindow, getType, isString, throwErr,
 } from "./common.js";
 import {
-  getAllTabsInWindow, getHighlightedTab, sendMessage,
+  getAllTabsInWindow, getHighlightedTab, queryTabs, sendMessage,
 } from "./browser.js";
 import {
   createTabsLinkText, createLinkText, getFormat, getFormatId, getFormats,
@@ -26,7 +26,7 @@ const {runtime, tabs, windows} = browser;
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
@@ -203,9 +203,39 @@ export const initContextInfo = async () => {
  * @returns {Array} - tabs info
  */
 export const getAllTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
   const tabsInfo = [];
   const template = await getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
+    tabsInfo.push({
+      id, formatId, template, title, url,
+      content: title,
+    });
+  });
+  return tabsInfo;
+};
+
+/**
+ * get other tabs info
+ * @param {string} menuItemId - menu item ID
+ * @returns {Array} - tabs info
+ */
+export const getOtherTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
+  const tabsInfo = [];
+  const template = await getFormatTemplate(menuItemId);
+  const arr = await queryTabs({
+    active: false,
+    windowId: WINDOW_ID_CURRENT,
+    windowType: "normal",
+  });
   arr.forEach(tab => {
     const {id, title, url} = tab;
     const formatId = getFormatId(menuItemId);
@@ -260,6 +290,14 @@ export const createCopyData = async evt => {
     const allTabs = await getAllTabsInfo(menuItemId);
     const arr = [];
     for (const tabData of allTabs) {
+      arr.push(createLinkText(tabData));
+    }
+    const tmplArr = await Promise.all(arr);
+    text = await createTabsLinkText(tmplArr, mimeType);
+  } else if (menuItemId.startsWith(COPY_TABS_OTHER)) {
+    const otherTabs = await getOtherTabsInfo(menuItemId);
+    const arr = [];
+    for (const tabData of otherTabs) {
       arr.push(createLinkText(tabData));
     }
     const tmplArr = await Promise.all(arr);

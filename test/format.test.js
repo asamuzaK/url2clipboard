@@ -9,7 +9,8 @@ import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/format.js";
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  COPY_LINK, COPY_PAGE, COPY_TAB,
+  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
@@ -76,6 +77,11 @@ describe("format", () => {
 
     it("should get result", async () => {
       const res = func(`${COPY_TABS_ALL}foo`);
+      assert.strictEqual(res, "foo", "result");
+    });
+
+    it("should get result", async () => {
+      const res = func(`${COPY_TABS_OTHER}foo`);
       assert.strictEqual(res, "foo", "result");
     });
 

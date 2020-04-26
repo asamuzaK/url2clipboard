@@ -9,7 +9,8 @@ import {
   getType, isObjectNotEmpty, isString, logErr,
 } from "./common.js";
 import {
-  getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, sendMessage,
+  getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, queryTabs,
+  sendMessage,
 } from "./browser.js";
 import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
@@ -27,8 +28,8 @@ const menus = browser.menus || browser.contextMenus;
 import {
   BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET, CONTEXT_INFO,
   CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON, ICON_AUTO,
-  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON,
+  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, TEXT_SEP_LINES,
   TEXT_TEXT_URL, WEBEXT_ID,
@@ -165,6 +166,11 @@ export const menuItems = {
     id: COPY_TABS_SELECTED,
     contexts: ["tab"],
     key: "(&S)",
+  },
+  [COPY_TABS_OTHER]: {
+    id: COPY_TABS_OTHER,
+    contexts: ["tab"],
+    key: "(&O)",
   },
   [COPY_TABS_ALL]: {
     id: COPY_TABS_ALL,
@@ -323,6 +329,8 @@ export const updateContextMenu = async tabId => {
             if (itemId === COPY_TABS_ALL) {
               visible = highlightedTabs.length !== allTabs.length &&
                         allTabs.length > 1;
+            } else if (itemId === COPY_TABS_OTHER) {
+              visible = highlightedTabs.length !== allTabs.length;
             } else if (itemId === COPY_TABS_SELECTED) {
               visible = isHighlighted;
             } else {
@@ -471,6 +479,33 @@ export const getAllTabsInfo = async menuItemId => {
 };
 
 /**
+ * get other tabs info
+ * @param {string} menuItemId - menu item ID
+ * @returns {Array} - tabs info
+ */
+export const getOtherTabsInfo = async menuItemId => {
+  if (!isString(menuItemId)) {
+    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
+  }
+  const tabsInfo = [];
+  const template = await getFormatTemplate(menuItemId);
+  const arr = await queryTabs({
+    active: false,
+    windowId: WINDOW_ID_CURRENT,
+    windowType: "normal",
+  });
+  arr.forEach(tab => {
+    const {id, title, url} = tab;
+    const formatId = getFormatId(menuItemId);
+    tabsInfo.push({
+      id, formatId, template, title, url,
+      content: title,
+    });
+  });
+  return tabsInfo;
+};
+
+/**
  * get selected tabs info
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
@@ -525,6 +560,14 @@ export const extractClickedData = async (info, tab) => {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of allTabs) {
+          arr.push(createLinkText(tabData));
+        }
+        const tmplArr = await Promise.all(arr);
+        text = await createTabsLinkText(tmplArr, mimeType);
+      } else if (menuItemId.startsWith(COPY_TABS_OTHER)) {
+        const otherTabs = await getOtherTabsInfo(menuItemId);
+        const arr = [];
+        for (const tabData of otherTabs) {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);

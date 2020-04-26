@@ -124,6 +124,40 @@
       }
     }
   },
+  "copyOtherTabsURL": {
+    "message": "Copy Other Tabs URLs"
+  },
+  "copyOtherTabsURL_key": {
+    "message": "&Copy Other Tabs URLs",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&C)"
+      }
+    }
+  },
+  "copyOtherTabsURL_format": {
+    "message": "Copy Other Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      }
+    }
+  },
+  "copyOtherTabsURL_format_key": {
+    "message": "&Copy Other Tabs URLs as $FORMAT$",
+    "placeholders": {
+      "format": {
+        "content": "$1",
+        "example": "Markdown"
+      },
+      "key": {
+        "content": "$2",
+        "example": "(&C)"
+      }
+    }
+  },
   "copyPageURL": {
     "message": "Copy Page URL"
   },
