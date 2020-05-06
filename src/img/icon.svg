@@ -37,6 +37,9 @@
              c 0,-8.864 -7.136,-16 -16,-16 z
              m 0,16 h 60 v 72 H 34 Z"/>
   </symbol>
+  <symbol id="background">
+    <path d="M 34,34 H 94 V 108 H 34 Z"/>
+  </symbol>
   <g id="black" fill="#000">
     <use href="#outline"/>
   </g>
@@ -56,6 +59,7 @@
     <use href="#outline"/>
   </g>
   <g id="color">
+    <use href="#background" fill="#FFF"/>
     <use href="#board" fill="#002147"/>
     <use href="#clip" fill="#E66000"/>
   </g>
