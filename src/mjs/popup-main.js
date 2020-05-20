@@ -50,6 +50,7 @@ export const enabledFormats = new Set();
 
 /**
  * toggle enabled formats
+ *
  * @param {string} id - format id
  * @param {boolean} enabled - format is enabled
  * @returns {void}
@@ -69,6 +70,7 @@ export const toggleEnabledFormats = async (id, enabled) => {
 
 /**
  * set format data
+ *
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
@@ -83,6 +85,7 @@ export const setFormatData = async () => {
 
 /**
  * get format template
+ *
  * @param {string} id - menu item ID
  * @returns {string} - template
  */
@@ -122,6 +125,7 @@ export const getFormatTemplate = async id => {
 
 /**
  * get format title
+ *
  * @param {string} id - menu item ID
  * @returns {?string} - title
  */
@@ -147,7 +151,8 @@ export const tabInfo = {
 
 /**
  * init tab info
- * @returns {Object} - tab info
+ *
+ * @returns {object} - tab info
  */
 export const initTabInfo = async () => {
   tabInfo.id = null;
@@ -158,7 +163,8 @@ export const initTabInfo = async () => {
 
 /**
  * set tab info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} tab - tabs.Tab
  * @returns {void}
  */
 export const setTabInfo = async tab => {
@@ -186,7 +192,8 @@ export const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -199,6 +206,7 @@ export const initContextInfo = async () => {
 
 /**
  * get all tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -222,6 +230,7 @@ export const getAllTabsInfo = async menuItemId => {
 
 /**
  * get other tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -249,6 +258,7 @@ export const getOtherTabsInfo = async menuItemId => {
 
 /**
  * get selected tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -272,7 +282,8 @@ export const getSelectedTabsInfo = async menuItemId => {
 
 /**
  * create copy data
- * @param {!Object} evt - Event
+ *
+ * @param {!object} evt - Event
  * @returns {Promise} - Promise chain
  */
 export const createCopyData = async evt => {
@@ -348,13 +359,15 @@ export const createCopyData = async evt => {
 
 /**
  * handle open options on click
- * @returns {AsyncFunction} - runtime.openOptionsPage()
+ *
+ * @returns {Function} - runtime.openOptionsPage()
  */
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
 /**
  * handle menu on click
- * @param {!Object} evt - Event
+ *
+ * @param {!object} evt - Event
  * @returns {Promise} - Promise chain
  */
 export const menuOnClick = evt =>
@@ -362,6 +375,7 @@ export const menuOnClick = evt =>
 
 /**
  * add listener to menu
+ *
  * @returns {void}
  */
 export const addListenerToMenu = async () => {
@@ -378,6 +392,7 @@ export const addListenerToMenu = async () => {
 
 /**
  * toggle menu item
+ *
  * @returns {void}
  */
 export const toggleMenuItem = async () => {
@@ -405,7 +420,8 @@ export const toggleMenuItem = async () => {
 
 /**
  * update menu
- * @param {Object} data - context data;
+ *
+ * @param {object} data - context data;
  * @returns {void}
  */
 export const updateMenu = async (data = {}) => {
@@ -436,7 +452,8 @@ export const updateMenu = async (data = {}) => {
 
 /**
  * request context info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} tab - tabs.Tab
  * @returns {void}
  */
 export const requestContextInfo = async (tab = {}) => {
@@ -463,6 +480,7 @@ export const requestContextInfo = async (tab = {}) => {
 
 /**
  * handle message
+ *
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -485,10 +503,10 @@ export const handleMsg = async msg => {
 
 /**
  * set variable
+ *
  * @param {string} item - item
- * @param {Object} obj - value object
- * @param {boolean} changed - changed
- * @returns {?AsyncFunction} - toggleEnabledFormats()
+ * @param {object} obj - value object
+ * @returns {?Function} - toggleEnabledFormats()
  */
 export const setVar = async (item, obj) => {
   let func;
@@ -517,7 +535,8 @@ export const setVar = async (item, obj) => {
 
 /**
  * set variables
- * @param {Object} data - data
+ *
+ * @param {object} data - data
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setVars = async (data = {}) => {

@@ -14,7 +14,8 @@ const VERSION_TOOLKIT_REGEXP = new RegExp(`^(?:${VERSION_TOOLKIT})$`);
 
 /**
  * log error
- * @param {!Object} e - Error
+ *
+ * @param {!object} e - Error
  * @returns {boolean} - false
  */
 export const logErr = e => {
@@ -28,7 +29,8 @@ export const logErr = e => {
 
 /**
  * throw error
- * @param {!Object} e - Error
+ *
+ * @param {!object} e - Error
  * @throws
  */
 export const throwErr = e => {
@@ -38,6 +40,7 @@ export const throwErr = e => {
 
 /**
  * log warn
+ *
  * @param {*} msg - message
  * @returns {boolean} - false
  */
@@ -50,8 +53,9 @@ export const logWarn = msg => {
 
 /**
  * log message
+ *
  * @param {*} msg - message
- * @returns {Object} - message
+ * @returns {object} - message
  */
 export const logMsg = msg => {
   if (msg) {
@@ -62,6 +66,7 @@ export const logMsg = msg => {
 
 /**
  * get type
+ *
  * @param {*} o - object to check
  * @returns {string} - type of object
  */
@@ -70,6 +75,7 @@ export const getType = o =>
 
 /**
  * is string
+ *
  * @param {*} o - object to check
  * @returns {boolean} - result
  */
@@ -77,6 +83,7 @@ export const isString = o => typeof o === "string" || o instanceof String;
 
 /**
  * is object, and not an empty object
+ *
  * @param {*} o - object to check;
  * @returns {boolean} - result
  */
@@ -87,6 +94,7 @@ export const isObjectNotEmpty = o => {
 
 /**
  * stringify positive integer
+ *
  * @param {number} i - integer
  * @param {boolean} zero - treat 0 as a positive integer
  * @returns {?string} - stringified integer
@@ -101,6 +109,7 @@ export const stringifyPositiveInt = (i, zero = false) => {
 
 /**
  * parse stringified integer
+ *
  * @param {string} i - stringified integer
  * @param {boolean} [zero] - accept leading zero
  * @returns {number} - integer
@@ -117,6 +126,7 @@ export const parseStringifiedInt = (i, zero = false) => {
 
 /**
  * escape all matching chars
+ *
  * @param {string} str - argument
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -133,6 +143,7 @@ export const escapeMatchingChars = (str, re) => {
 
 /**
  * strip all matching chars
+ *
  * @param {string} str - string
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -149,6 +160,7 @@ export const stripMatchingChars = (str, re) => {
 
 /**
  * convert matching character to numeric character reference
+ *
  * @param {string} str - string
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -166,6 +178,7 @@ export const convertNumCharRef = (str, re) => {
 
 /**
  * convert HTML specific character to character reference
+ *
  * @param {string} str - string
  * @returns {?string} - string
  */
@@ -180,6 +193,7 @@ export const convertHtmlChar = str => {
 
 /**
  * convert LaTeX special char
+ *
  * @param {string} str - string
  * @returns {?string} - string
  */
@@ -201,6 +215,7 @@ export const convertLaTeXChar = str => {
 
 /**
  * is valid Toolkit version string
+ *
  * @param {string} version - version string
  * @returns {boolean} - result
  */
@@ -213,8 +228,9 @@ export const isValidToolkitVersion = version => {
 
 /**
  * parse version string
+ *
  * @param {string} version - version string
- * @returns {Object}
+ * @returns {object}
  *   - result which contains properties below
  *     version {string} - given version string
  *     major {number} - major version
@@ -244,6 +260,7 @@ export const parseVersion = version => {
 
 /**
  * remove query string from URI
+ *
  * @param {string} uri - URI
  * @returns {string} - replaced URI
  */
@@ -257,6 +274,7 @@ export const removeQueryFromURI = uri => {
 
 /**
  * encode URL component part
+ *
  * @param {string} part - component part
  * @returns {string} - encoded component part
  */
@@ -271,6 +289,7 @@ export const encodeUrlPart = part => {
 
 /**
  * encode special char in URL
+ *
  * @param {string} str - URL string
  * @returns {string|undefined} - encoded URL
  */
@@ -298,9 +317,10 @@ export const encodeUrlSpecialChar = str => {
 
 /**
  * sleep
+ *
  * @param {number} msec - milisec
  * @param {boolean} doReject - reject instead of resolve
- * @returns {?AsyncFunction} - resolve / reject
+ * @returns {?Function} - resolve / reject
  */
 export const sleep = (msec = 0, doReject = false) => {
   let func;
@@ -318,9 +338,10 @@ export const sleep = (msec = 0, doReject = false) => {
 
 /**
  * dispatch keyboard event
- * @param {Object} elm - element
+ *
+ * @param {object} elm - element
  * @param {string} type - event type
- * @param {Object} keyOpt - key options
+ * @param {object} keyOpt - key options
  * @returns {void}
  */
 export const dispatchKeyboardEvt = (elm, type, keyOpt) => {
@@ -347,7 +368,8 @@ export const dispatchKeyboardEvt = (elm, type, keyOpt) => {
 
 /**
  * dispatch change event
- * @param {Object} elm - element
+ *
+ * @param {object} elm - element
  * @returns {void}
  */
 export const dispatchChangeEvt = elm => {
@@ -363,7 +385,8 @@ export const dispatchChangeEvt = elm => {
 
 /**
  * dispatch input event
- * @param {Object} elm - element
+ *
+ * @param {object} elm - element
  * @returns {void}
  */
 export const dispatchInputEvt = elm => {
@@ -379,8 +402,9 @@ export const dispatchInputEvt = elm => {
 
 /**
  * focus element
- * @param {!Object} evt - Event
- * @returns {Object} - element
+ *
+ * @param {!object} evt - Event
+ * @returns {object} - element
  */
 export const focusElement = evt => {
   const {target} = evt;
@@ -392,6 +416,7 @@ export const focusElement = evt => {
 
 /**
  * close window
+ *
  * @returns {void}
  */
 export const closeWindow = () => {

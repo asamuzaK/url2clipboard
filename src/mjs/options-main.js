@@ -14,8 +14,9 @@ import {
 
 /**
  * create pref
- * @param {Object} elm - element
- * @returns {Object} - pref data
+ *
+ * @param {object} elm - element
+ * @returns {object} - pref data
  */
 export const createPref = async (elm = {}) => {
   const {dataset, id} = elm;
@@ -31,7 +32,8 @@ export const createPref = async (elm = {}) => {
 
 /**
  * store pref
- * @param {!Object} evt - Event
+ *
+ * @param {!object} evt - Event
  * @returns {Promise.<Array>} - results of each handler
  */
 export const storePref = async evt => {
@@ -63,13 +65,15 @@ export const storePref = async evt => {
 /* html */
 /**
  * handle input change
- * @param {!Object} evt - Event
- * @returns {AsyncFunction} - storePref()
+ *
+ * @param {!object} evt - Event
+ * @returns {Function} - storePref()
  */
 export const handleInputChange = evt => storePref(evt).catch(throwErr);
 
 /**
  * add event listener to input elements
+ *
  * @returns {void}
  */
 export const addInputChangeListener = async () => {
@@ -81,7 +85,8 @@ export const addInputChangeListener = async () => {
 
 /**
  * set html input value
- * @param {Object} data - storage data
+ *
+ * @param {object} data - storage data
  * @returns {void}
  */
 export const setHtmlInputValue = async (data = {}) => {
@@ -105,6 +110,7 @@ export const setHtmlInputValue = async (data = {}) => {
 
 /**
  * set html input values from storage
+ *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setValuesFromStorage = async () => {

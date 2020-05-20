@@ -15,6 +15,7 @@ import {
 export class Clip {
   /**
    * constructor
+   *
    * @param {string} content - content
    * @param {string} mime - mime
    */
@@ -54,12 +55,14 @@ export class Clip {
 
   /**
    * copy to clipboard sync (for fallback)
+   *
    * @returns {void}
    */
   _copySync() {
     /**
      * set clipboard data
-     * @param {Object} evt - Event
+     *
+     * @param {object} evt - Event
      * @returns {void}
      */
     const setClipboardData = evt => {
@@ -78,6 +81,7 @@ export class Clip {
 
   /**
    * copy to clipboard
+   *
    * @returns {void}
    */
   async copy() {

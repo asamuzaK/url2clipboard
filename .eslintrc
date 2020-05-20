@@ -7,6 +7,7 @@
   },
   "extends": [
     "eslint:recommended",
+    "plugin:jsdoc/recommended",
     "plugin:no-unsanitized/DOM"
   ],
   "parserOptions": {
@@ -14,7 +15,8 @@
     "sourceType": "module"
   },
   "plugins": [
-    eslint-plugin-no-unsanitized
+    "eslint-plugin-no-unsanitized",
+    "jsdoc"
   ],
   "reportUnusedDisableDirectives": true,
   "rules": {
@@ -321,7 +323,7 @@
         "preferType": {
           "Boolean": "boolean",
           "Number": "number",
-          "object": "Object",
+          "Object": "object",
           "String": "string"
         },
         "requireParamDescription": true,

@@ -19,8 +19,9 @@ import {
 
 /**
  * notify on copy
+ *
  * @param {string} label - label
- * @returns {AsyncFunction} - createNotification()
+ * @returns {Function} - createNotification()
  */
 export const notifyOnCopy = async label => {
   const message = isString(label) && label &&

@@ -19,7 +19,8 @@ const USER_INPUT_DEFAULT = "Edit content text of the link";
 
 /**
  * throw error
- * @param {!Object} e - Error
+ *
+ * @param {!object} e - Error
  * @throws
  */
 const throwErr = e => {
@@ -28,6 +29,7 @@ const throwErr = e => {
 
 /**
  * get type
+ *
  * @param {*} o - object to check
  * @returns {string} - type of object
  */
@@ -36,6 +38,7 @@ const getType = o =>
 
 /**
  * is string
+ *
  * @param {*} o - object to check
  * @returns {boolean} - result
  */
@@ -43,8 +46,9 @@ const isString = o => typeof o === "string" || o instanceof String;
 
 /**
  * send message
+ *
  * @param {*} msg - message
- * @returns {?AsyncFunction} - send message to runtime
+ * @returns {?Function} - runtime.sendMessage()
  */
 const sendMsg = async msg => {
   let func;
@@ -56,7 +60,8 @@ const sendMsg = async msg => {
 
 /**
  * get active element
- * @returns {Object} - active element
+ *
+ * @returns {object} - active element
  */
 const getActiveElm = async () => {
   const sel = window.getSelection();
@@ -78,8 +83,9 @@ const getActiveElm = async () => {
 
 /**
  * get anchor element
- * @param {Object} node - element
- * @returns {Object} - anchor element
+ *
+ * @param {object} node - element
+ * @returns {object} - anchor element
  */
 const getAnchorElm = async node => {
   let elm;
@@ -106,7 +112,8 @@ const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -120,8 +127,9 @@ const initContextInfo = async () => {
 
 /**
  * create context info
- * @param {Object} node - element
- * @returns {Object} - context info
+ *
+ * @param {object} node - element
+ * @returns {object} - context info
  */
 const createContextInfo = async node => {
   await initContextInfo();
@@ -155,8 +163,9 @@ const createContextInfo = async node => {
 
 /**
  * send status
- * @param {!Object} evt - Event
- * @returns {AsyncFunction} - send message
+ *
+ * @param {!object} evt - Event
+ * @returns {Function} - sendMsg()
  */
 const sendStatus = async evt => {
   const {target, type} = evt;
@@ -173,8 +182,9 @@ const sendStatus = async evt => {
 
 /**
  * send context info
+ *
  * @param {*} data - data
- * @returns {AsyncFunction} - send message
+ * @returns {Function} - sendMsg()
  */
 const sendContextInfo = async data => {
   const elm = await getActiveElm();
@@ -190,6 +200,7 @@ const sendContextInfo = async data => {
 
 /**
  * edit content
+ *
  * @param {string} content - content to edit
  * @param {string} label - format label
  * @returns {?string} - edited content
@@ -209,8 +220,9 @@ const editContent = async (content = "", label = "") => {
 
 /**
  * send edited content
+ *
  * @param {string} data - data
- * @returns {AsyncFunction} - sendMsg()
+ * @returns {Function} - sendMsg()
  */
 const sendEditedContent = async (data = {}) => {
   const {
@@ -232,6 +244,7 @@ const sendEditedContent = async (data = {}) => {
 
 /**
  * handle message
+ *
  * @param {*} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -256,8 +269,9 @@ const handleMsg = async (msg = {}) => {
 
 /**
  * handle UI event
- * @param {!Object} evt - Event
- * @returns {?AsyncFunction} - send status
+ *
+ * @param {!object} evt - Event
+ * @returns {?Function} - promise chain
  */
 const handleUIEvt = evt => {
   const {button, key, shiftKey, type} = evt;
@@ -280,15 +294,17 @@ const handleUIEvt = evt => {
 
 /**
  * runtime on message
+ *
  * @param {*} msg - message
- * @returns {AsyncFunction} - handleMsg()
+ * @returns {Function} - handleMsg()
  */
 const runtimeOnMsg = msg => handleMsg(msg).catch(throwErr);
 
 /**
  * window on load
- * @param {Object} evt - event
- * @returns {AsyncFunction} - sendStatus()
+ *
+ * @param {object} evt - event
+ * @returns {Function} - sendStatus()
  */
 const windowOnLoad = evt => sendStatus(evt).catch(throwErr);
 

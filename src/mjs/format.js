@@ -124,6 +124,7 @@ export const formatData = {
 
 /**
  * get format id
+ *
  * @param {string} id - id
  * @returns {?string} - format id
  */
@@ -152,22 +153,25 @@ export const formats = new Map(Object.entries(formatData));
 
 /**
  * get formats
+ *
  * @param {boolean} inArray - return in an array
- * @returns {Object|Array} - formats
+ * @returns {object|Array} - formats
  */
 export const getFormats = async (inArray = false) =>
   inArray && Array.from(formats.entries()) || formats.entries();
 
 /**
  * get formats keys
+ *
  * @param {boolean} inArray - return in an array
- * @returns {Object|Array} - formats
+ * @returns {object|Array} - formats
  */
 export const getFormatsKeys = async (inArray = false) =>
   inArray && Array.from(formats.keys()) || formats.keys();
 
 /**
  * has format
+ *
  * @param {string} id - id
  * @returns {boolean} - result
  */
@@ -181,6 +185,7 @@ export const hasFormat = async id => {
 
 /**
  * get format
+ *
  * @param {string} id - id
  * @returns {*|null} - format item
  */
@@ -198,6 +203,7 @@ export const getFormat = async id => {
 
 /**
  * set format
+ *
  * @param {string} id - id
  * @param {*} value - value
  * @returns {void}
@@ -214,6 +220,7 @@ export const setFormat = async (id, value) => {
 
 /**
  * create multiple tabs link text
+ *
  * @param {Array} arr - array of link text
  * @param {string} mime - mime type
  * @returns {string} - joined link text
@@ -228,7 +235,8 @@ export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
 
 /**
  * create link text
- * @param {Object} data - copy data
+ *
+ * @param {object} data - copy data
  * @returns {string} - link text
  */
 export const createLinkText = async (data = {}) => {

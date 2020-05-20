@@ -16,6 +16,7 @@ import {
 
 /**
  * disable input
+ *
  * @param {string} id - ID
  * @returns {void}
  */
@@ -30,7 +31,8 @@ export const disableInput = async id => {
 
 /**
  * disable incompatible inputs
- * @returns {?AsyncFunction} - disableInput()
+ *
+ * @returns {?Function} - disableInput()
  */
 export const disableIncompatibleInputs = async () => {
   let func;

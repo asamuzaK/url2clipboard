@@ -54,6 +54,7 @@ export const enabledFormats = new Set();
 
 /**
  * toggle enabled formats
+ *
  * @param {string} id - format id
  * @param {boolean} enabled - format is enabled
  * @returns {void}
@@ -73,6 +74,7 @@ export const toggleEnabledFormats = async (id, enabled) => {
 
 /**
  * set format data
+ *
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
@@ -87,6 +89,7 @@ export const setFormatData = async () => {
 
 /**
  * get format template
+ *
  * @param {string} id - menu item ID
  * @returns {?string} - template
  */
@@ -126,6 +129,7 @@ export const getFormatTemplate = async id => {
 
 /**
  * get format title
+ *
  * @param {string} id - menu item ID
  * @returns {?string} - title
  */
@@ -181,15 +185,17 @@ export const menuItems = {
 
 /**
  * remove context menu
- * @returns {AsyncFunction} - menus.removeAll()
+ *
+ * @returns {Function} - menus.removeAll()
  */
 export const removeContextMenu = async () => menus.removeAll();
 
 /**
  * create context menu item
+ *
  * @param {string} id - menu item ID
  * @param {string} title - menu item title
- * @param {Object} data - context data
+ * @param {object} data - context data
  * @returns {void}
  */
 export const createMenuItem = async (id, title, data = {}) => {
@@ -213,11 +219,12 @@ export const createMenuItem = async (id, title, data = {}) => {
 
 /**
  * create single menu item
+ *
  * @param {string} key - key
  * @param {string} itemId - item ID
  * @param {string} itemKey - item key
- * @param {Object} itemData - item data
- * @returns {AsyncFunction} - createMenuItem()
+ * @param {object} itemData - item data
+ * @returns {Function} - createMenuItem()
  */
 export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
   if (!isString(key)) {
@@ -243,6 +250,7 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
 
 /**
  * create context menu items
+ *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const createContextMenu = async () => {
@@ -295,6 +303,7 @@ export const createContextMenu = async () => {
 
 /**
  * update context menu
+ *
  * @param {number} tabId - tab ID
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -347,9 +356,10 @@ export const updateContextMenu = async tabId => {
 
 /**
  * handle menus on shown
- * @param {Object} info - menu info
- * @param {Object} tab - tabs.Tab
- * @returns {?AsyncFunction} - menus.reflesh()
+ *
+ * @param {object} info - menu info
+ * @param {object} tab - tabs.Tab
+ * @returns {?Function} - menus.reflesh()
  */
 export const handleMenusOnShown = async (info, tab) => {
   const {contexts} = info;
@@ -367,10 +377,11 @@ export const handleMenusOnShown = async (info, tab) => {
 
 /**
  * set enabled tab
+ *
  * @param {number} tabId - tab ID
- * @param {Object} tab - tabs.Tab
- * @param {Object} data - context info
- * @returns {Object} - tab ID info
+ * @param {object} tab - tabs.Tab
+ * @param {object} data - context info
+ * @returns {object} - tab ID info
  */
 export const setEnabledTab = async (tabId, tab, data = {}) => {
   if (!Number.isInteger(tabId)) {
@@ -386,8 +397,9 @@ export const setEnabledTab = async (tabId, tab, data = {}) => {
 
 /**
  * remove enabled tab
+ *
  * @param {number} tabId - tab ID
- * @returns {AsyncFunction} - updateContextMenu()
+ * @returns {Function} - updateContextMenu()
  */
 export const removeEnabledTab = async tabId => {
   if (!Number.isInteger(tabId)) {
@@ -400,6 +412,7 @@ export const removeEnabledTab = async tabId => {
 
 /**
  * set icon
+ *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setIcon = async () => {
@@ -426,7 +439,8 @@ export const contextInfo = {
 
 /**
  * init context info
- * @returns {Object} - context info
+ *
+ * @returns {object} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
@@ -440,8 +454,9 @@ export const initContextInfo = async () => {
 
 /**
  * update context info
- * @param {Object} data - context info data
- * @returns {Object} - context info
+ *
+ * @param {object} data - context info data
+ * @returns {object} - context info
  */
 export const updateContextInfo = async (data = {}) => {
   await initContextInfo();
@@ -457,6 +472,7 @@ export const updateContextInfo = async (data = {}) => {
 
 /**
  * get all tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -480,6 +496,7 @@ export const getAllTabsInfo = async menuItemId => {
 
 /**
  * get other tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -507,6 +524,7 @@ export const getOtherTabsInfo = async menuItemId => {
 
 /**
  * get selected tabs info
+ *
  * @param {string} menuItemId - menu item ID
  * @returns {Array} - tabs info
  */
@@ -530,8 +548,9 @@ export const getSelectedTabsInfo = async menuItemId => {
 
 /**
  * extract clicked data
- * @param {Object} info - clicked info
- * @param {Object} tab - tabs.Tab
+ *
+ * @param {object} info - clicked info
+ * @param {object} tab - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
  */
 export const extractClickedData = async (info, tab) => {
@@ -662,8 +681,9 @@ export const extractClickedData = async (info, tab) => {
 
 /**
  * exec copy
- * @param {Object} data - data
- * @returns {?AsyncFunction} - notifyOnCopy()
+ *
+ * @param {object} data - data
+ * @returns {?Function} - notifyOnCopy()
  */
 export const execCopy = async (data = {}) => {
   const {content, formatId, formatTitle, mimeType, template, title, url} = data;
@@ -693,8 +713,9 @@ export const execCopy = async (data = {}) => {
 
 /**
  * handle active tab
- * @param {Object} info - active tab info
- * @returns {?AsyncFunction} - updateContextMenu()
+ *
+ * @param {object} info - active tab info
+ * @returns {?Function} - updateContextMenu()
  */
 export const handleActiveTab = async (info = {}) => {
   let func;
@@ -707,10 +728,11 @@ export const handleActiveTab = async (info = {}) => {
 
 /**
  * handle updated tab
+ *
  * @param {number} tabId - tab ID
- * @param {Object} info - info
- * @param {Object} tab - tabs.Tab
- * @returns {?AsyncFunction} - handle active tab
+ * @param {object} info - info
+ * @param {object} tab - tabs.Tab
+ * @returns {?Function} - handleActiveTab()
  */
 export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   if (!Number.isInteger(tabId)) {
@@ -727,6 +749,7 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
 
 /**
  * handle command
+ *
  * @param {!string} cmd - command
  * @returns {void}
  */
@@ -752,8 +775,9 @@ export const handleCmd = async cmd => {
 
 /**
  * handle message
+ *
  * @param {*} msg - message
- * @param {Object} sender - sender
+ * @param {object} sender - sender
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async (msg, sender = {}) => {
@@ -806,8 +830,9 @@ export const handleMsg = async (msg, sender = {}) => {
 
 /**
  * set variable
+ *
  * @param {string} item - item
- * @param {Object} obj - value object
+ * @param {object} obj - value object
  * @param {boolean} changed - changed
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -868,7 +893,8 @@ export const setVar = async (item, obj, changed = false) => {
 
 /**
  * set variables
- * @param {Object} data - storage data
+ *
+ * @param {object} data - storage data
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setVars = async (data = {}) => {
