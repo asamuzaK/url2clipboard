@@ -641,7 +641,7 @@ export const queryTabs = async opt => {
  *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
- * @returns {?Function} - promise chain
+ * @returns {?(Function|boolean)} - promise chain
  */
 export const execScriptToTab = async (tabId, opt = {}) => {
   if (!Number.isInteger(tabId)) {

@@ -284,7 +284,7 @@ export const getSelectedTabsInfo = async menuItemId => {
  * create copy data
  *
  * @param {!object} evt - Event
- * @returns {Promise} - Promise chain
+ * @returns {Promise.<Array>} - results of each handler
  */
 export const createCopyData = async evt => {
   const {target} = evt;
@@ -368,7 +368,7 @@ export const openOptionsOnClick = () => runtime.openOptionsPage();
  * handle menu on click
  *
  * @param {!object} evt - Event
- * @returns {Promise} - Promise chain
+ * @returns {(Function|Error)} - Promise chain
  */
 export const menuOnClick = evt =>
   createCopyData(evt).then(closeWindow).catch(throwErr);
