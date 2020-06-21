@@ -1,32 +1,14 @@
 /**
  * content.test.js
  */
-/* eslint-disable no-magic-numbers */
+/* eslint-disable max-nested-callbacks, no-magic-numbers */
 
-const {JSDOM} = require("jsdom");
 const {assert} = require("chai");
 const {afterEach, beforeEach, describe, it} = require("mocha");
-const {browser} = require("./mocha/setup.js");
-const sinon = require("sinon");
+const {browser, createJsdom} = require("./mocha/setup.js");
 const cjs = require("../src/js/content.js");
 
 describe("content", () => {
-  /**
-   * create jsdom
-   *
-   * @returns {object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-      url: "https://localhost",
-      beforeParse(window) {
-        window.prompt = sinon.stub().callsFake((...args) => args.toString());
-      },
-    };
-    return new JSDOM(domstr, opt);
-  };
   let window, document;
   const globalKeys = ["Node"];
   beforeEach(() => {

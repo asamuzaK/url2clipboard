@@ -37,5 +37,5 @@ global.document = document;
 global.browser = browser;
 
 module.exports = {
-  browser,
+  browser, createJsdom,
 };

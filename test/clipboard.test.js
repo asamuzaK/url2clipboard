@@ -3,26 +3,13 @@
  */
 /* eslint-disable max-nested-callbacks */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
+import {browser, createJsdom} from "./mocha/setup.js";
 import sinon from "sinon";
-import {browser} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/clipboard.js";
 
 describe("clipboard", () => {
-  /**
-   * create jsdom
-   *
-   * @returns {object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-    };
-    return new JSDOM(domstr, opt);
-  };
   const globalKeys = ["DOMParser"];
   let window, document, navigator;
   beforeEach(() => {

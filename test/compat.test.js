@@ -2,26 +2,13 @@
  * compat.test.js
  */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
-import {browser} from "./mocha/setup.js";
+import {browser, createJsdom} from "./mocha/setup.js";
 import * as mjs from "../src/mjs/compat.js";
 import {WEBEXT_ID} from "../src/mjs/constant.js";
 
 describe("compat", () => {
-  /**
-   * create jsdom
-   *
-   * @returns {object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-    };
-    return new JSDOM(domstr, opt);
-  };
   let window, document;
   beforeEach(() => {
     const dom = createJsdom();

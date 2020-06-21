@@ -1,27 +1,15 @@
 /**
  * common.test.js
  */
-/* eslint-disable no-magic-numbers */
+/* eslint-disable max-nested-callbacks, no-magic-numbers */
 
-import {JSDOM} from "jsdom";
 import {assert} from "chai";
 import {afterEach, beforeEach, describe, it} from "mocha";
+import {createJsdom} from "./mocha/setup.js";
 import sinon from "sinon";
 import * as mjs from "../src/mjs/common.js";
 
 describe("common", () => {
-  /**
-   * create jsdom
-   *
-   * @returns {object} - jsdom instance
-   */
-  const createJsdom = () => {
-    const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
-    const opt = {
-      runScripts: "dangerously",
-    };
-    return new JSDOM(domstr, opt);
-  };
   let window, document;
   beforeEach(() => {
     const dom = createJsdom();
