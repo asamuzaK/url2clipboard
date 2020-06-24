@@ -377,6 +377,12 @@
   "optionsNotifyOnCopyDetail": {
     "message": "It will notify when successfully copied. Requires additional permission."
   },
+  "optionsPreferCanonicalUrl": {
+    "message": "Prefer canonical URL if present"
+  },
+  "optionsPreferCanonicalUrlDetail": {
+    "message": "Use the canonical URL if it exists on the web page."
+  },
   "optionsPromptContent": {
     "message": "Edit contents when copying"
   },

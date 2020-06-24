@@ -377,6 +377,12 @@
   "optionsNotifyOnCopyDetail": {
     "message": "成功复制后发送通知。需要额外权限。"
   },
+  "optionsPreferCanonicalUrl": {
+    "message": "Prefer canonical URL if present"
+  },
+  "optionsPreferCanonicalUrlDetail": {
+    "message": "Use the canonical URL if it exists on the web page."
+  },
   "optionsPromptContent": {
     "message": "编辑链接标题"
   },

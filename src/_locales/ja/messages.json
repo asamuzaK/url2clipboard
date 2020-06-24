@@ -377,6 +377,12 @@
   "optionsNotifyOnCopyDetail": {
     "message": "正常にコピーしたら通知します。追加の許可が必要です。"
   },
+  "optionsPreferCanonicalUrl": {
+    "message": "正規URLが存在する場合はそれを優先する"
+  },
+  "optionsPreferCanonicalUrlDetail": {
+    "message": "正規URLがウェブページに存在する場合には正規URLを使用します。"
+  },
   "optionsPromptContent": {
     "message": "コピー時にコンテンツを編集する"
   },
