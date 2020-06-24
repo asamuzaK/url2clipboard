@@ -2794,7 +2794,7 @@ describe("main", () => {
         isLink: false,
         menuItemId: BBCODE_URL,
         selectionText: "foo",
-        canonicalUrl: "https://example.com/"
+        canonicalUrl: "https://example.com/",
       };
       const tab = {
         id: 1,
