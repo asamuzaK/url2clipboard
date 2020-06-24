@@ -14,7 +14,7 @@ import {
   CONTENT_PAGE_BBCODE, CONTEXT_INFO,
   COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  TEXT_SEP_LINES,
+  NOTIFY_COPY, PREFER_CANONICAL, TEXT_SEP_LINES,
 } from "../src/mjs/constant.js";
 const OPTIONS_OPEN = "openOptions";
 
@@ -483,6 +483,7 @@ describe("popup-main", () => {
       contextInfo.title = "bar";
       contextInfo.url = "https://www.example.com/baz";
       vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
       const elm = document.createElement("input");
       const elm2 = document.createElement("input");
       const elm3 = document.createElement("input");
@@ -508,6 +509,7 @@ describe("popup-main", () => {
       contextInfo.title = null;
       contextInfo.url = null;
       vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
     });
 
     it("should not call function", async () => {
@@ -599,6 +601,32 @@ describe("popup-main", () => {
         },
       };
       await mjs.setFormatData();
+      mjs.vars.preferCanonicalUrl = true;
+      const i = navigator.clipboard.writeText.callCount;
+      const res = await func(evt);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(res.length, 1, "result");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const elm = document.getElementById(CONTENT_PAGE);
+      elm.value = "";
+      const evt = {
+        target: {
+          id: `${COPY_PAGE}TextURL`,
+        },
+      };
+      await mjs.setFormatData();
       mjs.contextInfo.canonicalUrl = null;
       const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
@@ -651,6 +679,32 @@ describe("popup-main", () => {
         },
       };
       await mjs.setFormatData();
+      const i = navigator.clipboard.writeText.callCount;
+      const res = await func(evt);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+                         "called");
+      assert.strictEqual(res.length, 1, "result");
+      assert.deepEqual(res, [
+        {
+          canonicalUrl: null,
+          content: null,
+          isLink: false,
+          title: null,
+          url: null,
+        },
+      ], "result");
+    });
+
+    it("should call function", async () => {
+      const elm = document.getElementById(CONTENT_PAGE_BBCODE);
+      elm.value = "";
+      const evt = {
+        target: {
+          id: `${COPY_PAGE}BBCodeURL`,
+        },
+      };
+      await mjs.setFormatData();
+      mjs.vars.preferCanonicalUrl = true;
       const i = navigator.clipboard.writeText.callCount;
       const res = await func(evt);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
@@ -1328,6 +1382,8 @@ describe("popup-main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
       vars.separateTextURL = false;
     });
     afterEach(() => {
@@ -1336,6 +1392,8 @@ describe("popup-main", () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
+      vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
       vars.separateTextURL = false;
     });
 
@@ -1345,6 +1403,7 @@ describe("popup-main", () => {
       assert.isFalse(vars.includeTitleHTMLHyper, "html");
       assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
+      assert.isFalse(vars.preferCanonicalUrl, "canonical");
     });
 
     it("should not set variable", async () => {
@@ -1353,6 +1412,7 @@ describe("popup-main", () => {
       assert.isFalse(vars.includeTitleHTMLHyper, "html");
       assert.isFalse(vars.includeTitleHTMLPlain, "html");
       assert.isFalse(vars.includeTitleMarkdown, "markdown");
+      assert.isFalse(vars.preferCanonicalUrl, "canonical");
     });
 
     it("should set variable", async () => {
@@ -1401,6 +1461,38 @@ describe("popup-main", () => {
         checked: false,
       });
       assert.isFalse(vars.includeTitleMarkdown, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(NOTIFY_COPY, {
+        checked: true,
+      });
+      assert.isTrue(vars.notifyOnCopy, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(NOTIFY_COPY, {
+        checked: false,
+      });
+      assert.isFalse(vars.notifyOnCopy, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(PREFER_CANONICAL, {
+        checked: true,
+      });
+      assert.isTrue(vars.preferCanonicalUrl, "variable");
+    });
+
+    it("should set variable", async () => {
+      const {vars} = mjs;
+      await func(PREFER_CANONICAL, {
+        checked: false,
+      });
+      assert.isFalse(vars.preferCanonicalUrl, "variable");
     });
 
     it("should set variable", async () => {

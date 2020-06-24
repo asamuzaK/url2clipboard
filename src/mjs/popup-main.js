@@ -29,7 +29,7 @@ import {
   COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
+  LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL,
   TEXT_SEP_LINES, TEXT_TEXT_URL,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
@@ -42,6 +42,7 @@ export const vars = {
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
   notifyOnCopy: false,
+  preferCanonicalUrl: false,
   separateTextURL: false,
 };
 
@@ -289,7 +290,7 @@ export const getSelectedTabsInfo = async menuItemId => {
 export const createCopyData = async evt => {
   const {target} = evt;
   const {id: menuItemId} = target;
-  const {notifyOnCopy: notify} = vars;
+  const {notifyOnCopy: notify, preferCanonicalUrl} = vars;
   const {title: tabTitle, url: tabUrl} = tabInfo;
   const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
   const formatId = getFormatId(menuItemId);
@@ -336,11 +337,11 @@ export const createCopyData = async evt => {
     } else if (menuItemId.startsWith(COPY_PAGE)) {
       if (formatId === BBCODE_URL) {
         content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
-        url = canonicalUrl || tabUrl;
+        url = preferCanonicalUrl && canonicalUrl || tabUrl;
       } else {
         content = document.getElementById(CONTENT_PAGE).value || "";
         title = tabTitle;
-        url = canonicalUrl || tabUrl;
+        url = preferCanonicalUrl && canonicalUrl || tabUrl;
       }
     }
     if (isString(content) && isString(url)) {
@@ -517,6 +518,7 @@ export const setVar = async (item, obj) => {
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
+      case PREFER_CANONICAL:
       case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;

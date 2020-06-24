@@ -31,8 +31,8 @@ import {
   COPY_TABS_OTHER, COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, TEXT_SEP_LINES,
-  TEXT_TEXT_URL, WEBEXT_ID,
+  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL, PROMPT,
+  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID,
 } from "./constant.js";
 const {TAB_ID_NONE} = tabs;
 const {WINDOW_ID_CURRENT} = windows;
@@ -45,6 +45,7 @@ export const vars = {
   includeTitleMarkdown: false,
   isWebExt: runtime.id === WEBEXT_ID,
   notifyOnCopy: false,
+  preferCanonicalUrl: false,
   promptContent: false,
   separateTextURL: false,
 };
@@ -564,7 +565,7 @@ export const extractClickedData = async (info, tab) => {
     const {id: tabId, title: tabTitle, url: tabUrl} = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const {notifyOnCopy: notify, promptContent} = vars;
+      const {notifyOnCopy: notify, preferCanonicalUrl, promptContent} = vars;
       const {
         canonicalUrl: contextCanonicalUrl, content: contextContent,
         selectionText: contextSelectionText, title: contextTitle,
@@ -628,12 +629,18 @@ export const extractClickedData = async (info, tab) => {
           }
         } else if (menuItemId.startsWith(COPY_PAGE)) {
           if (formatId === BBCODE_URL) {
-            content = !tabUrlHash && contextCanonicalUrl || tabUrl;
-            url = !tabUrlHash && contextCanonicalUrl || tabUrl;
+            if (!tabUrlHash && preferCanonicalUrl && contextCanonicalUrl) {
+              content = contextCanonicalUrl;
+              url = contextCanonicalUrl;
+            } else {
+              content = tabUrl;
+              url = tabUrl;
+            }
           } else {
             content = infoSelectionText || tabTitle;
             title = tabTitle;
-            url = !tabUrlHash && contextCanonicalUrl || tabUrl;
+            url = !tabUrlHash && preferCanonicalUrl && contextCanonicalUrl ||
+                  tabUrl;
           }
         } else if (enabledFormats.has(formatId)) {
           if (infoIsLink) {
@@ -646,12 +653,18 @@ export const extractClickedData = async (info, tab) => {
               url = infoUrl;
             }
           } else if (formatId === BBCODE_URL) {
-            content = !tabUrlHash && infoCanonicalUrl || tabUrl;
-            url = !tabUrlHash && infoCanonicalUrl || tabUrl;
+            if (!tabUrlHash && preferCanonicalUrl && infoCanonicalUrl) {
+              content = infoCanonicalUrl;
+              url = infoCanonicalUrl;
+            } else {
+              content = tabUrl;
+              url = tabUrl;
+            }
           } else {
             content = infoSelectionText || tabTitle;
             title = tabTitle;
-            url = !tabUrlHash && infoCanonicalUrl || tabUrl;
+            url = !tabUrlHash && preferCanonicalUrl && infoCanonicalUrl ||
+                  tabUrl;
           }
         }
         if (isString(content) && isString(url)) {
@@ -859,6 +872,7 @@ export const setVar = async (item, obj, changed = false) => {
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
+      case PREFER_CANONICAL:
       case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
