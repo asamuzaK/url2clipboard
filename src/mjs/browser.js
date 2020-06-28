@@ -839,6 +839,19 @@ export const updateTab = async (tabId, opt) => {
 };
 
 /**
+ * warmup tab
+ *
+ * @param {number} tabId - tab ID
+ * @returns {void}
+ */
+export const warmupTab = async tabId => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  typeof tabs.warmup === "function" && await tabs.warmup(tabId);
+};
+
+/**
  * is tab
  *
  * @param {*} tabId - tab ID

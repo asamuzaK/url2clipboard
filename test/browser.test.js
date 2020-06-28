@@ -1635,6 +1635,31 @@ describe("browser", () => {
     });
   });
 
+  // NOTE: implemented in Firefox 79
+  describe("warmup tab", () => {
+    const func = mjs.warmupTab;
+
+    it("should throw if no argument given", async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message, "Expected Number but got Undefined.");
+      });
+    });
+
+    it("should throw if argument is not number", async () => {
+      await func("").catch(e => {
+        assert.strictEqual(e.message, "Expected Number but got String.");
+      });
+    });
+
+    it("should call function", async () => {
+      if (typeof browser.tabs.warmup === "function") {
+        const i = browser.tabs.warmup.callCount;
+        await func(1);
+        assert.strictEqual(browser.tabs.warmup.callCount, i + 1, "called");
+      }
+    });
+  });
+
   describe("is tab", () => {
     const func = mjs.isTab;
 
