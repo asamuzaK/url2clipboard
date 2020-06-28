@@ -18,7 +18,12 @@
     "lint": "npm-run-all -s lint:*",
     "lint:addons-linter": "addons-linter src",
     "lint:eslint": "eslint .",
-    "test": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --require @babel/register --exit"
+    "test": "npm run test:central",
+    "test:beta": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --channel=beta --require @babel/register --exit",
+    "test:central": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --channel=central --require @babel/register --exit",
+    "test:esr": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --channel=esr --require @babel/register --exit",
+    "test:release": "nyc --reporter=text mocha test/*.test.js --require test/mocha/setup.js --channel=release --require @babel/register --exit",
+    "test_all": "npm-run-all -s test:*"
   },
   "devDependencies": {
     "@babel/core": "^7.10.3",
