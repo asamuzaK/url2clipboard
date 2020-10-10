@@ -10,8 +10,15 @@ import sinon from "sinon";
 import * as mjs from "../src/mjs/clipboard.js";
 
 describe("clipboard", () => {
-  const globalKeys = ["DOMParser"];
   let window, document, navigator;
+  const globalKeys = [
+    "ClipboardItem",
+    "DOMParser",
+    "HTMLUnknownElement",
+    "Node",
+    "XMLSerializer",
+  ];
+
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
@@ -25,6 +32,53 @@ describe("clipboard", () => {
     global.document = document;
     global.navigator = navigator;
     for (const key of globalKeys) {
+      // Not implemented in jsdom
+      if (!window[key]) {
+        if (key === "ClipboardItem") {
+          window[key] = class ClipboardItem {
+            constructor(obj) {
+              this._items = new Map();
+              this._mimetypes = [
+                "application/json",
+                "application/xhtml+xml",
+                "application/xml",
+                "image/gif",
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "image/svg+xml",
+                "text/css",
+                "text/csv",
+                "text/html",
+                "text/plain",
+                "text/uri-list",
+                "text/xml",
+              ];
+              this._setItems(obj);
+            }
+            get types() {
+              return Array.from(this._items.keys());
+            }
+            _setItems(obj) {
+              const items = Object.entries(obj);
+              for (const [mime, blob] of items) {
+                if (this._mimetypes.includes(mime) && blob instanceof Blob) {
+                  this._items.set(mime, blob);
+                } else {
+                  this._items.remove(mime);
+                }
+              }
+            }
+            async getType(mime) {
+              const blob = this._items.get(mime);
+              if (!blob) {
+                throw new Error(`MIME type ${mime} is not found.`);
+              }
+              return blob;
+            }
+          };
+        }
+      }
       global[key] = window[key];
     }
   });
@@ -55,6 +109,13 @@ describe("clipboard", () => {
     });
 
     describe("getter / setter", () => {
+      it("should throw", () => {
+        assert.throws(() => {
+          const clip = new Clip();
+          clip._supportedMimeTypes.push("text/javascript");
+        });
+      });
+
       it("should get value", () => {
         const clip = new Clip("foo");
         assert.strictEqual(clip.content, "foo", "value");
@@ -185,6 +246,126 @@ describe("clipboard", () => {
           stubSetData.withArgs("text/plain", "foo bar").callCount, i + 1,
           "called",
         );
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+
+      it("should not call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.stub();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("<script>alert(1);</script>", "text/html");
+        const i = stubSetData.callCount;
+        await clip._copySync();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.strictEqual(stubSetData.callCount, i, "not called");
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+
+      it("should throw", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.stub();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("", "text/xml");
+        assert.throws(() => clip._copySync());
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+
+      it("should call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.stub();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const clip = new Clip("<xml></xml>", "text/xml");
+        const i = stubSetData.callCount;
+        await clip._copySync();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.strictEqual(stubSetData.callCount, i + 1, "called");
+        stubAdd.restore();
+        stubRemove.restore();
+        delete document.execCommand;
+      });
+
+      it("should not call function", async () => {
+        const stubPropagate = sinon.fake();
+        const stubPreventDefault = sinon.fake();
+        const stubSetData = sinon.stub();
+        const evt = {
+          stopImmediatePropagation: stubPropagate,
+          preventDefault: stubPreventDefault,
+          clipboardData: {
+            setData: stubSetData,
+          },
+        };
+        const stubAdd =
+          sinon.stub(document, "addEventListener").callsFake((...args) => {
+            const [, callback] = args;
+            return callback(evt);
+          });
+        const stubRemove = sinon.stub(document, "removeEventListener");
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==", "base64");
+        const clip = new Clip(png.toString("binary"), "image/png");
+        const i = stubSetData.callCount;
+        await clip._copySync();
+        assert.isTrue(stubRemove.calledOnce, "called");
+        assert.isTrue(stubPropagate.calledOnce, "called");
+        assert.isTrue(stubPreventDefault.calledOnce, "called");
+        assert.strictEqual(stubSetData.callCount, i, "not called");
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;

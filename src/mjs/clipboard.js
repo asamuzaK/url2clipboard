@@ -5,11 +5,16 @@
 import {
   getType, isString,
 } from "./common.js";
+import {
+  serializeDomString,
+} from "./serialize-dom.js";
 
 /* constants */
 import {
   MIME_HTML, MIME_PLAIN,
 } from "./constant.js";
+const REG_DOM_PARSABLE =
+  /text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/;
 
 /* Clip */
 export class Clip {
@@ -20,12 +25,20 @@ export class Clip {
    * @param {string} mime - mime
    */
   constructor(content, mime) {
-    this._supportedMimeTypes = [
-      MIME_HTML,
-      MIME_PLAIN,
-    ];
     this._content = isString(content) && content.trim() || "";
     this._mime = isString(mime) && mime.trim() || null;
+    this._supportedMimeTypes = [
+      "application/json",
+      "application/xhtml+xml",
+      "application/xml",
+      "image/svg+xml",
+      "text/csv",
+      "text/html",
+      "text/plain",
+      "text/uri-list",
+      "text/xml",
+    ];
+    Object.freeze(this._supportedMimeTypes);
   }
 
   /* getter / setter */
@@ -69,10 +82,19 @@ export class Clip {
       document.removeEventListener("copy", setClipboardData, true);
       evt.stopImmediatePropagation();
       evt.preventDefault();
-      evt.clipboardData.setData(this._mime, this._content);
-      if (this._mime === MIME_HTML) {
-        const doc = new DOMParser().parseFromString(this._content, this._mime);
-        evt.clipboardData.setData(MIME_PLAIN, doc.body.textContent);
+      if (this._supportedMimeTypes.includes(this._mime)) {
+        if (REG_DOM_PARSABLE.test(this._mime)) {
+          const domstr = serializeDomString(this._content, this._mime);
+          if (isString(domstr)) {
+            evt.clipboardData.setData(this._mime, domstr);
+            if (this._mime === MIME_HTML) {
+              const doc = new DOMParser().parseFromString(domstr, this._mime);
+              evt.clipboardData.setData(MIME_PLAIN, doc.body.textContent);
+            }
+          }
+        } else {
+          evt.clipboardData.setData(this._mime, this._content);
+        }
       }
     };
     document.addEventListener("copy", setClipboardData, true);
@@ -98,9 +120,33 @@ export class Clip {
           this._copySync();
         }
       /* TODO: async clipboard.write
-      } else if (clipboard && typeof clipboard.write === "function") {
-        const data = new Blob([this._content], {type: this._mime});
-        await clipboard.write(data);
+      } else if (clipboard && typeof clipboard.write === "function" &&
+                 typeof ClipboardItem !== "undefined") {
+        const data = [];
+        if (REG_DOM_PARSABLE.test(this._mime)) {
+          const domstr = serializeDomString(this._content, this._mime);
+          if (isString(domstr)) {
+            const blob = new Blob([domstr], {type: this._mime});
+            if (this._mime === MIME_HTML) {
+              const doc = new DOMParser().parseFromString(domstr, this._mime);
+              const text = new Blob([doc.body.textContent], {type: MIME_PLAIN});
+              data.push(new ClipboardItem({
+                [this._mime]: blob,
+                [MIME_PLAIN]: text,
+              });
+            } else {
+              data.push(new ClipboardItem({[this._mime]: blob});
+            }
+          }
+        } else {
+          const blob = new Blob([this._content], {type: this._mime});
+          data.push(new ClipboardItem({[this._mime]: blob});
+        }
+        try {
+          data.length && await clipboard.write(data);
+        } catch (e) {
+          this._copySync();
+        }
       */
       } else {
         this._copySync();
