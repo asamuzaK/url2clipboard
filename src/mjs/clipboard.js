@@ -13,7 +13,7 @@ import {
 import {
   MIME_HTML, MIME_PLAIN,
 } from "./constant.js";
-const REG_DOM_PARSABLE =
+const REG_DOM_PARSE =
   /text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/;
 
 /* Clip */
@@ -83,7 +83,7 @@ export class Clip {
       evt.stopImmediatePropagation();
       evt.preventDefault();
       if (this._supportedMimeTypes.includes(this._mime)) {
-        if (REG_DOM_PARSABLE.test(this._mime)) {
+        if (REG_DOM_PARSE.test(this._mime)) {
           const domstr = serializeDomString(this._content, this._mime);
           if (isString(domstr)) {
             evt.clipboardData.setData(this._mime, domstr);
@@ -123,7 +123,7 @@ export class Clip {
       } else if (clipboard && typeof clipboard.write === "function" &&
                  typeof ClipboardItem !== "undefined") {
         const data = [];
-        if (REG_DOM_PARSABLE.test(this._mime)) {
+        if (REG_DOM_PARSE.test(this._mime)) {
           const domstr = serializeDomString(this._content, this._mime);
           if (isString(domstr)) {
             const blob = new Blob([domstr], {type: this._mime});
