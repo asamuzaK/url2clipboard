@@ -1,5 +1,5 @@
 /**
- * dom-manipulate.test.js
+ * serialize-dom.test.js
  */
 /* eslint-disable max-nested-callbacks, no-magic-numbers, no-script-url */
 
