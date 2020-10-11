@@ -10,6 +10,9 @@
     "plugin:jsdoc/recommended",
     "plugin:no-unsanitized/DOM"
   ],
+  "globals": {
+    "ClipboardItem": "readonly"
+  },
   "parserOptions": {
     "ecmaVersion": 2019,
     "sourceType": "module"
