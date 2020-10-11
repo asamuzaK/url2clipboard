@@ -121,7 +121,7 @@ export class Clip {
         }
       /* TODO: async clipboard.write
       } else if (clipboard && typeof clipboard.write === "function" &&
-                 typeof ClipboardItem !== "undefined") {
+                 typeof ClipboardItem === "function") {
         const data = [];
         if (REG_DOM_PARSE.test(this._mime)) {
           const domstr = serializeDomString(this._content, this._mime);

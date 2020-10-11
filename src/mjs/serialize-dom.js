@@ -1,5 +1,5 @@
 /**
- * dom-manipulate.js
+ * serialize-dom.js
  */
 
 import {
