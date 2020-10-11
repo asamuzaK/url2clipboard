@@ -119,7 +119,6 @@ export class Clip {
         } catch (e) {
           this._copySync();
         }
-      /* TODO: async clipboard.write
       } else if (clipboard && typeof clipboard.write === "function" &&
                  typeof ClipboardItem === "function") {
         const data = [];
@@ -133,21 +132,20 @@ export class Clip {
               data.push(new ClipboardItem({
                 [this._mime]: blob,
                 [MIME_PLAIN]: text,
-              });
+              }));
             } else {
-              data.push(new ClipboardItem({[this._mime]: blob});
+              data.push(new ClipboardItem({[this._mime]: blob}));
             }
           }
         } else {
           const blob = new Blob([this._content], {type: this._mime});
-          data.push(new ClipboardItem({[this._mime]: blob});
+          data.push(new ClipboardItem({[this._mime]: blob}));
         }
         try {
           data.length && await clipboard.write(data);
         } catch (e) {
           this._copySync();
         }
-      */
       } else {
         this._copySync();
       }
