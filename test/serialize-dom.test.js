@@ -598,7 +598,7 @@ describe("serialize-dom", () => {
 
     it("should throw", () => {
       assert.throws(() => func("foo", "image/png"),
-                    "Unsupported mime type image/png.");
+                    "Unsupported MIME type image/png.");
     });
 
     it("should get null", () => {
