@@ -18,7 +18,9 @@ describe("content", () => {
     global.window = window;
     global.document = document;
     for (const key of globalKeys) {
-      global[key] = window[key];
+      if (window[key] && !global[key]) {
+        global[key] = window[key];
+      }
     }
   });
   afterEach(() => {

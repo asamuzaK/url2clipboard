@@ -57,6 +57,13 @@ global.window = window;
 global.document = document;
 global.browser = browser;
 
+const globalKeys = ["Node"];
+for (const key of globalKeys) {
+  if (window[key] && !global[key]) {
+    global[key] = window[key];
+  }
+}
+
 module.exports = {
   browser, createJsdom,
 };
