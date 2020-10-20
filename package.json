@@ -32,7 +32,7 @@
     "addons-linter": "^2.9.0",
     "chai": "^4.2.0",
     "eslint": "^7.11.0",
-    "eslint-plugin-jsdoc": "^30.6.5",
+    "eslint-plugin-jsdoc": "^30.7.3",
     "eslint-plugin-no-unsanitized": "^3.1.4",
     "jsdom": "^16.4.0",
     "mocha": "^8.2.0",
@@ -42,5 +42,5 @@
     "webext-schema": "^1.3.14",
     "webextension-polyfill": "^0.6.0"
   },
-  "version": "6.0.0"
+  "version": "6.0.1"
 }
