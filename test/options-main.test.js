@@ -1,16 +1,15 @@
 /**
  * options-main.test.js
  */
-/* eslint-disable no-magic-numbers */
 
-import {assert} from "chai";
-import {afterEach, beforeEach, describe, it} from "mocha";
-import {browser, createJsdom} from "./mocha/setup.js";
-import sinon from "sinon";
-import * as mjs from "../src/mjs/options-main.js";
-import {NOTIFY_COPY} from "../src/mjs/constant.js";
+import { assert } from 'chai';
+import { afterEach, beforeEach, describe, it } from 'mocha';
+import { browser, createJsdom } from './mocha/setup.js';
+import sinon from 'sinon';
+import * as mjs from '../src/mjs/options-main.js';
+import { NOTIFY_COPY } from '../src/mjs/constant.js';
 
-describe("options-main", () => {
+describe('options-main', () => {
   let window, document;
   beforeEach(() => {
     const dom = createJsdom();
@@ -32,333 +31,333 @@ describe("options-main", () => {
     browser._sandbox.reset();
   });
 
-  it("should get browser object", () => {
-    assert.isObject(browser, "browser");
+  it('should get browser object', () => {
+    assert.isObject(browser, 'browser');
   });
 
-  describe("create pref", () => {
+  describe('create pref', () => {
     const func = mjs.createPref;
 
-    it("should get null if argument not given", async () => {
+    it('should get null if argument not given', async () => {
       const res = await func();
-      assert.isNull(res, "result");
+      assert.isNull(res, 'result');
     });
 
-    it("should get object", async () => {
+    it('should get object', async () => {
       const res = await func({
-        id: "foo",
+        id: 'foo'
       });
       assert.deepEqual(res, {
         foo: {
-          id: "foo",
+          id: 'foo',
           checked: false,
-          value: "",
-          subItemOf: null,
-        },
-      }, "result");
+          value: '',
+          subItemOf: null
+        }
+      }, 'result');
     });
   });
 
-  describe("store pref", () => {
+  describe('store pref', () => {
     const func = mjs.storePref;
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
       const evt = {
         target: {
-          id: "foo",
-          type: "text",
-        },
+          id: 'foo',
+          type: 'text'
+        }
       };
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
-      assert.strictEqual(res.length, 1, "array length");
-      assert.deepEqual(res, [undefined], "result");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+      assert.strictEqual(res.length, 1, 'array length');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
       const j = browser.permissions.request.callCount;
       const k = browser.permissions.remove.callCount;
       const evt = {
         target: {
-          id: "foo",
-          type: "checkbox",
-          checked: true,
-        },
+          id: 'foo',
+          type: 'checkbox',
+          checked: true
+        }
       };
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
       assert.strictEqual(browser.permissions.request.callCount, j,
-                         "not called");
+        'not called');
       assert.strictEqual(browser.permissions.remove.callCount, k,
-                         "not called");
-      assert.strictEqual(res.length, 1, "array length");
-      assert.deepEqual(res, [undefined], "result");
+        'not called');
+      assert.strictEqual(res.length, 1, 'array length');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
       const j = browser.permissions.request.callCount;
       const k = browser.permissions.remove.callCount;
       const evt = {
         target: {
           id: NOTIFY_COPY,
-          type: "checkbox",
-          checked: true,
-        },
+          type: 'checkbox',
+          checked: true
+        }
       };
       browser.permissions.request.withArgs({
-        permissions: ["notification"],
+        permissions: ['notification']
       }).resolves(true);
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
       assert.strictEqual(browser.permissions.request.callCount, j + 1,
-                         "called");
+        'called');
       assert.strictEqual(browser.permissions.remove.callCount, k,
-                         "not called");
-      assert.strictEqual(res.length, 1, "array length");
-      assert.deepEqual(res, [undefined], "result");
+        'not called');
+      assert.strictEqual(res.length, 1, 'array length');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
       const j = browser.permissions.request.callCount;
       const k = browser.permissions.remove.callCount;
       const evt = {
         target: {
           id: NOTIFY_COPY,
-          type: "checkbox",
-          checked: false,
-        },
+          type: 'checkbox',
+          checked: false
+        }
       };
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
       assert.strictEqual(browser.permissions.request.callCount, j,
-                         "not called");
+        'not called');
       assert.strictEqual(browser.permissions.remove.callCount, k + 1,
-                         "called");
-      assert.strictEqual(res.length, 1, "array length");
-      assert.deepEqual(res, [undefined], "result");
+        'called');
+      assert.strictEqual(res.length, 1, 'array length');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
-      const elm = document.createElement("input");
-      const elm2 = document.createElement("input");
-      const body = document.querySelector("body");
+      const elm = document.createElement('input');
+      const elm2 = document.createElement('input');
+      const body = document.querySelector('body');
       const evt = {
         target: {
-          id: "foo",
-          name: "bar",
-          type: "radio",
-        },
+          id: 'foo',
+          name: 'bar',
+          type: 'radio'
+        }
       };
-      elm.id = "foo";
-      elm.name = "bar";
-      elm.type = "radio";
-      elm2.id = "baz";
-      elm2.name = "bar";
-      elm2.type = "radio";
+      elm.id = 'foo';
+      elm.name = 'bar';
+      elm.type = 'radio';
+      elm2.id = 'baz';
+      elm2.name = 'bar';
+      elm2.type = 'radio';
       body.appendChild(elm);
       body.appendChild(elm2);
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 2, "called");
-      assert.strictEqual(res.length, 2, "array length");
-      assert.deepEqual(res, [undefined, undefined], "result");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 2, 'called');
+      assert.strictEqual(res.length, 2, 'array length');
+      assert.deepEqual(res, [undefined, undefined], 'result');
     });
   });
 
-  describe("handle input change", () => {
+  describe('handle input change', () => {
     const func = mjs.handleInputChange;
 
-    it("should call function", async () => {
+    it('should call function', async () => {
       const i = browser.storage.local.set.callCount;
       const evt = {
         target: {
-          id: "foo",
-          type: "text",
-        },
+          id: 'foo',
+          type: 'text'
+        }
       };
       const res = await func(evt);
-      assert.strictEqual(browser.storage.local.set.callCount, i + 1, "called");
-      assert.strictEqual(res.length, 1, "array length");
-      assert.deepEqual(res, [undefined], "result");
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+      assert.strictEqual(res.length, 1, 'array length');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 
-  describe("add event listener to input elements", () => {
+  describe('add event listener to input elements', () => {
     const func = mjs.addInputChangeListener;
 
-    it("should set listener", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      const spy = sinon.spy(elm, "addEventListener");
+    it('should set listener', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      const spy = sinon.spy(elm, 'addEventListener');
       body.appendChild(elm);
       await func();
-      assert.isTrue(spy.calledOnce, "called");
+      assert.isTrue(spy.calledOnce, 'called');
       elm.addEventListener.restore();
     });
   });
 
-  describe("set html input value", () => {
+  describe('set html input value', () => {
     const func = mjs.setHtmlInputValue;
 
-    it("should not set value if argument not given", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "checkbox";
+    it('should not set value if argument not given', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'checkbox';
       body.appendChild(elm);
       await func();
-      assert.strictEqual(elm.checked, false, "checked");
+      assert.strictEqual(elm.checked, false, 'checked');
     });
 
-    it("should not set value if element not found", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "checkbox";
+    it('should not set value if element not found', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'checkbox';
       body.appendChild(elm);
       await func({
-        id: "bar",
-        checked: true,
+        id: 'bar',
+        checked: true
       });
-      assert.strictEqual(elm.checked, false, "checked");
+      assert.strictEqual(elm.checked, false, 'checked');
     });
 
-    it("should not set value if type does not match", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "search";
+    it('should not set value if type does not match', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'search';
       elm.checked = false;
-      elm.value = "baz";
+      elm.value = 'baz';
       body.appendChild(elm);
       await func({
-        id: "foo",
+        id: 'foo',
         checked: true,
-        value: "qux",
+        value: 'qux'
       });
-      assert.strictEqual(elm.checked, false, "checked");
-      assert.strictEqual(elm.value, "baz", "checked");
+      assert.strictEqual(elm.checked, false, 'checked');
+      assert.strictEqual(elm.value, 'baz', 'checked');
     });
 
-    it("should set checkbox value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "checkbox";
+    it('should set checkbox value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'checkbox';
       body.appendChild(elm);
       await func({
-        id: "foo",
-        checked: true,
+        id: 'foo',
+        checked: true
       });
-      assert.strictEqual(elm.checked, true, "checked");
+      assert.strictEqual(elm.checked, true, 'checked');
     });
 
-    it("should set checkbox value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "checkbox";
+    it('should set checkbox value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'checkbox';
       body.appendChild(elm);
       await func({
-        id: "foo",
+        id: 'foo'
       });
-      assert.strictEqual(elm.checked, false, "checked");
+      assert.strictEqual(elm.checked, false, 'checked');
     });
 
-    it("should set radio value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "radio";
+    it('should set radio value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'radio';
       body.appendChild(elm);
       await func({
-        id: "foo",
-        checked: true,
+        id: 'foo',
+        checked: true
       });
-      assert.strictEqual(elm.checked, true, "checked");
+      assert.strictEqual(elm.checked, true, 'checked');
     });
 
-    it("should set text value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "text";
+    it('should set text value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'text';
       body.appendChild(elm);
       await func({
-        id: "foo",
-        value: "bar",
+        id: 'foo',
+        value: 'bar'
       });
-      assert.strictEqual(elm.value, "bar", "value");
+      assert.strictEqual(elm.value, 'bar', 'value');
     });
 
-    it("should set text value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "text";
+    it('should set text value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'text';
       body.appendChild(elm);
       await func({
-        id: "foo",
+        id: 'foo'
       });
-      assert.strictEqual(elm.value, "", "value");
+      assert.strictEqual(elm.value, '', 'value');
     });
 
-    it("should set url value", async () => {
-      const elm = document.createElement("input");
-      const body = document.querySelector("body");
-      elm.id = "foo";
-      elm.type = "url";
+    it('should set url value', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      elm.id = 'foo';
+      elm.type = 'url';
       body.appendChild(elm);
       await func({
-        id: "foo",
-        value: "bar/baz",
+        id: 'foo',
+        value: 'bar/baz'
       });
-      assert.strictEqual(elm.value, "bar/baz", "value");
+      assert.strictEqual(elm.value, 'bar/baz', 'value');
     });
   });
 
-  describe("set html input values from storage", () => {
+  describe('set html input values from storage', () => {
     const func = mjs.setValuesFromStorage;
 
-    it("should get empty array", async () => {
+    it('should get empty array', async () => {
       const i = browser.storage.local.get.callCount;
       browser.storage.local.get.resolves({});
       const res = await func();
-      assert.strictEqual(browser.storage.local.get.callCount, i + 1, "called");
-      assert.strictEqual(res.length, 0, "array length");
-      assert.deepEqual(res, [], "result");
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.strictEqual(res.length, 0, 'array length');
+      assert.deepEqual(res, [], 'result');
     });
 
-    it("should get empty array", async () => {
+    it('should get empty array', async () => {
       const i = browser.storage.local.get.callCount;
       browser.storage.local.get.resolves({
         foo: {},
-        bar: {},
+        bar: {}
       });
       const res = await func();
-      assert.strictEqual(browser.storage.local.get.callCount, i + 1, "called");
-      assert.strictEqual(res.length, 0, "array length");
-      assert.deepEqual(res, [], "result");
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.strictEqual(res.length, 0, 'array length');
+      assert.deepEqual(res, [], 'result');
     });
 
-    it("should get array", async () => {
+    it('should get array', async () => {
       const i = browser.storage.local.get.callCount;
       browser.storage.local.get.resolves({
         foo: {
-          bar: {},
+          bar: {}
         },
         baz: {
-          qux: {},
-        },
+          qux: {}
+        }
       });
       const res = await func();
-      assert.strictEqual(browser.storage.local.get.callCount, i + 1, "called");
-      assert.strictEqual(res.length, 2, "array length");
-      assert.deepEqual(res, [undefined, undefined], "result");
+      assert.strictEqual(browser.storage.local.get.callCount, i + 1, 'called');
+      assert.strictEqual(res.length, 2, 'array length');
+      assert.deepEqual(res, [undefined, undefined], 'result');
     });
   });
 });

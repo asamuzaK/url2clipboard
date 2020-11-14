@@ -3,24 +3,24 @@
  */
 
 import {
-  throwErr,
-} from "./common.js";
+  throwErr
+} from './common.js';
 import {
   getActiveTab,
-  getAllStorage,
-} from "./browser.js";
-import {localizeHtml} from "./localize.js";
+  getAllStorage
+} from './browser.js';
+import { localizeHtml } from './localize.js';
 import {
   addListenerToMenu, handleMsg, requestContextInfo, setFormatData, setTabInfo,
-  setVars, toggleMenuItem,
-} from "./popup-main.js";
+  setVars, toggleMenuItem
+} from './popup-main.js';
 
 /* api */
-const {runtime, storage} = browser;
+const { runtime, storage } = browser;
 
 /* listeners */
 storage.onChanged.addListener(data =>
-  setVars(data).then(toggleMenuItem).catch(throwErr),
+  setVars(data).then(toggleMenuItem).catch(throwErr)
 );
 runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
 
@@ -30,7 +30,7 @@ Promise.all([
   addListenerToMenu(),
   getActiveTab().then(tab => Promise.all([
     requestContextInfo(tab),
-    setTabInfo(tab),
+    setTabInfo(tab)
   ])),
-  setFormatData().then(getAllStorage).then(setVars).then(toggleMenuItem),
+  setFormatData().then(getAllStorage).then(setVars).then(toggleMenuItem)
 ]).catch(throwErr);

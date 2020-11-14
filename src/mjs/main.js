@@ -3,26 +3,22 @@
  */
 
 import {
-  Clip,
-} from "./clipboard.js";
+  Clip
+} from './clipboard.js';
 import {
-  getType, isObjectNotEmpty, isString, logErr,
-} from "./common.js";
+  getType, isObjectNotEmpty, isString, logErr
+} from './common.js';
 import {
   getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, queryTabs,
-  sendMessage,
-} from "./browser.js";
+  sendMessage
+} from './browser.js';
 import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
-  getFormatsKeys, hasFormat, setFormat,
-} from "./format.js";
+  getFormatsKeys, hasFormat, setFormat
+} from './format.js';
 import {
-  notifyOnCopy,
-} from "./notify.js";
-
-/* api */
-const {browserAction, i18n, runtime, tabs, windows} = browser;
-const menus = browser.menus || browser.contextMenus;
+  notifyOnCopy
+} from './notify.js';
 
 /* constants */
 import {
@@ -32,14 +28,18 @@ import {
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL, PROMPT,
-  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID,
-} from "./constant.js";
-const {TAB_ID_NONE} = tabs;
-const {WINDOW_ID_CURRENT} = windows;
+  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+} from './constant.js';
+
+/* api */
+const { browserAction, i18n, runtime, tabs, windows } = browser;
+const menus = browser.menus || browser.contextMenus;
+const { TAB_ID_NONE } = tabs;
+const { WINDOW_ID_CURRENT } = windows;
 
 /* variables */
 export const vars = {
-  iconId: "",
+  iconId: '',
   includeTitleHTMLHyper: false,
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
@@ -47,7 +47,7 @@ export const vars = {
   notifyOnCopy: false,
   preferCanonicalUrl: false,
   promptContent: false,
-  separateTextURL: false,
+  separateTextURL: false
 };
 
 /* enabled formats */
@@ -82,7 +82,7 @@ export const setFormatData = async () => {
   const items = await getFormats(true);
   const func = [];
   for (const [key, value] of items) {
-    const {enabled} = value;
+    const { enabled } = value;
     func.push(toggleEnabledFormats(key, enabled));
   }
   return Promise.all(func);
@@ -102,24 +102,24 @@ export const getFormatTemplate = async id => {
   let template;
   if (item) {
     const {
-      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt,
+      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt
     } = item;
     const {
       includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-      separateTextURL,
+      separateTextURL
     } = vars;
     switch (itemId) {
       case HTML_HYPER:
-        template = includeTitleHTMLHyper && itemTmpl || itemTmplAlt;
+        template = includeTitleHTMLHyper ? itemTmpl : itemTmplAlt;
         break;
       case HTML_PLAIN:
-        template = includeTitleHTMLPlain && itemTmpl || itemTmplAlt;
+        template = includeTitleHTMLPlain ? itemTmpl : itemTmplAlt;
         break;
       case MARKDOWN:
-        template = includeTitleMarkdown && itemTmpl || itemTmplAlt;
+        template = includeTitleMarkdown ? itemTmpl : itemTmplAlt;
         break;
       case TEXT_TEXT_URL:
-        template = separateTextURL && itemTmplAlt || itemTmpl;
+        template = separateTextURL ? itemTmplAlt : itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -141,7 +141,7 @@ export const getFormatTitle = async id => {
   const item = await getFormat(id);
   let title;
   if (item) {
-    const {id: itemId, title: itemTitle} = item;
+    const { id: itemId, title: itemTitle } = item;
     title = itemTitle || itemId;
   }
   return title || null;
@@ -154,34 +154,34 @@ export const enabledTabs = new Map();
 export const menuItems = {
   [COPY_PAGE]: {
     id: COPY_PAGE,
-    contexts: ["page", "selection"],
-    key: "(&C)",
+    contexts: ['page', 'selection'],
+    key: '(&C)'
   },
   [COPY_LINK]: {
     id: COPY_LINK,
-    contexts: ["link"],
-    key: "(&C)",
+    contexts: ['link'],
+    key: '(&C)'
   },
   [COPY_TAB]: {
     id: COPY_TAB,
-    contexts: ["tab"],
-    key: "(&T)",
+    contexts: ['tab'],
+    key: '(&T)'
   },
   [COPY_TABS_SELECTED]: {
     id: COPY_TABS_SELECTED,
-    contexts: ["tab"],
-    key: "(&S)",
+    contexts: ['tab'],
+    key: '(&S)'
   },
   [COPY_TABS_OTHER]: {
     id: COPY_TABS_OTHER,
-    contexts: ["tab"],
-    key: "(&O)",
+    contexts: ['tab'],
+    key: '(&O)'
   },
   [COPY_TABS_ALL]: {
     id: COPY_TABS_ALL,
-    contexts: ["tab"],
-    key: "(&A)",
-  },
+    contexts: ['tab'],
+    key: '(&A)'
+  }
 };
 
 /**
@@ -200,17 +200,19 @@ export const removeContextMenu = async () => menus.removeAll();
  * @returns {void}
  */
 export const createMenuItem = async (id, title, data = {}) => {
-  const {contexts, enabled, parentId} = data;
-  const {isWebExt} = vars;
+  const { contexts, enabled, parentId } = data;
+  const { isWebExt } = vars;
   if (isString(id) && isString(title) && Array.isArray(contexts)) {
     const opt = {
-      id, contexts, title,
-      enabled: !!enabled,
+      id,
+      contexts,
+      title,
+      enabled: !!enabled
     };
     if (parentId) {
       opt.parentId = parentId;
     }
-    if (contexts.includes("tab")) {
+    if (contexts.includes('tab')) {
       isWebExt && menus.create(opt);
     } else {
       menus.create(opt);
@@ -237,14 +239,14 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
   if (!isString(itemKey)) {
     throw new TypeError(`Expected String but got ${getType(itemKey)}.`);
   }
-  const {isWebExt} = vars;
-  const {id: keyId, title: keyTitle} = await getFormat(key);
+  const { isWebExt } = vars;
+  const { id: keyId, title: keyTitle } = await getFormat(key);
   const formatTitle = i18n.getMessage(
     `${itemId}_format_key`,
     [
       keyTitle || keyId,
-      isWebExt && itemKey || ` ${itemKey}`,
-    ],
+      (isWebExt && itemKey) || ` ${itemKey}`
+    ]
   );
   return createMenuItem(`${itemId}${key}`, formatTitle, itemData);
 };
@@ -257,11 +259,11 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
 export const createContextMenu = async () => {
   const func = [];
   if (enabledFormats.size) {
-    const {isWebExt, promptContent} = vars;
+    const { isWebExt, promptContent } = vars;
     const formats = await getFormats(true);
     const items = Object.keys(menuItems);
     for (const item of items) {
-      const {contexts, id: itemId, key: itemKey} = menuItems[item];
+      const { contexts, id: itemId, key: itemKey } = menuItems[item];
       let enabled;
       switch (itemId) {
         case COPY_LINK:
@@ -273,25 +275,25 @@ export const createContextMenu = async () => {
         default:
           enabled = true;
       }
-      const itemData = {contexts, enabled};
+      const itemData = { contexts, enabled };
       if (enabledFormats.size === 1) {
         const [key] = enabledFormats.keys();
         func.push(createSingleMenuItem(key, itemId, itemKey, itemData));
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
-          isWebExt && itemKey || ` ${itemKey}`,
+          (isWebExt && itemKey) || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         for (const [key, value] of formats) {
-          const {enabled: formatEnabled, menu: formatMenuTitle} = value;
+          const { enabled: formatEnabled, menu: formatMenuTitle } = value;
           if (formatEnabled) {
             const subItemId = `${itemId}${key}`;
             const subItemTitle = formatMenuTitle;
             const subItemData = {
               contexts,
               enabled: formatEnabled,
-              parentId: itemId,
+              parentId: itemId
             };
             func.push(createMenuItem(subItemId, subItemTitle, subItemData));
           }
@@ -314,27 +316,27 @@ export const updateContextMenu = async tabId => {
   }
   const func = [];
   if (enabledFormats.size) {
-    const {isWebExt, promptContent} = vars;
+    const { isWebExt, promptContent } = vars;
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
     const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
     const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
-      const {contexts, id: itemId} = menuItems[item];
+      const { contexts, id: itemId } = menuItems[item];
       switch (itemId) {
         case COPY_LINK: {
           const enabled = enabledTabs.get(tabId) || false;
-          func.push(menus.update(itemId, {enabled}));
+          func.push(menus.update(itemId, { enabled }));
           break;
         }
         case COPY_PAGE: {
           const enabled = isWebExt || !promptContent ||
                           enabledTabs.get(tabId) || false;
-          func.push(menus.update(itemId, {enabled}));
+          func.push(menus.update(itemId, { enabled }));
           break;
         }
         default: {
-          if (contexts.includes("tab") && isWebExt) {
+          if (contexts.includes('tab') && isWebExt) {
             let visible;
             if (itemId === COPY_TABS_ALL) {
               visible = highlightedTabs.length !== allTabs.length &&
@@ -346,7 +348,7 @@ export const updateContextMenu = async tabId => {
             } else {
               visible = !isHighlighted;
             }
-            func.push(menus.update(itemId, {visible}));
+            func.push(menus.update(itemId, { visible }));
           }
         }
       }
@@ -363,11 +365,11 @@ export const updateContextMenu = async tabId => {
  * @returns {?Function} - menus.reflesh()
  */
 export const handleMenusOnShown = async (info, tab) => {
-  const {contexts} = info;
-  const {id: tabId} = tab;
+  const { contexts } = info;
+  const { id: tabId } = tab;
   let func;
-  if (Array.isArray(contexts) && contexts.includes("tab") &&
-      Number.isInteger(tabId) && typeof menus.refresh === "function") {
+  if (Array.isArray(contexts) && contexts.includes('tab') &&
+      Number.isInteger(tabId) && typeof menus.refresh === 'function') {
     const arr = await updateContextMenu(tabId);
     if (Array.isArray(arr) && arr.length) {
       func = menus.refresh();
@@ -388,8 +390,8 @@ export const setEnabledTab = async (tabId, tab, data = {}) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  const {enabled} = data;
-  const info = {tabId, enabled};
+  const { enabled } = data;
+  const info = { tabId, enabled };
   if (tab || await isTab(tabId)) {
     enabledTabs.set(tabId, !!enabled);
   }
@@ -417,14 +419,14 @@ export const removeEnabledTab = async tabId => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setIcon = async () => {
-  const {iconId} = vars;
+  const { iconId } = vars;
   const name = i18n.getMessage(EXT_NAME);
   const icon = runtime.getURL(ICON);
-  const path = iconId && `${icon}${iconId}` || icon;
+  const path = (iconId && `${icon}${iconId}`) || icon;
   const title = name;
   return Promise.all([
-    browserAction.setIcon({path}),
-    browserAction.setTitle({title}),
+    browserAction.setIcon({ path }),
+    browserAction.setTitle({ title })
   ]);
 };
 
@@ -432,10 +434,10 @@ export const setIcon = async () => {
 export const contextInfo = {
   isLink: false,
   content: null,
-  selectionText: "",
+  selectionText: '',
   title: null,
   url: null,
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -446,7 +448,7 @@ export const contextInfo = {
 export const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
-  contextInfo.selectionText = "";
+  contextInfo.selectionText = '';
   contextInfo.title = null;
   contextInfo.url = null;
   contextInfo.canonicalUrl = null;
@@ -461,7 +463,7 @@ export const initContextInfo = async () => {
  */
 export const updateContextInfo = async (data = {}) => {
   await initContextInfo();
-  const {contextInfo: info} = data;
+  const { contextInfo: info } = data;
   if (info) {
     const items = Object.entries(info);
     for (const [key, value] of items) {
@@ -485,11 +487,15 @@ export const getAllTabsInfo = async menuItemId => {
   const template = await getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -510,14 +516,18 @@ export const getOtherTabsInfo = async menuItemId => {
   const arr = await queryTabs({
     active: false,
     windowId: WINDOW_ID_CURRENT,
-    windowType: "normal",
+    windowType: 'normal'
   });
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -537,11 +547,15 @@ export const getSelectedTabsInfo = async menuItemId => {
   const template = await getFormatTemplate(menuItemId);
   const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -560,21 +574,21 @@ export const extractClickedData = async (info, tab) => {
     const {
       menuItemId, selectionText: infoSelectionText,
       canonicalUrl: infoCanonicalUrl, content: infoContent,
-      isLink: infoIsLink, title: infoTitle, url: infoUrl,
+      isLink: infoIsLink, title: infoTitle, url: infoUrl
     } = info;
-    const {id: tabId, title: tabTitle, url: tabUrl} = tab;
+    const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const {notifyOnCopy: notify, preferCanonicalUrl, promptContent} = vars;
+      const { notifyOnCopy: notify, preferCanonicalUrl, promptContent } = vars;
       const {
         canonicalUrl: contextCanonicalUrl, content: contextContent,
         selectionText: contextSelectionText, title: contextTitle,
-        url: contextUrl,
+        url: contextUrl
       } = contextInfo;
-      const {hash: tabUrlHash} = new URL(tabUrl);
+      const { hash: tabUrlHash } = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
       const formatTitle = await getFormatTitle(formatId);
-      const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+      const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
       let text;
       if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
@@ -612,7 +626,7 @@ export const extractClickedData = async (info, tab) => {
           url = tabUrl;
         }
         text = await createLinkText({
-          content, formatId, template, title, url,
+          content, formatId, template, title, url
         });
       } else {
         const template = await getFormatTemplate(formatId);
@@ -639,7 +653,7 @@ export const extractClickedData = async (info, tab) => {
           } else {
             content = infoSelectionText || tabTitle;
             title = tabTitle;
-            url = !tabUrlHash && preferCanonicalUrl && contextCanonicalUrl ||
+            url = (!tabUrlHash && preferCanonicalUrl && contextCanonicalUrl) ||
                   tabUrl;
           }
         } else if (enabledFormats.has(formatId)) {
@@ -663,7 +677,7 @@ export const extractClickedData = async (info, tab) => {
           } else {
             content = infoSelectionText || tabTitle;
             title = tabTitle;
-            url = !tabUrlHash && preferCanonicalUrl && infoCanonicalUrl ||
+            url = (!tabUrlHash && preferCanonicalUrl && infoCanonicalUrl) ||
                   tabUrl;
           }
         }
@@ -671,13 +685,19 @@ export const extractClickedData = async (info, tab) => {
           if (promptContent && enabledTabs.get(tabId)) {
             func.push(sendMessage(tabId, {
               [CONTENT_EDITED_GET]: {
-                content, formatId, formatTitle, mimeType, promptContent,
-                template, title, url,
-              },
+                content,
+                formatId,
+                formatTitle,
+                mimeType,
+                promptContent,
+                template,
+                title,
+                url
+              }
             }));
           } else {
             text = await createLinkText({
-              content, formatId, template, title, url,
+              content, formatId, template, title, url
             });
           }
         }
@@ -699,8 +719,10 @@ export const extractClickedData = async (info, tab) => {
  * @returns {?Function} - notifyOnCopy()
  */
 export const execCopy = async (data = {}) => {
-  const {content, formatId, formatTitle, mimeType, template, title, url} = data;
-  const {notifyOnCopy: notify} = vars;
+  const {
+    content, formatId, formatTitle, mimeType, template, title, url
+  } = data;
+  const { notifyOnCopy: notify } = vars;
   if (!isString(formatId)) {
     throw new TypeError(`Expected String but got ${getType(formatId)}.`);
   }
@@ -714,7 +736,7 @@ export const execCopy = async (data = {}) => {
     throw new TypeError(`Expected String but got ${getType(formatTitle)}.`);
   }
   const text = await createLinkText({
-    content, formatId, template, title, url,
+    content, formatId, template, title, url
   });
   let func;
   await new Clip(text, mimeType).copy();
@@ -732,7 +754,7 @@ export const execCopy = async (data = {}) => {
  */
 export const handleActiveTab = async (info = {}) => {
   let func;
-  const {tabId} = info;
+  const { tabId } = info;
   if (Number.isInteger(tabId) && await isTab(tabId)) {
     func = updateContextMenu(tabId);
   }
@@ -752,10 +774,10 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
   let func;
-  const {status} = info;
-  const {active} = tab;
-  if (status === "complete" && active) {
-    func = handleActiveTab({tabId});
+  const { status } = info;
+  const { active } = tab;
+  if (status === 'complete' && active) {
+    func = handleActiveTab({ tabId });
   }
   return func || null;
 };
@@ -771,14 +793,14 @@ export const handleCmd = async cmd => {
     throw new TypeError(`Expected String but got ${getType(cmd)}.`);
   }
   if (cmd.startsWith(CMD_COPY)) {
-    const format = cmd.replace(CMD_COPY, "");
+    const format = cmd.replace(CMD_COPY, '');
     const tabId = await getActiveTabId();
     try {
       Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
       enabledFormats.has(format) && await sendMessage(tabId, {
         [CONTEXT_INFO_GET]: {
-          format, tabId,
-        },
+          format, tabId
+        }
       });
     } catch (e) {
       logErr(e);
@@ -794,7 +816,7 @@ export const handleCmd = async cmd => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async (msg, sender = {}) => {
-  const {tab} = sender;
+  const { tab } = sender;
   const func = [];
   if (isObjectNotEmpty(msg)) {
     const items = Object.entries(msg);
@@ -802,8 +824,8 @@ export const handleMsg = async (msg, sender = {}) => {
       switch (key) {
         case CONTEXT_INFO: {
           if (isObjectNotEmpty(value)) {
-            const {contextInfo: info, data} = value;
-            const {format} = data;
+            const { contextInfo: info, data } = value;
+            const { format } = data;
             info.menuItemId = format;
             func.push(extractClickedData(info, tab));
           }
@@ -816,20 +838,18 @@ export const handleMsg = async (msg, sender = {}) => {
           break;
         }
         case NOTIFY_COPY: {
-          const {notifyOnCopy: notify} = vars;
+          const { notifyOnCopy: notify } = vars;
           notify && value && func.push(notifyOnCopy());
           break;
         }
-        case "keydown":
-        case "mousedown":
+        case 'keydown':
+        case 'mousedown':
           func.push(updateContextInfo(value));
           break;
-        case "load": {
+        case 'load': {
           if (tab) {
-            const {id: tabId} = tab;
-            func.push(
-              setEnabledTab(tabId, tab, value).then(handleActiveTab),
-            );
+            const { id: tabId } = tab;
+            func.push(setEnabledTab(tabId, tab, value).then(handleActiveTab));
           }
           func.push(updateContextInfo(value));
           break;
@@ -855,7 +875,7 @@ export const setVar = async (item, obj, changed = false) => {
   }
   const func = [];
   if (isObjectNotEmpty(obj)) {
-    const {checked, value} = obj;
+    const { checked, value } = obj;
     switch (item) {
       case ICON_AUTO:
       case ICON_BLACK:
@@ -881,7 +901,7 @@ export const setVar = async (item, obj, changed = false) => {
         if (changed) {
           func.push(
             removeContextMenu().then(createContextMenu).then(getActiveTabId)
-              .then(updateContextMenu),
+              .then(updateContextMenu)
           );
         }
         break;
@@ -893,7 +913,7 @@ export const setVar = async (item, obj, changed = false) => {
           if (changed) {
             func.push(
               toggleEnabledFormats(item, !!checked).then(removeContextMenu)
-                .then(createContextMenu),
+                .then(createContextMenu)
             );
           } else {
             func.push(toggleEnabledFormats(item, !!checked));
@@ -915,7 +935,7 @@ export const setVars = async (data = {}) => {
   const func = [];
   const items = Object.entries(data);
   for (const [key, value] of items) {
-    const {newValue} = value;
+    const { newValue } = value;
     func.push(setVar(key, newValue || value, !!newValue));
   }
   return Promise.all(func);

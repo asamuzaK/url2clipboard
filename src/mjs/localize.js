@@ -3,11 +3,11 @@
  */
 
 /* api */
-const {i18n} = browser;
-
 /* constants */
-import {EXT_LOCALE} from "./constant.js";
-const DATA_I18N = "data-i18n";
+import { EXT_LOCALE } from './constant.js';
+
+const { i18n } = browser;
+const DATA_I18N = 'data-i18n';
 
 /**
  * localize attribute value
@@ -21,11 +21,11 @@ export const localizeAttr = async elm => {
     const [id] = elm.getAttribute(DATA_I18N).split(/\s*,\s*/);
     if (id) {
       const attrs = {
-        alt: "alt",
-        ariaLabel: "aria-label",
-        href: "href",
-        placeholder: "placeholder",
-        title: "title",
+        alt: 'alt',
+        ariaLabel: 'aria-label',
+        href: 'href',
+        placeholder: 'placeholder',
+        title: 'title'
       };
       const items = Object.entries(attrs);
       for (const item of items) {
@@ -55,6 +55,6 @@ export const localizeHtml = async () => {
       }
       localizeAttr(node);
     }
-    document.documentElement.setAttribute("lang", lang);
+    document.documentElement.setAttribute('lang', lang);
   }
 };

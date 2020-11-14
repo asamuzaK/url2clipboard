@@ -3,24 +3,21 @@
  */
 
 import {
-  Clip,
-} from "./clipboard.js";
+  Clip
+} from './clipboard.js';
 import {
-  closeWindow, getType, isString, throwErr,
-} from "./common.js";
+  closeWindow, getType, isString, throwErr
+} from './common.js';
 import {
-  getAllTabsInWindow, getHighlightedTab, queryTabs, sendMessage,
-} from "./browser.js";
+  getAllTabsInWindow, getHighlightedTab, queryTabs, sendMessage
+} from './browser.js';
 import {
   createTabsLinkText, createLinkText, getFormat, getFormatId, getFormats,
-  getFormatsKeys, hasFormat, setFormat,
-} from "./format.js";
+  getFormatsKeys, hasFormat, setFormat
+} from './format.js';
 import {
-  notifyOnCopy,
-} from "./notify.js";
-
-/* api */
-const {runtime, tabs, windows} = browser;
+  notifyOnCopy
+} from './notify.js';
 
 /* constants */
 import {
@@ -30,11 +27,14 @@ import {
   HTML_HYPER, HTML_PLAIN,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL,
-  TEXT_SEP_LINES, TEXT_TEXT_URL,
-} from "./constant.js";
-const {TAB_ID_NONE} = tabs;
-const {WINDOW_ID_CURRENT} = windows;
-const OPTIONS_OPEN = "openOptions";
+  TEXT_SEP_LINES, TEXT_TEXT_URL
+} from './constant.js';
+
+/* api */
+const { runtime, tabs, windows } = browser;
+const { TAB_ID_NONE } = tabs;
+const { WINDOW_ID_CURRENT } = windows;
+const OPTIONS_OPEN = 'openOptions';
 
 /* variables */
 export const vars = {
@@ -43,7 +43,7 @@ export const vars = {
   includeTitleMarkdown: false,
   notifyOnCopy: false,
   preferCanonicalUrl: false,
-  separateTextURL: false,
+  separateTextURL: false
 };
 
 /* enabled formats */
@@ -78,7 +78,7 @@ export const setFormatData = async () => {
   const items = await getFormats(true);
   const func = [];
   for (const [key, value] of items) {
-    const {enabled} = value;
+    const { enabled } = value;
     func.push(toggleEnabledFormats(key, enabled));
   }
   return Promise.all(func);
@@ -98,24 +98,24 @@ export const getFormatTemplate = async id => {
   let template;
   if (item) {
     const {
-      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt,
+      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt
     } = item;
     const {
       includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-      separateTextURL,
+      separateTextURL
     } = vars;
     switch (itemId) {
       case HTML_HYPER:
-        template = includeTitleHTMLHyper && itemTmpl || itemTmplAlt;
+        template = includeTitleHTMLHyper ? itemTmpl : itemTmplAlt;
         break;
       case HTML_PLAIN:
-        template = includeTitleHTMLPlain && itemTmpl || itemTmplAlt;
+        template = includeTitleHTMLPlain ? itemTmpl : itemTmplAlt;
         break;
       case MARKDOWN:
-        template = includeTitleMarkdown && itemTmpl || itemTmplAlt;
+        template = includeTitleMarkdown ? itemTmpl : itemTmplAlt;
         break;
       case TEXT_TEXT_URL:
-        template = separateTextURL && itemTmplAlt || itemTmpl;
+        template = separateTextURL ? itemTmplAlt : itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -137,7 +137,7 @@ export const getFormatTitle = async id => {
   const item = await getFormat(id);
   let title;
   if (item) {
-    const {id: itemId, title: itemTitle} = item;
+    const { id: itemId, title: itemTitle } = item;
     title = itemTitle || itemId;
   }
   return title || null;
@@ -147,7 +147,7 @@ export const getFormatTitle = async id => {
 export const tabInfo = {
   id: null,
   title: null,
-  url: null,
+  url: null
 };
 
 /**
@@ -173,7 +173,7 @@ export const setTabInfo = async tab => {
   const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
   await initTabInfo();
   if (tab) {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     contentPage.value = title;
     contentBBCode.value = url;
     tabInfo.id = id;
@@ -188,7 +188,7 @@ export const contextInfo = {
   content: null,
   title: null,
   url: null,
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -219,11 +219,15 @@ export const getAllTabsInfo = async menuItemId => {
   const template = await getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -244,14 +248,18 @@ export const getOtherTabsInfo = async menuItemId => {
   const arr = await queryTabs({
     active: false,
     windowId: WINDOW_ID_CURRENT,
-    windowType: "normal",
+    windowType: 'normal'
   });
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -271,11 +279,15 @@ export const getSelectedTabsInfo = async menuItemId => {
   const template = await getFormatTemplate(menuItemId);
   const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
-    const {id, title, url} = tab;
+    const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
-      id, formatId, template, title, url,
-      content: title,
+      id,
+      formatId,
+      template,
+      title,
+      url,
+      content: title
     });
   });
   return tabsInfo;
@@ -288,14 +300,14 @@ export const getSelectedTabsInfo = async menuItemId => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const createCopyData = async evt => {
-  const {target} = evt;
-  const {id: menuItemId} = target;
-  const {notifyOnCopy: notify, preferCanonicalUrl} = vars;
-  const {title: tabTitle, url: tabUrl} = tabInfo;
-  const {canonicalUrl, title: contextTitle, url: contextUrl} = contextInfo;
+  const { target } = evt;
+  const { id: menuItemId } = target;
+  const { notifyOnCopy: notify, preferCanonicalUrl } = vars;
+  const { title: tabTitle, url: tabUrl } = tabInfo;
+  const { canonicalUrl, title: contextTitle, url: contextUrl } = contextInfo;
   const formatId = getFormatId(menuItemId);
   const formatTitle = await getFormatTitle(formatId);
-  const mimeType = formatId === HTML_HYPER && MIME_HTML || MIME_PLAIN;
+  const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
   const func = [];
   let text;
   if (menuItemId.startsWith(COPY_TABS_ALL)) {
@@ -327,26 +339,26 @@ export const createCopyData = async evt => {
     let content, title, url;
     if (menuItemId.startsWith(COPY_LINK)) {
       if (formatId === BBCODE_URL) {
-        content = document.getElementById(CONTENT_LINK_BBCODE).value || "";
+        content = document.getElementById(CONTENT_LINK_BBCODE).value || '';
         url = contextUrl;
       } else {
-        content = document.getElementById(CONTENT_LINK).value || "";
+        content = document.getElementById(CONTENT_LINK).value || '';
         title = contextTitle;
         url = contextUrl;
       }
     } else if (menuItemId.startsWith(COPY_PAGE)) {
       if (formatId === BBCODE_URL) {
-        content = document.getElementById(CONTENT_PAGE_BBCODE).value || "";
-        url = preferCanonicalUrl && canonicalUrl || tabUrl;
+        content = document.getElementById(CONTENT_PAGE_BBCODE).value || '';
+        url = preferCanonicalUrl ? canonicalUrl : tabUrl;
       } else {
-        content = document.getElementById(CONTENT_PAGE).value || "";
+        content = document.getElementById(CONTENT_PAGE).value || '';
         title = tabTitle;
-        url = preferCanonicalUrl && canonicalUrl || tabUrl;
+        url = preferCanonicalUrl ? canonicalUrl : tabUrl;
       }
     }
     if (isString(content) && isString(url)) {
       text = await createLinkText({
-        content, formatId, template, title, url,
+        content, formatId, template, title, url
       });
     }
   }
@@ -380,13 +392,13 @@ export const menuOnClick = evt =>
  * @returns {void}
  */
 export const addListenerToMenu = async () => {
-  const nodes = document.querySelectorAll("button");
+  const nodes = document.querySelectorAll('button');
   for (const node of nodes) {
-    const {id} = node;
+    const { id } = node;
     if (id === OPTIONS_OPEN) {
-      node.addEventListener("click", openOptionsOnClick);
+      node.addEventListener('click', openOptionsOnClick);
     } else {
-      node.addEventListener("click", menuOnClick);
+      node.addEventListener('click', menuOnClick);
     }
   }
 };
@@ -397,23 +409,23 @@ export const addListenerToMenu = async () => {
  * @returns {void}
  */
 export const toggleMenuItem = async () => {
-  const nodes = document.querySelectorAll("button");
+  const nodes = document.querySelectorAll('button');
   const formatsKeys = await getFormatsKeys(true);
   for (const node of nodes) {
-    const {id, parentNode} = node;
+    const { id, parentNode } = node;
     const formatId = getFormatId(id);
     if (formatsKeys.includes(formatId)) {
       if (formatId === BBCODE_URL &&
           (id.startsWith(COPY_LINK) || id.startsWith(COPY_PAGE))) {
         if (enabledFormats.has(formatId)) {
-          parentNode.parentNode.removeAttribute("hidden");
+          parentNode.parentNode.removeAttribute('hidden');
         } else {
-          parentNode.parentNode.setAttribute("hidden", "hidden");
+          parentNode.parentNode.setAttribute('hidden', 'hidden');
         }
       } else if (enabledFormats.has(formatId)) {
-        parentNode.removeAttribute("hidden");
+        parentNode.removeAttribute('hidden');
       } else {
-        parentNode.setAttribute("hidden", "hidden");
+        parentNode.setAttribute('hidden', 'hidden');
       }
     }
   }
@@ -426,10 +438,10 @@ export const toggleMenuItem = async () => {
  * @returns {void}
  */
 export const updateMenu = async (data = {}) => {
-  const {contextInfo: info} = data;
+  const { contextInfo: info } = data;
   await initContextInfo();
   if (info) {
-    const {canonicalUrl, content, isLink, title, url} = info;
+    const { canonicalUrl, content, isLink, title, url } = info;
     const nodes = document.querySelectorAll(LINK_MENU);
     const contentLink = document.getElementById(CONTENT_LINK);
     const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
@@ -438,10 +450,10 @@ export const updateMenu = async (data = {}) => {
     contextInfo.content = content;
     contextInfo.title = title;
     contextInfo.url = url;
-    contentLink.value = content || "";
-    contentBBCode.value = url || "";
+    contentLink.value = content || '';
+    contentBBCode.value = url || '';
     for (const node of nodes) {
-      const attr = "disabled";
+      const attr = 'disabled';
       if (isLink) {
         node.removeAttribute(attr);
       } else {
@@ -458,12 +470,12 @@ export const updateMenu = async (data = {}) => {
  * @returns {void}
  */
 export const requestContextInfo = async (tab = {}) => {
-  const {id} = tab;
+  const { id } = tab;
   await initContextInfo();
   if (Number.isInteger(id) && id !== TAB_ID_NONE) {
     try {
       await sendMessage(id, {
-        [CONTEXT_INFO_GET]: true,
+        [CONTEXT_INFO_GET]: true
       });
     } catch (e) {
       await updateMenu({
@@ -472,8 +484,8 @@ export const requestContextInfo = async (tab = {}) => {
           content: null,
           title: null,
           url: null,
-          canonicalUrl: null,
-        },
+          canonicalUrl: null
+        }
       });
     }
   }
@@ -512,7 +524,7 @@ export const handleMsg = async msg => {
 export const setVar = async (item, obj) => {
   let func;
   if (item && obj) {
-    const {checked} = obj;
+    const { checked } = obj;
     switch (item) {
       case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
@@ -545,7 +557,7 @@ export const setVars = async (data = {}) => {
   const items = Object.entries(data);
   const func = [];
   for (const [key, value] of items) {
-    const {newValue} = value;
+    const { newValue } = value;
     func.push(setVar(key, newValue || value, !!newValue));
   }
   return Promise.all(func);

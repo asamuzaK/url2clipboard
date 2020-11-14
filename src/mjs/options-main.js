@@ -3,14 +3,14 @@
  */
 
 import {
-  isObjectNotEmpty, isString, throwErr,
-} from "./common.js";
+  isObjectNotEmpty, isString, throwErr
+} from './common.js';
 import {
-  getStorage, setStorage, removePermission, requestPermission,
-} from "./browser.js";
+  getStorage, setStorage, removePermission, requestPermission
+} from './browser.js';
 import {
-  NOTIFY_COPY,
-} from "./constant.js";
+  NOTIFY_COPY
+} from './constant.js';
 
 /**
  * create pref
@@ -19,15 +19,16 @@ import {
  * @returns {object} - pref data
  */
 export const createPref = async (elm = {}) => {
-  const {dataset, id} = elm;
-  return id && {
+  const { dataset, id } = elm;
+  const data = id && {
     [id]: {
       id,
       checked: !!elm.checked,
-      value: elm.value || "",
-      subItemOf: dataset && dataset.subItemOf || null,
-    },
-  } || null;
+      value: elm.value || '',
+      subItemOf: (dataset && dataset.subItemOf) || null
+    }
+  };
+  return data || null;
 };
 
 /**
@@ -37,10 +38,10 @@ export const createPref = async (elm = {}) => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const storePref = async evt => {
-  const {target} = evt;
-  const {checked, id, name, type} = target;
+  const { target } = evt;
+  const { checked, id, name, type } = target;
   const func = [];
-  if (type === "radio") {
+  if (type === 'radio') {
     const nodes = document.querySelectorAll(`[name=${name}]`);
     for (const node of nodes) {
       func.push(createPref(node).then(setStorage));
@@ -49,9 +50,9 @@ export const storePref = async evt => {
     switch (id) {
       case NOTIFY_COPY:
         if (checked) {
-          target.checked = await requestPermission(["notifications"]);
+          target.checked = await requestPermission(['notifications']);
         } else {
-          await removePermission(["notifications"]);
+          await removePermission(['notifications']);
         }
         func.push(createPref(target).then(setStorage));
         break;
@@ -77,9 +78,9 @@ export const handleInputChange = evt => storePref(evt).catch(throwErr);
  * @returns {void}
  */
 export const addInputChangeListener = async () => {
-  const nodes = document.querySelectorAll("input");
+  const nodes = document.querySelectorAll('input');
   for (const node of nodes) {
-    node.addEventListener("change", handleInputChange);
+    node.addEventListener('change', handleInputChange);
   }
 };
 
@@ -90,18 +91,18 @@ export const addInputChangeListener = async () => {
  * @returns {void}
  */
 export const setHtmlInputValue = async (data = {}) => {
-  const {checked, id, value} = data;
+  const { checked, id, value } = data;
   const elm = id && document.getElementById(id);
   if (elm) {
-    const {type} = elm;
+    const { type } = elm;
     switch (type) {
-      case "checkbox":
-      case "radio":
+      case 'checkbox':
+      case 'radio':
         elm.checked = !!checked;
         break;
-      case "text":
-      case "url":
-        elm.value = isString(value) && value || "";
+      case 'text':
+      case 'url':
+        elm.value = isString(value) ? value : '';
         break;
       default:
     }

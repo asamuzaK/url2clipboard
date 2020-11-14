@@ -3,16 +3,16 @@
  */
 
 import {
-  isString,
-} from "./common.js";
-
-/* api */
-const {runtime} = browser;
+  isString
+} from './common.js';
 
 /* constants */
 import {
-  ICON_AUTO, WEBEXT_ID,
-} from "./constant.js";
+  ICON_AUTO, WEBEXT_ID
+} from './constant.js';
+
+/* api */
+const { runtime } = browser;
 
 /**
  * disable input

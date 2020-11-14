@@ -2,13 +2,13 @@
  * notify.test.js
  */
 
-import {assert} from "chai";
-import {afterEach, beforeEach, describe, it} from "mocha";
-import {browser} from "./mocha/setup.js";
-import * as mjs from "../src/mjs/notify.js";
-import {ICON, NOTIFY_COPY} from "../src/mjs/constant.js";
+import { assert } from 'chai';
+import { afterEach, beforeEach, describe, it } from 'mocha';
+import { browser } from './mocha/setup.js';
+import * as mjs from '../src/mjs/notify.js';
+import { ICON, NOTIFY_COPY } from '../src/mjs/constant.js';
 
-describe("notify", () => {
+describe('notify', () => {
   beforeEach(() => {
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
@@ -20,40 +20,40 @@ describe("notify", () => {
     browser._sandbox.reset();
   });
 
-  it("should get browser object", () => {
-    assert.isObject(browser, "browser");
+  it('should get browser object', () => {
+    assert.isObject(browser, 'browser');
   });
 
-  describe("notify on copy", () => {
+  describe('notify on copy', () => {
     const func = mjs.notifyOnCopy;
 
-    it("should call function", async () => {
-      browser.runtime.getURL.withArgs(ICON).returns("foo/bar");
-      browser.i18n.getMessage.withArgs("notifyOnCopyMsg").returns("foo");
-      browser.i18n.getMessage.withArgs("extensionName").returns("bar");
+    it('should call function', async () => {
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.i18n.getMessage.withArgs('notifyOnCopyMsg').returns('foo');
+      browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       browser.notifications.create.withArgs(NOTIFY_COPY, {
-        iconUrl: "foo/bar",
-        message: "foo",
-        title: "bar",
-        type: "basic",
+        iconUrl: 'foo/bar',
+        message: 'foo',
+        title: 'bar',
+        type: 'basic'
       }).resolves(true);
       const res = await func();
-      assert.isTrue(res, "result");
+      assert.isTrue(res, 'result');
     });
 
-    it("should call function", async () => {
-      browser.runtime.getURL.withArgs(ICON).returns("foo/bar");
-      browser.i18n.getMessage.withArgs("notifyOnCopyMsg_format", "foo")
-        .returns("foo");
-      browser.i18n.getMessage.withArgs("extensionName").returns("bar");
+    it('should call function', async () => {
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format', 'foo')
+        .returns('foo');
+      browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       browser.notifications.create.withArgs(NOTIFY_COPY, {
-        iconUrl: "foo/bar",
-        message: "foo",
-        title: "bar",
-        type: "basic",
+        iconUrl: 'foo/bar',
+        message: 'foo',
+        title: 'bar',
+        type: 'basic'
       }).resolves(true);
-      const res = await func("foo");
-      assert.isTrue(res, "result");
+      const res = await func('foo');
+      assert.isTrue(res, 'result');
     });
   });
 });

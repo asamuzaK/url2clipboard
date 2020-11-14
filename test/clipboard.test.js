@@ -1,23 +1,22 @@
 /**
  * clipboard.test.js
  */
-/* eslint-disable max-nested-callbacks */
 
-import {assert} from "chai";
-import {afterEach, beforeEach, describe, it} from "mocha";
-import {browser, createJsdom} from "./mocha/setup.js";
-import sinon from "sinon";
-import * as mjs from "../src/mjs/clipboard.js";
+import { assert } from 'chai';
+import { afterEach, beforeEach, describe, it } from 'mocha';
+import { browser, createJsdom } from './mocha/setup.js';
+import sinon from 'sinon';
+import * as mjs from '../src/mjs/clipboard.js';
 
-describe("clipboard", () => {
+describe('clipboard', () => {
   let window, document, navigator;
   const globalKeys = [
-    "Blob",
-    "ClipboardItem",
-    "DOMParser",
-    "HTMLUnknownElement",
-    "Node",
-    "XMLSerializer",
+    'Blob',
+    'ClipboardItem',
+    'DOMParser',
+    'HTMLUnknownElement',
+    'Node',
+    'XMLSerializer'
   ];
 
   beforeEach(() => {
@@ -35,31 +34,33 @@ describe("clipboard", () => {
     for (const key of globalKeys) {
       // Not implemented in jsdom
       if (!window[key]) {
-        if (key === "ClipboardItem") {
+        if (key === 'ClipboardItem') {
           window[key] = class ClipboardItem {
             constructor(obj) {
               this._items = new Map();
               this._mimetypes = [
-                "application/json",
-                "application/xhtml+xml",
-                "application/xml",
-                "image/gif",
-                "image/jpeg",
-                "image/jpg",
-                "image/png",
-                "image/svg+xml",
-                "text/css",
-                "text/csv",
-                "text/html",
-                "text/plain",
-                "text/uri-list",
-                "text/xml",
+                'application/json',
+                'application/xhtml+xml',
+                'application/xml',
+                'image/gif',
+                'image/jpeg',
+                'image/jpg',
+                'image/png',
+                'image/svg+xml',
+                'text/css',
+                'text/csv',
+                'text/html',
+                'text/plain',
+                'text/uri-list',
+                'text/xml'
               ];
               this._setItems(obj);
             }
+
             get types() {
               return Array.from(this._items.keys());
             }
+
             _setItems(obj) {
               const items = Object.entries(obj);
               for (const [mime, blob] of items) {
@@ -70,6 +71,7 @@ describe("clipboard", () => {
                 }
               }
             }
+
             async getType(mime) {
               const blob = this._items.get(mime);
               if (!blob) {
@@ -97,96 +99,96 @@ describe("clipboard", () => {
     browser._sandbox.reset();
   });
 
-  it("should get browser object", () => {
-    assert.isObject(browser, "browser");
+  it('should get browser object', () => {
+    assert.isObject(browser, 'browser');
   });
 
-  describe("Clip", () => {
-    const {Clip} = mjs;
+  describe('Clip', () => {
+    const { Clip } = mjs;
 
-    it("should create an instance", () => {
+    it('should create an instance', () => {
       const clip = new Clip();
       assert.instanceOf(clip, Clip);
     });
 
-    describe("getter / setter", () => {
-      it("should throw", () => {
+    describe('getter / setter', () => {
+      it('should throw', () => {
         assert.throws(() => {
           const clip = new Clip();
-          clip._supportedMimeTypes.push("text/javascript");
+          clip._supportedMimeTypes.push('text/javascript');
         });
       });
 
-      it("should get value", () => {
-        const clip = new Clip("foo");
-        assert.strictEqual(clip.content, "foo", "value");
+      it('should get value', () => {
+        const clip = new Clip('foo');
+        assert.strictEqual(clip.content, 'foo', 'value');
       });
 
-      it("should throw", () => {
+      it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.content = 1;
-        }, "Expected String but got Number.");
+        }, 'Expected String but got Number.');
       });
 
-      it("should set value", () => {
+      it('should set value', () => {
         const clip = new Clip();
-        clip.content = "foo";
-        assert.strictEqual(clip.content, "foo", "value");
+        clip.content = 'foo';
+        assert.strictEqual(clip.content, 'foo', 'value');
       });
 
-      it("should get vavlue", () => {
-        const clip = new Clip("foo", "bar");
-        assert.strictEqual(clip.mime, "bar", "value");
+      it('should get vavlue', () => {
+        const clip = new Clip('foo', 'bar');
+        assert.strictEqual(clip.mime, 'bar', 'value');
       });
 
-      it("should get value", () => {
-        const clip = new Clip("foo", "text/plain");
-        assert.strictEqual(clip.mime, "text/plain", "value");
+      it('should get value', () => {
+        const clip = new Clip('foo', 'text/plain');
+        assert.strictEqual(clip.mime, 'text/plain', 'value');
       });
 
-      it("should throw", () => {
+      it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.mime = 1;
-        }, "Expected String but got Number.");
+        }, 'Expected String but got Number.');
       });
 
-      it("should throw", () => {
+      it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
-          clip.mime = "image/png";
-        }, "Mime type of image/png is not supported.");
+          clip.mime = 'image/png';
+        }, 'Mime type of image/png is not supported.');
       });
 
-      it("should throw", () => {
+      it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
-          clip.mime = " image/png ";
-        }, "Mime type of image/png is not supported.");
+          clip.mime = ' image/png ';
+        }, 'Mime type of image/png is not supported.');
       });
 
-      it("should set value", () => {
+      it('should set value', () => {
         const clip = new Clip();
-        clip.mime = "text/plain";
-        assert.strictEqual(clip.mime, "text/plain", "value");
+        clip.mime = 'text/plain';
+        assert.strictEqual(clip.mime, 'text/plain', 'value');
       });
 
-      it("should set value", () => {
+      it('should set value', () => {
         const clip = new Clip();
-        clip.mime = " text/plain ";
-        assert.strictEqual(clip.mime, "text/plain", "value");
+        clip.mime = ' text/plain ';
+        assert.strictEqual(clip.mime, 'text/plain', 'value');
       });
 
-      it("should set value", () => {
+      it('should set value', () => {
         const clip = new Clip();
-        clip.mime = "text/html";
-        assert.strictEqual(clip.mime, "text/html", "value");
+        clip.mime = 'text/html';
+        assert.strictEqual(clip.mime, 'text/html', 'value');
       });
     });
 
-    describe("copy to clipboard sync (for fallback)", () => {
-      it("should call function", async () => {
+    describe('copy to clipboard sync (for fallback)', () => {
+      it('should call function', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.fake();
@@ -194,29 +196,29 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip = new Clip("foo", "text/plain");
+        const clip = new Clip('foo', 'text/plain');
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.isTrue(stubSetData.calledOnce, "called");
+        assert.isTrue(stubRemove.calledOnce, 'called');
+        assert.isTrue(stubPropagate.calledOnce, 'called');
+        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.isTrue(stubSetData.calledOnce, 'called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
 
-      it("should call function", async () => {
+      it('should call function', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.stub();
@@ -224,35 +226,35 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const clip =
-          new Clip("<a href=\"https://example.com\">foo bar</a>", "text/html");
-        const i = stubSetData.withArgs("text/plain", "foo bar").callCount;
+          new Clip('<a href="https://example.com">foo bar</a>', 'text/html');
+        const i = stubSetData.withArgs('text/plain', 'foo bar').callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.isTrue(stubSetData.calledTwice, "called");
+        assert.isTrue(stubRemove.calledOnce, 'called');
+        assert.isTrue(stubPropagate.calledOnce, 'called');
+        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.isTrue(stubSetData.calledTwice, 'called');
         assert.strictEqual(
-          stubSetData.withArgs("text/plain", "foo bar").callCount, i + 1,
-          "called",
+          stubSetData.withArgs('text/plain', 'foo bar').callCount, i + 1,
+          'called'
         );
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
 
-      it("should not call function", async () => {
+      it('should not call function', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.stub();
@@ -260,30 +262,30 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip = new Clip("<script>alert(1);</script>", "text/html");
+        const clip = new Clip('<script>alert(1);</script>', 'text/html');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.strictEqual(stubSetData.callCount, i, "not called");
+        assert.isTrue(stubRemove.calledOnce, 'called');
+        assert.isTrue(stubPropagate.calledOnce, 'called');
+        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubSetData.callCount, i, 'not called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
 
-      it("should throw", async () => {
+      it('should throw', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.stub();
@@ -291,25 +293,25 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip = new Clip("", "text/xml");
+        const clip = new Clip('', 'text/xml');
         assert.throws(() => clip._copySync());
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
 
-      it("should call function", async () => {
+      it('should call function', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.stub();
@@ -317,30 +319,30 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip = new Clip("<xml></xml>", "text/xml");
+        const clip = new Clip('<xml></xml>', 'text/xml');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.strictEqual(stubSetData.callCount, i + 1, "called");
+        assert.isTrue(stubRemove.calledOnce, 'called');
+        assert.isTrue(stubPropagate.calledOnce, 'called');
+        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubSetData.callCount, i + 1, 'called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
 
-      it("should not call function", async () => {
+      it('should not call function', async () => {
         const stubPropagate = sinon.fake();
         const stubPreventDefault = sinon.fake();
         const stubSetData = sinon.stub();
@@ -348,242 +350,242 @@ describe("clipboard", () => {
           stopImmediatePropagation: stubPropagate,
           preventDefault: stubPreventDefault,
           clipboardData: {
-            setData: stubSetData,
-          },
+            setData: stubSetData
+          }
         };
         const stubAdd =
-          sinon.stub(document, "addEventListener").callsFake((...args) => {
+          sinon.stub(document, 'addEventListener').callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
-        const stubRemove = sinon.stub(document, "removeEventListener");
+        const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const png = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==", "base64");
-        const clip = new Clip(png.toString("binary"), "image/png");
+        const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==', 'base64');
+        const clip = new Clip(png.toString('binary'), 'image/png');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, "called");
-        assert.isTrue(stubPropagate.calledOnce, "called");
-        assert.isTrue(stubPreventDefault.calledOnce, "called");
-        assert.strictEqual(stubSetData.callCount, i, "not called");
+        assert.isTrue(stubRemove.calledOnce, 'called');
+        assert.isTrue(stubPropagate.calledOnce, 'called');
+        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubSetData.callCount, i, 'not called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
       });
     });
 
-    describe("copy to clipboard", () => {
-      it("should throw", async () => {
-        const clip = new Clip("foo", "image/png");
+    describe('copy to clipboard', () => {
+      it('should throw', async () => {
+        const clip = new Clip('foo', 'image/png');
         await clip.copy().catch(e => {
           assert.instanceOf(e, Error);
           assert.strictEqual(e.message,
-                             "Mime type of image/png is not supported.");
+            'Mime type of image/png is not supported.');
         });
       });
 
-      it("should not call function", async () => {
-        const clip = new Clip("", "text/plain");
+      it('should not call function', async () => {
+        const clip = new Clip('', 'text/plain');
         const fakeWriteText = sinon.fake();
         navigator.clipboard = {
-          writeText: fakeWriteText,
+          writeText: fakeWriteText
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {called: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isFalse(calledExec, "not called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
+      it('should call function', async () => {
         const fakeWriteText = sinon.fake();
         navigator.clipboard = {
-          writeText: fakeWriteText,
+          writeText: fakeWriteText
         };
-        const clip = new Clip("foo", "text/plain");
+        const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
-        const {calledOnce: calledWriteText} = fakeWriteText;
+        const { calledOnce: calledWriteText } = fakeWriteText;
         delete navigator.clipboard;
-        assert.isTrue(calledWriteText, "called");
-        assert.isUndefined(res, "result");
+        assert.isTrue(calledWriteText, 'called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const err = new Error("error");
+      it('should call function', async () => {
+        const err = new Error('error');
         const fakeWriteText = sinon.fake.throws(err);
         navigator.clipboard = {
-          writeText: fakeWriteText,
+          writeText: fakeWriteText
         };
-        const clip = new Clip("foo", "text/plain");
+        const clip = new Clip('foo', 'text/plain');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy().catch(e => {
-          assert.isUndefined(e, "not thrown");
+          assert.isUndefined(e, 'not thrown');
         });
-        const {calledOnce: calledWriteText} = fakeWriteText;
-        const {calledOnce: calledExec} = fakeExec;
+        const { calledOnce: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isTrue(calledWriteText, "called");
-        assert.isTrue(calledExec, "called");
-        assert.isUndefined(res, "result");
+        assert.isTrue(calledWriteText, 'called');
+        assert.isTrue(calledExec, 'called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const stubAdd = sinon.stub(document, "addEventListener");
+      it('should call function', async () => {
+        const stubAdd = sinon.stub(document, 'addEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip = new Clip("foo", "text/plain");
+        const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
-        const {calledOnce: calledAdd} = stubAdd;
-        const {calledOnce: calledExec} = fakeExec;
+        const { calledOnce: calledAdd } = stubAdd;
+        const { calledOnce: calledExec } = fakeExec;
         stubAdd.restore();
         delete document.execCommand;
-        assert.isTrue(calledAdd, "called");
-        assert.isTrue(calledExec, "called");
-        assert.isUndefined(res, "result");
+        assert.isTrue(calledAdd, 'called');
+        assert.isTrue(calledExec, 'called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const clip = new Clip("<p>foo</p>", "text/html");
+      it('should call function', async () => {
+        const clip = new Clip('<p>foo</p>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {calledOnce: calledWrite} = fakeWrite;
-        const {called: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWrite } = fakeWrite;
+        const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isTrue(calledWrite, "called");
-        assert.isFalse(calledExec, "not called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isTrue(calledWrite, 'called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
+      it('should call function', async () => {
         delete global.ClipboardItem;
-        const clip = new Clip("<p>foo</p>", "text/html");
+        const clip = new Clip('<p>foo</p>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {called: calledWrite} = fakeWrite;
-        const {calledOnce: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { called: calledWrite } = fakeWrite;
+        const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isFalse(calledWrite, "not called");
-        assert.isTrue(calledExec, "called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isFalse(calledWrite, 'not called');
+        assert.isTrue(calledExec, 'called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should not call function", async () => {
-        const clip = new Clip("<script>foo</script>", "text/html");
+      it('should not call function', async () => {
+        const clip = new Clip('<script>foo</script>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {called: calledWrite} = fakeWrite;
-        const {called: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { called: calledWrite } = fakeWrite;
+        const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isFalse(calledWrite, "not called");
-        assert.isFalse(calledExec, "not called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isFalse(calledWrite, 'not called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const err = new Error("error");
+      it('should call function', async () => {
+        const err = new Error('error');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake.throws(err);
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
-        const clip = new Clip("<p>foo</p>", "text/html");
+        const clip = new Clip('<p>foo</p>', 'text/html');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy().catch(e => {
-          assert.isUndefined(e, "not thrown");
+          assert.isUndefined(e, 'not thrown');
         });
-        const {called: calledWriteText} = fakeWriteText;
-        const {calledOnce: calledWrite} = fakeWrite;
-        const {calledOnce: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWrite } = fakeWrite;
+        const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isTrue(calledWrite, "called");
-        assert.isTrue(calledExec, "called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isTrue(calledWrite, 'called');
+        assert.isTrue(calledExec, 'called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const clip = new Clip("{\"foo\": \"bar\"}", "application/json");
+      it('should call function', async () => {
+        const clip = new Clip('{"foo": "bar"}', 'application/json');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {calledOnce: calledWrite} = fakeWrite;
-        const {called: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWrite } = fakeWrite;
+        const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isTrue(calledWrite, "called");
-        assert.isFalse(calledExec, "not called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isTrue(calledWrite, 'called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
       });
 
-      it("should call function", async () => {
-        const clip = new Clip("<xml></xml>", "text/xml");
+      it('should call function', async () => {
+        const clip = new Clip('<xml></xml>', 'text/xml');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText,
-          write: fakeWrite,
+          write: fakeWrite
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const res = await clip.copy();
-        const {called: calledWriteText} = fakeWriteText;
-        const {calledOnce: calledWrite} = fakeWrite;
-        const {called: calledExec} = fakeExec;
+        const { called: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWrite } = fakeWrite;
+        const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, "not called");
-        assert.isTrue(calledWrite, "called");
-        assert.isFalse(calledExec, "not called");
-        assert.isUndefined(res, "result");
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isTrue(calledWrite, 'called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
       });
     });
   });

@@ -1,21 +1,21 @@
 /**
  * content.js
  */
-"use strict";
+'use strict';
 /* api */
-const {i18n, runtime} = browser;
+const { i18n, runtime } = browser;
 
 /* constants */
-const CONTENT_EDITED = "editedContent";
-const CONTENT_EDITED_GET = "getEditedContent";
-const CONTEXT_INFO = "contextInfo";
-const CONTEXT_INFO_GET = "getContextInfo";
+const CONTENT_EDITED = 'editedContent';
+const CONTENT_EDITED_GET = 'getEditedContent';
+const CONTEXT_INFO = 'contextInfo';
+const CONTEXT_INFO_GET = 'getContextInfo';
 const MOUSE_BUTTON_RIGHT = 2;
-const NS_HTML = "http://www.w3.org/1999/xhtml";
+const NS_HTML = 'http://www.w3.org/1999/xhtml';
 const TYPE_FROM = 8;
 const TYPE_TO = -1;
-const USER_INPUT = "userInput";
-const USER_INPUT_DEFAULT = "Edit content text of the link";
+const USER_INPUT = 'userInput';
+const USER_INPUT_DEFAULT = 'Edit content text of the link';
 
 /**
  * throw error
@@ -42,7 +42,7 @@ const getType = o =>
  * @param {*} o - object to check
  * @returns {boolean} - result
  */
-const isString = o => typeof o === "string" || o instanceof String;
+const isString = o => typeof o === 'string' || o instanceof String;
 
 /**
  * send message
@@ -65,7 +65,7 @@ const sendMsg = async msg => {
  */
 const getActiveElm = async () => {
   const sel = window.getSelection();
-  const {anchorNode, focusNode, isCollapsed, rangeCount} = sel;
+  const { anchorNode, focusNode, isCollapsed, rangeCount } = sel;
   let elm;
   if (!isCollapsed) {
     if (anchorNode === focusNode) {
@@ -91,7 +91,7 @@ const getAnchorElm = async node => {
   let elm;
   const root = document.documentElement;
   while (node && node.parentNode && node.parentNode !== root) {
-    if (node.localName === "a") {
+    if (node.localName === 'a') {
       elm = node;
       break;
     }
@@ -104,10 +104,10 @@ const getAnchorElm = async node => {
 const contextInfo = {
   isLink: false,
   content: null,
-  selectionText: "",
+  selectionText: '',
   title: null,
   url: null,
-  canonicalUrl: null,
+  canonicalUrl: null
 };
 
 /**
@@ -119,7 +119,7 @@ const initContextInfo = async () => {
   contextInfo.isLink = false;
   contextInfo.content = null;
   contextInfo.title = null;
-  contextInfo.selectionText = "";
+  contextInfo.selectionText = '';
   contextInfo.url = null;
   contextInfo.canonicalUrl = null;
   return contextInfo;
@@ -135,15 +135,15 @@ const createContextInfo = async node => {
   await initContextInfo();
   if (node && node.nodeType === Node.ELEMENT_NODE) {
     const anchor = await getAnchorElm(node);
-    const canonical = document.querySelector("link[rel=canonical][href]");
+    const canonical = document.querySelector('link[rel=canonical][href]');
     if (anchor) {
-      const {textContent, href, title} = anchor;
+      const { textContent, href, title } = anchor;
       if (href) {
-        const content = textContent.replace(/\s+/g, " ").trim();
+        const content = textContent.replace(/\s+/g, ' ').trim();
         contextInfo.isLink = true;
         contextInfo.content = content;
         contextInfo.title = title || content;
-        if (href.hasOwnProperty("baseVal")) {
+        if (Object.prototype.hasOwnProperty.call(href, 'baseVal')) {
           contextInfo.url = href.baseVal;
         } else {
           contextInfo.url = href;
@@ -151,9 +151,9 @@ const createContextInfo = async node => {
       }
     }
     if (canonical) {
-      const {origin: docOrigin} = new URL(document.URL);
-      const {href: canonicalHref} =
-        new URL(canonical.getAttribute("href"), docOrigin);
+      const { origin: docOrigin } = new URL(document.URL);
+      const { href: canonicalHref } =
+        new URL(canonical.getAttribute('href'), docOrigin);
       contextInfo.canonicalUrl = canonicalHref;
     }
     contextInfo.selectionText = window.getSelection().toString();
@@ -168,14 +168,14 @@ const createContextInfo = async node => {
  * @returns {Function} - sendMsg()
  */
 const sendStatus = async evt => {
-  const {target, type} = evt;
+  const { target, type } = evt;
   const enabled = document.documentElement.namespaceURI === NS_HTML;
   const info = await createContextInfo(target);
   const msg = {
     [type]: {
       enabled,
-      contextInfo: info,
-    },
+      contextInfo: info
+    }
   };
   return sendMsg(msg);
 };
@@ -192,8 +192,8 @@ const sendContextInfo = async data => {
   const msg = {
     [CONTEXT_INFO]: {
       data,
-      contextInfo: info,
-    },
+      contextInfo: info
+    }
   };
   return sendMsg(msg);
 };
@@ -205,16 +205,16 @@ const sendContextInfo = async data => {
  * @param {string} label - format label
  * @returns {?string} - edited content
  */
-const editContent = async (content = "", label = "") => {
+const editContent = async (content = '', label = '') => {
   if (!isString(content)) {
     throw new TypeError(`Expected String but got ${getType(content)}.`);
   }
   if (!isString(label)) {
     throw new TypeError(`Expected String but got ${getType(label)}.`);
   }
-  const msg = label && await i18n.getMessage(USER_INPUT, label) ||
+  const msg = (label && await i18n.getMessage(USER_INPUT, label)) ||
               USER_INPUT_DEFAULT;
-  content = window.prompt(msg, content.replace(/\s+/g, " ").trim());
+  content = window.prompt(msg, content.replace(/\s+/g, ' ').trim());
   return content;
 };
 
@@ -227,16 +227,16 @@ const editContent = async (content = "", label = "") => {
 const sendEditedContent = async (data = {}) => {
   const {
     content: contentText, formatId, formatTitle, mimeType, promptContent,
-    template, title, url,
+    template, title, url
   } = data;
   let func;
   if (promptContent) {
     const content =
-      await editContent(contentText, formatTitle || formatId) || "";
+      await editContent(contentText, formatTitle || formatId) || '';
     func = sendMsg({
       [CONTENT_EDITED]: {
-        content, formatId, formatTitle, mimeType, template, title, url,
-      },
+        content, formatId, formatTitle, mimeType, template, title, url
+      }
     });
   }
   return func || null;
@@ -274,15 +274,15 @@ const handleMsg = async (msg = {}) => {
  * @returns {?(Function|Error)} - promise chain
  */
 const handleUIEvt = evt => {
-  const {button, key, shiftKey, type} = evt;
+  const { button, key, shiftKey, type } = evt;
   let func;
   switch (type) {
-    case "keydown":
-      if (shiftKey && key === "F10" || key === "ContextMenu") {
+    case 'keydown':
+      if ((shiftKey && key === 'F10') || key === 'ContextMenu') {
         func = sendStatus(evt).catch(throwErr);
       }
       break;
-    case "mousedown":
+    case 'mousedown':
       if (button === MOUSE_BUTTON_RIGHT) {
         func = sendStatus(evt).catch(throwErr);
       }
@@ -310,12 +310,13 @@ const windowOnLoad = evt => sendStatus(evt).catch(throwErr);
 
 /* listeners */
 runtime.onMessage.addListener(runtimeOnMsg);
-window.addEventListener("load", windowOnLoad);
-window.addEventListener("keydown", handleUIEvt, true);
-window.addEventListener("mousedown", handleUIEvt, true);
+window.addEventListener('load', windowOnLoad);
+window.addEventListener('keydown', handleUIEvt, true);
+window.addEventListener('mousedown', handleUIEvt, true);
 
 /* export for tests */
-if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
+if (typeof module !== 'undefined' &&
+    Object.prototype.hasOwnProperty.call(module, 'exports')) {
   module.exports = {
     contextInfo,
     createContextInfo,
@@ -333,6 +334,6 @@ if (typeof module !== "undefined" && module.hasOwnProperty("exports")) {
     sendMsg,
     sendStatus,
     throwErr,
-    windowOnLoad,
+    windowOnLoad
   };
 }

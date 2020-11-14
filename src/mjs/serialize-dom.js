@@ -3,14 +3,14 @@
  */
 
 import {
-  getType, isString,
-} from "./common.js";
-import nsURI from "./ns-uri.js";
+  getType, isString
+} from './common.js';
+import nsURI from './ns-uri.js';
 
 /* constants */
 import {
-  MIME_HTML,
-} from "./constant.js";
+  MIME_HTML
+} from './constant.js';
 
 /**
  * get namespace of node from ancestor
@@ -19,7 +19,7 @@ import {
  * @returns {object} - namespace data
  */
 export const getNodeNS = node => {
-  const ns = {node: null, localName: null, namespaceURI: null};
+  const ns = { node: null, localName: null, namespaceURI: null };
   if (node.namespaceURI) {
     ns.node = node;
     ns.localName = node.localName;
@@ -27,7 +27,7 @@ export const getNodeNS = node => {
   } else {
     const root = document.documentElement;
     while (node && node !== root && !ns.node) {
-      const {localName, parentNode, namespaceURI} = node;
+      const { localName, parentNode, namespaceURI } = node;
       if (namespaceURI) {
         ns.node = node;
         ns.localName = localName;
@@ -40,7 +40,7 @@ export const getNodeNS = node => {
       ns.node = root;
       ns.localName = root.localName;
       ns.namespaceURI =
-        root.getAttribute("xmlns") || nsURI[root.localName] || "";
+        root.getAttribute('xmlns') || nsURI[root.localName] || '';
     }
   }
   return ns;
@@ -54,28 +54,28 @@ export const getNodeNS = node => {
  * @returns {void}
  */
 export const setAttributeNS = (elm, node = {}) => {
-  const {attributes} = node;
+  const { attributes } = node;
   if (elm && attributes && attributes.length) {
     for (const attr of attributes) {
-      const {localName, name, namespaceURI, prefix, value} = attr;
-      if (typeof node[name] !== "function" && !localName.startsWith("on")) {
-        const attrName = prefix && `${prefix}:${localName}` || localName;
-        const ns = namespaceURI || prefix && nsURI[prefix] || null;
-        const {origin} = document.location;
+      const { localName, name, namespaceURI, prefix, value } = attr;
+      if (typeof node[name] !== 'function' && !localName.startsWith('on')) {
+        const attrName = prefix ? `${prefix}:${localName}` : localName;
+        const ns = namespaceURI || (prefix && nsURI[prefix]) || null;
+        const { origin } = document.location;
         switch (localName) {
-          case "data":
-          case "href":
-          case "poster":
-          case "src": {
-            const {protocol} = new URL(value, origin);
+          case 'data':
+          case 'href':
+          case 'poster':
+          case 'src': {
+            const { protocol } = new URL(value, origin);
             /https?/.test(protocol) && elm.setAttributeNS(ns, attrName, value);
             break;
           }
-          case "ping": {
+          case 'ping': {
             const urls = value.split(/\s+/);
             let bool = true;
             for (const url of urls) {
-              const {protocol} = new URL(url, origin);
+              const { protocol } = new URL(url, origin);
               if (!/https?/.test(protocol)) {
                 bool = false;
                 break;
@@ -84,8 +84,8 @@ export const setAttributeNS = (elm, node = {}) => {
             bool && elm.setAttributeNS(ns, attrName, value);
             break;
           }
-          case "value": {
-            elm.setAttributeNS(ns, attrName, "");
+          case 'value': {
+            elm.setAttributeNS(ns, attrName, '');
             break;
           }
           default:
@@ -105,12 +105,12 @@ export const setAttributeNS = (elm, node = {}) => {
 export const createElement = node => {
   let elm;
   if (node && node.nodeType === Node.ELEMENT_NODE) {
-    const {attributes, localName, namespaceURI, prefix} = node;
-    const ns = namespaceURI || prefix && nsURI[prefix] ||
+    const { attributes, localName, namespaceURI, prefix } = node;
+    const ns = namespaceURI || (prefix && nsURI[prefix]) ||
                getNodeNS(node).namespaceURI || nsURI.html;
-    const name = prefix && `${prefix}:${localName}` || localName;
-    if (localName === "script") {
-      elm = document.createTextNode("");
+    const name = prefix ? `${prefix}:${localName}` : localName;
+    if (localName === 'script') {
+      elm = document.createTextNode('');
     } else {
       elm = document.createElementNS(ns, name);
       attributes && setAttributeNS(elm, node);
@@ -152,13 +152,13 @@ export const appendChildNodes = (elm, node) => {
     const arr = [];
     const nodes = node.childNodes;
     for (const child of nodes) {
-      const {nodeType, nodeValue, parentNode} = child;
+      const { nodeType, nodeValue, parentNode } = child;
       if (nodeType === Node.ELEMENT_NODE) {
         child === parentNode.firstChild &&
-          arr.push(document.createTextNode("\n"));
+          arr.push(document.createTextNode('\n'));
         arr.push(appendChildNodes(child, child.cloneNode(true)));
         child === parentNode.lastChild &&
-          arr.push(document.createTextNode("\n"));
+          arr.push(document.createTextNode('\n'));
       } else {
         nodeType === Node.TEXT_NODE &&
           arr.push(document.createTextNode(nodeValue));
@@ -192,14 +192,14 @@ export const serializeDomString = (domstr, mime) => {
   }
   let frag;
   const dom = new DOMParser().parseFromString(domstr, mime);
-  if (dom.querySelector("parsererror")) {
-    throw new Error("Error while parsing DOM string.");
+  if (dom.querySelector('parsererror')) {
+    throw new Error('Error while parsing DOM string.');
   }
-  const {body, documentElement: root} = dom;
+  const { body, documentElement: root } = dom;
   if (mime === MIME_HTML) {
     const elm = appendChildNodes(body, body.cloneNode(true));
     if (elm.hasChildNodes()) {
-      const {childNodes, firstElementChild} = body;
+      const { childNodes, firstElementChild } = body;
       if (firstElementChild) {
         frag = document.createDocumentFragment();
         for (const child of childNodes) {
@@ -216,5 +216,5 @@ export const serializeDomString = (domstr, mime) => {
     frag = document.createDocumentFragment();
     frag.appendChild(elm);
   }
-  return frag && new XMLSerializer().serializeToString(frag) || null;
+  return frag ? new XMLSerializer().serializeToString(frag) : null;
 };

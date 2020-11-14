@@ -2,10 +2,10 @@
  * setup.js
  */
 
-"use strict";
-const {JSDOM} = require("jsdom");
-const {Schema} = require("webext-schema");
-const sinon = require("sinon");
+'use strict';
+const { JSDOM } = require('jsdom');
+const { Schema } = require('webext-schema');
+const sinon = require('sinon');
 
 /**
  * create jsdom
@@ -13,19 +13,19 @@ const sinon = require("sinon");
  * @returns {object} - jsdom instance
  */
 const createJsdom = () => {
-  const domstr = "<!DOCTYPE html><html><head></head><body></body></html>";
+  const domstr = '<!DOCTYPE html><html><head></head><body></body></html>';
   const opt = {
-    runScripts: "dangerously",
-    url: "https://localhost",
+    runScripts: 'dangerously',
+    url: 'https://localhost',
     beforeParse(window) {
       window.prompt = sinon.stub().callsFake((...args) => args.toString());
-    },
+    }
   };
   return new JSDOM(domstr, opt);
 };
 
-const {window} = createJsdom();
-const {document} = window;
+const { window } = createJsdom();
+const { document } = window;
 
 /**
  * get channel
@@ -39,7 +39,7 @@ const getChannel = () => {
   if (args.length) {
     [ch] = reg.exec(args);
   } else {
-    ch = "beta";
+    ch = 'beta';
   }
   return ch;
 };
@@ -57,7 +57,7 @@ global.window = window;
 global.document = document;
 global.browser = browser;
 
-const globalKeys = ["Node"];
+const globalKeys = ['Node'];
 for (const key of globalKeys) {
   if (window[key] && !global[key]) {
     global[key] = window[key];
@@ -65,5 +65,5 @@ for (const key of globalKeys) {
 }
 
 module.exports = {
-  browser, createJsdom,
+  browser, createJsdom
 };

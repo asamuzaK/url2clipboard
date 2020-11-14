@@ -5,8 +5,8 @@
 import {
   convertHtmlChar, convertLaTeXChar, convertNumCharRef,
   encodeUrlSpecialChar, escapeMatchingChars, getType, isString,
-  stripMatchingChars,
-} from "./common.js";
+  stripMatchingChars
+} from './common.js';
 
 /* constants */
 import {
@@ -15,111 +15,111 @@ import {
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
   HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
-  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY,
-} from "./constant.js";
+  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+} from './constant.js';
 
 export const formatData = {
   [HTML_PLAIN]: {
     id: HTML_PLAIN,
     enabled: true,
-    menu: "HTML (text/&plain)",
-    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
-    templateAlt: "<a href=\"%url%\">%content%</a>",
-    title: "HTML (text/plain)",
+    menu: 'HTML (text/&plain)',
+    template: '<a href="%url%" title="%title%">%content%</a>',
+    templateAlt: '<a href="%url%">%content%</a>',
+    title: 'HTML (text/plain)'
   },
   [HTML_HYPER]: {
     id: HTML_HYPER,
     enabled: true,
-    menu: "&HTML (text/html)",
-    template: "<a href=\"%url%\" title=\"%title%\">%content%</a>",
-    templateAlt: "<a href=\"%url%\">%content%</a>",
-    title: "HTML (text/html)",
+    menu: '&HTML (text/html)',
+    template: '<a href="%url%" title="%title%">%content%</a>',
+    templateAlt: '<a href="%url%">%content%</a>',
+    title: 'HTML (text/html)'
   },
   [MARKDOWN]: {
     id: MARKDOWN,
     enabled: true,
-    menu: "&Markdown",
-    template: "[%content%](%url% \"%title%\")",
-    templateAlt: "[%content%](%url%)",
+    menu: '&Markdown',
+    template: '[%content%](%url% "%title%")',
+    templateAlt: '[%content%](%url%)'
   },
   [BBCODE_TEXT]: {
     id: BBCODE_TEXT,
     enabled: true,
-    menu: "&BBCode (Text)",
-    template: "[url=%url%]%content%[/url]",
-    title: "BBCode (Text)",
+    menu: '&BBCode (Text)',
+    template: '[url=%url%]%content%[/url]',
+    title: 'BBCode (Text)'
   },
   [BBCODE_URL]: {
     id: BBCODE_URL,
     enabled: true,
-    menu: "BB&Code (URL)",
-    template: "[url]%content%[/url]",
-    title: "BBCode (URL)",
+    menu: 'BB&Code (URL)',
+    template: '[url]%content%[/url]',
+    title: 'BBCode (URL)'
   },
   [TEXTILE]: {
     id: TEXTILE,
     enabled: true,
-    menu: "Text&ile",
-    template: "\"%content%\":%url%",
+    menu: 'Text&ile',
+    template: '"%content%":%url%'
   },
   [ASCIIDOC]: {
     id: ASCIIDOC,
     enabled: true,
-    menu: "&AsciiDoc",
-    template: "link:%url%[%content%]",
+    menu: '&AsciiDoc',
+    template: 'link:%url%[%content%]'
   },
   [MEDIAWIKI]: {
     id: MEDIAWIKI,
     enabled: true,
-    menu: "Media&Wiki",
-    template: "[%url% %content%]",
+    menu: 'Media&Wiki',
+    template: '[%url% %content%]'
   },
   [JIRA]: {
     id: JIRA,
     enabled: true,
-    menu: "&Jira",
-    template: "[%content%|%url%]",
+    menu: '&Jira',
+    template: '[%content%|%url%]'
   },
   [REST]: {
     id: REST,
     enabled: true,
-    menu: "&reStructuredText",
-    template: "`%content% <%url%>`_",
+    menu: '&reStructuredText',
+    template: '`%content% <%url%>`_'
   },
   [LATEX]: {
     id: LATEX,
     enabled: true,
-    menu: "&LaTeX",
-    template: "\\href{%url%}{%content%}",
+    menu: '&LaTeX',
+    template: '\\href{%url%}{%content%}'
   },
   [ORG_MODE]: {
     id: ORG_MODE,
     enabled: true,
-    menu: "&Org Mode",
-    template: "[[%url%][%content%]]",
+    menu: '&Org Mode',
+    template: '[[%url%][%content%]]'
   },
   [TEXT_TEXT_URL]: {
     id: TEXT_TEXT_URL,
     enabled: true,
-    menu: "&Text && URL",
-    template: "%content% %url%",
-    templateAlt: "%content%\n%url%",
-    title: "Text & URL",
+    menu: '&Text && URL',
+    template: '%content% %url%',
+    templateAlt: '%content%\n%url%',
+    title: 'Text & URL'
   },
   [TEXT_TEXT_ONLY]: {
     id: TEXT_TEXT_ONLY,
     enabled: true,
-    menu: "Te&xt",
-    template: "%content%",
-    title: "Text",
+    menu: 'Te&xt',
+    template: '%content%',
+    title: 'Text'
   },
   [TEXT_URL_ONLY]: {
     id: TEXT_URL_ONLY,
     enabled: true,
-    menu: "&URL",
-    template: "%url%",
-    title: "URL",
-  },
+    menu: '&URL',
+    template: '%url%',
+    title: 'URL'
+  }
 };
 
 /**
@@ -133,17 +133,17 @@ export const getFormatId = id => {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
   if (id.startsWith(COPY_TABS_ALL)) {
-    id = id.replace(COPY_TABS_ALL, "");
+    id = id.replace(COPY_TABS_ALL, '');
   } else if (id.startsWith(COPY_TABS_OTHER)) {
-    id = id.replace(COPY_TABS_OTHER, "");
+    id = id.replace(COPY_TABS_OTHER, '');
   } else if (id.startsWith(COPY_TABS_SELECTED)) {
-    id = id.replace(COPY_TABS_SELECTED, "");
+    id = id.replace(COPY_TABS_SELECTED, '');
   } else if (id.startsWith(COPY_LINK)) {
-    id = id.replace(COPY_LINK, "");
+    id = id.replace(COPY_LINK, '');
   } else if (id.startsWith(COPY_PAGE)) {
-    id = id.replace(COPY_PAGE, "");
+    id = id.replace(COPY_PAGE, '');
   } else if (id.startsWith(COPY_TAB)) {
-    id = id.replace(COPY_TAB, "");
+    id = id.replace(COPY_TAB, '');
   }
   return id || null;
 };
@@ -158,7 +158,7 @@ export const formats = new Map(Object.entries(formatData));
  * @returns {object|Array} - formats
  */
 export const getFormats = async (inArray = false) =>
-  inArray && Array.from(formats.entries()) || formats.entries();
+  inArray ? Array.from(formats.entries()) : formats.entries();
 
 /**
  * get formats keys
@@ -167,7 +167,7 @@ export const getFormats = async (inArray = false) =>
  * @returns {object|Array} - formats
  */
 export const getFormatsKeys = async (inArray = false) =>
-  inArray && Array.from(formats.keys()) || formats.keys();
+  inArray ? Array.from(formats.keys()) : formats.keys();
 
 /**
  * has format
@@ -229,7 +229,7 @@ export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }
-  const joiner = mime === MIME_HTML && "<br />\n" || "\n";
+  const joiner = mime === MIME_HTML ? '<br />\n' : '\n';
   return arr.filter(i => i).join(joiner);
 };
 
@@ -240,51 +240,55 @@ export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
  * @returns {string} - link text
  */
 export const createLinkText = async (data = {}) => {
-  const {content: contentText, formatId, template, title, url} = data;
+  const { content: contentText, formatId, template, title, url } = data;
   if (!isString(formatId)) {
     throw new TypeError(`Expected String but got ${getType(formatId)}.`);
   }
   if (!isString(template)) {
     throw new TypeError(`Expected String but got ${getType(template)}.`);
   }
-  let linkTitle = title || "";
-  let linkUrl = url || "";
-  let content = isString(contentText) && contentText.replace(/\s+/g, " ") ||
-                "";
+  let linkTitle = title || '';
+  let linkUrl = url || '';
+  let content = isString(contentText) ? contentText.replace(/\s+/g, ' ') : '';
   switch (formatId) {
     case ASCIIDOC:
-      content = escapeMatchingChars(content, /([\]])/g) || "";
+      content = escapeMatchingChars(content, /([\]])/g) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case BBCODE_TEXT:
     case BBCODE_URL:
       content =
-        stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || "";
+        stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || '';
       break;
     case HTML_HYPER:
     case HTML_PLAIN:
-      content = convertHtmlChar(content) || "";
-      linkTitle = convertHtmlChar(linkTitle) || "";
+      content = convertHtmlChar(content) || '';
+      linkTitle = convertHtmlChar(linkTitle) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case LATEX:
-      content = convertLaTeXChar(content) || "";
+      content = convertLaTeXChar(content) || '';
       break;
     case MARKDOWN:
-      content = content &&
-                escapeMatchingChars(convertHtmlChar(content), /([[\]])/g) || "";
-      linkTitle = linkTitle &&
-                  escapeMatchingChars(convertHtmlChar(linkTitle), /(")/g) || "";
+      content =
+        (content &&
+         escapeMatchingChars(convertHtmlChar(content), /([[\]])/g)) ||
+        '';
+      linkTitle =
+        (linkTitle &&
+         escapeMatchingChars(convertHtmlChar(linkTitle), /(")/g)) ||
+        '';
       break;
     case MEDIAWIKI:
-      content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || "";
+      content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || '';
       break;
     case REST:
-      content = escapeMatchingChars(content, /([`<>])/g) || "";
+      content = escapeMatchingChars(content, /([`<>])/g) || '';
       break;
     case TEXTILE:
-      content = content &&
-                convertHtmlChar(convertNumCharRef(content, /([()])/g)) || "";
+      content =
+        (content && convertHtmlChar(convertNumCharRef(content, /([()])/g))) ||
+        '';
       break;
     default:
   }

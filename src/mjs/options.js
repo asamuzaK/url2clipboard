@@ -3,23 +3,23 @@
  */
 
 import {
-  throwErr,
-} from "./common.js";
+  throwErr
+} from './common.js';
 import {
-  localizeHtml,
-} from "./localize.js";
+  localizeHtml
+} from './localize.js';
 import {
-  disableIncompatibleInputs,
-} from "./compat.js";
+  disableIncompatibleInputs
+} from './compat.js';
 import {
   addInputChangeListener,
-  setValuesFromStorage,
-} from "./options-main.js";
+  setValuesFromStorage
+} from './options-main.js';
 
 /* startup */
 Promise.all([
   localizeHtml(),
   setValuesFromStorage(),
   addInputChangeListener(),
-  disableIncompatibleInputs(),
+  disableIncompatibleInputs()
 ]).catch(throwErr);
