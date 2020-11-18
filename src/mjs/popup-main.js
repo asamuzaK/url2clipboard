@@ -2,12 +2,9 @@
  * popup-main.js
  */
 
-import {
-  Clip
-} from './clipboard.js';
-import {
-  closeWindow, getType, isString, throwErr
-} from './common.js';
+/* shared */
+import { Clip } from './clipboard.js';
+import { closeWindow, getType, isString, throwErr } from './common.js';
 import {
   getAllTabsInWindow, getHighlightedTab, queryTabs, sendMessage
 } from './browser.js';
@@ -15,11 +12,7 @@ import {
   createTabsLinkText, createLinkText, getFormat, getFormatId, getFormats,
   getFormatsKeys, hasFormat, setFormat
 } from './format.js';
-import {
-  notifyOnCopy
-} from './notify.js';
-
-/* constants */
+import { notifyOnCopy } from './notify.js';
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
   CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
@@ -32,6 +25,8 @@ import {
 
 /* api */
 const { runtime, tabs, windows } = browser;
+
+/* constants */
 const { TAB_ID_NONE } = tabs;
 const { WINDOW_ID_CURRENT } = windows;
 const OPTIONS_OPEN = 'openOptions';

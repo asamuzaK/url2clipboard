@@ -2,17 +2,12 @@
  * clipboard.js
  */
 
-import {
-  getType, isString
-} from './common.js';
-import {
-  serializeDomString
-} from './serialize-dom.js';
+/* shared */
+import { getType, isString } from './common.js';
+import { serializeDomString } from './serialize-dom.js';
+import { MIME_HTML, MIME_PLAIN } from './constant.js';
 
-/* constants */
-import {
-  MIME_HTML, MIME_PLAIN
-} from './constant.js';
+/* constant */
 const REG_DOM_PARSE =
   /text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/;
 

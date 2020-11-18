@@ -2,9 +2,8 @@
  * browser.js
  */
 
-import {
-  getType, isObjectNotEmpty, isString, logErr
-} from './common.js';
+/* shared */
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 
 /* api */
 const { permissions, runtime, tabs, windows } = browser;

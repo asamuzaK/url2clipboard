@@ -2,17 +2,10 @@
  * notify.js
  */
 
-import {
-  isString
-} from './common.js';
-import {
-  createNotification
-} from './browser.js';
-
-/* constants */
-import {
-  ICON, NOTIFY_COPY
-} from './constant.js';
+/* shared */
+import { isString } from './common.js';
+import { createNotification } from './browser.js';
+import { ICON, NOTIFY_COPY } from './constant.js';
 
 /* api */
 const { i18n, runtime } = browser;

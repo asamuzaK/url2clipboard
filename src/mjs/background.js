@@ -2,12 +2,9 @@
  * background.js
  */
 
-import {
-  throwErr
-} from './common.js';
-import {
-  getAllStorage
-} from './browser.js';
+/* shared */
+import { throwErr } from './common.js';
+import { getAllStorage } from './browser.js';
 import {
   createContextMenu, extractClickedData, handleActiveTab, handleCmd,
   handleMenusOnShown, handleMsg, handleUpdatedTab, removeEnabledTab,
@@ -15,11 +12,10 @@ import {
 } from './main.js';
 
 /* api */
-const {
-  commands, runtime, storage, tabs
-} = browser;
+const { commands, runtime, storage, tabs } = browser;
 const menus = browser.menus || browser.contextMenus;
 
+/* listeners */
 commands.onCommand.addListener(cmd =>
   handleCmd(cmd).catch(throwErr)
 );

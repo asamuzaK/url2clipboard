@@ -2,15 +2,10 @@
  * serialize-dom.js
  */
 
-import {
-  getType, isString
-} from './common.js';
+/* shared */
+import { getType, isString } from './common.js';
 import nsURI from './ns-uri.js';
-
-/* constants */
-import {
-  MIME_HTML
-} from './constant.js';
+import { MIME_HTML } from './constant.js';
 
 /**
  * get namespace of node from ancestor

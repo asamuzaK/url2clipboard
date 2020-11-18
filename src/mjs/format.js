@@ -2,13 +2,12 @@
  * format.js
  */
 
+/* shared */
 import {
   convertHtmlChar, convertLaTeXChar, convertNumCharRef,
   encodeUrlSpecialChar, escapeMatchingChars, getType, isString,
   stripMatchingChars
 } from './common.js';
-
-/* constants */
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,

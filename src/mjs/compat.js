@@ -2,14 +2,9 @@
  * compat.js
  */
 
-import {
-  isString
-} from './common.js';
-
-/* constants */
-import {
-  ICON_AUTO, WEBEXT_ID
-} from './constant.js';
+/* shared */
+import { isString } from './common.js';
+import { ICON_AUTO, WEBEXT_ID } from './constant.js';
 
 /* api */
 const { runtime } = browser;

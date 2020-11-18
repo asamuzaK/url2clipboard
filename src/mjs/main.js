@@ -2,12 +2,9 @@
  * main.js
  */
 
-import {
-  Clip
-} from './clipboard.js';
-import {
-  getType, isObjectNotEmpty, isString, logErr
-} from './common.js';
+/* shared */
+import { Clip } from './clipboard.js';
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
   getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, queryTabs,
   sendMessage
@@ -16,11 +13,7 @@ import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
   getFormatsKeys, hasFormat, setFormat
 } from './format.js';
-import {
-  notifyOnCopy
-} from './notify.js';
-
-/* constants */
+import { notifyOnCopy } from './notify.js';
 import {
   BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET, CONTEXT_INFO,
   CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
@@ -34,6 +27,8 @@ import {
 /* api */
 const { browserAction, i18n, runtime, tabs, windows } = browser;
 const menus = browser.menus || browser.contextMenus;
+
+/* constants */
 const { TAB_ID_NONE } = tabs;
 const { WINDOW_ID_CURRENT } = windows;
 

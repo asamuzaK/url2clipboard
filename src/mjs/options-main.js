@@ -2,15 +2,12 @@
  * options-main.js
  */
 
-import {
-  isObjectNotEmpty, isString, throwErr
-} from './common.js';
+/* shared */
+import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
   getStorage, setStorage, removePermission, requestPermission
 } from './browser.js';
-import {
-  NOTIFY_COPY
-} from './constant.js';
+import { NOTIFY_COPY } from './constant.js';
 
 /**
  * create pref

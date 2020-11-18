@@ -2,18 +2,12 @@
  * options.js
  */
 
+/* shared */
+import { throwErr } from './common.js';
+import { localizeHtml } from './localize.js';
+import { disableIncompatibleInputs } from './compat.js';
 import {
-  throwErr
-} from './common.js';
-import {
-  localizeHtml
-} from './localize.js';
-import {
-  disableIncompatibleInputs
-} from './compat.js';
-import {
-  addInputChangeListener,
-  setValuesFromStorage
+  addInputChangeListener, setValuesFromStorage
 } from './options-main.js';
 
 /* startup */
