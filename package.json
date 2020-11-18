@@ -46,5 +46,5 @@
     "webext-schema": "^1.4.0",
     "webextension-polyfill": "^0.7.0"
   },
-  "version": "6.1.0"
+  "version": "6.1.1"
 }
