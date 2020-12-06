@@ -1,6 +1,6 @@
 EN | [JA](./README.ja.md) | [ZH](./README.zh.md)
 
-[![Build Status](https://travis-ci.com/asamuzaK/url2clipboard.svg?branch=master)](https://travis-ci.com/asamuzaK/url2clipboard)
+[![build](https://github.com/asamuzaK/url2clipboard/workflows/build/badge.svg)](https://github.com/asamuzaK/url2clipboard/actions?query=workflow%3Abuild)
 [![devDependency Status](https://david-dm.org/asamuzaK/url2clipboard/dev-status.svg)](https://david-dm.org/asamuzaK/url2clipboard?type=dev)
 [![Mozilla Add-on](https://img.shields.io/amo/v/url2clipboard@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/url2clipboard/)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/miancenhdlkbmjmhlginhaaepbdnlllc.svg)](https://chrome.google.com/webstore/detail/copy-url-to-clipboard/miancenhdlkbmjmhlginhaaepbdnlllc)
