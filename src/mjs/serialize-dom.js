@@ -192,17 +192,20 @@ export const serializeDomString = (domstr, mime) => {
   }
   const { body, documentElement: root } = dom;
   if (mime === MIME_HTML) {
-    const elm = appendChildNodes(body, body.cloneNode(true));
-    if (elm.hasChildNodes()) {
-      const { childNodes, firstElementChild } = body;
-      if (firstElementChild) {
-        frag = document.createDocumentFragment();
-        for (const child of childNodes) {
-          if (child instanceof HTMLUnknownElement) {
-            frag = null;
-            break;
-          }
-          frag.appendChild(child.cloneNode(true));
+    const { childNodes, firstElementChild } = body;
+    if (firstElementChild) {
+      frag = document.createDocumentFragment();
+      for (const child of childNodes) {
+        if (child instanceof HTMLUnknownElement) {
+          frag = null;
+          break;
+        }
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          const childClone = appendChildNodes(child, child.cloneNode(true));
+          frag.appendChild(childClone);
+        } else {
+          child.nodeType === Node.TEXT_NODE &&
+            frag.appendChild(document.createTextNode(child.nodeValue));
         }
       }
     }

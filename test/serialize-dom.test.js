@@ -664,10 +664,9 @@ describe('serialize-dom', () => {
         'Error while parsing DOM string.');
     });
 
-    it('should throw', () => {
-      assert.throws(
-        () => func('Example <foo@example.dom> wrote:\nfoo', 'text/html')
-      );
+    it('should get null', () => {
+      const res = func('Example <foo@example.dom> wrote:\nfoo', 'text/html');
+      assert.isNull(res, 'result');
     });
 
     it('should get null', () => {
@@ -700,6 +699,30 @@ describe('serialize-dom', () => {
     });
 
     it('should get result', () => {
+      const res = func('foo <em onclick="alert(1)">bar</em>\nbaz', 'text/html');
+      assert.strictEqual(
+        res,
+        'foo <em xmlns="http://www.w3.org/1999/xhtml">bar</em>\nbaz',
+        'result'
+      );
+    });
+
+    it('should get result', () => {
+      const res = func('foo <script>alert(1)</script>\nbar', 'text/html');
+      assert.strictEqual(res, 'foo \nbar', 'result');
+    });
+
+    it('should get result', () => {
+      const res =
+        func('foo <div><script>alert(1)</script></div>\nbar', 'text/html');
+      assert.strictEqual(
+        res,
+        'foo <div xmlns="http://www.w3.org/1999/xhtml">\n\n</div>\nbar',
+        'result'
+      );
+    });
+
+    it('should get result', () => {
       const res =
         func('<div>foo</div>\n<div>bar</div>\n', 'text/html');
       assert.strictEqual(
@@ -721,6 +744,34 @@ describe('serialize-dom', () => {
       assert.strictEqual(
         res,
         '<em xmlns="http://www.w3.org/1999/xhtml">foo</em>',
+        'result'
+      );
+    });
+
+    it('should get result', () => {
+      const res =
+        func('<div><em>foo</em> bar</div>\n', 'application/xhtml+xml');
+      assert.strictEqual(
+        res,
+        '<div xmlns="http://www.w3.org/1999/xhtml">\n<em>foo</em> bar</div>',
+        'result'
+      );
+    });
+
+    it('should get result', () => {
+      const res = func('<div><em onclick="alert(1)">foo</em> bar</div>\n', 'application/xhtml+xml');
+      assert.strictEqual(
+        res,
+        '<div xmlns="http://www.w3.org/1999/xhtml">\n<em>foo</em> bar</div>',
+        'result'
+      );
+    });
+
+    it('should get result', () => {
+      const res = func('<div><script>alert(1)</script> foo</div>\n', 'application/xhtml+xml');
+      assert.strictEqual(
+        res,
+        '<div xmlns="http://www.w3.org/1999/xhtml">\n foo</div>',
         'result'
       );
     });
