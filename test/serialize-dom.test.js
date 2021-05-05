@@ -474,13 +474,12 @@ describe('serialize-dom', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should get empty string', () => {
+    it('should get null', () => {
       const elm = document.createElement('script');
       const body = document.querySelector('body');
       body.appendChild(elm);
       const res = func(elm);
-      assert.strictEqual(res.nodeType, Node.TEXT_NODE, 'nodeType');
-      assert.strictEqual(res.nodeValue, '', 'nodeValue');
+      assert.isNull(res, 'result');
     });
 
     it('should get result', () => {
@@ -509,6 +508,29 @@ describe('serialize-dom', () => {
       assert.strictEqual(res.localName, 'div', 'localName');
       assert.isTrue(res.hasAttribute('data-foo'), 'attr');
     });
+
+    it('should get result', () => {
+      const elm = document.createElement('foo');
+      const body = document.querySelector('body');
+      elm.setAttribute('bar', 'baz');
+      body.appendChild(elm);
+      const res = func(elm);
+      assert.isTrue(res instanceof HTMLUnknownElement, 'instance');
+      assert.strictEqual(res.localName, 'foo', 'localName');
+      assert.isFalse(res.hasAttribute('bar'), 'attr');
+    });
+
+    it('should get null', () => {
+      const dom =
+        new DOMParser().parseFromString('<foo@example.com>', 'text/html');
+      const { body: domBody } = dom;
+      const { firstElementChild: elm } = domBody;
+      const body = document.querySelector('body');
+      elm.setAttribute('bar', 'baz');
+      body.appendChild(elm);
+      const res = func(elm);
+      assert.isNull(res, 'result');
+    });
   });
 
   describe('create document fragment from nodes array', () => {
@@ -525,6 +547,7 @@ describe('serialize-dom', () => {
       arr.push(
         document.createTextNode('\n'),
         document.createComment('foo'),
+        null,
         document.createElement('p')
       );
       const res = func(arr);
@@ -655,7 +678,17 @@ describe('serialize-dom', () => {
     });
 
     it('should throw', () => {
+      assert.throws(() => func('</>', 'text/xml'),
+        'Error while parsing DOM string.');
+    });
+
+    it('should throw', () => {
       assert.throws(() => func('', 'text/xml'),
+        'Error while parsing DOM string.');
+    });
+
+    it('should throw', () => {
+      assert.throws(() => func('<xml></xml><xml></xml>', 'text/xml'),
         'Error while parsing DOM string.');
     });
 
@@ -665,28 +698,63 @@ describe('serialize-dom', () => {
     });
 
     it('should get null', () => {
-      const res = func('Example <foo@example.dom> wrote:\nfoo', 'text/html');
-      assert.isNull(res, 'result');
-    });
-
-    it('should get null', () => {
       const res = func('', 'text/html');
       assert.isNull(res, 'result');
     });
 
-    it('should get null', () => {
+    it('should throw', () => {
+      assert.throws(() => func('', 'text/html', true),
+        'Error while parsing DOM string.');
+    });
+
+    it('should get result', () => {
+      const res = func('Example <foo@example.dom> wrote:\nfoo', 'text/html');
+      assert.strictEqual(res, 'Example ', 'result');
+    });
+
+    it('should throw', () => {
+      assert.throws(
+        () => func('Example <foo@example.dom> wrote:\nfoo', 'text/html', true),
+        'Error while parsing DOM string.');
+    });
+
+    it('should get result', () => {
       const res = func('foo bar\nbaz', 'text/html');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, 'foo bar\nbaz', 'result');
     });
 
-    it('should get null', () => {
-      const res = func('foo <bar>baz</bar>\nqux', 'text/html');
-      assert.isNull(res, 'result');
+    it('should throw', () => {
+      assert.throws(() => func('foo bar\nbaz', 'text/html', true),
+        'Error while parsing DOM string.');
     });
 
-    it('should get null', () => {
+    it('should get result', () => {
       const res = func('<<foo>>', 'text/html');
-      assert.isNull(res, 'result');
+      assert.strictEqual(
+        res,
+        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>',
+        'result'
+      );
+    });
+
+    it('should throw', () => {
+      assert.throws(() => func('<<foo>>', 'text/html', true),
+        'Error while parsing DOM string.');
+    });
+
+    it('should get result', () => {
+      const res = func('<<script>>', 'text/html');
+      assert.strictEqual(res, '&lt;', 'result');
+    });
+
+    it('should get result', () => {
+      const res =
+        func('<div>foo <bar foobar="foobar">baz</bar>\nqux</div>', 'text/html');
+      assert.strictEqual(
+        res,
+        '<div xmlns="http://www.w3.org/1999/xhtml">foo <bar>baz</bar>\nqux</div>',
+        'result'
+      );
     });
 
     it('should get result', () => {

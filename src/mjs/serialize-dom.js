@@ -5,7 +5,7 @@
 /* shared */
 import { getType, isString } from './common.js';
 import nsURI from './ns-uri.js';
-import { MIME_HTML } from './constant.js';
+import { MIME_HTML, MIME_XHTML } from './constant.js';
 
 /**
  * get namespace of node from ancestor
@@ -105,10 +105,15 @@ export const createElement = node => {
                getNodeNS(node).namespaceURI || nsURI.html;
     const name = prefix ? `${prefix}:${localName}` : localName;
     if (localName === 'script') {
-      elm = document.createTextNode('');
+      elm = null;
     } else {
-      elm = document.createElementNS(ns, name);
-      attributes && setAttributeNS(elm, node);
+      try {
+        elm = document.createElementNS(ns, name);
+        attributes && !(node instanceof HTMLUnknownElement) &&
+          setAttributeNS(elm, node);
+      } catch (e) {
+        elm = null;
+      }
     }
   }
   return elm || null;
@@ -124,8 +129,9 @@ export const createFragment = nodes => {
   const frag = document.createDocumentFragment();
   if (Array.isArray(nodes)) {
     for (const node of nodes) {
-      if (node.nodeType === Node.ELEMENT_NODE ||
-          node.nodeType === Node.TEXT_NODE) {
+      if (node &&
+          (node.nodeType === Node.ELEMENT_NODE ||
+           node.nodeType === Node.TEXT_NODE)) {
         frag.appendChild(node);
       }
     }
@@ -173,9 +179,10 @@ export const appendChildNodes = (elm, node) => {
  *
  * @param {string} domstr - DOM string
  * @param {string} mime - mime type
+ * @param {boolean} strict - if true, html will be parsed as xhtml
  * @returns {?string} - serialized DOM string
  */
-export const serializeDomString = (domstr, mime) => {
+export const serializeDomString = (domstr, mime, strict = false) => {
   if (!isString(domstr)) {
     throw new TypeError(`Expected String but got ${getType(domstr)}.`);
   }
@@ -186,25 +193,23 @@ export const serializeDomString = (domstr, mime) => {
     throw new TypeError(`Unsupported MIME type ${mime}.`);
   }
   let frag;
-  const dom = new DOMParser().parseFromString(domstr, mime);
+  const mimeType = (strict && mime === MIME_HTML && MIME_XHTML) || mime;
+  const dom = new DOMParser().parseFromString(domstr, mimeType);
   if (dom.querySelector('parsererror')) {
     throw new Error('Error while parsing DOM string.');
   }
   const { body, documentElement: root } = dom;
-  if (mime === MIME_HTML) {
-    const { childNodes, firstElementChild } = body;
-    if (firstElementChild) {
+  if (mimeType === MIME_HTML) {
+    if (body.hasChildNodes()) {
+      const { childNodes } = body;
       frag = document.createDocumentFragment();
       for (const child of childNodes) {
-        if (child instanceof HTMLUnknownElement) {
-          frag = null;
-          break;
-        }
         if (child.nodeType === Node.ELEMENT_NODE) {
-          const childClone = appendChildNodes(child, child.cloneNode(true));
-          frag.appendChild(childClone);
+          const elm = appendChildNodes(child, child.cloneNode(true));
+          elm && elm.nodeType === Node.ELEMENT_NODE &&
+            frag.appendChild(elm);
         } else {
-          child.nodeType === Node.TEXT_NODE &&
+          child.nodeType === Node.TEXT_NODE && child.nodeValue &&
             frag.appendChild(document.createTextNode(child.nodeValue));
         }
       }
