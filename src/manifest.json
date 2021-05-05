@@ -96,7 +96,8 @@
   "icons": {
     "16": "img/icon-black-16.png",
     "32": "img/icon-black-32.png",
-    "64": "img/icon-color.png"
+    "64": "img/icon-color.png",
+    "128": "img/icon-color-128.png"
   },
   "manifest_version": 2,
   "name": "__MSG_extensionName__",
