@@ -100,6 +100,24 @@ export const clearContextMenuOnMouseup = async () => {
   return !!res;
 };
 
+/**
+ * get new tab position value
+ *
+ * @returns {?string} - result
+ */
+export const getNewTabPositionValue = async () => {
+  let res;
+  const isGranted = await isPermissionGranted({
+    permissions: ['browserSettings']
+  });
+  if (isGranted) {
+    const { browserSettings } = browser;
+    const { newTabPosition } = browserSettings;
+    res = await newTabPosition.get({});
+  }
+  return res || null;
+};
+
 /* commands */
 /**
  * is command customizable
