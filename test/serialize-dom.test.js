@@ -6,6 +6,7 @@ import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { createJsdom } from './mocha/setup.js';
 import * as mjs from '../src/mjs/serialize-dom.js';
+import sinon from 'sinon';
 
 describe('serialize-dom', () => {
   let window, document;
@@ -520,16 +521,14 @@ describe('serialize-dom', () => {
       assert.isFalse(res.hasAttribute('bar'), 'attr');
     });
 
-    it('should get null', () => {
+    it('should throw', async () => {
       const dom =
         new DOMParser().parseFromString('<foo@example.com>', 'text/html');
       const { body: domBody } = dom;
       const { firstElementChild: elm } = domBody;
       const body = document.querySelector('body');
-      elm.setAttribute('bar', 'baz');
       body.appendChild(elm);
-      const res = func(elm);
-      assert.isNull(res, 'result');
+      assert.throws(() => func(elm));
     });
   });
 
@@ -702,20 +701,28 @@ describe('serialize-dom', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should throw', () => {
-      assert.throws(() => func('', 'text/html', true),
-        'Error while parsing DOM string.');
+    it('should get null', () => {
+      const res = func('', 'text/html', true);
+      assert.isNull(res, 'result');
     });
 
-    it('should get result', () => {
+    it('should get null', () => {
+      const stubErr = sinon.stub(console, 'error');
       const res = func('Example <foo@example.dom> wrote:\nfoo', 'text/html');
-      assert.strictEqual(res, 'Example ', 'result');
+      const { calledOnce } = stubErr;
+      stubErr.restore();
+      assert.isTrue(calledOnce, 'error');
+      assert.isNull(res, 'result');
     });
 
-    it('should throw', () => {
-      assert.throws(
-        () => func('Example <foo@example.dom> wrote:\nfoo', 'text/html', true),
-        'Error while parsing DOM string.');
+    it('should get null', () => {
+      const stubErr = sinon.stub(console, 'error');
+      const res =
+        func('Example <foo@example.dom> wrote:\nfoo', 'text/html', true);
+      const { calledOnce } = stubErr;
+      stubErr.restore();
+      assert.isTrue(calledOnce, 'error');
+      assert.isNull(res, 'result');
     });
 
     it('should get result', () => {
@@ -723,9 +730,9 @@ describe('serialize-dom', () => {
       assert.strictEqual(res, 'foo bar\nbaz', 'result');
     });
 
-    it('should throw', () => {
-      assert.throws(() => func('foo bar\nbaz', 'text/html', true),
-        'Error while parsing DOM string.');
+    it('should get null', () => {
+      const res = func('foo bar\nbaz', 'text/html', true);
+      assert.isNull(res, 'result');
     });
 
     it('should get result', () => {
@@ -737,9 +744,13 @@ describe('serialize-dom', () => {
       );
     });
 
-    it('should throw', () => {
-      assert.throws(() => func('<<foo>>', 'text/html', true),
-        'Error while parsing DOM string.');
+    it('should get result', () => {
+      const res = func('<<foo>>', 'text/html', true);
+      assert.strictEqual(
+        res,
+        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>',
+        'result'
+      );
     });
 
     it('should get result', () => {

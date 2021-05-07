@@ -3,9 +3,9 @@
  */
 
 /* shared */
-import { getType, isString } from './common.js';
+import { getType, isString, logErr } from './common.js';
 import nsURI from './ns-uri.js';
-import { MIME_HTML, MIME_XHTML } from './constant.js';
+import { MIME_HTML } from './constant.js';
 
 /**
  * get namespace of node from ancestor
@@ -107,13 +107,9 @@ export const createElement = node => {
     if (localName === 'script') {
       elm = null;
     } else {
-      try {
-        elm = document.createElementNS(ns, name);
-        attributes && !(node instanceof HTMLUnknownElement) &&
-          setAttributeNS(elm, node);
-      } catch (e) {
-        elm = null;
-      }
+      elm = document.createElementNS(ns, name);
+      attributes && !(node instanceof HTMLUnknownElement) &&
+        setAttributeNS(elm, node);
     }
   }
   return elm || null;
@@ -179,10 +175,10 @@ export const appendChildNodes = (elm, node) => {
  *
  * @param {string} domstr - DOM string
  * @param {string} mime - mime type
- * @param {boolean} strict - if true, html will be parsed as xhtml
+ * @param {boolean} reqElm - require first element child
  * @returns {?string} - serialized DOM string
  */
-export const serializeDomString = (domstr, mime, strict = false) => {
+export const serializeDomString = (domstr, mime, reqElm = false) => {
   if (!isString(domstr)) {
     throw new TypeError(`Expected String but got ${getType(domstr)}.`);
   }
@@ -193,31 +189,35 @@ export const serializeDomString = (domstr, mime, strict = false) => {
     throw new TypeError(`Unsupported MIME type ${mime}.`);
   }
   let frag;
-  const mimeType = (strict && mime === MIME_HTML && MIME_XHTML) || mime;
-  const dom = new DOMParser().parseFromString(domstr, mimeType);
+  const dom = new DOMParser().parseFromString(domstr, mime);
   if (dom.querySelector('parsererror')) {
     throw new Error('Error while parsing DOM string.');
   }
   const { body, documentElement: root } = dom;
-  if (mimeType === MIME_HTML) {
-    if (body.hasChildNodes()) {
-      const { childNodes } = body;
-      frag = document.createDocumentFragment();
-      for (const child of childNodes) {
-        if (child.nodeType === Node.ELEMENT_NODE) {
-          const elm = appendChildNodes(child, child.cloneNode(true));
-          elm && elm.nodeType === Node.ELEMENT_NODE &&
-            frag.appendChild(elm);
-        } else {
-          child.nodeType === Node.TEXT_NODE && child.nodeValue &&
-            frag.appendChild(document.createTextNode(child.nodeValue));
+  try {
+    if (mime === MIME_HTML) {
+      const { childNodes, firstElementChild } = body;
+      if (body.hasChildNodes() && (!reqElm || firstElementChild)) {
+        frag = document.createDocumentFragment();
+        for (const child of childNodes) {
+          if (child.nodeType === Node.ELEMENT_NODE) {
+            const elm = appendChildNodes(child, child.cloneNode(true));
+            elm && elm.nodeType === Node.ELEMENT_NODE &&
+              frag.appendChild(elm);
+          } else {
+            child.nodeType === Node.TEXT_NODE && child.nodeValue &&
+              frag.appendChild(document.createTextNode(child.nodeValue));
+          }
         }
       }
+    } else {
+      const elm = appendChildNodes(root, root.cloneNode(true));
+      frag = document.createDocumentFragment();
+      frag.appendChild(elm);
     }
-  } else {
-    const elm = appendChildNodes(root, root.cloneNode(true));
-    frag = document.createDocumentFragment();
-    frag.appendChild(elm);
+  } catch (e) {
+    logErr(e);
+    frag = null;
   }
   return frag ? new XMLSerializer().serializeToString(frag) : null;
 };
