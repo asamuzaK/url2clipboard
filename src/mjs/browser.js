@@ -103,7 +103,7 @@ export const clearContextMenuOnMouseup = async () => {
 /**
  * get new tab position value
  *
- * @returns {?string} - result
+ * @returns {object} - result
  */
 export const getNewTabPositionValue = async () => {
   let res;
