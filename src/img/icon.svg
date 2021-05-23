@@ -18,49 +18,39 @@
       display: none;
     }
   </style>
-  <symbol id="board">
-    <path d="M 34 20 C 25.136 20 18 27.136 18 36 L 18 108
-             C 18 116.864 25.136 124 34 124 L 94 124
-             C 102.864 124 110 116.864 110 108 L 110 36
-             C 110 27.136 102.864 20 94 20 L 34 20 z
-             M 34 36 L 94 36 L 94 108 L 34 108 L 34 36 z"/>
-  </symbol>
-  <symbol id="clip">
-    <path d="M 64 4 A 12 12 0 0 0 52 16 L 42 16 L 42 44 L 86 44 L 86 16 L 76 16
-             A 12 12 0 0 0 64 4 z"/>
-  </symbol>
   <symbol id="outline">
-    <path d="M 64,4 A 12,12 0 0 0 52,16 H 42 V 44 H 86 V 16 H 76
-             A 12,12 0 0 0 64,4 Z
-             M 34,20 c -8.864,0 -16,7.136 -16,16 v 72
-             c 0,8.864 7.136,16 16,16 h 60 c 8.864,0 16,-7.136 16,-16 V 36
-             c 0,-8.864 -7.136,-16 -16,-16 z
-             m 0,16 h 60 v 72 H 34 Z"/>
+    <path d="m64 4c-6.6274 0-12 5.3726-12 12h-10v4h-8c-8.864 0-16 7.136-16 16v72c0 8.864 7.136 16 16 16h60c8.864 0 16-7.136 16-16v-72c0-8.864-7.136-16-16-16h-8v-4h-10c0-6.6274-5.3726-12-12-12zm0 10c1.1046 0 2 0.89543 2 2v10h10v8h-24v-8h10v-10c0-1.1046 0.89543-2 2-2zm-31.2 16h9.2v14h44v-14h9.2l4.8 4.8v74.4l-4.8 4.8h-62.4l-4.8-4.8v-74.4z"/>
   </symbol>
   <symbol id="background">
-    <path d="M 34,34 H 94 V 108 H 34 Z"/>
+    <path d="m32 34h64v76h-64z"/>
   </symbol>
-  <g id="black" fill="#000">
-    <use href="#outline"/>
-  </g>
-  <g id="white" fill="#FFF">
-    <use href="#outline"/>
-  </g>
-  <g id="dark" fill="#0C0C0D" fill-opacity="0.8">
-    <use href="#outline"/>
-  </g>
-  <g id="light" fill="#F9F9FA" fill-opacity="0.7">
-    <use href="#outline"/>
-  </g>
+  <symbol id="board">
+    <path d="m34 20c-8.864 0-16 7.136-16 16v72c0 8.864 7.136 16 16 16h60c8.864 0 16-7.136 16-16v-72c0-8.864-7.136-16-16-16h-60zm0 16h60v72h-60v-72z"/>
+  </symbol>
+  <symbol id="clip">
+    <path d="m64 4a12 12 0 0 0-12 12h-10v28h44v-28h-10a12 12 0 0 0-12-12z"/>
+  </symbol>
   <g id="context" fill="context-fill" fill-opacity="context-fill-opacity">
     <use href="#outline"/>
   </g>
   <g id="current" fill="currentColor">
     <use href="#outline"/>
   </g>
+  <g id="black" fill="#000">
+    <use href="#outline"/>
+  </g>
+  <g id="white" fill="#fff">
+    <use href="#outline"/>
+  </g>
+  <g id="dark" fill="rgb(91,91,102)">
+    <use href="#outline"/>
+  </g>
+  <g id="light" fill="rgb(251,251,254)">
+    <use href="#outline"/>
+  </g>
   <g id="color">
-    <use href="#background" fill="#FFF"/>
+    <use href="#background" fill="#fff"/>
     <use href="#board" fill="#002147"/>
-    <use href="#clip" fill="#E66000"/>
+    <use href="#clip" fill="#e66000"/>
   </g>
 </svg>
