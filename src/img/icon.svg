@@ -30,8 +30,7 @@
   <symbol id="clip">
     <path d="m64 4a12 12 0 0 0-12 12h-10v28h44v-28h-10a12 12 0 0 0-12-12z"/>
   </symbol>
-  <g id="context" fill="context-fill rgb(91,91,102)"
-     fill-opacity="context-fill-opacity 1.0">
+  <g id="context" fill="context-fill rgb(91,91,102)">
     <use href="#outline"/>
   </g>
   <g id="current" fill="context-fill currentColor">
