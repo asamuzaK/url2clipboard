@@ -33,6 +33,9 @@
   <g id="context" fill="context-fill rgb(91,91,102)">
     <use href="#outline"/>
   </g>
+  <g id="context-light" fill="context-fill rgb(251,251,254)">
+    <use href="#outline"/>
+  </g>
   <g id="current" fill="context-fill currentColor">
     <use href="#outline"/>
   </g>
