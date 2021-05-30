@@ -5,19 +5,7 @@
   "browser_action": {
     "browser_style": true,
     "default_popup": "html/popup.html",
-    "default_title": "__MSG_extensionName__",
-    "theme_icons": [
-      {
-        "dark": "img/icon.svg#context",
-        "light": "img/icon.svg#context-light",
-        "size": 16
-      },
-      {
-        "dark": "img/icon.svg#context",
-        "light": "img/icon.svg#context-light",
-        "size": 32
-      }
-    ]
+    "default_title": "__MSG_extensionName__"
   },
   "browser_specific_settings": {
     "gecko": {

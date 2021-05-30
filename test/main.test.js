@@ -913,6 +913,116 @@ describe('main', () => {
     });
   });
 
+  describe('set default icon', () => {
+    const func = mjs.setDefaultIcon;
+    beforeEach(() => {
+      const { vars } = mjs;
+      vars.isWebExt = false;
+      vars.iconId = '';
+    });
+    afterEach(() => {
+      const { vars } = mjs;
+      vars.isWebExt = false;
+      vars.iconId = '';
+    });
+
+    it('should get null', async () => {
+      const i = browser.i18n.getMessage.callCount;
+      const j = browser.runtime.getURL.callCount;
+      const k = browser.browserAction.setIcon.callCount;
+      const l = browser.browserAction.setTitle.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.browserAction.setIcon.callsFake((...args) => args);
+      browser.browserAction.setTitle.callsFake((...args) => args);
+      const res = await func();
+      assert.strictEqual(browser.i18n.getMessage.callCount, i, 'not called');
+      assert.strictEqual(browser.runtime.getURL.callCount, j, 'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
+        'not called');
+      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      const { vars } = mjs;
+      const i = browser.i18n.getMessage.callCount;
+      const j = browser.runtime.getURL.callCount;
+      const k = browser.browserAction.setIcon.callCount;
+      const l = browser.browserAction.setTitle.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.browserAction.setIcon.callsFake((...args) => args);
+      browser.browserAction.setTitle.callsFake((...args) => args);
+      vars.isWebExt = true;
+      vars.iconId = '#foo';
+      const res = await func();
+      assert.strictEqual(browser.i18n.getMessage.callCount, i, 'not called');
+      assert.strictEqual(browser.runtime.getURL.callCount, j, 'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
+        'not called');
+      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      const { vars } = mjs;
+      const i = browser.i18n.getMessage.callCount;
+      const j = browser.runtime.getURL.callCount;
+      const k = browser.browserAction.setIcon.callCount;
+      const l = browser.browserAction.setTitle.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.browserAction.setIcon.callsFake((...args) => args);
+      browser.browserAction.setTitle.callsFake((...args) => args);
+      vars.isWebExt = false;
+      vars.iconId = '';
+      const res = await func();
+      assert.strictEqual(browser.i18n.getMessage.callCount, i, 'not called');
+      assert.strictEqual(browser.runtime.getURL.callCount, j, 'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
+        'not called');
+      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
+        'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const { vars } = mjs;
+      const i = browser.i18n.getMessage.callCount;
+      const j = browser.runtime.getURL.callCount;
+      const k = browser.browserAction.setIcon.callCount;
+      const l = browser.browserAction.setTitle.callCount;
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.browserAction.setIcon.callsFake((...args) => args);
+      browser.browserAction.setTitle.callsFake((...args) => args);
+      vars.isWebExt = true;
+      vars.iconId = '';
+      const res = await func();
+      assert.strictEqual(browser.i18n.getMessage.callCount, i + 1, 'called');
+      assert.strictEqual(browser.runtime.getURL.callCount, j + 1, 'called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, k + 1,
+        'called');
+      assert.strictEqual(browser.browserAction.setTitle.callCount, l + 1,
+        'called');
+      assert.deepEqual(res, [
+        [
+          {
+            path: 'foo/bar#context'
+          }
+        ],
+        [
+          {
+            title: 'extensionName'
+          }
+        ]
+      ], 'result');
+    });
+  });
+
   describe('init context info', () => {
     const func = mjs.initContextInfo;
 

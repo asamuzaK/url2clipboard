@@ -8,7 +8,7 @@ import { getAllStorage } from './browser.js';
 import {
   createContextMenu, extractClickedData, handleActiveTab, handleCmd,
   handleMenusOnShown, handleMsg, handleUpdatedTab, removeEnabledTab,
-  setFormatData, setVars
+  setDefaultIcon, setFormatData, setVars
 } from './main.js';
 
 /* api */
@@ -43,5 +43,5 @@ tabs.onUpdated.addListener((tabId, info, tab) =>
 
 /* startup */
 document.addEventListener('DOMContentLoaded', () =>
-  setFormatData().then(getAllStorage).then(setVars).then(createContextMenu)
-    .catch(throwErr));
+  setFormatData().then(getAllStorage).then(setVars).then(setDefaultIcon)
+    .then(createContextMenu).catch(throwErr));

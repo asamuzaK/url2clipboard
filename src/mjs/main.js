@@ -18,10 +18,10 @@ import {
   BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET, CONTEXT_INFO,
   CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
   COPY_TABS_OTHER, COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON,
-  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
-  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL, PROMPT,
-  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_CONTEXT_ID, ICON_DARK, ICON_LIGHT,
+  ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
+  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -423,6 +423,20 @@ export const setIcon = async () => {
     browserAction.setIcon({ path }),
     browserAction.setTitle({ title })
   ]);
+};
+
+/**
+ * set default icon
+ *
+ * @returns {?Function} - setIcon()
+ */
+export const setDefaultIcon = async () => {
+  let func;
+  if (vars.isWebExt && !vars.iconId) {
+    vars.iconId = ICON_CONTEXT_ID;
+    func = setIcon();
+  }
+  return func || null;
 };
 
 /* context info */
