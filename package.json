@@ -24,14 +24,14 @@
   },
   "devDependencies": {
     "@babel/core": "^7.14.3",
-    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-env": "^7.14.4",
     "@babel/register": "^7.13.16",
-    "addons-linter": "^3.5.0",
+    "addons-linter": "^3.6.0",
     "chai": "^4.3.4",
     "eslint": "^7.27.0",
     "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.23.3",
-    "eslint-plugin-jsdoc": "^35.0.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsdoc": "^35.1.2",
     "eslint-plugin-no-unsanitized": "^3.1.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0",
@@ -39,9 +39,9 @@
     "mocha": "^8.4.0",
     "npm-run-all": "^4.1.5",
     "nyc": "^15.1.0",
-    "sinon": "^11.1.0",
-    "webext-schema": "^1.4.12",
+    "sinon": "^11.1.1",
+    "webext-schema": "^1.4.13",
     "webextension-polyfill": "^0.8.0"
   },
-  "version": "6.1.1"
+  "version": "6.2.0"
 }
