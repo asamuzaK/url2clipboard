@@ -88,8 +88,8 @@ const getActiveElm = async () => {
  * @returns {object} - anchor element
  */
 const getAnchorElm = async node => {
-  let elm;
   const root = document.documentElement;
+  let elm;
   while (node && node.parentNode && node.parentNode !== root) {
     if (node.localName === 'a') {
       elm = node;

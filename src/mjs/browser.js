@@ -27,10 +27,10 @@ export const isPermissionGranted = async perm => {
  * @returns {object} - bookmarks.BookmarkTreeNode
  */
 export const createBookmark = async opt => {
-  let node;
   const isGranted = await isPermissionGranted({
     permissions: ['bookmarks']
   });
+  let node;
   if (isGranted && isObjectNotEmpty(opt)) {
     const { bookmarks } = browser;
     node = await bookmarks.create(opt);
@@ -45,10 +45,10 @@ export const createBookmark = async opt => {
  * @returns {object} - user value
  */
 export const getCloseTabsByDoubleClickValue = async () => {
-  let userValue;
   const isGranted = await isPermissionGranted({
     permissions: ['browserSettings']
   });
+  let userValue;
   if (isGranted) {
     const { browserSettings } = browser;
     const { closeTabsByDoubleClick } = browserSettings;
@@ -63,10 +63,10 @@ export const getCloseTabsByDoubleClickValue = async () => {
  * @returns {boolean} - result
  */
 export const setContextMenuOnMouseup = async () => {
-  let res;
   const isGranted = await isPermissionGranted({
     permissions: ['browserSettings']
   });
+  let res;
   if (isGranted) {
     const { browserSettings } = browser;
     const { contextMenuShowEvent } = browserSettings;
@@ -88,10 +88,10 @@ export const setContextMenuOnMouseup = async () => {
  * @returns {boolean} - result
  */
 export const clearContextMenuOnMouseup = async () => {
-  let res;
   const isGranted = await isPermissionGranted({
     permissions: ['browserSettings']
   });
+  let res;
   if (isGranted) {
     const { browserSettings } = browser;
     const { contextMenuShowEvent } = browserSettings;
@@ -106,10 +106,10 @@ export const clearContextMenuOnMouseup = async () => {
  * @returns {object} - result
  */
 export const getNewTabPositionValue = async () => {
-  let res;
   const isGranted = await isPermissionGranted({
     permissions: ['browserSettings']
   });
+  let res;
   if (isGranted) {
     const { browserSettings } = browser;
     const { newTabPosition } = browserSettings;
@@ -125,10 +125,10 @@ export const getNewTabPositionValue = async () => {
  * @returns {boolean} - result
  */
 export const isCommandCustomizable = async () => {
-  let bool;
   const isGranted = await isPermissionGranted({
     permissions: ['commands']
   });
+  let bool;
   if (isGranted) {
     const { commands } = browser;
     bool = typeof commands.update === 'function' &&
@@ -175,10 +175,10 @@ export const updateCommand = async (id, value = '') => {
  * @returns {?Array} - array of contextualIdentities.ContextualIdentity
  */
 export const getAllContextualIdentities = async () => {
-  let arr;
   const isGranted = await isPermissionGranted({
     permissions: ['contextualIdentities']
   });
+  let arr;
   if (isGranted) {
     const { contextualIdentities } = browser;
     try {
@@ -200,10 +200,10 @@ export const getContextualId = async cookieStoreId => {
   if (!isString(cookieStoreId)) {
     throw new TypeError(`Expected String but got ${getType(cookieStoreId)}.`);
   }
-  let id;
   const isGranted = await isPermissionGranted({
     permissions: ['contextualIdentities']
   });
+  let id;
   if (isGranted) {
     const { contextualIdentities } = browser;
     try {
@@ -222,10 +222,10 @@ export const getContextualId = async cookieStoreId => {
  * @returns {?Array} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
-  let res;
   const isGranted = await isPermissionGranted({
     permissions: ['management']
   });
+  let res;
   if (isGranted) {
     const { management } = browser;
     const arr = await management.getAll();
@@ -248,10 +248,10 @@ export const getExtensionInfo = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let ext;
   const isGranted = await isPermissionGranted({
     permissions: ['management']
   });
+  let ext;
   if (isGranted) {
     const { management } = browser;
     ext = await management.get(id);
@@ -265,10 +265,10 @@ export const getExtensionInfo = async id => {
  * @returns {?Array} -array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
-  let res;
   const isGranted = await isPermissionGranted({
     permissions: ['management']
   });
+  let res;
   if (isGranted) {
     const { management } = browser;
     const arr = await management.getAll();
@@ -290,10 +290,10 @@ export const clearNotification = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let func;
   const isGranted = await isPermissionGranted({
     permissions: ['notifications']
   });
+  let func;
   if (isGranted) {
     const { notifications } = browser;
     func = notifications.clear(id);
@@ -312,10 +312,10 @@ export const createNotification = async (id, opt) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let func;
   const isGranted = await isPermissionGranted({
     permissions: ['notifications']
   });
+  let func;
   if (isGranted) {
     const { notifications } = browser;
     !notifications.onClosed.hasListener(clearNotification) &&
@@ -451,10 +451,10 @@ export const sendMessage = async (id, msg, opt) => {
  * @returns {object} - tabs.Tab
  */
 export const getRecentlyClosedTab = async windowId => {
-  let tab;
   const isGranted = await isPermissionGranted({
     permissions: ['sessions']
   });
+  let tab;
   if (isGranted) {
     const { sessions } = browser;
     const items = await sessions.getRecentlyClosed();
@@ -491,10 +491,10 @@ export const getSessionWindowValue = async (key, windowId) => {
   if (!Number.isInteger(windowId)) {
     windowId = windows.WINDOW_ID_CURRENT;
   }
-  let value;
   const isGranted = await isPermissionGranted({
     permissions: ['sessions']
   });
+  let value;
   if (isGranted) {
     const { sessions } = browser;
     value = await sessions.getWindowValue(windowId, key);
@@ -512,10 +512,10 @@ export const restoreSession = async sessionId => {
   if (!isString(sessionId)) {
     throw new TypeError(`Expected String but got ${getType(sessionId)}.`);
   }
-  let ses;
   const isGranted = await isPermissionGranted({
     permissions: ['sessions']
   });
+  let ses;
   if (isGranted) {
     const { sessions } = browser;
     ses = await sessions.restore(sessionId);
@@ -569,10 +569,10 @@ export const clearStorage = async () => {
  * @returns {object} - stored data
  */
 export const getAllStorage = async () => {
-  let data;
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
+  let data;
   if (isGranted) {
     const { storage } = browser;
     data = await storage.local.get();
@@ -587,10 +587,10 @@ export const getAllStorage = async () => {
  * @returns {object} - stored data
  */
 export const getStorage = async key => {
-  let data;
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
+  let data;
   if (isGranted) {
     const { storage } = browser;
     data = await storage.local.get(key);

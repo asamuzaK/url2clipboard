@@ -192,8 +192,8 @@ export const getFormat = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  let item;
   const key = getFormatId(id);
+  let item;
   if (key) {
     item = formats.get(key);
   }

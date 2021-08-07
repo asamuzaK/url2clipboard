@@ -625,7 +625,9 @@ export const extractClickedData = async (info, tab) => {
         text = await createTabsLinkText(tmplArr, mimeType);
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = await getFormatTemplate(formatId);
-        let content, title, url;
+        let content;
+        let title;
+        let url;
         if (formatId === BBCODE_URL) {
           content = tabUrl;
           url = tabUrl;
@@ -639,7 +641,9 @@ export const extractClickedData = async (info, tab) => {
         });
       } else {
         const template = await getFormatTemplate(formatId);
-        let content, title, url;
+        let content;
+        let title;
+        let url;
         if (menuItemId.startsWith(COPY_LINK)) {
           if (formatId === BBCODE_URL) {
             content = contextUrl;
@@ -762,8 +766,8 @@ export const execCopy = async (data = {}) => {
  * @returns {?Function} - updateContextMenu()
  */
 export const handleActiveTab = async (info = {}) => {
-  let func;
   const { tabId } = info;
+  let func;
   if (Number.isInteger(tabId) && await isTab(tabId)) {
     func = updateContextMenu(tabId);
   }
@@ -782,9 +786,9 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  let func;
   const { status } = info;
   const { active } = tab;
+  let func;
   if (status === 'complete' && active) {
     func = handleActiveTab({ tabId });
   }
