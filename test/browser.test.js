@@ -28,9 +28,21 @@ describe('browser', () => {
     const func = mjs.isPermissionGranted;
     beforeEach(() => {
       browser.permissions.contains.callsFake((obj = {}) => {
-        const { permissions } = obj;
+        const { origins, permissions } = obj;
         let res;
-        if (Array.isArray(permissions)) {
+        if (Array.isArray(origins)) {
+          const [...origs] = origins;
+          // match pattern: '*://*.example.com/*'
+          const grantedOrigsReg =
+            /^(http|ws)s?:\/\/(?:[a-zA-Z0-9]+\.)*example\.com\/.*$/;
+          for (const orig of origs) {
+            res = grantedOrigsReg.test(orig);
+            if (res === false) {
+              break;
+            }
+          }
+        }
+        if ((res || typeof res !== 'boolean') && Array.isArray(permissions)) {
           const [...perms] = permissions;
           const grantedPerms = ['tabs', 'browserSettings'];
           for (const perm of perms) {
@@ -68,6 +80,27 @@ describe('browser', () => {
 
     it('should get result', async () => {
       const res = await func({
+        origins: ['https://mozilla.org/']
+      });
+      assert.isFalse(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
+        origins: ['https://example.com/']
+      });
+      assert.isTrue(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
+        origins: ['http://www.example.com/foo']
+      });
+      assert.isTrue(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
         permissions: ['alarms']
       });
       assert.isFalse(res, 'result');
@@ -97,6 +130,30 @@ describe('browser', () => {
     it('should get result', async () => {
       const res = await func({
         permissions: ['tabs', 'browserSettings', 'commands']
+      });
+      assert.isFalse(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
+        origins: ['https://example.com/'],
+        permissions: ['tabs']
+      });
+      assert.isTrue(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
+        origins: ['https://mozilla.org/'],
+        permissions: ['tabs']
+      });
+      assert.isFalse(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = await func({
+        origins: ['https://example.com/'],
+        permissions: ['alarms']
       });
       assert.isFalse(res, 'result');
     });
