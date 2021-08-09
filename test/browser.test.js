@@ -1284,11 +1284,16 @@ describe('browser', () => {
 
   describe('execute content script to existing tab', () => {
     const func = mjs.execScriptToTab;
+    beforeEach(() => {
+      browser.permissions.contains.resolves(false);
+    });
+    afterEach(() => {
+      browser.permissions.contains.resolves(false);
+    });
 
-    it('should throw if no argument given', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
-      });
+    it('should get null if no argument given', async () => {
+      const res = await func();
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
@@ -1305,31 +1310,6 @@ describe('browser', () => {
       stubErr.restore();
       assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
         file
-      }).callCount, i + 1, 'called');
-      assert.isFalse(errCalled, 'error not called');
-      assert.deepEqual(res, [{}], 'result');
-    });
-
-    it('should call function', async () => {
-      const stubErr = sinon.stub(console, 'error');
-      const file = '/foo/bar';
-      const i = browser.tabs.executeScript.withArgs(1, {
-        file,
-        allFrames: true
-      }).callCount;
-      browser.tabs.executeScript.withArgs(1, {
-        file,
-        allFrames: true
-      }).resolves([{}]);
-      const res = await func(1, {
-        file,
-        allFrames: true
-      });
-      const { calledOnce: errCalled } = stubErr;
-      stubErr.restore();
-      assert.strictEqual(browser.tabs.executeScript.withArgs(1, {
-        file,
-        allFrames: true
       }).callCount, i + 1, 'called');
       assert.isFalse(errCalled, 'error not called');
       assert.deepEqual(res, [{}], 'result');
@@ -1351,7 +1331,125 @@ describe('browser', () => {
         file
       }).callCount, i + 1, 'called');
       assert.isTrue(errCalled, 'error called');
-      assert.isFalse(res, 'result');
+      assert.deepEqual(res, false, 'result');
+    });
+
+    it('should get null if active tab permission is not granted', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).resolves([{}]);
+      const res = await func({ file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i, 'not called');
+      assert.isFalse(errCalled, 'error not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).resolves([{}]);
+      browser.permissions.contains.resolves(true);
+      const res = await func({ file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i + 1, 'called');
+      assert.isFalse(errCalled, 'error not called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should log error', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).rejects(new Error('error'));
+      browser.permissions.contains.resolves(true);
+      const res = await func({ file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i + 1, 'called');
+      assert.isTrue(errCalled, 'error called');
+      assert.deepEqual(res, false, 'result');
+    });
+
+    it('should get null if active tab permission is not granted', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).resolves([{}]);
+      const res = await func(null, { file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i, 'not called');
+      assert.isFalse(errCalled, 'error not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).resolves([{}]);
+      browser.permissions.contains.resolves(true);
+      const res = await func(null, { file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i + 1, 'called');
+      assert.isFalse(errCalled, 'error not called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should log error', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const file = '/foo/bar';
+      const i = browser.tabs.executeScript.withArgs({
+        file
+      }).callCount;
+      browser.tabs.executeScript.withArgs({
+        file
+      }).rejects(new Error('error'));
+      browser.permissions.contains.resolves(true);
+      const res = await func(null, { file });
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file
+      }).callCount, i + 1, 'called');
+      assert.isTrue(errCalled, 'error called');
+      assert.deepEqual(res, false, 'result');
     });
   });
 
@@ -1438,6 +1536,115 @@ describe('browser', () => {
       }).callCount, j + 1, 'called');
       assert.isTrue(errCalled, 'error called');
       assert.deepEqual(res, [[{}, {}], false], 'result');
+    });
+  });
+
+  describe('execute scripts to tab in order', () => {
+    const func = mjs.execScriptsToTabInOrder;
+
+    it('should get null if no arguments given', async () => {
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if no opts given', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const res = await func(1);
+      assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if opts is empty array', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const res = await func(1, []);
+      assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if opts is empty array', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const res = await func([]);
+      assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if opts is empty array', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const res = await func(null, []);
+      assert.strictEqual(browser.tabs.executeScript.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const opt = {
+        file: '/foo/bar'
+      };
+      const opt2 = {
+        file: '/baz/qux'
+      };
+      const i = browser.tabs.executeScript.withArgs(1, opt).callCount;
+      const j = browser.tabs.executeScript.withArgs(1, opt2).callCount;
+      browser.tabs.executeScript.withArgs(1, opt).rejects(new Error('error'));
+      browser.tabs.executeScript.withArgs(1, opt2).resolves([{}]);
+      const opts = [opt, opt2];
+      const res = await func(1, opts);
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, opt).callCount,
+        i + 1, 'called');
+      assert.strictEqual(browser.tabs.executeScript.withArgs(1, opt2).callCount,
+        j + 1, 'called');
+      assert.isTrue(errCalled, 'error called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should get result', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const opt = {
+        file: '/foo/bar'
+      };
+      const opt2 = {
+        file: '/baz/qux'
+      };
+      const i = browser.tabs.executeScript.withArgs(opt).callCount;
+      const j = browser.tabs.executeScript.withArgs(opt2).callCount;
+      browser.tabs.executeScript.withArgs(opt).rejects(new Error('error'));
+      browser.tabs.executeScript.withArgs(opt2).resolves([{}]);
+      const opts = [opt, opt2];
+      const res = await func(opts);
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(opt).callCount,
+        i + 1, 'called');
+      assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
+        j + 1, 'called');
+      assert.isTrue(errCalled, 'error called');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should get result', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const opt = {
+        file: '/foo/bar'
+      };
+      const opt2 = {
+        file: '/baz/qux'
+      };
+      const i = browser.tabs.executeScript.withArgs(opt).callCount;
+      const j = browser.tabs.executeScript.withArgs(opt2).callCount;
+      browser.tabs.executeScript.withArgs(opt).rejects(new Error('error'));
+      browser.tabs.executeScript.withArgs(opt2).resolves([{}]);
+      const opts = [opt, opt2];
+      const res = await func(null, opts);
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.strictEqual(browser.tabs.executeScript.withArgs(opt).callCount,
+        i + 1, 'called');
+      assert.strictEqual(browser.tabs.executeScript.withArgs(opt2).callCount,
+        j + 1, 'called');
+      assert.isTrue(errCalled, 'error called');
+      assert.deepEqual(res, [{}], 'result');
     });
   });
 

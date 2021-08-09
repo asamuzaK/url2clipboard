@@ -656,15 +656,31 @@ export const queryTabs = async opt => {
 /**
  * execute content script to existing tab
  *
- * @param {number} tabId - tab ID
+ * @param {number|object} tabId - tab ID or options
  * @param {object} opt - options
- * @returns {?(Function|boolean)} - promise chain
+ * @returns {?Array|boolean} - result
  */
 export const execScriptToTab = async (tabId, opt = {}) => {
-  if (!Number.isInteger(tabId)) {
-    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  let res;
+  try {
+    const isGranted = await isPermissionGranted({
+      permissions: ['activeTab']
+    });
+    if (Number.isInteger(tabId)) {
+      res = await tabs.executeScript(tabId, opt);
+    } else if (isGranted) {
+      if (isObjectNotEmpty(tabId)) {
+        res = await tabs.executeScript(tabId);
+      } else {
+        res = await tabs.executeScript(opt);
+      }
+    } else {
+      res = null;
+    }
+  } catch (e) {
+    res = logErr(e);
   }
-  return tabs.executeScript(tabId, opt).catch(logErr);
+  return res;
 };
 
 /**
@@ -687,6 +703,37 @@ export const execScriptToTabs = async (opt = {}) => {
     }
   }
   return Promise.all(func);
+};
+
+/**
+ * execute scripts to tab in order
+ *
+ * @param {number|Array} tabId - tabId or array of options
+ * @param {Array} opts - array of options
+ * @returns {*} - result of the last executed script
+ */
+export const execScriptsToTabInOrder = async (tabId, opts = []) => {
+  const func = [];
+  let res;
+  if (Number.isInteger(tabId)) {
+    for (const item of opts) {
+      func.push(execScriptToTab(tabId, item));
+    }
+  } else {
+    let items;
+    if (Array.isArray(tabId) && tabId.length) {
+      items = tabId;
+    } else {
+      items = opts;
+    }
+    for (const item of items) {
+      func.push(execScriptToTab(item));
+    }
+  }
+  if (func.length) {
+    res = await Promise.all(func).then(a => a.pop());
+  }
+  return res || null;
 };
 
 /**
