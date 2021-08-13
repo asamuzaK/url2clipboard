@@ -7,8 +7,8 @@ import { throwErr } from './common.js';
 import { getAllStorage } from './browser.js';
 import {
   createContextMenu, extractClickedData, handleActiveTab, handleCmd,
-  handleMenusOnShown, handleMsg, handleUpdatedTab, removeEnabledTab,
-  setDefaultIcon, setFormatData, setVars
+  handleMenusOnShown, handleMsg, handleUpdatedTab, setDefaultIcon,
+  setFormatData, setVars
 } from './main.js';
 
 /* api */
@@ -33,9 +33,6 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 tabs.onActivated.addListener(info =>
   handleActiveTab(info).catch(throwErr)
-);
-tabs.onRemoved.addListener(tabId =>
-  removeEnabledTab(tabId).catch(throwErr)
 );
 tabs.onUpdated.addListener((tabId, info, tab) =>
   handleUpdatedTab(tabId, info, tab).catch(throwErr)

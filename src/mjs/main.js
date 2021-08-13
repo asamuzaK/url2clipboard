@@ -6,8 +6,8 @@
 import { Clip } from './clipboard.js';
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
-  getActiveTabId, getAllTabsInWindow, getHighlightedTab, isTab, queryTabs,
-  sendMessage
+  execScriptToTab, execScriptsToTabInOrder, getActiveTabId, getAllTabsInWindow,
+  getHighlightedTab, isTab, queryTabs, sendMessage
 } from './browser.js';
 import {
   createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
@@ -15,13 +15,14 @@ import {
 } from './format.js';
 import { notifyOnCopy } from './notify.js';
 import {
-  BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTENT_EDITED_GET, CONTEXT_INFO,
-  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXT_NAME, HTML_HYPER, HTML_PLAIN, ICON,
-  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_CONTEXT_ID, ICON_DARK, ICON_LIGHT,
-  ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY,
-  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+  BBCODE_URL, CMD_COPY, CONTENT_EDITED, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
+  COPY_TABS_SELECTED, EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN,
+  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_CONTEXT_ID, ICON_DARK,
+  ICON_LIGHT, ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
+  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
+  TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -141,9 +142,6 @@ export const getFormatTitle = async id => {
   }
   return title || null;
 };
-
-/* enabled tabs collection */
-export const enabledTabs = new Map();
 
 /* context menu items */
 export const menuItems = {
@@ -311,7 +309,7 @@ export const updateContextMenu = async tabId => {
   }
   const func = [];
   if (enabledFormats.size) {
-    const { isWebExt, promptContent } = vars;
+    const { isWebExt } = vars;
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
     const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
@@ -319,14 +317,9 @@ export const updateContextMenu = async tabId => {
     for (const item of items) {
       const { contexts, id: itemId } = menuItems[item];
       switch (itemId) {
-        case COPY_LINK: {
-          const enabled = enabledTabs.get(tabId) || false;
-          func.push(menus.update(itemId, { enabled }));
-          break;
-        }
+        case COPY_LINK:
         case COPY_PAGE: {
-          const enabled = isWebExt || !promptContent ||
-                          enabledTabs.get(tabId) || false;
+          const enabled = true;
           func.push(menus.update(itemId, { enabled }));
           break;
         }
@@ -374,41 +367,6 @@ export const handleMenusOnShown = async (info, tab) => {
 };
 
 /**
- * set enabled tab
- *
- * @param {number} tabId - tab ID
- * @param {object} tab - tabs.Tab
- * @param {object} data - context info
- * @returns {object} - tab ID info
- */
-export const setEnabledTab = async (tabId, tab, data = {}) => {
-  if (!Number.isInteger(tabId)) {
-    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
-  }
-  const { enabled } = data;
-  const info = { tabId, enabled };
-  if (tab || await isTab(tabId)) {
-    enabledTabs.set(tabId, !!enabled);
-  }
-  return info;
-};
-
-/**
- * remove enabled tab
- *
- * @param {number} tabId - tab ID
- * @returns {Function} - updateContextMenu()
- */
-export const removeEnabledTab = async tabId => {
-  if (!Number.isInteger(tabId)) {
-    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
-  }
-  const id = await getActiveTabId();
-  await enabledTabs.delete(tabId);
-  return updateContextMenu(id);
-};
-
-/**
  * set icon
  *
  * @returns {Promise.<Array>} - results of each handler
@@ -437,49 +395,6 @@ export const setDefaultIcon = async () => {
     func = setIcon();
   }
   return func || null;
-};
-
-/* context info */
-export const contextInfo = {
-  isLink: false,
-  content: null,
-  selectionText: '',
-  title: null,
-  url: null,
-  canonicalUrl: null
-};
-
-/**
- * init context info
- *
- * @returns {object} - context info
- */
-export const initContextInfo = async () => {
-  contextInfo.isLink = false;
-  contextInfo.content = null;
-  contextInfo.selectionText = '';
-  contextInfo.title = null;
-  contextInfo.url = null;
-  contextInfo.canonicalUrl = null;
-  return contextInfo;
-};
-
-/**
- * update context info
- *
- * @param {object} data - context info data
- * @returns {object} - context info
- */
-export const updateContextInfo = async (data = {}) => {
-  await initContextInfo();
-  const { contextInfo: info } = data;
-  if (info) {
-    const items = Object.entries(info);
-    for (const [key, value] of items) {
-      contextInfo[key] = value;
-    }
-  }
-  return contextInfo;
 };
 
 /**
@@ -571,6 +486,40 @@ export const getSelectedTabsInfo = async menuItemId => {
 };
 
 /**
+ * get context info
+ *
+ * @returns {object} - context info
+ */
+export const getContextInfo = async () => {
+  const arr = await execScriptToTab({
+    file: JS_CONTEXT_INFO
+  });
+  let info;
+  if (Array.isArray(arr)) {
+    [info] = arr;
+  }
+  return info || null;
+};
+
+/**
+ * send context info
+ *
+ * @returns {?Function} - sendMessage();
+ */
+export const sendContextInfo = async () => {
+  const contextInfo = await getContextInfo();
+  let func;
+  if (isObjectNotEmpty(contextInfo)) {
+    func = sendMessage(null, {
+      [CONTEXT_INFO]: {
+        contextInfo
+      }
+    });
+  }
+  return func || null;
+};
+
+/**
  * extract clicked data
  *
  * @param {object} info - clicked info
@@ -580,24 +529,28 @@ export const getSelectedTabsInfo = async menuItemId => {
 export const extractClickedData = async (info, tab) => {
   const func = [];
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
-    const {
-      menuItemId, selectionText: infoSelectionText,
-      canonicalUrl: infoCanonicalUrl, content: infoContent,
-      isLink: infoIsLink, title: infoTitle, url: infoUrl
-    } = info;
+    const { linkUrl, menuItemId, selectionText } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       const { notifyOnCopy: notify, preferCanonicalUrl, promptContent } = vars;
-      const {
-        canonicalUrl: contextCanonicalUrl, content: contextContent,
-        selectionText: contextSelectionText, title: contextTitle,
-        url: contextUrl
-      } = contextInfo;
       const { hash: tabUrlHash } = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
       const formatTitle = await getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
+      const contextInfo = await getContextInfo();
+      let contextCanonicalUrl = null;
+      let contextContent = null;
+      let contextIsLink = false;
+      let contextTitle = null;
+      if (isObjectNotEmpty(contextInfo)) {
+        if (!tabUrlHash && preferCanonicalUrl) {
+          contextCanonicalUrl = contextInfo.canonicalUrl;
+        }
+        contextContent = contextInfo.content;
+        contextIsLink = !!contextInfo.isLink;
+        contextTitle = contextInfo.title;
+      }
       let text;
       if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
@@ -646,68 +599,62 @@ export const extractClickedData = async (info, tab) => {
         let url;
         if (menuItemId.startsWith(COPY_LINK)) {
           if (formatId === BBCODE_URL) {
-            content = contextUrl;
-            url = contextUrl;
+            content = linkUrl;
+            url = linkUrl;
           } else {
-            content = infoSelectionText || contextSelectionText ||
-                      contextContent || contextTitle;
+            content = selectionText || contextContent;
             title = contextTitle;
-            url = contextUrl;
+            url = linkUrl;
           }
         } else if (menuItemId.startsWith(COPY_PAGE)) {
           if (formatId === BBCODE_URL) {
-            if (!tabUrlHash && preferCanonicalUrl && contextCanonicalUrl) {
-              content = contextCanonicalUrl;
-              url = contextCanonicalUrl;
-            } else {
-              content = tabUrl;
-              url = tabUrl;
-            }
+            content = contextCanonicalUrl || tabUrl;
+            url = contextCanonicalUrl || tabUrl;
           } else {
-            content = infoSelectionText || tabTitle;
+            content = selectionText || tabTitle;
             title = tabTitle;
-            url = (!tabUrlHash && preferCanonicalUrl && contextCanonicalUrl) ||
-                  tabUrl;
+            url = contextCanonicalUrl || tabUrl;
           }
         } else if (enabledFormats.has(formatId)) {
-          if (infoIsLink) {
+          if (contextIsLink) {
             if (formatId === BBCODE_URL) {
-              content = infoUrl;
-              url = infoUrl;
+              content = linkUrl;
+              url = linkUrl;
             } else {
-              content = infoSelectionText || infoContent || infoTitle;
-              title = infoTitle;
-              url = infoUrl;
+              content = selectionText || contextContent;
+              title = contextTitle;
+              url = linkUrl;
             }
           } else if (formatId === BBCODE_URL) {
-            if (!tabUrlHash && preferCanonicalUrl && infoCanonicalUrl) {
-              content = infoCanonicalUrl;
-              url = infoCanonicalUrl;
-            } else {
-              content = tabUrl;
-              url = tabUrl;
-            }
+            content = contextCanonicalUrl || tabUrl;
+            url = contextCanonicalUrl || tabUrl;
           } else {
-            content = infoSelectionText || tabTitle;
+            content = selectionText || tabTitle;
             title = tabTitle;
-            url = (!tabUrlHash && preferCanonicalUrl && infoCanonicalUrl) ||
-                  tabUrl;
+            url = contextCanonicalUrl || tabUrl;
           }
         }
         if (isString(content) && isString(url)) {
-          if (promptContent && enabledTabs.get(tabId)) {
-            func.push(sendMessage(tabId, {
-              [CONTENT_EDITED_GET]: {
-                content,
-                formatId,
-                formatTitle,
-                mimeType,
-                promptContent,
-                template,
-                title,
-                url
+          if (promptContent) {
+            const editData = {
+              content,
+              promptMsg: i18n.getMessage(USER_INPUT, formatTitle)
+            };
+            const editedContent = await execScriptsToTabInOrder([
+              {
+                code: `window.editContentData = ${JSON.stringify(editData)};`
+              },
+              {
+                file: JS_EDIT_CONTENT
               }
-            }));
+            ]);
+            text = await createLinkText({
+              content: isString(editedContent) ? editedContent : content,
+              formatId,
+              template,
+              title,
+              url
+            });
           } else {
             text = await createLinkText({
               content, formatId, template, title, url
@@ -719,44 +666,9 @@ export const extractClickedData = async (info, tab) => {
         await new Clip(text, mimeType).copy();
         notify && func.push(notifyOnCopy(formatTitle));
       }
-      func.push(initContextInfo());
     }
   }
   return Promise.all(func);
-};
-
-/**
- * exec copy
- *
- * @param {object} data - data
- * @returns {?Function} - notifyOnCopy()
- */
-export const execCopy = async (data = {}) => {
-  const {
-    content, formatId, formatTitle, mimeType, template, title, url
-  } = data;
-  const { notifyOnCopy: notify } = vars;
-  if (!isString(formatId)) {
-    throw new TypeError(`Expected String but got ${getType(formatId)}.`);
-  }
-  if (!isString(mimeType)) {
-    throw new TypeError(`Expected String but got ${getType(mimeType)}.`);
-  }
-  if (!isString(template)) {
-    throw new TypeError(`Expected String but got ${getType(template)}.`);
-  }
-  if (notify && !isString(formatTitle)) {
-    throw new TypeError(`Expected String but got ${getType(formatTitle)}.`);
-  }
-  const text = await createLinkText({
-    content, formatId, template, title, url
-  });
-  let func;
-  await new Clip(text, mimeType).copy();
-  if (notify) {
-    func = notifyOnCopy(formatTitle);
-  }
-  return func || null;
 };
 
 /**
@@ -825,46 +737,22 @@ export const handleCmd = async cmd => {
  * handle message
  *
  * @param {*} msg - message
- * @param {object} sender - sender
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleMsg = async (msg, sender = {}) => {
-  const { tab } = sender;
+export const handleMsg = async msg => {
   const func = [];
   if (isObjectNotEmpty(msg)) {
     const items = Object.entries(msg);
     for (const [key, value] of items) {
       switch (key) {
-        case CONTEXT_INFO: {
-          if (isObjectNotEmpty(value)) {
-            const { contextInfo: info, data } = value;
-            const { format } = data;
-            info.menuItemId = format;
-            func.push(extractClickedData(info, tab));
-          }
-          break;
-        }
-        case CONTENT_EDITED: {
-          if (isObjectNotEmpty(value)) {
-            func.push(execCopy(value));
-          }
+        case EXEC_COPY: {
+          const { info, tab } = value;
+          func.push(extractClickedData(info, tab));
           break;
         }
         case NOTIFY_COPY: {
           const { notifyOnCopy: notify } = vars;
           notify && value && func.push(notifyOnCopy());
-          break;
-        }
-        case 'keydown':
-        case 'mousedown':
-          func.push(updateContextInfo(value));
-          break;
-        case 'load': {
-          if (tab) {
-            const { id: tabId } = tab;
-            func.push(setEnabledTab(tabId, tab, value).then(handleActiveTab));
-          }
-          func.push(updateContextInfo(value));
           break;
         }
         default:

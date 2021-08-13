@@ -731,7 +731,8 @@ export const execScriptsToTabInOrder = async (tabId, opts = []) => {
     }
   }
   if (func.length) {
-    res = await Promise.all(func).then(a => a.pop());
+    const { value } = await Promise.allSettled(func).then(a => a.pop());
+    res = value;
   }
   return res || null;
 };
