@@ -2767,10 +2767,10 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
-    it('should call function', async () => {
+    it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const res = await func({
-        [CONTENT_EDITED]: {
+        editedContent: {
           content: 'foo',
           formatId: 'TextURL',
           mimeType: 'text/plain',
@@ -2779,15 +2779,15 @@ describe('main', () => {
           url: 'https://example.com/#baz'
         }
       });
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
+        'not called');
+      assert.deepEqual(res, [], 'result');
     });
 
     it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const res = await func({
-        [CONTENT_EDITED]: {}
+        editedContent: {}
       });
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
