@@ -635,7 +635,7 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          if (promptContent) {
+          if (promptContent && formatId !== BBCODE_URL) {
             const editData = {
               content,
               promptMsg: i18n.getMessage(USER_INPUT, formatTitle)

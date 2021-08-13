@@ -1366,7 +1366,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -1421,7 +1421,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: 'foo bar baz',
         title: null,
@@ -1483,7 +1483,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: 'foo bar baz',
         title: null,
@@ -1541,7 +1541,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -1596,7 +1596,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: 'https://www.example.com/',
+        canonicalUrl: 'https://www.example.com/',
         content: null,
         selectionText: '',
         title: null,
@@ -1653,7 +1653,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: 'foo bar baz',
         title: 'foo bar',
@@ -1712,7 +1712,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -1771,7 +1771,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -1799,7 +1799,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).callCount, i + 1, 'called');
+      }).callCount, i, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
       assert.strictEqual(browser.notifications.create.callCount, k + 1,
         'called');
@@ -1829,7 +1829,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: 'https://example.com/',
+        canonicalUrl: 'https://example.com/',
         content: null,
         selectionText: 'foo bar baz',
         title: null,
@@ -1887,7 +1887,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -1945,7 +1945,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: 'https://example.com/',
+        canonicalUrl: 'https://example.com/',
         content: null,
         selectionText: 'foo bar baz',
         title: null,
@@ -1973,7 +1973,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).callCount, i + 1, 'called');
+      }).callCount, i, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
       assert.strictEqual(browser.notifications.create.callCount, k + 1,
         'called');
@@ -2003,7 +2003,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -2031,7 +2031,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).callCount, i + 1, 'called');
+      }).callCount, i, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
       assert.strictEqual(browser.notifications.create.callCount, k + 1,
         'called');
@@ -2062,7 +2062,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: 'foo bar baz',
         title: 'foo bar',
@@ -2121,7 +2121,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2180,7 +2180,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2208,7 +2208,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).callCount, i + 1, 'called');
+      }).callCount, i, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
       assert.strictEqual(browser.notifications.create.callCount, k + 1,
         'called');
@@ -2239,7 +2239,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2298,7 +2298,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2357,7 +2357,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2416,7 +2416,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',
@@ -2475,7 +2475,7 @@ describe('main', () => {
         file: JS_CONTEXT_INFO
       }).resolves([{
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo',
         selectionText: '',
         title: 'foo bar',

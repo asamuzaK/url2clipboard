@@ -185,7 +185,7 @@ describe('context-info', () => {
       const res = await func();
       assert.deepEqual(res, {
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -205,7 +205,7 @@ describe('context-info', () => {
       const res = await func(p);
       assert.deepEqual(res, {
         isLink: false,
-        canonical: 'https://example.com/',
+        canonicalUrl: 'https://example.com/',
         content: null,
         selectionText: '',
         title: null,
@@ -220,7 +220,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -238,7 +238,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo bar',
         selectionText: '',
         title: 'foo bar',
@@ -257,7 +257,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo bar',
         selectionText: '',
         title: 'baz qux',
@@ -276,7 +276,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo bar',
         selectionText: '',
         title: 'baz qux',
@@ -294,7 +294,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: '',
         selectionText: '',
         title: '',
@@ -319,7 +319,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: 'https://example.com/',
+        canonicalUrl: 'https://example.com/',
         content: '',
         selectionText: '',
         title: '',
@@ -344,7 +344,7 @@ describe('context-info', () => {
       const res = await func(text);
       assert.deepEqual(res, {
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,
@@ -366,7 +366,7 @@ describe('context-info', () => {
       assert.deepEqual(res, {
         isLink: false,
         content: null,
-        canonical: null,
+        canonicalUrl: null,
         selectionText: '',
         title: null,
         url: null
@@ -387,7 +387,7 @@ describe('context-info', () => {
       const res = await func(a);
       assert.deepEqual(res, {
         isLink: true,
-        canonical: null,
+        canonicalUrl: null,
         content: 'foo bar',
         selectionText: '',
         title: 'baz qux',
@@ -408,7 +408,7 @@ describe('context-info', () => {
       const res = await func(p);
       assert.deepEqual(res, {
         isLink: false,
-        canonical: null,
+        canonicalUrl: null,
         content: null,
         selectionText: '',
         title: null,

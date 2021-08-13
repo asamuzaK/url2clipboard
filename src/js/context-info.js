@@ -54,9 +54,9 @@
    */
   const createContextInfo = node => {
     const contextInfo = {
-      isLink: false,
-      canonical: null,
+      canonicalUrl: null,
       content: null,
+      isLink: false,
       selectionText: window.getSelection().toString(),
       title: null,
       url: null
@@ -82,7 +82,7 @@
         const { origin: docOrigin } = new URL(document.URL);
         const { href: canonicalHref } =
           new URL(canonical.getAttribute('href'), docOrigin);
-        contextInfo.canonical = canonicalHref;
+        contextInfo.canonicalUrl = canonicalHref;
       }
     }
     return contextInfo;
