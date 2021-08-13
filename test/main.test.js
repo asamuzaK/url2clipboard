@@ -1471,6 +1471,7 @@ describe('main', () => {
       const l = navigator.clipboard.writeText.callCount;
       const menuItemId = HTML_PLAIN;
       const info = {
+        isEdited: true,
         menuItemId
       };
       const tab = {
@@ -1511,7 +1512,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).callCount, i + 1, 'called');
+      }).callCount, i, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
       assert.strictEqual(browser.notifications.create.callCount, k + 1,
         'called');

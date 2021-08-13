@@ -529,7 +529,7 @@ export const sendContextInfo = async () => {
 export const extractClickedData = async (info, tab) => {
   const func = [];
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
-    const { linkUrl, menuItemId, selectionText } = info;
+    const { isEdited, linkUrl, menuItemId, selectionText } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
@@ -635,7 +635,7 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          if (promptContent && formatId !== BBCODE_URL) {
+          if (promptContent && formatId !== BBCODE_URL && !isEdited) {
             const editData = {
               content,
               promptMsg: i18n.getMessage(USER_INPUT, formatTitle)
