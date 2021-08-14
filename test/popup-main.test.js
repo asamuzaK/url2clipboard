@@ -9,8 +9,7 @@ import sinon from 'sinon';
 import * as mjs from '../src/mjs/popup-main.js';
 import { formatData } from '../src/mjs/format.js';
 import {
-  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
   EXEC_COPY, INCLUDE_TITLE_HTML_HYPER, PREFER_CANONICAL
 } from '../src/mjs/constant.js';
 const OPTIONS_OPEN = 'openOptions';
