@@ -11,7 +11,7 @@ import {
   getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
 } from './format.js';
 import {
-  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
+  CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU, PREFER_CANONICAL
 } from './constant.js';
 
