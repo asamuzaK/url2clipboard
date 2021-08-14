@@ -22,7 +22,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "url2clipboard@asamuzak.jp",
-      "strict_min_version": "66.0a1"
+      "strict_min_version": "71.0"
     }
   },
   "commands": {
@@ -77,19 +77,6 @@
       "description": "__MSG_commandCopyURLOnly__"
     }
   },
-  "content_scripts": [
-    {
-      "all_frames": false,
-      "js": [
-        "lib/browser-polyfill.min.js",
-        "js/content.js"
-      ],
-      "matches": [
-        "*://*/*"
-      ],
-      "run_at": "document_start"
-    }
-  ],
   "default_locale": "en",
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/url2clipboard",

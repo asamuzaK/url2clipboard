@@ -3,42 +3,28 @@
  */
 
 /* shared */
-import { Clip } from './clipboard.js';
-import { closeWindow, getType, isString, throwErr } from './common.js';
 import {
-  getAllTabsInWindow, getHighlightedTab, queryTabs, sendMessage
-} from './browser.js';
+  closeWindow, getType, isObjectNotEmpty, isString, throwErr
+} from './common.js';
+import { getActiveTab, sendMessage } from './browser.js';
 import {
-  createTabsLinkText, createLinkText, getFormat, getFormatId, getFormats,
-  getFormatsKeys, hasFormat, setFormat
+  getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
 } from './format.js';
-import { notifyOnCopy } from './notify.js';
 import {
-  BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
-  CONTENT_PAGE_BBCODE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  HTML_HYPER, HTML_PLAIN,
-  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  LINK_MENU, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL,
-  TEXT_SEP_LINES, TEXT_TEXT_URL
+  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU, PREFER_CANONICAL
 } from './constant.js';
 
 /* api */
-const { runtime, tabs, windows } = browser;
+const { runtime, tabs } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
-const { WINDOW_ID_CURRENT } = windows;
 const OPTIONS_OPEN = 'openOptions';
 
 /* variables */
 export const vars = {
-  includeTitleHTMLHyper: false,
-  includeTitleHTMLPlain: false,
-  includeTitleMarkdown: false,
-  notifyOnCopy: false,
-  preferCanonicalUrl: false,
-  separateTextURL: false
+  preferCanonicalUrl: false
 };
 
 /* enabled formats */
@@ -79,82 +65,34 @@ export const setFormatData = async () => {
   return Promise.all(func);
 };
 
-/**
- * get format template
- *
- * @param {string} id - menu item ID
- * @returns {string} - template
- */
-export const getFormatTemplate = async id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const item = await getFormat(id);
-  let template;
-  if (item) {
-    const {
-      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt
-    } = item;
-    const {
-      includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-      separateTextURL
-    } = vars;
-    switch (itemId) {
-      case HTML_HYPER:
-        template = includeTitleHTMLHyper ? itemTmpl : itemTmplAlt;
-        break;
-      case HTML_PLAIN:
-        template = includeTitleHTMLPlain ? itemTmpl : itemTmplAlt;
-        break;
-      case MARKDOWN:
-        template = includeTitleMarkdown ? itemTmpl : itemTmplAlt;
-        break;
-      case TEXT_TEXT_URL:
-        template = separateTextURL ? itemTmplAlt : itemTmpl;
-        break;
-      default:
-        template = itemTmpl;
-    }
-  }
-  return template || null;
-};
-
-/**
- * get format title
- *
- * @param {string} id - menu item ID
- * @returns {?string} - title
- */
-export const getFormatTitle = async id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const item = await getFormat(id);
-  let title;
-  if (item) {
-    const { id: itemId, title: itemTitle } = item;
-    title = itemTitle || itemId;
-  }
-  return title || null;
-};
-
-/* tab info */
-export const tabInfo = {
-  id: null,
+/* context info */
+export const contextInfo = {
+  canonicalUrl: null,
+  content: null,
+  isLink: false,
+  selectionText: null,
   title: null,
   url: null
 };
 
 /**
- * init tab info
+ * init context info
  *
- * @returns {object} - tab info
+ * @returns {object} - context info
  */
-export const initTabInfo = async () => {
-  tabInfo.id = null;
-  tabInfo.title = null;
-  tabInfo.url = null;
-  return tabInfo;
+export const initContextInfo = async () => {
+  contextInfo.canonicalUrl = null;
+  contextInfo.content = null;
+  contextInfo.isLink = false;
+  contextInfo.selectionText = null;
+  contextInfo.title = null;
+  contextInfo.url = null;
+  return contextInfo;
+};
+
+/* tab info */
+export const tabInfo = {
+  tab: null
 };
 
 /**
@@ -164,205 +102,55 @@ export const initTabInfo = async () => {
  * @returns {void}
  */
 export const setTabInfo = async tab => {
-  const contentPage = document.getElementById(CONTENT_PAGE);
-  const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
-  await initTabInfo();
-  if (tab) {
-    const { id, title, url } = tab;
-    contentPage.value = title;
-    contentBBCode.value = url;
-    tabInfo.id = id;
-    tabInfo.title = title;
-    tabInfo.url = url;
+  if (isObjectNotEmpty(tab)) {
+    const { title } = tab;
+    const { selectionText } = contextInfo;
+    tabInfo.tab = tab;
+    document.getElementById(CONTENT_PAGE).value = selectionText || title;
+  } else {
+    tabInfo.tab = null;
+    document.getElementById(CONTENT_PAGE).value = '';
   }
-};
-
-/* context info */
-export const contextInfo = {
-  isLink: false,
-  content: null,
-  title: null,
-  url: null,
-  canonicalUrl: null
-};
-
-/**
- * init context info
- *
- * @returns {object} - context info
- */
-export const initContextInfo = async () => {
-  contextInfo.isLink = false;
-  contextInfo.content = null;
-  contextInfo.title = null;
-  contextInfo.url = null;
-  contextInfo.canonicalUrl = null;
-  return contextInfo;
-};
-
-/**
- * get all tabs info
- *
- * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
- */
-export const getAllTabsInfo = async menuItemId => {
-  if (!isString(menuItemId)) {
-    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
-  }
-  const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
-  const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
-  arr.forEach(tab => {
-    const { id, title, url } = tab;
-    const formatId = getFormatId(menuItemId);
-    tabsInfo.push({
-      id,
-      formatId,
-      template,
-      title,
-      url,
-      content: title
-    });
-  });
-  return tabsInfo;
-};
-
-/**
- * get other tabs info
- *
- * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
- */
-export const getOtherTabsInfo = async menuItemId => {
-  if (!isString(menuItemId)) {
-    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
-  }
-  const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
-  const arr = await queryTabs({
-    active: false,
-    windowId: WINDOW_ID_CURRENT,
-    windowType: 'normal'
-  });
-  arr.forEach(tab => {
-    const { id, title, url } = tab;
-    const formatId = getFormatId(menuItemId);
-    tabsInfo.push({
-      id,
-      formatId,
-      template,
-      title,
-      url,
-      content: title
-    });
-  });
-  return tabsInfo;
-};
-
-/**
- * get selected tabs info
- *
- * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
- */
-export const getSelectedTabsInfo = async menuItemId => {
-  if (!isString(menuItemId)) {
-    throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
-  }
-  const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
-  const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
-  arr.forEach(tab => {
-    const { id, title, url } = tab;
-    const formatId = getFormatId(menuItemId);
-    tabsInfo.push({
-      id,
-      formatId,
-      template,
-      title,
-      url,
-      content: title
-    });
-  });
-  return tabsInfo;
 };
 
 /**
  * create copy data
  *
  * @param {!object} evt - Event
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {?Function} - sendMessage();
  */
 export const createCopyData = async evt => {
-  const { target } = evt;
-  const { id: menuItemId } = target;
-  const { notifyOnCopy: notify, preferCanonicalUrl } = vars;
-  const { title: tabTitle, url: tabUrl } = tabInfo;
-  const { canonicalUrl, title: contextTitle, url: contextUrl } = contextInfo;
-  const formatId = getFormatId(menuItemId);
-  const formatTitle = await getFormatTitle(formatId);
-  const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
-  const func = [];
-  let text;
-  if (menuItemId.startsWith(COPY_TABS_ALL)) {
-    const allTabs = await getAllTabsInfo(menuItemId);
-    const arr = [];
-    for (const tabData of allTabs) {
-      arr.push(createLinkText(tabData));
-    }
-    const tmplArr = await Promise.all(arr);
-    text = await createTabsLinkText(tmplArr, mimeType);
-  } else if (menuItemId.startsWith(COPY_TABS_OTHER)) {
-    const otherTabs = await getOtherTabsInfo(menuItemId);
-    const arr = [];
-    for (const tabData of otherTabs) {
-      arr.push(createLinkText(tabData));
-    }
-    const tmplArr = await Promise.all(arr);
-    text = await createTabsLinkText(tmplArr, mimeType);
-  } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
-    const selectedTabs = await getSelectedTabsInfo(menuItemId);
-    const arr = [];
-    for (const tabData of selectedTabs) {
-      arr.push(createLinkText(tabData));
-    }
-    const tmplArr = await Promise.all(arr);
-    text = await createTabsLinkText(tmplArr, mimeType);
-  } else {
-    const template = await getFormatTemplate(formatId);
-    let content, title, url;
-    if (menuItemId.startsWith(COPY_LINK)) {
-      if (formatId === BBCODE_URL) {
-        content = document.getElementById(CONTENT_LINK_BBCODE).value || '';
-        url = contextUrl;
-      } else {
-        content = document.getElementById(CONTENT_LINK).value || '';
-        title = contextTitle;
-        url = contextUrl;
-      }
-    } else if (menuItemId.startsWith(COPY_PAGE)) {
-      if (formatId === BBCODE_URL) {
-        content = document.getElementById(CONTENT_PAGE_BBCODE).value || '';
-        url = preferCanonicalUrl ? canonicalUrl : tabUrl;
-      } else {
-        content = document.getElementById(CONTENT_PAGE).value || '';
-        title = tabTitle;
-        url = preferCanonicalUrl ? canonicalUrl : tabUrl;
+  let func;
+  if (evt) {
+    const { target } = evt;
+    if (target) {
+      const { id: menuItemId } = target;
+      const { tab } = tabInfo;
+      if (tab) {
+        const info = {
+          isEdited: true,
+          menuItemId
+        };
+        const { isLink, selectionText, url } = contextInfo;
+        if (isLink) {
+          info.linkUrl = url;
+        }
+        if (menuItemId.startsWith(COPY_LINK)) {
+          info.selectionText = document.getElementById(CONTENT_LINK).value;
+        } else if (menuItemId.startsWith(COPY_PAGE)) {
+          info.selectionText = document.getElementById(CONTENT_PAGE).value;
+        } else {
+          info.selectionText = selectionText || '';
+        }
+        func = sendMessage(runtime.id, {
+          [EXEC_COPY]: {
+            info, tab
+          }
+        });
       }
     }
-    if (isString(content) && isString(url)) {
-      text = await createLinkText({
-        content, formatId, template, title, url
-      });
-    }
   }
-  if (isString(text)) {
-    await new Clip(text, mimeType).copy();
-    notify && func.push(notifyOnCopy(formatTitle));
-  }
-  func.push(initContextInfo());
-  return Promise.all(func);
+  return func || null;
 };
 
 /**
@@ -432,58 +220,59 @@ export const toggleMenuItem = async () => {
  * @param {object} data - context data;
  * @returns {void}
  */
-export const updateMenu = async (data = {}) => {
-  const { contextInfo: info } = data;
+export const updateMenu = async data => {
   await initContextInfo();
-  if (info) {
-    const { canonicalUrl, content, isLink, title, url } = info;
-    const nodes = document.querySelectorAll(LINK_MENU);
-    const contentLink = document.getElementById(CONTENT_LINK);
-    const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
-    contextInfo.isLink = isLink;
-    contextInfo.canonicalUrl = canonicalUrl;
-    contextInfo.content = content;
-    contextInfo.title = title;
-    contextInfo.url = url;
-    contentLink.value = content || '';
-    contentBBCode.value = url || '';
-    for (const node of nodes) {
-      const attr = 'disabled';
+  if (isObjectNotEmpty(data)) {
+    const { contextInfo: info } = data;
+    if (info) {
+      const { canonicalUrl, content, isLink, title, url } = info;
+      const nodes = document.querySelectorAll(LINK_MENU);
+      contextInfo.canonicalUrl = canonicalUrl;
+      contextInfo.content = content;
+      contextInfo.isLink = !!isLink;
+      contextInfo.title = title;
+      contextInfo.url = url;
       if (isLink) {
-        node.removeAttribute(attr);
-      } else {
-        node.setAttribute(attr, attr);
+        document.getElementById(CONTENT_LINK).value = content;
+      }
+      for (const node of nodes) {
+        const attr = 'disabled';
+        if (isLink) {
+          node.removeAttribute(attr);
+        } else {
+          node.setAttribute(attr, attr);
+        }
       }
     }
   }
 };
 
 /**
- * request context info
+ * prepare tab
  *
- * @param {object} tab - tabs.Tab
- * @returns {void}
+ * @returns {Promise.<Array>} - results of each handler
  */
-export const requestContextInfo = async (tab = {}) => {
+export const prepareTab = async () => {
+  const func = [];
+  const tab = await getActiveTab();
   const { id } = tab;
-  await initContextInfo();
-  if (Number.isInteger(id) && id !== TAB_ID_NONE) {
-    try {
-      await sendMessage(id, {
-        [CONTEXT_INFO_GET]: true
-      });
-    } catch (e) {
-      await updateMenu({
-        contextInfo: {
-          isLink: false,
-          content: null,
-          title: null,
-          url: null,
-          canonicalUrl: null
-        }
-      });
+  await updateMenu({
+    contextInfo: {
+      canonicalUrl: null,
+      content: null,
+      isLink: false,
+      selectionText: null,
+      title: null,
+      url: null
     }
+  });
+  await setTabInfo(tab);
+  if (Number.isInteger(id) && id !== TAB_ID_NONE) {
+    func.push(sendMessage(runtime.id, {
+      [CONTEXT_INFO_GET]: true
+    }));
   }
+  return Promise.all(func);
 };
 
 /**
@@ -521,12 +310,7 @@ export const setVar = async (item, obj) => {
   if (item && obj) {
     const { checked } = obj;
     switch (item) {
-      case INCLUDE_TITLE_HTML_HYPER:
-      case INCLUDE_TITLE_HTML_PLAIN:
-      case INCLUDE_TITLE_MARKDOWN:
-      case NOTIFY_COPY:
       case PREFER_CANONICAL:
-      case TEXT_SEP_LINES:
         vars[item] = !!checked;
         break;
       default: {
