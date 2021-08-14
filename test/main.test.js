@@ -9,9 +9,10 @@ import { formatData } from '../src/mjs/format.js';
 import sinon from 'sinon';
 import * as mjs from '../src/mjs/main.js';
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO, COPY_LINK, COPY_PAGE, COPY_TAB,
-  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER,
-  HTML_PLAIN, ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT,
+  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
+  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
+  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT,
   ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
   INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, NOTIFY_COPY,
   PREFER_CANONICAL, PROMPT
@@ -1320,7 +1321,7 @@ describe('main', () => {
       }).resolves(false);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves('foo bar');
+      }).resolves(['foo bar']);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1374,7 +1375,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves('foo bar');
+      }).resolves(['foo bar']);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1429,7 +1430,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves('foo bar');
+      }).resolves(['foo bar']);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1492,7 +1493,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1550,7 +1551,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves('foo bar');
+      }).resolves(['foo bar']);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1605,7 +1606,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves('foo bar');
+      }).resolves(['foo bar']);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1662,7 +1663,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1780,7 +1781,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1838,7 +1839,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves(false);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1896,7 +1897,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -1954,7 +1955,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2012,7 +2013,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2071,7 +2072,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2130,7 +2131,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2189,7 +2190,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2248,7 +2249,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2307,7 +2308,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2366,7 +2367,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2425,7 +2426,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2484,7 +2485,7 @@ describe('main', () => {
       }]);
       browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
-      }).resolves(null);
+      }).resolves([null]);
       browser.tabs.query.resolves([
         {
           id: 1,
@@ -2691,6 +2692,36 @@ describe('main', () => {
         foo: 'bar'
       });
       assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const j = browser.runtime.sendMessage.callCount;
+      const res = await func({
+        [CONTEXT_INFO_GET]: true
+      });
+      assert.strictEqual(browser.tabs.executeScript.callCount, i + 1, 'called');
+      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
+        'not called');
+      assert.deepEqual(res, [null], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.tabs.executeScript.callCount;
+      const j = browser.runtime.sendMessage.callCount;
+      browser.tabs.executeScript.withArgs({
+        file: JS_CONTEXT_INFO
+      }).resolves([{
+        foo: 'bar'
+      }]);
+      browser.runtime.sendMessage.resolves({});
+      const res = await func({
+        [CONTEXT_INFO_GET]: true
+      });
+      assert.strictEqual(browser.tabs.executeScript.callCount, i + 1, 'called');
+      assert.strictEqual(browser.runtime.sendMessage.callCount, j + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
     });
 
     it('should get array', async () => {

@@ -640,7 +640,7 @@ export const extractClickedData = async (info, tab) => {
               content,
               promptMsg: i18n.getMessage(USER_INPUT, formatTitle)
             };
-            const editedContent = await execScriptsToTabInOrder([
+            const promptRes = await execScriptsToTabInOrder([
               {
                 code: `window.editContentData = ${JSON.stringify(editData)};`
               },
@@ -648,6 +648,10 @@ export const extractClickedData = async (info, tab) => {
                 file: JS_EDIT_CONTENT
               }
             ]);
+            let editedContent;
+            if (Array.isArray(promptRes)) {
+              [editedContent] = promptRes;
+            }
             text = await createLinkText({
               content: isString(editedContent) ? editedContent : content,
               formatId,
@@ -745,6 +749,10 @@ export const handleMsg = async msg => {
     const items = Object.entries(msg);
     for (const [key, value] of items) {
       switch (key) {
+        case CONTEXT_INFO_GET: {
+          value && func.push(sendContextInfo());
+          break;
+        }
         case EXEC_COPY: {
           const { info, tab } = value;
           func.push(extractClickedData(info, tab));
