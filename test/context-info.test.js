@@ -241,7 +241,7 @@ describe('context-info', () => {
         canonicalUrl: null,
         content: 'foo bar',
         selectionText: '',
-        title: 'foo bar',
+        title: '',
         url: 'https://example.com/'
       }, 'result');
     });
@@ -297,7 +297,7 @@ describe('context-info', () => {
         canonicalUrl: null,
         content: '',
         selectionText: '',
-        title: '',
+        title: undefined,
         url: 'foo.svg#bar'
       }, 'result');
     });
@@ -322,7 +322,7 @@ describe('context-info', () => {
         canonicalUrl: 'https://example.com/',
         content: '',
         selectionText: '',
-        title: '',
+        title: undefined,
         url: 'foo.svg#bar'
       }, 'result');
     });

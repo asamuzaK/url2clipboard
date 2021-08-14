@@ -67,10 +67,9 @@
       if (anchor) {
         const { textContent, href, title } = anchor;
         if (href) {
-          const content = textContent.replace(/\s+/g, ' ').trim();
           contextInfo.isLink = true;
-          contextInfo.content = content;
-          contextInfo.title = title || content;
+          contextInfo.content = textContent.replace(/\s+/g, ' ').trim();
+          contextInfo.title = title;
           if (Object.prototype.hasOwnProperty.call(href, 'baseVal')) {
             contextInfo.url = href.baseVal;
           } else {
