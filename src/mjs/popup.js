@@ -4,11 +4,11 @@
 
 /* shared */
 import { throwErr } from './common.js';
-import { getActiveTab, getAllStorage } from './browser.js';
+import { getAllStorage } from './browser.js';
 import { localizeHtml } from './localize.js';
 import {
-  addListenerToMenu, handleMsg, requestContextInfo, setFormatData, setTabInfo,
-  setVars, toggleMenuItem
+  addListenerToMenu, handleMsg, prepareTab, setFormatData, setVars,
+  toggleMenuItem
 } from './popup-main.js';
 
 /* api */
@@ -24,9 +24,6 @@ runtime.onMessage.addListener(msg => handleMsg(msg).catch(throwErr));
 Promise.all([
   localizeHtml(),
   addListenerToMenu(),
-  getActiveTab().then(tab => Promise.all([
-    requestContextInfo(tab),
-    setTabInfo(tab)
-  ])),
+  prepareTab(),
   setFormatData().then(getAllStorage).then(setVars).then(toggleMenuItem)
 ]).catch(throwErr);

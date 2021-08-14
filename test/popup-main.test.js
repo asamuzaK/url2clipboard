@@ -9,11 +9,9 @@ import sinon from 'sinon';
 import * as mjs from '../src/mjs/popup-main.js';
 import { formatData } from '../src/mjs/format.js';
 import {
-  BBCODE_URL, CONTENT_LINK, CONTENT_LINK_BBCODE, CONTENT_PAGE,
-  CONTENT_PAGE_BBCODE, CONTEXT_INFO,
-  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  NOTIFY_COPY, PREFER_CANONICAL, TEXT_SEP_LINES
+  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO,
+  COPY_LINK, COPY_PAGE, COPY_TABS_ALL, COPY_TABS_SELECTED,
+  EXEC_COPY, INCLUDE_TITLE_HTML_HYPER, PREFER_CANONICAL
 } from '../src/mjs/constant.js';
 const OPTIONS_OPEN = 'openOptions';
 
@@ -116,145 +114,23 @@ describe('popup-main', () => {
     });
   });
 
-  describe('get format template', () => {
-    const func = mjs.getFormatTemplate;
-    beforeEach(() => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.separateTextURL = false;
-    });
-    afterEach(() => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.separateTextURL = false;
-    });
-
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
-    });
-
-    it('should get null', async () => {
-      const res = await func('foo');
-      assert.isNull(res, 'result');
-    });
-
-    it('should get null', async () => {
-      const res = await func(`${COPY_PAGE}foo`);
-      assert.isNull(res, 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(res, '%content% %url%', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}URLOnly`);
-      assert.strictEqual(res, '%url%', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}TextOnly`);
-      assert.strictEqual(res, '%content%', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}Markdown`);
-      assert.strictEqual(res, '[%content%](%url%)', 'result');
-    });
-
-    it('should get value', async () => {
-      mjs.vars.includeTitleMarkdown = true;
-      const res = await func(`${COPY_PAGE}Markdown`);
-      assert.strictEqual(res, '[%content%](%url% "%title%")', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}HTMLHyper`);
-      assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
-    });
-
-    it('should get value', async () => {
-      mjs.vars.includeTitleHTMLHyper = true;
-      const res = await func(`${COPY_PAGE}HTMLHyper`);
-      assert.strictEqual(
-        res, '<a href="%url%" title="%title%">%content%</a>', 'result'
-      );
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}HTMLPlain`);
-      assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
-    });
-
-    it('should get value', async () => {
-      mjs.vars.includeTitleHTMLPlain = true;
-      const res = await func(`${COPY_PAGE}HTMLPlain`);
-      assert.strictEqual(
-        res, '<a href="%url%" title="%title%">%content%</a>', 'result'
-      );
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(res, '%content% %url%', 'result');
-    });
-
-    it('should get value', async () => {
-      mjs.vars.separateTextURL = true;
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(res, '%content%\n%url%', 'result');
-    });
-  });
-
-  describe('get format title', () => {
-    const func = mjs.getFormatTitle;
-
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
-    });
-
-    it('should get null', async () => {
-      const res = await func('foo');
-      assert.isNull(res, 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}BBCodeText`);
-      assert.strictEqual(res, 'BBCode (Text)', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func('TextURL');
-      assert.strictEqual(res, 'Text & URL', 'result');
-    });
-
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}Markdown`);
-      assert.strictEqual(res, 'Markdown', 'result');
-    });
-  });
-
-  describe('init tab info', () => {
-    const func = mjs.initTabInfo;
+  describe('init context info', () => {
+    const func = mjs.initContextInfo;
 
     it('should init object', async () => {
-      const { tabInfo } = mjs;
-      tabInfo.id = 'foo';
-      tabInfo.title = 'bar';
-      tabInfo.url = 'baz';
+      const { contextInfo } = mjs;
+      contextInfo.canonicalUrl = 'https://www.example.com';
+      contextInfo.content = 'foo';
+      contextInfo.isLink = true;
+      contextInfo.selectionText = 'foo bar';
+      contextInfo.title = 'bar';
+      contextInfo.url = 'https://example.com';
       const res = await func();
-      assert.isNull(res.id, 'id');
+      assert.deepEqual(res, contextInfo, 'result');
+      assert.isNull(res.canonicalUrl, 'content');
+      assert.isNull(res.content, 'content');
+      assert.isFalse(res.isLink, 'isLink');
+      assert.isNull(res.selectionText, 'selectionText');
       assert.isNull(res.title, 'title');
       assert.isNull(res.url, 'url');
     });
@@ -263,212 +139,59 @@ describe('popup-main', () => {
   describe('set tab info', () => {
     const func = mjs.setTabInfo;
     beforeEach(() => {
+      const { contextInfo, tabInfo } = mjs;
       const elm = document.createElement('input');
-      const elm2 = document.createElement('input');
       const body = document.querySelector('body');
       elm.id = CONTENT_PAGE;
-      elm2.id = CONTENT_PAGE_BBCODE;
       body.appendChild(elm);
-      body.appendChild(elm2);
+      contextInfo.selectionText = null;
+      tabInfo.tab = null;
+    });
+    afterEach(() => {
+      const { contextInfo, tabInfo } = mjs;
+      contextInfo.selectionText = null;
+      tabInfo.tab = null;
     });
 
     it('should not set value', async () => {
+      const { tabInfo } = mjs;
       const contentPage = document.getElementById(CONTENT_PAGE);
-      const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
       await func();
       assert.strictEqual(contentPage.value, '', 'page value');
-      assert.strictEqual(contentBBCode.value, '', 'BBCode value');
+      assert.isNull(tabInfo.tab, 'tab');
     });
 
     it('should set value', async () => {
       const { tabInfo } = mjs;
       const contentPage = document.getElementById(CONTENT_PAGE);
-      const contentBBCode = document.getElementById(CONTENT_PAGE_BBCODE);
       const arg = {
         id: 'foo',
         title: 'bar',
-        url: 'baz'
+        url: 'https://example.com'
       };
       await func(arg);
       assert.strictEqual(contentPage.value, 'bar', 'page value');
-      assert.strictEqual(contentBBCode.value, 'baz', 'BBCode value');
-      assert.strictEqual(tabInfo.id, 'foo', 'id');
-      assert.strictEqual(tabInfo.title, 'bar', 'title');
-      assert.strictEqual(tabInfo.url, 'baz', 'url');
-    });
-  });
-
-  describe('init context info', () => {
-    const func = mjs.initContextInfo;
-
-    it('should init object', async () => {
-      const { contextInfo } = mjs;
-      contextInfo.isLink = true;
-      contextInfo.content = 'foo';
-      contextInfo.title = 'bar';
-      contextInfo.url = 'baz';
-      contextInfo.canonicalUrl = 'qux';
-      const res = await func();
-      assert.isFalse(res.isLink, 'isLink');
-      assert.isNull(res.content, 'content');
-      assert.isNull(res.title, 'title');
-      assert.isNull(res.url, 'url');
-      assert.isNull(res.canonicalUrl, 'canonicalUrl');
-    });
-  });
-
-  describe('get all tabs info', () => {
-    const func = mjs.getAllTabsInfo;
-
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
+      assert.isObject(tabInfo.tab, 'tab');
+      assert.strictEqual(tabInfo.tab.id, 'foo', 'id');
+      assert.strictEqual(tabInfo.tab.title, 'bar', 'title');
+      assert.strictEqual(tabInfo.tab.url, 'https://example.com', 'url');
     });
 
-    it('should get result', async () => {
-      const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          id: 1,
-          formatId: 'TextURL',
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com',
-          content: 'foo'
-        },
-        {
-          id: 2,
-          formatId: 'TextURL',
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com',
-          content: 'bar'
-        }
-      ], 'result');
-    });
-  });
-
-  describe('get other tabs info', () => {
-    const func = mjs.getOtherTabsInfo;
-
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
-    });
-
-    it('should get result', async () => {
-      const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        active: false,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'foo',
-          formatId: 'TextURL',
-          id: 1,
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'bar',
-          formatId: 'TextURL',
-          id: 2,
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
-    });
-  });
-
-  describe('get selected tabs info', () => {
-    const func = mjs.getSelectedTabsInfo;
-
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
-    });
-
-    it('should get result', async () => {
-      const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(`${COPY_PAGE}TextURL`);
-      assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'foo',
-          formatId: 'TextURL',
-          id: 1,
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'bar',
-          formatId: 'TextURL',
-          id: 2,
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
+    it('should set value', async () => {
+      const { contextInfo, tabInfo } = mjs;
+      const contentPage = document.getElementById(CONTENT_PAGE);
+      const arg = {
+        id: 'foo',
+        title: 'bar',
+        url: 'https://example.com/#baz'
+      };
+      contextInfo.selectionText = 'foo bar';
+      await func(arg);
+      assert.strictEqual(contentPage.value, 'foo bar', 'page value');
+      assert.isObject(tabInfo.tab, 'tab');
+      assert.strictEqual(tabInfo.tab.id, 'foo', 'id');
+      assert.strictEqual(tabInfo.tab.title, 'bar', 'title');
+      assert.strictEqual(tabInfo.tab.url, 'https://example.com/#baz', 'url');
     });
   });
 
@@ -476,496 +199,200 @@ describe('popup-main', () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
       const { contextInfo, tabInfo, vars } = mjs;
-      tabInfo.title = 'foo';
-      tabInfo.url = 'https://www.example.com';
-      contextInfo.canonicalUrl = 'https://example.com';
-      contextInfo.title = 'bar';
-      contextInfo.url = 'https://www.example.com/baz';
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
       const elm = document.createElement('input');
       const elm2 = document.createElement('input');
-      const elm3 = document.createElement('input');
-      const elm4 = document.createElement('input');
       const body = document.querySelector('body');
-      elm.id = CONTENT_LINK_BBCODE;
-      elm2.id = CONTENT_LINK;
-      elm3.id = CONTENT_PAGE_BBCODE;
-      elm4.id = CONTENT_PAGE;
+      elm.id = CONTENT_LINK;
+      elm2.id = CONTENT_PAGE;
       body.appendChild(elm);
       body.appendChild(elm2);
-      body.appendChild(elm3);
-      body.appendChild(elm4);
+      contextInfo.content = null;
+      contextInfo.isLink = false;
+      contextInfo.selectionText = null;
+      contextInfo.url = null;
+      tabInfo.tab = null;
+      vars.preferCanonicalUrl = false;
     });
     afterEach(() => {
       const { contextInfo, tabInfo, vars } = mjs;
-      tabInfo.id = null;
-      tabInfo.title = null;
-      tabInfo.url = null;
-      contextInfo.isLink = false;
       contextInfo.content = null;
-      contextInfo.canonicalUrl = null;
-      contextInfo.title = null;
+      contextInfo.isLink = false;
+      contextInfo.selectionText = null;
       contextInfo.url = null;
-      vars.notifyOnCopy = false;
+      tabInfo.tab = null;
       vars.preferCanonicalUrl = false;
     });
 
-    it('should not call function', async () => {
-      const evt = {
+    it('should get null if no argument given', async () => {
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if given argument is empty object', async () => {
+      const res = await func({});
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      const res = await func({ target: {} });
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null if tabInfo.tab not found', async () => {
+      mjs.tabInfo.tab = null;
+      const res = await func({
         target: {
           id: 'foo'
         }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      const j = document.execCommand.callCount;
-      await mjs.setFormatData();
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(document.execCommand.callCount, j, 'not called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      });
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE);
-      elm.value = 'qux';
-      const evt = {
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: 'foo',
+            selectionText: ''
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}TextURL`
+          id: 'foo'
         }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      await mjs.setFormatData();
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE);
-      elm.value = 'qux';
-      const evt = {
+      mjs.contextInfo.selectionText = 'foo bar';
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: 'foo',
+            selectionText: 'foo bar'
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}TextURL`
+          id: 'foo'
         }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      const j = browser.notifications.create.callCount;
-      await mjs.setFormatData();
-      mjs.vars.notifyOnCopy = true;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(browser.notifications.create.callCount, j + 1,
-        'called');
-      assert.strictEqual(res.length, 2, 'result');
-      assert.deepEqual(res, [
-        null,
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE);
-      elm.value = '';
-      const evt = {
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: `${COPY_PAGE}foo`,
+            selectionText: ''
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}TextURL`
+          id: `${COPY_PAGE}foo`
         }
-      };
-      await mjs.setFormatData();
-      mjs.vars.preferCanonicalUrl = true;
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE);
-      elm.value = '';
-      const evt = {
+      document.getElementById(CONTENT_PAGE).value = 'foo bar';
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: `${COPY_PAGE}foo`,
+            selectionText: 'foo bar'
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}TextURL`
+          id: `${COPY_PAGE}foo`
         }
-      };
-      await mjs.setFormatData();
-      mjs.contextInfo.canonicalUrl = null;
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE);
-      elm.value = '';
-      const evt = {
+      mjs.contextInfo.isLink = true;
+      mjs.contextInfo.url = 'https://example.com/';
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: `${COPY_LINK}foo`,
+            linkUrl: 'https://example.com/',
+            selectionText: ''
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}HTMLHyper`
+          id: `${COPY_LINK}foo`
         }
-      };
-      await mjs.setFormatData();
-      mjs.contextInfo.canonicalUrl = null;
-      const i = document.execCommand.callCount;
-      const res = await func(evt);
-      assert.strictEqual(document.execCommand.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE_BBCODE);
-      elm.value = 'https://www.example.com';
-      const evt = {
+      document.getElementById(CONTENT_LINK).value = 'foo bar';
+      mjs.contextInfo.isLink = true;
+      mjs.contextInfo.url = 'https://example.com/';
+      mjs.tabInfo.tab = {};
+      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+        [EXEC_COPY]: {
+          info: {
+            isEdited: true,
+            menuItemId: `${COPY_LINK}foo`,
+            linkUrl: 'https://example.com/',
+            selectionText: 'foo bar'
+          },
+          tab: {}
+        }
+      }, null).resolves(undefined);
+      const i = browser.runtime.sendMessage.callCount;
+      const res = await func({
         target: {
-          id: `${COPY_PAGE}BBCodeURL`
+          id: `${COPY_LINK}foo`
         }
-      };
-      await mjs.setFormatData();
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+      });
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE_BBCODE);
-      elm.value = '';
-      const evt = {
-        target: {
-          id: `${COPY_PAGE}BBCodeURL`
-        }
-      };
-      await mjs.setFormatData();
-      mjs.vars.preferCanonicalUrl = true;
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_PAGE_BBCODE);
-      elm.value = '';
-      const evt = {
-        target: {
-          id: `${COPY_PAGE}BBCodeURL`
-        }
-      };
-      await mjs.setFormatData();
-      mjs.contextInfo.canonicalUrl = null;
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_LINK);
-      elm.value = 'qux';
-      const evt = {
-        target: {
-          id: `${COPY_LINK}TextURL`
-        }
-      };
-      await mjs.setFormatData();
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_LINK);
-      elm.value = '';
-      const evt = {
-        target: {
-          id: `${COPY_LINK}TextURL`
-        }
-      };
-      await mjs.setFormatData();
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_LINK_BBCODE);
-      elm.value = 'https://www.example.com/baz';
-      const evt = {
-        target: {
-          id: `${COPY_LINK}BBCodeURL`
-        }
-      };
-      await mjs.setFormatData();
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const elm = document.getElementById(CONTENT_LINK_BBCODE);
-      elm.value = '';
-      const evt = {
-        target: {
-          id: `${COPY_LINK}BBCodeURL`
-        }
-      };
-      await mjs.setFormatData();
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const evt = {
-        target: {
-          id: `${COPY_TABS_SELECTED}TextURL`
-        }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      const j = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const evt = {
-        target: {
-          id: `${COPY_TABS_OTHER}TextURL`
-        }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      const j = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        active: false,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
-    });
-
-    it('should call function', async () => {
-      const evt = {
-        target: {
-          id: `${COPY_TABS_ALL}TextURL`
-        }
-      };
-      const i = navigator.clipboard.writeText.callCount;
-      const j = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await mjs.setFormatData();
-      const res = await func(evt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.strictEqual(res.length, 1, 'result');
-      assert.deepEqual(res, [
-        {
-          canonicalUrl: null,
-          content: null,
-          isLink: false,
-          title: null,
-          url: null
-        }
-      ], 'result');
+      assert.isUndefined(res, 'result');
     });
   });
 
@@ -1209,16 +636,13 @@ describe('popup-main', () => {
       const elm = document.createElement('button');
       const elm2 = document.createElement('button');
       const elm3 = document.createElement('input');
-      const elm4 = document.createElement('input');
       const body = document.querySelector('body');
       div.id = 'copyLinkDetails';
       div.appendChild(elm);
       div.appendChild(elm2);
       elm3.id = CONTENT_LINK;
-      elm4.id = CONTENT_LINK_BBCODE;
       body.appendChild(div);
       body.appendChild(elm3);
-      body.appendChild(elm4);
     });
 
     it('should not set attr', async () => {
@@ -1229,10 +653,19 @@ describe('popup-main', () => {
       }
     });
 
-    it('should set attr and value', async () => {
+    it('should not set attr', async () => {
+      const items = document.querySelectorAll('button');
+      await func({
+        foo: {}
+      });
+      for (const item of items) {
+        assert.isFalse(item.hasAttribute('disabled'), 'attr');
+      }
+    });
+
+    it('should set attr but not value', async () => {
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
-      const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
       const data = {
         contextInfo: {
           canonicalUrl: null,
@@ -1246,15 +679,12 @@ describe('popup-main', () => {
       for (const item of items) {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
-      assert.strictEqual(contentLink.value, 'foo', 'value link');
-      assert.strictEqual(contentBBCode.value, 'https://example.com',
-        'value link');
+      assert.strictEqual(contentLink.value, '', 'value link');
     });
 
-    it('should set attr and value', async () => {
+    it('should set attr but not value', async () => {
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
-      const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
       const data = {
         contextInfo: {
           canonicalUrl: null,
@@ -1269,13 +699,11 @@ describe('popup-main', () => {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
       assert.strictEqual(contentLink.value, '', 'value link');
-      assert.strictEqual(contentBBCode.value, '', 'value link');
     });
 
     it('should set attr and value', async () => {
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
-      const contentBBCode = document.getElementById(CONTENT_LINK_BBCODE);
       const data = {
         contextInfo: {
           canonicalUrl: null,
@@ -1293,64 +721,50 @@ describe('popup-main', () => {
         assert.isFalse(item.hasAttribute('disabled'), 'attr');
       }
       assert.strictEqual(contentLink.value, 'foo', 'value link');
-      assert.strictEqual(contentBBCode.value, 'https://example.com',
-        'value link');
     });
   });
 
-  describe('request context info', () => {
-    const func = mjs.requestContextInfo;
+  describe('prepare tab', () => {
+    const func = mjs.prepareTab;
     beforeEach(() => {
       const div = document.createElement('div');
-      const elm = document.createElement('button');
-      const elm2 = document.createElement('button');
-      const elm3 = document.createElement('input');
-      const elm4 = document.createElement('input');
+      const btn = document.createElement('button');
+      const btn2 = document.createElement('button');
+      const elm = document.createElement('input');
+      const elm2 = document.createElement('input');
       const body = document.querySelector('body');
       div.id = 'copyLinkDetails';
-      div.appendChild(elm);
-      div.appendChild(elm2);
-      elm3.id = CONTENT_LINK;
-      elm4.id = CONTENT_LINK_BBCODE;
+      div.appendChild(btn);
+      div.appendChild(btn2);
+      elm.id = CONTENT_PAGE;
+      elm2.id = CONTENT_LINK;
       body.appendChild(div);
-      body.appendChild(elm3);
-      body.appendChild(elm4);
+      body.appendChild(elm);
+      body.appendChild(elm2);
     });
 
-    it('should not call function', async () => {
-      const i = browser.tabs.sendMessage.callCount;
-      await func();
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
-    });
-
-    it('should not call function', async () => {
-      const i = browser.tabs.sendMessage.callCount;
-      await func({
+    it('should get empty array', async () => {
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.tabs.query.resolves([{
         id: browser.tabs.TAB_ID_NONE
-      });
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i, 'not called');
+      }]);
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
+        'not called');
+      assert.deepEqual(res, [], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.tabs.sendMessage.callCount;
-      await func({
+      const i = browser.runtime.sendMessage.callCount;
+      browser.runtime.sendMessage.resolves({});
+      browser.tabs.query.resolves([{
         id: 1
-      });
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1, 'called');
-    });
-
-    it('should call function', async () => {
-      const spy = sinon.spy(document, 'querySelectorAll');
-      const i = browser.tabs.sendMessage.callCount;
-      browser.tabs.sendMessage.rejects(new Error('error'));
-      await func({
-        id: 1
-      });
-      const { calledOnce } = spy;
-      spy.restore();
-      assert.strictEqual(browser.tabs.sendMessage.callCount, i + 1,
-        'called sendMessage');
-      assert.isTrue(calledOnce, 'called console');
+      }]);
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [{}], 'result');
     });
   });
 
@@ -1378,104 +792,32 @@ describe('popup-main', () => {
     beforeEach(() => {
       const { enabledFormats, vars } = mjs;
       enabledFormats.clear();
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
-      vars.separateTextURL = false;
     });
     afterEach(() => {
       const { enabledFormats, vars } = mjs;
       enabledFormats.clear();
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
-      vars.separateTextURL = false;
     });
 
     it('should not set variable', async () => {
       const { vars } = mjs;
       await func();
-      assert.isFalse(vars.includeTitleHTMLHyper, 'html');
-      assert.isFalse(vars.includeTitleHTMLPlain, 'html');
-      assert.isFalse(vars.includeTitleMarkdown, 'markdown');
       assert.isFalse(vars.preferCanonicalUrl, 'canonical');
     });
 
     it('should not set variable', async () => {
       const { vars } = mjs;
       await func('foo', {});
-      assert.isFalse(vars.includeTitleHTMLHyper, 'html');
-      assert.isFalse(vars.includeTitleHTMLPlain, 'html');
-      assert.isFalse(vars.includeTitleMarkdown, 'markdown');
-      assert.isFalse(vars.preferCanonicalUrl, 'canonical');
+      assert.isUndefined(vars.foo, 'vars');
     });
 
-    it('should set variable', async () => {
+    it('should not set variable', async () => {
       const { vars } = mjs;
       await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true
       });
-      assert.isTrue(vars.includeTitleHTMLHyper, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_HTML_HYPER, {
-        checked: false
-      });
-      assert.isFalse(vars.includeTitleHTMLHyper, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_HTML_PLAIN, {
-        checked: true
-      });
-      assert.isTrue(vars.includeTitleHTMLPlain, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_HTML_PLAIN, {
-        checked: false
-      });
-      assert.isFalse(vars.includeTitleHTMLPlain, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_MARKDOWN, {
-        checked: true
-      });
-      assert.isTrue(vars.includeTitleMarkdown, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_MARKDOWN, {
-        checked: false
-      });
-      assert.isFalse(vars.includeTitleMarkdown, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(NOTIFY_COPY, {
-        checked: true
-      });
-      assert.isTrue(vars.notifyOnCopy, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(NOTIFY_COPY, {
-        checked: false
-      });
-      assert.isFalse(vars.notifyOnCopy, 'variable');
+      assert.isUndefined(vars.includeTitleHTMLHyper, 'variable');
     });
 
     it('should set variable', async () => {
@@ -1488,26 +830,11 @@ describe('popup-main', () => {
 
     it('should set variable', async () => {
       const { vars } = mjs;
+      vars.preferCanonicalUrl = true;
       await func(PREFER_CANONICAL, {
         checked: false
       });
       assert.isFalse(vars.preferCanonicalUrl, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(TEXT_SEP_LINES, {
-        checked: true
-      });
-      assert.isTrue(vars.separateTextURL, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(TEXT_SEP_LINES, {
-        checked: false
-      });
-      assert.isFalse(vars.separateTextURL, 'variable');
     });
 
     it('should set variable', async () => {
