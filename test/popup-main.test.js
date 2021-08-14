@@ -480,7 +480,6 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
       assert.isTrue(p.hasAttribute('hidden'), 'result');
     });
 
@@ -492,139 +491,31 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isTrue(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should add attribute', async () => {
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = `${COPY_PAGE}${BBCODE_URL}`;
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isTrue(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should add attribute', async () => {
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = `${COPY_TABS_ALL}${BBCODE_URL}`;
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
       assert.isTrue(p.hasAttribute('hidden'), 'result');
     });
 
-    it('should add attribute', async () => {
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = `${COPY_TABS_SELECTED}${BBCODE_URL}`;
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isTrue(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = BBCODE_URL;
-      enabledFormats.add(BBCODE_URL);
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
+    it('should not add attribute', async () => {
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
       elm.id = `${COPY_LINK}${BBCODE_URL}`;
-      enabledFormats.add(BBCODE_URL);
+      mjs.enabledFormats.add(BBCODE_URL);
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
       assert.isFalse(p.hasAttribute('hidden'), 'result');
     });
 
     it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
-      elm.id = `${COPY_PAGE}${BBCODE_URL}`;
-      enabledFormats.add(BBCODE_URL);
+      elm.id = `${COPY_LINK}${BBCODE_URL}`;
+      mjs.enabledFormats.add(BBCODE_URL);
       p.appendChild(elm);
+      p.setAttribute('hidden', 'hidden');
       body.appendChild(p);
       await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = `${COPY_TABS_ALL}${BBCODE_URL}`;
-      enabledFormats.add(BBCODE_URL);
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = `${COPY_TABS_SELECTED}${BBCODE_URL}`;
-      enabledFormats.add(BBCODE_URL);
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should add attribute', async () => {
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = 'TextURL';
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
-      assert.isTrue(p.hasAttribute('hidden'), 'result');
-    });
-
-    it('should remove attribute', async () => {
-      const { enabledFormats } = mjs;
-      const elm = document.createElement('button');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      elm.id = 'TextURL';
-      enabledFormats.add('TextURL');
-      p.appendChild(elm);
-      body.appendChild(p);
-      await func();
-      assert.isFalse(body.hasAttribute('hidden'), 'result');
       assert.isFalse(p.hasAttribute('hidden'), 'result');
     });
   });
