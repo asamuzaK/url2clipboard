@@ -12,7 +12,7 @@ import {
 } from './format.js';
 import {
   CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU, PREFER_CANONICAL
+  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU
 } from './constant.js';
 
 /* api */
@@ -21,11 +21,6 @@ const { runtime, tabs } = browser;
 /* constants */
 const { TAB_ID_NONE } = tabs;
 const OPTIONS_OPEN = 'openOptions';
-
-/* variables */
-export const vars = {
-  preferCanonicalUrl: false
-};
 
 /* enabled formats */
 export const enabledFormats = new Set();
@@ -302,18 +297,11 @@ export const setVar = async (item, obj) => {
   let func;
   if (item && obj) {
     const { checked } = obj;
-    switch (item) {
-      case PREFER_CANONICAL:
-        vars[item] = !!checked;
-        break;
-      default: {
-        if (await hasFormat(item)) {
-          const formatItem = await getFormat(item);
-          formatItem.enabled = !!checked;
-          await setFormat(item, formatItem);
-          func = toggleEnabledFormats(item, !!checked);
-        }
-      }
+    if (await hasFormat(item)) {
+      const formatItem = await getFormat(item);
+      formatItem.enabled = !!checked;
+      await setFormat(item, formatItem);
+      func = toggleEnabledFormats(item, !!checked);
     }
   }
   return func || null;

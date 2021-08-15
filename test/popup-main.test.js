@@ -10,7 +10,7 @@ import * as mjs from '../src/mjs/popup-main.js';
 import { formatData } from '../src/mjs/format.js';
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
-  EXEC_COPY, INCLUDE_TITLE_HTML_HYPER, PREFER_CANONICAL
+  EXEC_COPY
 } from '../src/mjs/constant.js';
 const OPTIONS_OPEN = 'openOptions';
 
@@ -197,7 +197,7 @@ describe('popup-main', () => {
   describe('create copy data', () => {
     const func = mjs.createCopyData;
     beforeEach(() => {
-      const { contextInfo, tabInfo, vars } = mjs;
+      const { contextInfo, tabInfo } = mjs;
       const elm = document.createElement('input');
       const elm2 = document.createElement('input');
       const body = document.querySelector('body');
@@ -210,16 +210,14 @@ describe('popup-main', () => {
       contextInfo.selectionText = null;
       contextInfo.url = null;
       tabInfo.tab = null;
-      vars.preferCanonicalUrl = false;
     });
     afterEach(() => {
-      const { contextInfo, tabInfo, vars } = mjs;
+      const { contextInfo, tabInfo } = mjs;
       contextInfo.content = null;
       contextInfo.isLink = false;
       contextInfo.selectionText = null;
       contextInfo.url = null;
       tabInfo.tab = null;
-      vars.preferCanonicalUrl = false;
     });
 
     it('should get null if no argument given', async () => {
@@ -680,51 +678,22 @@ describe('popup-main', () => {
   describe('set variable', () => {
     const func = mjs.setVar;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
+      const { enabledFormats } = mjs;
       enabledFormats.clear();
-      vars.preferCanonicalUrl = false;
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
+      const { enabledFormats } = mjs;
       enabledFormats.clear();
-      vars.preferCanonicalUrl = false;
     });
 
-    it('should not set variable', async () => {
-      const { vars } = mjs;
-      await func();
-      assert.isFalse(vars.preferCanonicalUrl, 'canonical');
+    it('should get null', async () => {
+      const res = await func();
+      assert.isNull(res, 'result');
     });
 
-    it('should not set variable', async () => {
-      const { vars } = mjs;
-      await func('foo', {});
-      assert.isUndefined(vars.foo, 'vars');
-    });
-
-    it('should not set variable', async () => {
-      const { vars } = mjs;
-      await func(INCLUDE_TITLE_HTML_HYPER, {
-        checked: true
-      });
-      assert.isUndefined(vars.includeTitleHTMLHyper, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      await func(PREFER_CANONICAL, {
-        checked: true
-      });
-      assert.isTrue(vars.preferCanonicalUrl, 'variable');
-    });
-
-    it('should set variable', async () => {
-      const { vars } = mjs;
-      vars.preferCanonicalUrl = true;
-      await func(PREFER_CANONICAL, {
-        checked: false
-      });
-      assert.isFalse(vars.preferCanonicalUrl, 'variable');
+    it('should get null', async () => {
+      const res = await func('foo');
+      assert.isNull(res, 'result');
     });
 
     it('should set variable', async () => {
