@@ -4,9 +4,9 @@
 
 /* shared */
 import { Clip } from './clipboard.js';
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
+import { getType, isObjectNotEmpty, isString } from './common.js';
 import {
-  execScriptToTab, execScriptsToTabInOrder, getActiveTabId, getAllTabsInWindow,
+  execScriptToTab, execScriptsToTabInOrder, getActiveTab, getAllTabsInWindow,
   getHighlightedTab, isTab, queryTabs, sendMessage
 } from './browser.js';
 import {
@@ -264,14 +264,18 @@ export const extractClickedData = async (info, tab) => {
       let contextCanonicalUrl = null;
       let contextContent = null;
       let contextIsLink = false;
+      let contextSelectionText = null;
       let contextTitle = null;
+      let contextUrl = null;
       if (isObjectNotEmpty(contextInfo)) {
         if (!tabUrlHash && preferCanonicalUrl) {
           contextCanonicalUrl = contextInfo.canonicalUrl;
         }
         contextContent = contextInfo.content;
         contextIsLink = !!contextInfo.isLink;
+        contextSelectionText = contextInfo.selectionText;
         contextTitle = contextInfo.title;
+        contextUrl = contextInfo.url;
       }
       let text;
       if (menuItemId.startsWith(COPY_TABS_ALL)) {
@@ -340,18 +344,18 @@ export const extractClickedData = async (info, tab) => {
         } else if (enabledFormats.has(formatId)) {
           if (contextIsLink) {
             if (formatId === BBCODE_URL) {
-              content = linkUrl;
-              url = linkUrl;
+              content = linkUrl || contextUrl;
+              url = linkUrl || contextUrl;
             } else {
-              content = selectionText || contextContent;
+              content = selectionText || contextSelectionText || contextContent;
               title = contextTitle;
-              url = linkUrl;
+              url = linkUrl || contextUrl;
             }
           } else if (formatId === BBCODE_URL) {
             content = contextCanonicalUrl || tabUrl;
             url = contextCanonicalUrl || tabUrl;
           } else {
-            content = selectionText || tabTitle;
+            content = selectionText || contextSelectionText || tabTitle;
             title = tabTitle;
             url = contextCanonicalUrl || tabUrl;
           }
@@ -445,26 +449,24 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
  * handle command
  *
  * @param {!string} cmd - command
- * @returns {void}
+ * @returns {?Function} - extractClickedData()
  */
 export const handleCmd = async cmd => {
   if (!isString(cmd)) {
     throw new TypeError(`Expected String but got ${getType(cmd)}.`);
   }
-  if (cmd.startsWith(CMD_COPY)) {
-    const format = cmd.replace(CMD_COPY, '');
-    const tabId = await getActiveTabId();
-    try {
-      Number.isInteger(tabId) && tabId !== TAB_ID_NONE &&
-      enabledFormats.has(format) && await sendMessage(tabId, {
-        [CONTEXT_INFO_GET]: {
-          format, tabId
-        }
-      });
-    } catch (e) {
-      logErr(e);
+  const format = cmd.replace(CMD_COPY, '');
+  let func;
+  if (enabledFormats.has(format)) {
+    const tab = await getActiveTab();
+    if (tab) {
+      const info = {
+        menuItemId: format
+      };
+      func = extractClickedData(info, tab);
     }
   }
+  return func || null;
 };
 
 /**
