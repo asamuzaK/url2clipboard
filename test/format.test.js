@@ -52,59 +52,6 @@ describe('format', () => {
     });
   });
 
-  describe('get format id', () => {
-    const func = mjs.getFormatId;
-
-    it('should throw', async () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
-    });
-
-    it('should get null', async () => {
-      const res = func('');
-      assert.isNull(res, 'result');
-    });
-
-    it('should get null', async () => {
-      const res = func(COPY_LINK);
-      assert.isNull(res, 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func('foo');
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_TABS_ALL}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_TABS_OTHER}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_TABS_SELECTED}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_LINK}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_PAGE}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = func(`${COPY_TAB}foo`);
-      assert.strictEqual(res, 'foo', 'result');
-    });
-  });
-
   describe('formats', () => {
     const { formats } = mjs;
 
@@ -166,14 +113,64 @@ describe('format', () => {
     });
   });
 
+  describe('get format id', () => {
+    const func = mjs.getFormatId;
+
+    it('should throw', async () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
+    });
+
+    it('should get null', async () => {
+      const res = func('');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      const res = func(COPY_LINK);
+      assert.isNull(res, 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func('foo');
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_TABS_ALL}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_TABS_OTHER}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_TABS_SELECTED}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_LINK}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_PAGE}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+
+    it('should get result', async () => {
+      const res = func(`${COPY_TAB}foo`);
+      assert.strictEqual(res, 'foo', 'result');
+    });
+  });
+
   describe('has format', () => {
     const func = mjs.hasFormat;
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
     it('should get result', async () => {
@@ -195,11 +192,8 @@ describe('format', () => {
   describe('get format', () => {
     const func = mjs.getFormat;
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
     it('should get null', async () => {
@@ -236,11 +230,8 @@ describe('format', () => {
       }
     });
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
     it('should not set key/value', async () => {
@@ -275,14 +266,120 @@ describe('format', () => {
     });
   });
 
-  describe('create multiple tabs link text', () => {
-    const func = mjs.createTabsLinkText;
+  describe('get format title', () => {
+    const func = mjs.getFormatTitle;
+
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
+    });
+
+    it('should get null', async () => {
+      const res = await func('foo');
+      assert.isNull(res, 'result');
+    });
+
+    it('should get value', async () => {
+      const res = await func(`${COPY_PAGE}BBCodeText`);
+      assert.strictEqual(res, 'BBCode (Text)', 'result');
+    });
+
+    it('should get value', async () => {
+      const res = await func('TextURL');
+      assert.strictEqual(res, 'Text & URL', 'result');
+    });
+
+    it('should get value', async () => {
+      const res = await func(`${COPY_PAGE}Markdown`);
+      assert.strictEqual(res, 'Markdown', 'result');
+    });
+  });
+
+  describe('toggle enabled formats', () => {
+    const func = mjs.toggleEnabledFormats;
+    beforeEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.clear();
+    });
+    afterEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.clear();
+    });
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected Array but got Undefined.');
+        assert.strictEqual(e.message, 'Expected String but got Undefined.',
+          'throw');
       });
+    });
+
+    it('should not add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func('foo');
+      assert.isFalse(enabledFormats.has('foo'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+
+    it('should not add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func(`${COPY_PAGE}TextURL`, false);
+      assert.isFalse(enabledFormats.has('TextURL'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+
+    it('should add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func(`${COPY_TAB}TextURL`, true);
+      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+
+    it('should add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func(`${COPY_PAGE}TextURL`, true);
+      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+
+    it('should add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func(`${COPY_LINK}TextURL`, true);
+      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+
+    it('should add', async () => {
+      const { enabledFormats } = mjs;
+      const res = await func(`${COPY_TABS_ALL}TextURL`, true);
+      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.deepEqual(res, enabledFormats, 'result');
+    });
+  });
+
+  describe('set format data', () => {
+    const func = mjs.setFormatData;
+    beforeEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.clear();
+    });
+    afterEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.clear();
+    });
+
+    it('should set map', async () => {
+      const { enabledFormats, formatData } = mjs;
+      const items = Object.keys(formatData);
+      const res = await func();
+      assert.strictEqual(res.length, items.length, 'result');
+      assert.strictEqual(enabledFormats.size, items.length, 'enabled formats');
+    });
+  });
+
+  describe('create multiple tabs link text', () => {
+    const func = mjs.createTabsLinkText;
+
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected Array but got Undefined.');
     });
 
     it('should get string', async () => {
@@ -304,18 +401,14 @@ describe('format', () => {
   describe('create link text', () => {
     const { createLinkText: func, formatData } = mjs;
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
     it('should throw', async () => {
-      await func({ formatId: 'foo' }).catch(e => {
-        assert.instanceOf(e, TypeError);
-        assert.strictEqual(e.message, 'Expected String but got Undefined.');
-      });
+      assert.throws(() => func({
+        formatId: 'foo'
+      }), 'Expected String but got Undefined.');
     });
 
     it('should get string', async () => {

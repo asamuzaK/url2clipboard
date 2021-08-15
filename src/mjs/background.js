@@ -5,11 +5,12 @@
 /* shared */
 import { throwErr } from './common.js';
 import { getAllStorage } from './browser.js';
+import { setFormatData } from './format.js';
 import {
-  createContextMenu, extractClickedData, handleActiveTab, handleCmd,
-  handleMenusOnShown, handleMsg, handleUpdatedTab, setDefaultIcon,
-  setFormatData, setVars
+  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleUpdatedTab,
+  setDefaultIcon, setVars
 } from './main.js';
+import { createContextMenu, handleMenusOnShown } from './menu.js';
 
 /* api */
 const { commands, runtime, storage, tabs } = browser;

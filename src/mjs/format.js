@@ -17,6 +17,7 @@ import {
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
+/* format data */
 export const formatData = {
   [HTML_PLAIN]: {
     id: HTML_PLAIN,
@@ -121,6 +122,27 @@ export const formatData = {
   }
 };
 
+/* formats */
+export const formats = new Map(Object.entries(formatData));
+
+/**
+ * get formats
+ *
+ * @param {boolean} inArray - return in an array
+ * @returns {object|Array} - formats
+ */
+export const getFormats = (inArray = false) =>
+  inArray ? Array.from(formats.entries()) : formats.entries();
+
+/**
+ * get formats keys
+ *
+ * @param {boolean} inArray - return in an array
+ * @returns {object|Array} - formats
+ */
+export const getFormatsKeys = (inArray = false) =>
+  inArray ? Array.from(formats.keys()) : formats.keys();
+
 /**
  * get format id
  *
@@ -147,34 +169,13 @@ export const getFormatId = id => {
   return id || null;
 };
 
-/* formats */
-export const formats = new Map(Object.entries(formatData));
-
-/**
- * get formats
- *
- * @param {boolean} inArray - return in an array
- * @returns {object|Array} - formats
- */
-export const getFormats = async (inArray = false) =>
-  inArray ? Array.from(formats.entries()) : formats.entries();
-
-/**
- * get formats keys
- *
- * @param {boolean} inArray - return in an array
- * @returns {object|Array} - formats
- */
-export const getFormatsKeys = async (inArray = false) =>
-  inArray ? Array.from(formats.keys()) : formats.keys();
-
 /**
  * has format
  *
  * @param {string} id - id
  * @returns {boolean} - result
  */
-export const hasFormat = async id => {
+export const hasFormat = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -188,7 +189,7 @@ export const hasFormat = async id => {
  * @param {string} id - id
  * @returns {*|null} - format item
  */
-export const getFormat = async id => {
+export const getFormat = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -207,7 +208,7 @@ export const getFormat = async id => {
  * @param {*} value - value
  * @returns {void}
  */
-export const setFormat = async (id, value) => {
+export const setFormat = (id, value) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -218,13 +219,71 @@ export const setFormat = async (id, value) => {
 };
 
 /**
+ * get format title
+ *
+ * @param {string} id - menu item ID
+ * @returns {?string} - title
+ */
+export const getFormatTitle = id => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const item = getFormat(id);
+  let title;
+  if (item) {
+    const { id: itemId, title: itemTitle } = item;
+    title = itemTitle || itemId;
+  }
+  return title || null;
+};
+
+/* enabled formats */
+export const enabledFormats = new Set();
+
+/**
+ * toggle enabled formats
+ *
+ * @param {string} id - format id
+ * @param {boolean} enabled - format is enabled
+ * @returns {object} - enabledFormats
+ */
+export const toggleEnabledFormats = async (id, enabled) => {
+  if (!isString(id)) {
+    throw new TypeError(`Expected String but got ${getType(id)}.`);
+  }
+  const keys = getFormatsKeys(true);
+  const formatId = getFormatId(id);
+  if (keys.includes(formatId) && enabled) {
+    enabledFormats.add(formatId);
+  } else {
+    enabledFormats.delete(formatId);
+  }
+  return enabledFormats;
+};
+
+/**
+ * set format data
+ *
+ * @returns {Promise.<Array>} - result of each handler
+ */
+export const setFormatData = async () => {
+  const items = getFormats(true);
+  const func = [];
+  for (const [key, value] of items) {
+    const { enabled } = value;
+    func.push(toggleEnabledFormats(key, enabled));
+  }
+  return Promise.all(func);
+};
+
+/**
  * create multiple tabs link text
  *
  * @param {Array} arr - array of link text
  * @param {string} mime - mime type
  * @returns {string} - joined link text
  */
-export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
+export const createTabsLinkText = (arr, mime = MIME_PLAIN) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }
@@ -238,7 +297,7 @@ export const createTabsLinkText = async (arr, mime = MIME_PLAIN) => {
  * @param {object} data - copy data
  * @returns {string} - link text
  */
-export const createLinkText = async (data = {}) => {
+export const createLinkText = (data = {}) => {
   const { content: contentText, formatId, template, title, url } = data;
   if (!isString(formatId)) {
     throw new TypeError(`Expected String but got ${getType(formatId)}.`);
