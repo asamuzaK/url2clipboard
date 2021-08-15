@@ -10,9 +10,12 @@ import {
   getHighlightedTab, isTab, queryTabs, sendMessage
 } from './browser.js';
 import {
-  createLinkText, createTabsLinkText, getFormat, getFormatId, getFormats,
-  getFormatsKeys, hasFormat, setFormat
+  createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
+  getFormatTitle, hasFormat, setFormat, toggleEnabledFormats
 } from './format.js';
+import {
+  createContextMenu, removeContextMenu, updateContextMenu
+} from './menu.js';
 import { notifyOnCopy } from './notify.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
@@ -27,7 +30,6 @@ import {
 
 /* api */
 const { browserAction, i18n, runtime, tabs, windows } = browser;
-const menus = browser.menus || browser.contextMenus;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
@@ -46,44 +48,6 @@ export const vars = {
   separateTextURL: false
 };
 
-/* enabled formats */
-export const enabledFormats = new Set();
-
-/**
- * toggle enabled formats
- *
- * @param {string} id - format id
- * @param {boolean} enabled - format is enabled
- * @returns {void}
- */
-export const toggleEnabledFormats = async (id, enabled) => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const keys = await getFormatsKeys(true);
-  const formatId = getFormatId(id);
-  if (keys.includes(formatId) && enabled) {
-    enabledFormats.add(formatId);
-  } else {
-    enabledFormats.delete(formatId);
-  }
-};
-
-/**
- * set format data
- *
- * @returns {Promise.<Array>} - result of each handler
- */
-export const setFormatData = async () => {
-  const items = await getFormats(true);
-  const func = [];
-  for (const [key, value] of items) {
-    const { enabled } = value;
-    func.push(toggleEnabledFormats(key, enabled));
-  }
-  return Promise.all(func);
-};
-
 /**
  * get format template
  *
@@ -94,7 +58,7 @@ export const getFormatTemplate = async id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const item = await getFormat(id);
+  const item = getFormat(id);
   let template;
   if (item) {
     const {
@@ -122,248 +86,6 @@ export const getFormatTemplate = async id => {
     }
   }
   return template || null;
-};
-
-/**
- * get format title
- *
- * @param {string} id - menu item ID
- * @returns {?string} - title
- */
-export const getFormatTitle = async id => {
-  if (!isString(id)) {
-    throw new TypeError(`Expected String but got ${getType(id)}.`);
-  }
-  const item = await getFormat(id);
-  let title;
-  if (item) {
-    const { id: itemId, title: itemTitle } = item;
-    title = itemTitle || itemId;
-  }
-  return title || null;
-};
-
-/* context menu items */
-export const menuItems = {
-  [COPY_PAGE]: {
-    id: COPY_PAGE,
-    contexts: ['page', 'selection'],
-    key: '(&C)'
-  },
-  [COPY_LINK]: {
-    id: COPY_LINK,
-    contexts: ['link'],
-    key: '(&C)'
-  },
-  [COPY_TAB]: {
-    id: COPY_TAB,
-    contexts: ['tab'],
-    key: '(&T)'
-  },
-  [COPY_TABS_SELECTED]: {
-    id: COPY_TABS_SELECTED,
-    contexts: ['tab'],
-    key: '(&S)'
-  },
-  [COPY_TABS_OTHER]: {
-    id: COPY_TABS_OTHER,
-    contexts: ['tab'],
-    key: '(&O)'
-  },
-  [COPY_TABS_ALL]: {
-    id: COPY_TABS_ALL,
-    contexts: ['tab'],
-    key: '(&A)'
-  }
-};
-
-/**
- * remove context menu
- *
- * @returns {Function} - menus.removeAll()
- */
-export const removeContextMenu = async () => menus.removeAll();
-
-/**
- * create context menu item
- *
- * @param {string} id - menu item ID
- * @param {string} title - menu item title
- * @param {object} data - context data
- * @returns {void}
- */
-export const createMenuItem = async (id, title, data = {}) => {
-  const { contexts, enabled, parentId } = data;
-  const { isWebExt } = vars;
-  if (isString(id) && isString(title) && Array.isArray(contexts)) {
-    const opt = {
-      id,
-      contexts,
-      title,
-      enabled: !!enabled
-    };
-    if (parentId) {
-      opt.parentId = parentId;
-    }
-    if (contexts.includes('tab')) {
-      isWebExt && menus.create(opt);
-    } else {
-      menus.create(opt);
-    }
-  }
-};
-
-/**
- * create single menu item
- *
- * @param {string} key - key
- * @param {string} itemId - item ID
- * @param {string} itemKey - item key
- * @param {object} itemData - item data
- * @returns {Function} - createMenuItem()
- */
-export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
-  if (!isString(key)) {
-    throw new TypeError(`Expected String but got ${getType(key)}.`);
-  }
-  if (!isString(itemId)) {
-    throw new TypeError(`Expected String but got ${getType(itemId)}.`);
-  }
-  if (!isString(itemKey)) {
-    throw new TypeError(`Expected String but got ${getType(itemKey)}.`);
-  }
-  const { isWebExt } = vars;
-  const { id: keyId, title: keyTitle } = await getFormat(key);
-  const formatTitle = i18n.getMessage(
-    `${itemId}_format_key`,
-    [
-      keyTitle || keyId,
-      (isWebExt && itemKey) || ` ${itemKey}`
-    ]
-  );
-  return createMenuItem(`${itemId}${key}`, formatTitle, itemData);
-};
-
-/**
- * create context menu items
- *
- * @returns {Promise.<Array>} - results of each handler
- */
-export const createContextMenu = async () => {
-  const func = [];
-  if (enabledFormats.size) {
-    const { isWebExt, promptContent } = vars;
-    const formats = await getFormats(true);
-    const items = Object.keys(menuItems);
-    for (const item of items) {
-      const { contexts, id: itemId, key: itemKey } = menuItems[item];
-      let enabled;
-      switch (itemId) {
-        case COPY_LINK:
-          enabled = !promptContent;
-          break;
-        case COPY_PAGE:
-          enabled = isWebExt || !promptContent;
-          break;
-        default:
-          enabled = true;
-      }
-      const itemData = { contexts, enabled };
-      if (enabledFormats.size === 1) {
-        const [key] = enabledFormats.keys();
-        func.push(createSingleMenuItem(key, itemId, itemKey, itemData));
-      } else {
-        const itemTitle = i18n.getMessage(
-          `${itemId}_key`,
-          (isWebExt && itemKey) || ` ${itemKey}`
-        );
-        func.push(createMenuItem(itemId, itemTitle, itemData));
-        for (const [key, value] of formats) {
-          const { enabled: formatEnabled, menu: formatMenuTitle } = value;
-          if (formatEnabled) {
-            const subItemId = `${itemId}${key}`;
-            const subItemTitle = formatMenuTitle;
-            const subItemData = {
-              contexts,
-              enabled: formatEnabled,
-              parentId: itemId
-            };
-            func.push(createMenuItem(subItemId, subItemTitle, subItemData));
-          }
-        }
-      }
-    }
-  }
-  return Promise.all(func);
-};
-
-/**
- * update context menu
- *
- * @param {number} tabId - tab ID
- * @returns {Promise.<Array>} - results of each handler
- */
-export const updateContextMenu = async tabId => {
-  if (!Number.isInteger(tabId)) {
-    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
-  }
-  const func = [];
-  if (enabledFormats.size) {
-    const { isWebExt } = vars;
-    const items = Object.keys(menuItems);
-    const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
-    const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
-    const isHighlighted = highlightedTabs.length > 1;
-    for (const item of items) {
-      const { contexts, id: itemId } = menuItems[item];
-      switch (itemId) {
-        case COPY_LINK:
-        case COPY_PAGE: {
-          const enabled = true;
-          func.push(menus.update(itemId, { enabled }));
-          break;
-        }
-        default: {
-          if (contexts.includes('tab') && isWebExt) {
-            let visible;
-            if (itemId === COPY_TABS_ALL) {
-              visible = highlightedTabs.length !== allTabs.length &&
-                        allTabs.length > 1;
-            } else if (itemId === COPY_TABS_OTHER) {
-              visible = highlightedTabs.length !== allTabs.length;
-            } else if (itemId === COPY_TABS_SELECTED) {
-              visible = isHighlighted;
-            } else {
-              visible = !isHighlighted;
-            }
-            func.push(menus.update(itemId, { visible }));
-          }
-        }
-      }
-    }
-  }
-  return Promise.all(func);
-};
-
-/**
- * handle menus on shown
- *
- * @param {object} info - menu info
- * @param {object} tab - tabs.Tab
- * @returns {?Function} - menus.reflesh()
- */
-export const handleMenusOnShown = async (info, tab) => {
-  const { contexts } = info;
-  const { id: tabId } = tab;
-  let func;
-  if (Array.isArray(contexts) && contexts.includes('tab') &&
-      Number.isInteger(tabId) && typeof menus.refresh === 'function') {
-    const arr = await updateContextMenu(tabId);
-    if (Array.isArray(arr) && arr.length) {
-      func = menus.refresh();
-    }
-  }
-  return func || null;
 };
 
 /**
@@ -529,14 +251,14 @@ export const sendContextInfo = async () => {
 export const extractClickedData = async (info, tab) => {
   const func = [];
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
-    const { isEdited, linkUrl, menuItemId, selectionText } = info;
+    const { isEdited, linkText, linkUrl, menuItemId, selectionText } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       const { notifyOnCopy: notify, preferCanonicalUrl, promptContent } = vars;
       const { hash: tabUrlHash } = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
-      const formatTitle = await getFormatTitle(formatId);
+      const formatTitle = getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
       const contextInfo = await getContextInfo();
       let contextCanonicalUrl = null;
@@ -559,7 +281,7 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = await createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, mimeType);
       } else if (menuItemId.startsWith(COPY_TABS_OTHER)) {
         const otherTabs = await getOtherTabsInfo(menuItemId);
         const arr = [];
@@ -567,7 +289,7 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = await createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, mimeType);
       } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
         const selectedTabs = await getSelectedTabsInfo(menuItemId);
         const arr = [];
@@ -575,7 +297,7 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = await createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, mimeType);
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = await getFormatTemplate(formatId);
         let content;
@@ -589,7 +311,7 @@ export const extractClickedData = async (info, tab) => {
           title = tabTitle;
           url = tabUrl;
         }
-        text = await createLinkText({
+        text = createLinkText({
           content, formatId, template, title, url
         });
       } else {
@@ -602,7 +324,7 @@ export const extractClickedData = async (info, tab) => {
             content = linkUrl;
             url = linkUrl;
           } else {
-            content = selectionText || contextContent;
+            content = selectionText || contextContent || linkText;
             title = contextTitle;
             url = linkUrl;
           }
@@ -652,7 +374,7 @@ export const extractClickedData = async (info, tab) => {
             if (Array.isArray(promptRes)) {
               [editedContent] = promptRes;
             }
-            text = await createLinkText({
+            text = createLinkText({
               content: isString(editedContent) ? editedContent : content,
               formatId,
               template,
@@ -660,7 +382,7 @@ export const extractClickedData = async (info, tab) => {
               url
             });
           } else {
-            text = await createLinkText({
+            text = createLinkText({
               content, formatId, template, title, url
             });
           }
@@ -685,7 +407,15 @@ export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
   let func;
   if (Number.isInteger(tabId) && await isTab(tabId)) {
-    func = updateContextMenu(tabId);
+    const { isWebExt } = vars;
+    let enabled;
+    if (isWebExt) {
+      enabled = true;
+    } else {
+      const contextInfo = await getContextInfo();
+      enabled = isObjectNotEmpty(contextInfo);
+    }
+    func = updateContextMenu(tabId, enabled);
   }
   return func || null;
 };
@@ -791,32 +521,26 @@ export const setVar = async (item, obj, changed = false) => {
       case ICON_COLOR:
       case ICON_DARK:
       case ICON_LIGHT:
-      case ICON_WHITE:
+      case ICON_WHITE: {
         if (checked) {
           vars.iconId = value;
           func.push(setIcon());
         }
         break;
+      }
       case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
       case NOTIFY_COPY:
       case PREFER_CANONICAL:
-      case TEXT_SEP_LINES:
-        vars[item] = !!checked;
-        break;
       case PROMPT:
+      case TEXT_SEP_LINES: {
         vars[item] = !!checked;
-        if (changed) {
-          func.push(
-            removeContextMenu().then(createContextMenu).then(getActiveTabId)
-              .then(updateContextMenu)
-          );
-        }
         break;
+      }
       default: {
-        if (await hasFormat(item)) {
-          const formatItem = await getFormat(item);
+        if (hasFormat(item)) {
+          const formatItem = getFormat(item);
           formatItem.enabled = !!checked;
           setFormat(item, formatItem);
           if (changed) {
@@ -849,3 +573,6 @@ export const setVars = async (data = {}) => {
   }
   return Promise.all(func);
 };
+
+// For test
+export { enabledFormats };
