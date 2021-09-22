@@ -20,7 +20,7 @@ const { runtime, tabs } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
-const OPTIONS_OPEN = 'openOptions';
+export const OPTIONS_OPEN = 'openOptions';
 
 /* enabled formats */
 export const enabledFormats = new Set();

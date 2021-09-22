@@ -2,10 +2,13 @@
  * clipboard.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
+
+/* test */
 import * as mjs from '../src/mjs/clipboard.js';
 
 describe('clipboard', () => {

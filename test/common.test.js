@@ -2,10 +2,13 @@
  * common.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
+
+/* test */
 import * as mjs from '../src/mjs/common.js';
 
 describe('common', () => {

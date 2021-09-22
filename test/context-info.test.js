@@ -2,10 +2,13 @@
  * context-info.test.js
  */
 
-const { assert } = require('chai');
-const { afterEach, beforeEach, describe, it } = require('mocha');
-const { browser, createJsdom } = require('./mocha/setup.js');
-const cjs = require('../src/js/context-info.js');
+/* api */
+import { assert } from 'chai';
+import { afterEach, beforeEach, describe, it } from 'mocha';
+import { browser, createJsdom } from './mocha/setup.js';
+
+/* test */
+import * as cjs from '../src/js/context-info.js';
 
 describe('context-info', () => {
   let window, document;

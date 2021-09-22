@@ -2,12 +2,12 @@
  * main.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import { setFormatData } from '../src/mjs/format.js';
 import sinon from 'sinon';
-import * as mjs from '../src/mjs/main.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
@@ -17,6 +17,9 @@ import {
   INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, NOTIFY_COPY,
   PREFER_CANONICAL, PROMPT
 } from '../src/mjs/constant.js';
+
+/* test */
+import * as mjs from '../src/mjs/main.js';
 
 describe('main', () => {
   let window, document, navigator;

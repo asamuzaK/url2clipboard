@@ -2,17 +2,22 @@
  * popup-main.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
-import * as mjs from '../src/mjs/popup-main.js';
 import { formatData } from '../src/mjs/format.js';
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
   EXEC_COPY
 } from '../src/mjs/constant.js';
-const OPTIONS_OPEN = 'openOptions';
+
+/* test */
+import * as mjs from '../src/mjs/popup-main.js';
+
+/* constants */
+const { OPTIONS_OPEN } = mjs;
 
 describe('popup-main', () => {
   let window, document, navigator;

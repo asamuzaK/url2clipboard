@@ -2,17 +2,16 @@
  * setup.js
  */
 
-'use strict';
-const { JSDOM } = require('jsdom');
-const { Schema } = require('webext-schema');
-const sinon = require('sinon');
+import { JSDOM } from 'jsdom';
+import { Schema } from 'webext-schema';
+import sinon from 'sinon';
 
 /**
  * create jsdom
  *
  * @returns {object} - jsdom instance
  */
-const createJsdom = () => {
+export const createJsdom = () => {
   const domstr = '<!DOCTYPE html><html><head></head><body></body></html>';
   const opt = {
     runScripts: 'dangerously',
@@ -48,7 +47,7 @@ const channel = getChannel();
 
 console.log(`Channel: ${channel}`);
 
-const browser = new Schema(channel).mock();
+export const browser = new Schema(channel).mock();
 
 browser.i18n.getMessage.callsFake((...args) => args.toString());
 browser.permissions.contains.resolves(true);
@@ -63,7 +62,3 @@ for (const key of globalKeys) {
     global[key] = window[key];
   }
 }
-
-module.exports = {
-  browser, createJsdom
-};

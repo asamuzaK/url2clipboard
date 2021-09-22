@@ -2,8 +2,11 @@
  * ns-uri.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
+
+/* test */
 import nsUri from '../src/mjs/ns-uri.js';
 
 describe('ns-uri', () => {

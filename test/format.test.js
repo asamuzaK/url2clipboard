@@ -2,10 +2,10 @@
  * format.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
-import * as mjs from '../src/mjs/format.js';
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
@@ -14,6 +14,9 @@ import {
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from '../src/mjs/constant.js';
+
+/* test */
+import * as mjs from '../src/mjs/format.js';
 
 describe('format', () => {
   const itemKeys = [

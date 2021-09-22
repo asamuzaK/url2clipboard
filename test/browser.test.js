@@ -2,10 +2,13 @@
  * browser.test.js
  */
 
+/* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
 import sinon from 'sinon';
+
+/* test */
 import * as mjs from '../src/mjs/browser.js';
 
 describe('browser', () => {
