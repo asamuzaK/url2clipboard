@@ -125,10 +125,10 @@
     }
   },
   "copyOtherTabsURL": {
-    "message": "Copy Other Tabs URLs"
+    "message": "复制其他标签页 URL"
   },
   "copyOtherTabsURL_key": {
-    "message": "Copy &Other Tabs URLs",
+    "message": "复制其他标签页 URL $KEY$",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -137,7 +137,7 @@
     }
   },
   "copyOtherTabsURL_format": {
-    "message": "Copy Other Tabs URLs as $FORMAT$",
+    "message": "复制其他标签页 URL 为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -146,7 +146,7 @@
     }
   },
   "copyOtherTabsURL_format_key": {
-    "message": "Copy &Other Tabs URLs as $FORMAT$",
+    "message": "复制其他标签页 URL 为 $FORMAT$ $KEY$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -193,10 +193,10 @@
     }
   },
   "copyTabsURL": {
-    "message": "Copy Tabs URLs"
+    "message": "复制选定的标签页 URL"
   },
   "copyTabsURL_key": {
-    "message": "Copy Tab&s URLs",
+    "message": "复制选定的标签页 URL $KEY$",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -205,7 +205,7 @@
     }
   },
   "copyTabsURL_format": {
-    "message": "Copy Tabs URLs as $FORMAT$",
+    "message": "复制选定的标签页 URL 为 $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -214,7 +214,7 @@
     }
   },
   "copyTabsURL_format_key": {
-    "message": "Copy Tab&s URLs as $FORMAT$",
+    "message": "复制选定的标签页 URL 为 $FORMAT$ $KEY$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -378,16 +378,16 @@
     "message": "成功复制后发送通知。需要额外权限。"
   },
   "optionsPreferCanonicalUrl": {
-    "message": "Prefer canonical URL if present"
+    "message": "使用规范 URL"
   },
   "optionsPreferCanonicalUrlDetail": {
-    "message": "Use the canonical URL if it exists on the web page."
+    "message": "如果网页上存在规范 URL，请使用该 URL。"
   },
   "optionsPromptContent": {
     "message": "编辑链接标题"
   },
   "optionsPromptContentDetail": {
-    "message": "从右键菜单复制链接时提示修改链接信息。Note that in privileged URLs, the prompt window may not appear so that you may not be able to edit."
+    "message": "从右键菜单复制链接时提示修改链接信息。请注意，在特权 URL 中，提示窗口可能不会出现，因此您可能无法进行编辑。"
   },
   "optionsSeparateTextURL": {
     "message": "分行复制文本和链接"
