@@ -4,7 +4,7 @@
 
 /* shared */
 import { getType, isString } from './common.js';
-import { serializeDomString } from './serialize-dom.js';
+import { serializeDomString } from './dom-util.js';
 import { MIME_HTML, MIME_PLAIN } from './constant.js';
 
 /* constant */

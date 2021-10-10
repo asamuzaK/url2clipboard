@@ -9,7 +9,7 @@ import { createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
 
 /* test */
-import * as mjs from '../src/mjs/serialize-dom.js';
+import * as mjs from '../src/mjs/dom-util.js';
 
 describe('serialize-dom', () => {
   let window, document;
