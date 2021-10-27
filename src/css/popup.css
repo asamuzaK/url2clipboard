@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 /**
  * popup.css
  */
@@ -7,14 +8,16 @@ body {
   border: none;
   padding: 0.5rem;
   min-width: 16rem;
-  background-color: #FFF;
+  background-color: #fff;
   color: #000;
 }
+
 main {
   margin: 0;
   border: none;
   padding: 0;
 }
+
 summary {
   margin: 0 0.5rem;
   border: none;
@@ -22,28 +25,35 @@ summary {
   font-size: 1em;
   font-weight: bold;
 }
+
 ul {
   display: block;
   margin: 0.25rem 0;
   padding: 0.25rem 0.25rem 0;
   list-style: none;
 }
+
 ul + ul {
-  border-top: 1px dotted #CCC;
+  border-top: 1px dotted #ccc;
 }
+
 ul + ul[hidden] {
   display: none;
 }
+
 li {
   display: block;
   margin: 0;
   border: none;
   padding: 0;
 }
-label, input {
+
+label,
+input {
   display: block;
   margin: 0 0.5rem;
 }
+
 button {
   all: unset;
   appearance: none;
@@ -55,22 +65,28 @@ button {
   text-indent: 1rem;
   width: 100%;
 }
+
 button[disabled] {
   background-color: transparent;
   color: #808080;
 }
+
 button:not([disabled]):hover,
 button:not([disabled]):focus {
-  border: 1px solid #CCC;
-  background-color: #EAEAEA;
+  border: 1px solid #ccc;
+  background-color: #eaeaea;
   color: #000;
 }
+
 button:not([disabled]):active,
 button:not([disabled]):focus:active {
-  border: 1px solid #CCC;
-  background-color: #D7D7D8;
+  border: 1px solid #ccc;
+  background-color: #d7d7d8;
   color: #000;
 }
-[hidden] label, [hidden] input, [hidden] button {
+
+[hidden] label,
+[hidden] input,
+[hidden] button {
   display: none;
 }
