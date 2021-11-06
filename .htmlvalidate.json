@@ -1,0 +1,20 @@
+{
+  "extends": [
+    "html-validate:standard"
+  ],
+  "elements": [
+    "html5",
+    {
+      "details": {
+        "requiredContent": []
+      },
+      "th": {
+        "attributes": {
+          "scope": {
+            "required": false
+          }
+        }
+      }
+    }
+  ]
+}
