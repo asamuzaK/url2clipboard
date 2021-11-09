@@ -2124,14 +2124,12 @@ describe('main', () => {
   describe('handle active tab', () => {
     const func = mjs.handleActiveTab;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
+      const { enabledFormats } = mjs;
       enabledFormats.clear();
-      vars.isWebExt = false;
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
+      const { enabledFormats } = mjs;
       enabledFormats.clear();
-      vars.isWebExt = false;
     });
 
     it('should get null', async () => {
@@ -2145,65 +2143,22 @@ describe('main', () => {
     });
 
     it('should not call function', async () => {
-      const { vars } = mjs;
       const i = browser.tabs.get.callCount;
-      const j = browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount;
       browser.tabs.get.withArgs(1).resolves({});
-      browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).resolves({
-        foo: 'bar'
-      });
-      vars.isWebExt = true;
       const res = await func({
         tabId: 1
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount, j, 'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should call function', async () => {
       const i = browser.tabs.get.callCount;
-      const j = browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount;
       browser.tabs.get.withArgs(1).resolves({});
-      browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).resolves({
-        foo: 'bar'
-      });
       const res = await func({
         tabId: 1
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.tabs.get.callCount;
-      const j = browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount;
-      browser.tabs.get.withArgs(1).resolves({});
-      browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).resolves(false);
-      const res = await func({
-        tabId: 1
-      });
-      assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
-      assert.strictEqual(browser.tabs.executeScript.withArgs({
-        file: JS_CONTEXT_INFO
-      }).callCount, j + 1, 'called');
       assert.deepEqual(res, [], 'result');
     });
   });

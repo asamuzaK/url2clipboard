@@ -411,15 +411,7 @@ export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
   let func;
   if (Number.isInteger(tabId) && await isTab(tabId)) {
-    const { isWebExt } = vars;
-    let enabled;
-    if (isWebExt) {
-      enabled = true;
-    } else {
-      const contextInfo = await getContextInfo();
-      enabled = isObjectNotEmpty(contextInfo);
-    }
-    func = updateContextMenu(tabId, enabled);
+    func = updateContextMenu(tabId, true);
   }
   return func || null;
 };
