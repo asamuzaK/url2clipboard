@@ -2142,7 +2142,7 @@ describe('main', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should not call function', async () => {
+    it('should call function', async () => {
       const i = browser.tabs.get.callCount;
       browser.tabs.get.withArgs(1).resolves({});
       const res = await func({
@@ -2153,13 +2153,28 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
+      const { enabledFormats } = mjs;
       const i = browser.tabs.get.callCount;
+      const j = browser.menus.update.callCount;
+      const k = browser.tabs.query.callCount;
       browser.tabs.get.withArgs(1).resolves({});
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: 'normal'
+      }).resolves([{}, {}, {}]);
+      browser.tabs.query.withArgs({
+        highlighted: true,
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: 'normal'
+      }).resolves([{}]);
+      enabledFormats.add(HTML_PLAIN);
       const res = await func({
         tabId: 1
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.strictEqual(browser.menus.update.callCount, j + 1, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, k + 2, 'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 
