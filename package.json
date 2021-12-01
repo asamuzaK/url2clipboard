@@ -13,6 +13,9 @@
   "license": "MPL-2.0",
   "type": "module",
   "scripts": {
+    "bundle": "npm-run-all -s bundle:*",
+    "bundle:compat": "node index compat",
+    "bundle:copy": "copyfiles --up=1 src/LICENSE src/_locales/**/*.json src/css/*.css src/html/*.html src/img/*.* src/lib/*.* src/mjs/*.js bundle",
     "lint": "npm-run-all -s lint:*",
     "lint:addons-linter": "addons-linter src",
     "lint:eslint": "eslint --fix .",
@@ -29,6 +32,8 @@
     "addons-linter": "^4.4.0",
     "c8": "^7.10.0",
     "chai": "^4.3.4",
+    "commander": "^8.3.0",
+    "copyfiles": "^2.4.1",
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.3",
