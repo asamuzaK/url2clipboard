@@ -17,6 +17,18 @@
     g:target ~ #color {
       display: none;
     }
+    #context,
+    #current {
+      fill: context-fill rgb(91,91,102);
+    }
+    #context-light {
+      fill: context-fill rgb(251,251,254);
+    }
+    @media (prefers-color-scheme: dark) {
+      #current {
+        fill: context-fill rgb(251,251,254);
+      }
+    }
   </style>
   <symbol id="outline">
     <path d="m64 4c-6.6274 0-12 5.3726-12 12h-10v4h-10c-8.864 0-16 7.136-16 16v72c0 8.864 7.136 16 16 16h64c8.864 0 16-7.136 16-16v-72c0-8.864-7.136-16-16-16h-10v-4h-10c0-6.6274-5.3726-12-12-12zm0 10c1.1046 0 2 0.89543 2 2v10h10v8h-24v-8h10v-10c0-1.1046 0.89543-2 2-2zm-33.2 16h11.2v14h44v-14h11.2l4.8 4.8v74.4l-4.8 4.8h-66.4l-4.8-4.8v-74.4z"/>
@@ -30,13 +42,13 @@
   <symbol id="clip">
     <path d="m64 4a12 12 0 0 0-12 12h-10v28h44v-28h-10a12 12 0 0 0-12-12z"/>
   </symbol>
-  <g id="context" fill="context-fill rgb(91,91,102)">
+  <g id="context">
     <use href="#outline"/>
   </g>
-  <g id="context-light" fill="context-fill rgb(251,251,254)">
+  <g id="context-light">
     <use href="#outline"/>
   </g>
-  <g id="current" fill="context-fill currentColor">
+  <g id="current">
     <use href="#outline"/>
   </g>
   <g id="black" fill="#000">
