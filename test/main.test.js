@@ -852,9 +852,7 @@ describe('main', () => {
       vars.notifyOnCopy = true;
       vars.preferCanonicalUrl = true;
       vars.promptContent = true;
-      window.prompt.reset();
       window.prompt.returns('foo bar');
-      global.window.prompt.reset();
       global.window.prompt.returns('foo bar');
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({

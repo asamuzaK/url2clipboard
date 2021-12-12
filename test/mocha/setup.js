@@ -17,7 +17,7 @@ export const createJsdom = () => {
     runScripts: 'dangerously',
     url: 'https://localhost',
     beforeParse(window) {
-      window.prompt = sinon.stub().callsFake((...args) => args.toString());
+      window.prompt = sinon.stub();
     }
   };
   return new JSDOM(domstr, opt);

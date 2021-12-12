@@ -66,9 +66,7 @@ describe('edit-content', () => {
     });
 
     it('should get null', async () => {
-      window.prompt.reset();
       window.prompt.returns(null);
-      global.window.prompt.reset();
       global.window.prompt.returns(null);
       const data = {
         content: 'foo',
@@ -81,9 +79,7 @@ describe('edit-content', () => {
     });
 
     it('should get empty string', async () => {
-      window.prompt.reset();
       window.prompt.returns('');
-      global.window.prompt.reset();
       global.window.prompt.returns('');
       const data = {
         content: 'foo',
@@ -96,9 +92,7 @@ describe('edit-content', () => {
     });
 
     it('should get result', async () => {
-      window.prompt.reset();
       window.prompt.returns('foo bar');
-      global.window.prompt.reset();
       global.window.prompt.returns('foo bar');
       const data = {
         content: 'foo',
@@ -111,9 +105,7 @@ describe('edit-content', () => {
     });
 
     it('should get result', async () => {
-      window.prompt.reset();
       window.prompt.returns('foo bar');
-      global.window.prompt.reset();
       global.window.prompt.returns('foo bar');
       const data = {
         content: 'foo',
