@@ -508,7 +508,11 @@ describe('main', () => {
 
     it('should get null', async () => {
       browser.tabs.executeScript.rejects(new Error('error'));
+      const stubErr = sinon.stub(console, 'error');
       const res = await func();
+      const { calledOnce: errCalled } = stubErr;
+      stubErr.restore();
+      assert.isTrue(errCalled, 'called error');
       assert.isNull(res, 'result');
     });
 

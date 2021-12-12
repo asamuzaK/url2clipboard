@@ -468,6 +468,55 @@ describe('serialize-dom', () => {
       assert.strictEqual(svg.attributes.length, svg2.attributes.length,
         'length');
     });
+
+    it('should get result', () => {
+      const page = document.createElementNS(
+        'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
+        'page'
+      );
+      const vbox = document.createElementNS(
+        'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
+        'vbox'
+      );
+      const div = document.createElementNS('http://www.w3.org/1999/xhtml',
+        'html:div');
+      page.setAttributeNS('http://www.w3.org/2000/xmlns',
+        'html', 'http://www.w3.org/1999/xhtml');
+      div.setAttribute('data-foo', 'bar');
+      vbox.appendChild(div);
+      page.appendChild(vbox);
+      const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
+        'html:div');
+      const res = func(elm, div);
+      assert.isTrue(elm.hasAttribute('data-foo'), 'attr');
+      assert.strictEqual(elm.getAttribute('data-foo'), 'bar', 'value');
+      assert.strictEqual(elm.attributes.length, div.attributes.length,
+        'length');
+    });
+
+    it('should get result', () => {
+      const page = document.createElementNS(
+        'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
+        'page'
+      );
+      const vbox = document.createElementNS(
+        'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
+        'vbox'
+      );
+      const div = document.createElementNS('http://www.w3.org/1999/xhtml',
+        'html:div');
+      div.setAttributeNS('http://www.w3.org/1999/xhtml', 'html:data-foo',
+        'bar');
+      vbox.appendChild(div);
+      page.appendChild(vbox);
+      const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
+        'html:div');
+      const res = func(elm, div);
+      assert.isTrue(elm.hasAttribute('html:data-foo'), 'attr');
+      assert.strictEqual(elm.getAttribute('html:data-foo'), 'bar', 'value');
+      assert.strictEqual(elm.attributes.length, div.attributes.length,
+        'length');
+    });
   });
 
   describe('create namespaced element', () => {
