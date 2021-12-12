@@ -487,7 +487,7 @@ describe('serialize-dom', () => {
       page.appendChild(vbox);
       const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
         'html:div');
-      const res = func(elm, div);
+      func(elm, div);
       assert.isTrue(elm.hasAttribute('data-foo'), 'attr');
       assert.strictEqual(elm.getAttribute('data-foo'), 'bar', 'value');
       assert.strictEqual(elm.attributes.length, div.attributes.length,
@@ -511,7 +511,7 @@ describe('serialize-dom', () => {
       page.appendChild(vbox);
       const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
         'html:div');
-      const res = func(elm, div);
+      func(elm, div);
       assert.isTrue(elm.hasAttribute('html:data-foo'), 'attr');
       assert.strictEqual(elm.getAttribute('html:data-foo'), 'bar', 'value');
       assert.strictEqual(elm.attributes.length, div.attributes.length,
