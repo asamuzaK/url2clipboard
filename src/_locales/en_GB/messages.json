@@ -1,0 +1,17 @@
+{
+  "extensionLocale": {
+    "message": "en-GB"
+  },
+  "optionsIconColor": {
+    "message": ""
+  },
+  "optionsIconColor_alt": {
+    "message": "Colour"
+  },
+  "optionsIconColorLabel": {
+    "message": ""
+  },
+  "optionsIconColorLabel_ariaLabel": {
+    "message": "Colour Icon"
+  }
+}
