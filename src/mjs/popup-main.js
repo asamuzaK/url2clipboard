@@ -3,9 +3,7 @@
  */
 
 /* shared */
-import {
-  closeWindow, getType, isObjectNotEmpty, isString, throwErr
-} from './common.js';
+import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getActiveTab, sendMessage } from './browser.js';
 import {
   getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
@@ -146,6 +144,15 @@ export const createCopyData = async evt => {
     }
   }
   return func || null;
+};
+
+/**
+ * close window
+ *
+ * @returns {void}
+ */
+export const closeWindow = () => {
+  window.close();
 };
 
 /**

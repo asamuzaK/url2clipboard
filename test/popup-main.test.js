@@ -398,6 +398,18 @@ describe('popup-main', () => {
     });
   });
 
+  describe('close window', () => {
+    const func = mjs.closeWindow;
+
+    it('should call function', async () => {
+      const stubClose = sinon.stub(window, 'close');
+      await func();
+      const { calledOnce } = stubClose;
+      stubClose.restore();
+      assert.isTrue(calledOnce, 'caled');
+    });
+  });
+
   describe('handle open options on click', () => {
     const func = mjs.openOptionsOnClick;
 

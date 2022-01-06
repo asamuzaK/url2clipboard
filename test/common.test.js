@@ -207,86 +207,41 @@ describe('common', () => {
     });
   });
 
-  describe('stringify positive integer', () => {
-    const func = mjs.stringifyPositiveInt;
+  describe('sleep', () => {
+    const func = mjs.sleep;
 
-    it('should get null if no argument given', () => {
-      assert.isNull(func());
+    it('should resolve even if no argument given', async () => {
+      const fake = sinon.fake();
+      const fake2 = sinon.fake();
+      await func().then(fake).catch(fake2);
+      assert.strictEqual(fake.callCount, 1);
+      assert.strictEqual(fake2.callCount, 0);
     });
 
-    it('should get null if given argument exceeds max safe integer', () => {
-      const i = Number.MAX_SAFE_INTEGER + 1;
-      assert.isNull(func(i));
+    it('should get null if 1st argument is not integer', async () => {
+      const res = await func('foo');
+      assert.isNull(res);
     });
 
-    it('should get null if given argument is not positive integer', () => {
-      assert.isNull(func(''));
+    it('should get null if 1st argument is not positive integer', async () => {
+      const res = await func(-1);
+      assert.isNull(res);
     });
 
-    it('should get null if given argument is not positive integer', () => {
-      assert.isNull(func(-1));
+    it('should resolve', async () => {
+      const fake = sinon.fake();
+      const fake2 = sinon.fake();
+      await func(1).then(fake).catch(fake2);
+      assert.strictEqual(fake.callCount, 1);
+      assert.strictEqual(fake2.callCount, 0);
     });
 
-    it('should get null if 1st argument is 0 but 2nd argument is falsy', () => {
-      assert.isNull(func(0));
-    });
-
-    it('should get string', () => {
-      const i = 0;
-      const res = func(i, true);
-      assert.strictEqual(res, '0');
-    });
-
-    it('should get string', () => {
-      const i = 1;
-      const res = func(i);
-      assert.strictEqual(res, '1');
-    });
-  });
-
-  describe('parse stringified integer', () => {
-    const func = mjs.parseStringifiedInt;
-
-    it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
-    });
-
-    it('should throw', () => {
-      assert.throws(() => func('foo'), 'foo is not a stringified integer.');
-    });
-
-    it('should throw', () => {
-      assert.throws(() => func('01'), '01 is not a stringified integer.');
-    });
-
-    it('should get integer', () => {
-      const i = '1';
-      const res = func(i);
-      assert.strictEqual(res, 1);
-    });
-
-    it('should get integer', () => {
-      const i = '-1';
-      const res = func(i);
-      assert.strictEqual(res, -1);
-    });
-
-    it('should get integer', () => {
-      const i = '01';
-      const res = func(i, true);
-      assert.strictEqual(res, 1);
-    });
-
-    it('should get integer', () => {
-      const i = '-01';
-      const res = func(i, true);
-      assert.strictEqual(res, -1);
-    });
-
-    it('should get integer', () => {
-      const i = '01a';
-      const res = func(i, true);
-      assert.strictEqual(res, 1);
+    it('should reject', async () => {
+      const fake = sinon.fake();
+      const fake2 = sinon.fake();
+      await func(1, true).then(fake).catch(fake2);
+      assert.strictEqual(fake.callCount, 0);
+      assert.strictEqual(fake2.callCount, 1);
     });
   });
 
@@ -422,121 +377,6 @@ describe('common', () => {
     });
   });
 
-  describe('is valid Toolkit version string', () => {
-    const func = mjs.isValidToolkitVersion;
-
-    it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
-    });
-
-    it('should get true', () => {
-      const versions = [
-        '0', '1', '10', '0.1', '1.0', '1.0.0', '1.0.0.0', '1.0.0a', '1.0.0a1',
-        '1.0.0.0beta2', '3.1.2.65535', '4.1pre1', '4.1.1.2pre3',
-        '0.1.12dev-cb31c51'
-      ];
-      for (const version of versions) {
-        const res = func(version);
-        assert.isTrue(res, version);
-      }
-    });
-
-    it('should get false', () => {
-      const versions = [
-        '01', '1.0.01', '.', '.1', '1.', '65536', '1.0.0.65536',
-        '1.0.0.0.0', '1.0.0-a', '1.0.0-0', '1.0.0+20130313144700',
-        '123e5', '1.123e5', '1.a', 'a.b.c.d', '2.99999'
-      ];
-      for (const version of versions) {
-        const res = func(version);
-        assert.isFalse(res, version);
-      }
-    });
-  });
-
-  describe('parse version string', () => {
-    const func = mjs.parseVersion;
-
-    it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
-    });
-
-    it('should throw', () => {
-      assert.throws(() => func('.1'), '.1 does not match toolkit format.');
-    });
-
-    it('should get object', () => {
-      const version = '1.2.3';
-      const res = func(version);
-      assert.deepEqual(res, {
-        version,
-        major: 1,
-        minor: 2,
-        patch: 3,
-        build: undefined,
-        pre: undefined
-      });
-    });
-
-    it('should get object', () => {
-      const version = '1.2.3.4a1';
-      const res = func(version);
-      assert.deepEqual(res, {
-        version,
-        major: 1,
-        minor: 2,
-        patch: 3,
-        build: 4,
-        pre: ['a1']
-      });
-    });
-  });
-
-  describe('remove query string from URI', () => {
-    const func = mjs.removeQueryFromURI;
-
-    it('should get same value', () => {
-      const res = func();
-      assert.isUndefined(res);
-    });
-
-    it('should get same value', () => {
-      const arg = [];
-      const res = func(arg);
-      assert.deepEqual(res, arg);
-    });
-
-    it('should get same value', () => {
-      const arg = '';
-      const res = func(arg);
-      assert.strictEqual(res, arg);
-    });
-
-    it('should get same value', () => {
-      const arg = 'foo/bar';
-      const res = func(arg);
-      assert.strictEqual(res, arg);
-    });
-
-    it('should get same value', () => {
-      const arg = 'https://example.com';
-      const res = func(arg);
-      assert.strictEqual(res, arg);
-    });
-
-    it('should get query stripped', () => {
-      const arg = 'https://example.com#foo?bar=baz';
-      const res = func(arg);
-      assert.strictEqual(res, 'https://example.com#foo');
-    });
-
-    it('should get query stripped', () => {
-      const arg = 'https://example.com#foo?bar=baz%20qux';
-      const res = func(arg);
-      assert.strictEqual(res, 'https://example.com#foo');
-    });
-  });
-
   describe('encode URL component part', () => {
     const func = mjs.encodeUrlPart;
 
@@ -593,323 +433,6 @@ describe('common', () => {
         res,
         'file:///foo%20bar?baz&amp;qux#quux%27corge'
       );
-    });
-  });
-
-  describe('sleep', () => {
-    const func = mjs.sleep;
-
-    it('should resolve even if no argument given', async () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      await func().then(fake).catch(fake2);
-      assert.strictEqual(fake.callCount, 1);
-      assert.strictEqual(fake2.callCount, 0);
-    });
-
-    it('should get null if 1st argument is not integer', async () => {
-      const res = await func('foo');
-      assert.isNull(res);
-    });
-
-    it('should get null if 1st argument is not positive integer', async () => {
-      const res = await func(-1);
-      assert.isNull(res);
-    });
-
-    it('should resolve', async () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      await func(1).then(fake).catch(fake2);
-      assert.strictEqual(fake.callCount, 1);
-      assert.strictEqual(fake2.callCount, 0);
-    });
-
-    it('should reject', async () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      await func(1, true).then(fake).catch(fake2);
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 1);
-    });
-  });
-
-  describe('dispatch keyboard event', () => {
-    const func = mjs.dispatchKeyboardEvt;
-    const globalKeys = ['KeyboardEvent', 'Node'];
-    beforeEach(() => {
-      for (const key of globalKeys) {
-        global[key] = window[key];
-      }
-    });
-    afterEach(() => {
-      for (const key of globalKeys) {
-        delete global[key];
-      }
-    });
-
-    it('should not dispach event if no argument given', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func();
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should not dispach event if given argument is not an element', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const text = document.createTextNode('foo');
-      const body = document.querySelector('body');
-      body.appendChild(text);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(text);
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should not dispach event if type is one of key(down|press|up)', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'foo');
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should not dispach event if key option is not an object', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'keydown');
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should not dispach event if key option does not have key, code', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      const opt = {
-        foo: 'bar'
-      };
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'keydown', opt);
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should dispach event', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      const opt = {
-        key: 'a',
-        code: 'KeyA'
-      };
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'keydown', opt);
-      assert.strictEqual(fake.callCount, 1);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should dispach event', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      const opt = {
-        key: 'a',
-        code: 'KeyA'
-      };
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'keypress', opt);
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 1);
-      assert.strictEqual(fake3.callCount, 0);
-    });
-
-    it('should dispach event', () => {
-      const fake = sinon.fake();
-      const fake2 = sinon.fake();
-      const fake3 = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      const opt = {
-        key: 'a',
-        code: 'KeyA'
-      };
-      body.appendChild(p);
-      window.addEventListener('keydown', fake, true);
-      window.addEventListener('keypress', fake2, true);
-      window.addEventListener('keyup', fake3, true);
-      func(p, 'keyup', opt);
-      assert.strictEqual(fake.callCount, 0);
-      assert.strictEqual(fake2.callCount, 0);
-      assert.strictEqual(fake3.callCount, 1);
-    });
-  });
-
-  describe('dispatch change event', () => {
-    const func = mjs.dispatchChangeEvt;
-    const globalKeys = ['Event', 'Node'];
-    beforeEach(() => {
-      for (const key of globalKeys) {
-        global[key] = window[key];
-      }
-    });
-    afterEach(() => {
-      for (const key of globalKeys) {
-        delete global[key];
-      }
-    });
-
-    it('should not dispach event if no argument given', () => {
-      const fake = sinon.fake();
-      window.addEventListener('change', fake, true);
-      func();
-      assert.strictEqual(fake.callCount, 0);
-    });
-
-    it('should not dispach event if given argument is not an element', () => {
-      const fake = sinon.fake();
-      const text = document.createTextNode('foo');
-      const body = document.querySelector('body');
-      body.appendChild(text);
-      window.addEventListener('change', fake, true);
-      func(text);
-      assert.strictEqual(fake.callCount, 0);
-    });
-
-    it('should dispach event', () => {
-      const fake = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      body.appendChild(p);
-      window.addEventListener('change', fake, true);
-      func(p);
-      assert.strictEqual(fake.callCount, 1);
-    });
-  });
-
-  describe('dispatch input event', () => {
-    const func = mjs.dispatchInputEvt;
-    const globalKeys = ['InputEvent', 'Node'];
-    beforeEach(() => {
-      for (const key of globalKeys) {
-        global[key] = window[key];
-      }
-    });
-    afterEach(() => {
-      for (const key of globalKeys) {
-        delete global[key];
-      }
-    });
-
-    it('should not dispach event if no argument given', () => {
-      const fake = sinon.fake();
-      window.addEventListener('input', fake, true);
-      func();
-      assert.strictEqual(fake.callCount, 0);
-    });
-
-    it('should not dispach event if given argument is not an element', () => {
-      const fake = sinon.fake();
-      const text = document.createTextNode('foo');
-      const body = document.querySelector('body');
-      body.appendChild(text);
-      window.addEventListener('input', fake, true);
-      func(text);
-      assert.strictEqual(fake.callCount, 0);
-    });
-
-    it('should dispach event', () => {
-      const fake = sinon.fake();
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      body.appendChild(p);
-      window.addEventListener('input', fake, true);
-      func(p);
-      assert.strictEqual(fake.callCount, 1);
-    });
-  });
-
-  describe('focus element', () => {
-    const func = mjs.focusElement;
-
-    it('should throw if no argument given', () => {
-      assert.throws(() => func());
-    });
-
-    it('should get null if given argument is not an object', () => {
-      assert.isNull(func(''));
-    });
-
-    it('should get null if given argument is empty object', () => {
-      assert.isNull(func({}));
-    });
-
-    it('should get target', () => {
-      const fake = sinon.fake();
-      const target = {
-        focus: fake
-      };
-      const evt = { target };
-      const res = func(evt);
-      assert.isObject(res);
-      assert.deepEqual(res, target);
-      assert.strictEqual(fake.callCount, 1);
-    });
-  });
-
-  describe('close window', () => {
-    const func = mjs.closeWindow;
-
-    it('should call function', async () => {
-      const stubClose = sinon.stub(window, 'close');
-      await func();
-      const { calledOnce } = stubClose;
-      stubClose.restore();
-      assert.isTrue(calledOnce, 'caled');
     });
   });
 });
