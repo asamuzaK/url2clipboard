@@ -4,8 +4,8 @@
 
 /* api */
 import { throwErr } from '../src/mjs/common.js';
+import { program as commander } from 'commander';
 import fs, { promises as fsPromise } from 'fs';
-import commander from 'commander';
 import path from 'path';
 import process from 'process';
 
