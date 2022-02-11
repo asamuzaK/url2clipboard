@@ -38,6 +38,30 @@ export const createBookmark = async opt => {
   return node || null;
 };
 
+/**
+ * get bookmark tree node
+ *
+ * @param {string|Array} id - bookmark ID or array of bookmark IDs
+ * @returns {Array} - array of bookmarks.BookmarkTreeNode
+ */
+export const getBookmarkTreeNode = async id => {
+  const isGranted = await isPermissionGranted({
+    permissions: ['bookmarks']
+  });
+  let res;
+  if (isGranted) {
+    const { bookmarks } = browser;
+    if (Array.isArray(id)) {
+      res = await bookmarks.get(id);
+    } else if (isString(id)) {
+      res = await bookmarks.getSubTree(id);
+    } else {
+      res = await bookmarks.getTree();
+    }
+  }
+  return res || null;
+};
+
 /* browserSettings */
 /**
  * get closeTabsByDoubleClick user value
@@ -443,6 +467,28 @@ export const sendMessage = async (id, msg, opt) => {
   return func || null;
 };
 
+/* search */
+/**
+ * search with a search engine
+ *
+ * @param {string} query - search query
+ * @param {object} opt - options
+ * @returns {void}
+ */
+export const searchWithSearchEngine = async (query, opt = {}) => {
+  if (!isString(query)) {
+    throw new TypeError(`Expected String but got ${getType(query)}.`);
+  }
+  const isGranted = await isPermissionGranted({
+    permissions: ['search']
+  });
+  if (isGranted) {
+    const { search } = browser;
+    opt.query = query;
+    await search.search(opt);
+  }
+};
+
 /* sessions */
 /**
  * get recently closed tab
@@ -639,6 +685,21 @@ export const setStorage = async obj => {
  */
 export const createTab = async (opt = {}) => {
   const tab = await tabs.create(isObjectNotEmpty(opt) ? opt : null);
+  return tab;
+};
+
+/**
+ * duplicate tab
+ *
+ * @param {number} tabId - tab ID
+ * @param {object} opt - options
+ * @returns {object} - tabs.Tab
+ */
+export const duplicateTab = async (tabId, opt) => {
+  if (!Number.isInteger(tabId)) {
+    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
+  }
+  const tab = await tabs.duplicate(tabId, isObjectNotEmpty(opt) ? opt : null);
   return tab;
 };
 

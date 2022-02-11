@@ -195,6 +195,68 @@ describe('browser', () => {
     });
   });
 
+  describe('get bookmark tree node', () => {
+    const func = mjs.getBookmarkTreeNode;
+
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.bookmarks.create.callCount;
+      const res = await func({ foo: 'bar' });
+      assert.strictEqual(browser.bookmarks.create.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.bookmarks.get.callCount;
+      const j = browser.bookmarks.getSubTree.callCount;
+      const k = browser.bookmarks.getTree.callCount;
+      browser.bookmarks.getTree.resolves([{}]);
+      const res = await func();
+      assert.strictEqual(browser.bookmarks.get.callCount, i, 'not called get');
+      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j,
+        'not called get sub tree');
+      assert.strictEqual(browser.bookmarks.getTree.callCount, k + 1,
+        'called get tree');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should throw if ID not found', async () => {
+      browser.bookmarks.getSubTree.withArgs('foo').rejects(new Error('error'));
+      await func('foo').catch(e => {
+        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e.message, 'error', 'message');
+      });
+    });
+
+    it('should call function', async () => {
+      const i = browser.bookmarks.get.callCount;
+      const j = browser.bookmarks.getSubTree.callCount;
+      const k = browser.bookmarks.getTree.callCount;
+      browser.bookmarks.getSubTree.withArgs('foo').resolves([{}]);
+      const res = await func('foo');
+      assert.strictEqual(browser.bookmarks.get.callCount, i, 'not called get');
+      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j + 1,
+        'called get sub tree');
+      assert.strictEqual(browser.bookmarks.getTree.callCount, k,
+        'not called get tree');
+      assert.deepEqual(res, [{}], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.bookmarks.get.callCount;
+      const j = browser.bookmarks.getSubTree.callCount;
+      const k = browser.bookmarks.getTree.callCount;
+      browser.bookmarks.get.withArgs(['foo', 'bar']).resolves([{}, {}]);
+      const res = await func(['foo', 'bar']);
+      assert.strictEqual(browser.bookmarks.get.callCount, i + 1, 'called get');
+      assert.strictEqual(browser.bookmarks.getSubTree.callCount, j,
+        'not called get sub tree');
+      assert.strictEqual(browser.bookmarks.getTree.callCount, k,
+        'not called get tree');
+      assert.deepEqual(res, [{}, {}], 'result');
+    });
+  });
+
   describe('get closeTabsByDoubleClick user value', () => {
     const func = mjs.getCloseTabsByDoubleClickValue;
 
@@ -993,6 +1055,58 @@ describe('browser', () => {
     });
   });
 
+  describe('search with a search engine', () => {
+    const func = mjs.searchWithSearchEngine;
+
+    it('should throw if no argument given', async () => {
+      await func().catch(e => {
+        assert.strictEqual(e.message,
+          'Expected String but got Undefined.');
+      });
+    });
+
+    it('should throw if 1st argument is not string', async () => {
+      await func(1).catch(e => {
+        assert.strictEqual(e.message,
+          'Expected String but got Number.');
+      });
+    });
+
+    it('should not call function if permission is not granted', async () => {
+      browser.permissions.contains.resolves(false);
+      const i = browser.search.search.callCount;
+      await func('foo');
+      assert.strictEqual(browser.search.search.callCount, i, 'not called');
+    });
+
+    it('should call function', async () => {
+      const i = browser.search.search.withArgs({
+        query: 'foo'
+      }).callCount;
+      await func('foo');
+      assert.strictEqual(browser.search.search.withArgs({
+        query: 'foo'
+      }).callCount, i + 1, 'called');
+    });
+
+    it('should call function', async () => {
+      const i = browser.search.search.withArgs({
+        engine: 'bar',
+        query: 'foo',
+        tabId: 1
+      }).callCount;
+      await func('foo', {
+        engine: 'bar',
+        tabId: 1
+      });
+      assert.strictEqual(browser.search.search.withArgs({
+        engine: 'bar',
+        query: 'foo',
+        tabId: 1
+      }).callCount, i + 1, 'called');
+    });
+  });
+
   describe('get recently closed tab', () => {
     const func = mjs.getRecentlyClosedTab;
 
@@ -1267,6 +1381,32 @@ describe('browser', () => {
       };
       browser.tabs.create.withArgs(opt).resolves({});
       const res = await func(opt);
+      assert.deepEqual(res, {}, 'result');
+    });
+  });
+
+  describe('duplicate tab', () => {
+    const func = mjs.duplicateTab;
+
+    it('should throw', async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e.message, 'Expected Number but got Undefined.');
+      });
+    });
+
+    it('should get object', async () => {
+      browser.tabs.duplicate.withArgs(1, null).resolves({});
+      const res = await func(1);
+      assert.deepEqual(res, {}, 'result');
+    });
+
+    it('should get object', async () => {
+      const opt = {
+        active: true
+      };
+      browser.tabs.duplicate.withArgs(1, opt).resolves({});
+      const res = await func(1, opt);
       assert.deepEqual(res, {}, 'result');
     });
   });
