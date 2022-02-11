@@ -3,7 +3,7 @@
  */
 
 /* api */
-import { throwErr } from '../src/mjs/common.js';
+import { throwErr } from './common.js';
 import { program as commander } from 'commander';
 import fs, { promises as fsPromise } from 'fs';
 import path from 'path';
