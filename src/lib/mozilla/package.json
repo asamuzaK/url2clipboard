@@ -1,0 +1,23 @@
+{
+  "name": "webextension-polyfill",
+  "description": "A lightweight polyfill library for Promise-based WebExtension APIs in Chrome.",
+  "author": "Mozilla",
+  "license": "MPL-2.0",
+  "homepage": "https://github.com/mozilla/webextension-polyfill",
+  "type": "module",
+  "version": "0.8.0",
+  "origins": [
+    {
+      "file": "LICENSE",
+      "url": "https://unpkg.com/webextension-polyfill@0.8.0/LICENSE"
+    },
+    {
+      "file": "browser-polyfill.min.js",
+      "url": "https://unpkg.com/webextension-polyfill@0.8.0/dist/browser-polyfill.min.js"
+    },
+    {
+      "file": "browser-polyfill.min.js.map",
+      "url": "https://unpkg.com/webextension-polyfill@0.8.0/dist/browser-polyfill.min.js.map"
+    }
+  ]
+}
