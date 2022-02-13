@@ -3,8 +3,8 @@
  */
 
 /* api */
-import { logErr, throwErr } from './src/mjs/common.js';
-import { parseCommand } from './modules/blink-compat.js';
+import { logErr, throwErr } from './modules/common.js';
+import { parseCommand } from './modules/commander.js';
 import process from 'process';
 
 /* process */
