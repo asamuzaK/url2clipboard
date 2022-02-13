@@ -141,7 +141,7 @@ export const extractLibraries = async (cmdOpts = {}) => {
     mozilla: {
       name: 'webextension-polyfill',
       origin: 'https://unpkg.com/webextension-polyfill',
-      type: 'module',
+      type: 'commonjs',
       files: [
         {
           file: 'LICENSE',
