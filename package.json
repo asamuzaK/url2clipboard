@@ -25,10 +25,10 @@
     "lint:html": "html-validate src/html/*.html",
     "lint:style": "stylelint --fix src/css/*.css",
     "test": "npm run test:central",
-    "test:beta": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=beta --exit",
-    "test:central": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=central --exit",
-    "test:esr": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=esr --exit",
-    "test:release": "c8 mocha test/*.test.js --require test/mocha/setup.js --channel=release --exit",
+    "test:beta": "c8 mocha --require=test/mocha/setup.js --channel=beta --exit test/*.test.js",
+    "test:central": "c8 mocha --require=test/mocha/setup.js --channel=central --exit test/*.test.js",
+    "test:esr": "c8 mocha --require=test/mocha/setup.js --channel=esr --exit test/*.test.js",
+    "test:release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
     "test_all": "npm-run-all -s test:*"
   },
   "dependencies": {
@@ -44,7 +44,7 @@
     "eslint": "^7.32.0",
     "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsdoc": "^37.8.2",
+    "eslint-plugin-jsdoc": "^37.9.1",
     "eslint-plugin-no-unsanitized": "^4.0.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.2.0",
