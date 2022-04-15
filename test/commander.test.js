@@ -131,6 +131,10 @@ describe('save library package info', () => {
       {
         name: 'webextension-polyfill',
         origin: 'https://unpkg.com/webextension-polyfill',
+        repository: {
+          type: 'git',
+          url: 'git+https://github.com/mozilla/webextension-polyfill.git'
+        },
         type: 'commonjs',
         files: [
           {
@@ -153,6 +157,10 @@ describe('save library package info', () => {
       {
         name: 'webextension-polyfill',
         origin: 'https://unpkg.com/webextension-polyfill',
+        repository: {
+          type: 'git',
+          url: 'git+https://github.com/mozilla/webextension-polyfill.git'
+        },
         type: 'commonjs',
         files: [
           {
@@ -177,6 +185,10 @@ describe('save library package info', () => {
       {
         name: 'webextension-polyfill',
         origin: 'https://unpkg.com/webextension-polyfill',
+        repository: {
+          type: 'git',
+          url: 'git+https://github.com/mozilla/webextension-polyfill.git'
+        },
         type: 'commonjs',
         files: [
           {
@@ -212,6 +224,10 @@ describe('save library package info', () => {
       {
         name: 'webextension-polyfill',
         origin: 'https://unpkg.com/webextension-polyfill',
+        repository: {
+          type: 'git',
+          url: 'git+https://github.com/mozilla/webextension-polyfill.git'
+        },
         type: 'commonjs',
         files: [
           {

@@ -4,6 +4,10 @@
   "author": "Mozilla",
   "license": "MPL-2.0",
   "homepage": "https://github.com/mozilla/webextension-polyfill",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mozilla/webextension-polyfill.git"
+  },
   "type": "commonjs",
   "version": "0.8.0",
   "origins": [
