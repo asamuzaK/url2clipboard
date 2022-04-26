@@ -252,11 +252,15 @@ export const getEnabledTheme = async () => {
   let res;
   if (isGranted) {
     const { management } = browser;
-    const arr = await management.getAll();
-    if (Array.isArray(arr)) {
-      res = arr.filter(info =>
-        info.type && info.type === 'theme' && info.enabled && info
-      );
+    try {
+      const arr = await management.getAll();
+      if (Array.isArray(arr) && arr.length) {
+        res = arr.filter(info =>
+          info.type && info.type === 'theme' && info.enabled && info
+        );
+      }
+    } catch (e) {
+      logErr(e);
     }
   }
   return res || null;
@@ -295,9 +299,14 @@ export const getExternalExtensions = async () => {
   let res;
   if (isGranted) {
     const { management } = browser;
-    const arr = await management.getAll();
-    if (Array.isArray(arr)) {
-      res = arr.filter(info => info.type && info.type === 'extension' && info);
+    try {
+      const arr = await management.getAll();
+      if (Array.isArray(arr) && arr.length) {
+        res =
+          arr.filter(info => info.type && info.type === 'extension' && info);
+      }
+    } catch (e) {
+      logErr(e);
     }
   }
   return res || null;
