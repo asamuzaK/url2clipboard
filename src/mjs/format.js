@@ -132,7 +132,7 @@ export const formats = new Map(Object.entries(formatData));
  * @returns {object|Array} - formats
  */
 export const getFormats = (inArray = false) =>
-  inArray ? Array.from(formats.entries()) : formats.entries();
+  inArray ? [...formats.entries()] : formats.entries();
 
 /**
  * get formats keys
@@ -141,7 +141,7 @@ export const getFormats = (inArray = false) =>
  * @returns {object|Array} - formats
  */
 export const getFormatsKeys = (inArray = false) =>
-  inArray ? Array.from(formats.keys()) : formats.keys();
+  inArray ? [...formats.keys()] : formats.keys();
 
 /**
  * get format id
