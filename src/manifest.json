@@ -22,7 +22,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "url2clipboard@asamuzak.jp",
-      "strict_min_version": "71.0"
+      "strict_min_version": "74.0"
     }
   },
   "commands": {
