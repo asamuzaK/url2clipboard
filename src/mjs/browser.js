@@ -74,8 +74,7 @@ export const getCloseTabsByDoubleClickValue = async () => {
   });
   let userValue;
   if (isGranted) {
-    const { browserSettings } = browser;
-    const { closeTabsByDoubleClick } = browserSettings;
+    const { browserSettings: { closeTabsByDoubleClick } } = browser;
     userValue = await closeTabsByDoubleClick.get({});
   }
   return userValue || null;
@@ -92,8 +91,7 @@ export const setContextMenuOnMouseup = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings } = browser;
-    const { contextMenuShowEvent } = browserSettings;
+    const { browserSettings: { contextMenuShowEvent } } = browser;
     const { levelOfControl, value } = await contextMenuShowEvent.get({});
     if (value === 'mouseup') {
       res = true;
@@ -117,8 +115,7 @@ export const clearContextMenuOnMouseup = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings } = browser;
-    const { contextMenuShowEvent } = browserSettings;
+    const { browserSettings: { contextMenuShowEvent } } = browser;
     res = await contextMenuShowEvent.clear({});
   }
   return !!res;
@@ -135,8 +132,7 @@ export const getNewTabPositionValue = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings } = browser;
-    const { newTabPosition } = browserSettings;
+    const { browserSettings: { newTabPosition } } = browser;
     res = await newTabPosition.get({});
   }
   return res || null;
@@ -255,9 +251,8 @@ export const getEnabledTheme = async () => {
     try {
       const arr = await management.getAll();
       if (Array.isArray(arr) && arr.length) {
-        res = arr.filter(info =>
-          info.type && info.type === 'theme' && info.enabled && info
-        );
+        res =
+          arr.filter(info => info?.type === 'theme' && info?.enabled && info);
       }
     } catch (e) {
       logErr(e);
@@ -303,7 +298,7 @@ export const getExternalExtensions = async () => {
       const arr = await management.getAll();
       if (Array.isArray(arr) && arr.length) {
         res =
-          arr.filter(info => info.type && info.type === 'extension' && info);
+          arr.filter(info => info?.type === 'extension' && info);
       }
     } catch (e) {
       logErr(e);
