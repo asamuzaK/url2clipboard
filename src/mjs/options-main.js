@@ -22,7 +22,7 @@ export const createPref = async (elm = {}) => {
       id,
       checked: !!elm.checked,
       value: elm.value || '',
-      subItemOf: (dataset && dataset.subItemOf) || null
+      subItemOf: dataset?.subItemOf || null
     }
   };
   return data || null;

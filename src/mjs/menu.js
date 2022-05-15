@@ -13,7 +13,7 @@ import {
 
 /* api */
 const { i18n, runtime, windows } = browser;
-const menus = browser.menus || browser.contextMenus;
+const menus = browser.menus ?? browser.contextMenus;
 
 /* constants */
 const { WINDOW_ID_CURRENT } = windows;

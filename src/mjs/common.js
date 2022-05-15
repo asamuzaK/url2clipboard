@@ -13,7 +13,7 @@ const TYPE_TO = -1;
  * @returns {boolean} - false
  */
 export const logErr = e => {
-  if (e && e.message) {
+  if (e?.message) {
     console.error(e.message);
   } else {
     console.error(e);
@@ -83,7 +83,7 @@ export const isString = o => typeof o === 'string' || o instanceof String;
  */
 export const isObjectNotEmpty = o => {
   const items = /Object/i.test(getType(o)) && Object.keys(o);
-  return !!(items && items.length);
+  return !!(items?.length);
 };
 
 /**
@@ -189,7 +189,7 @@ export const convertLaTeXChar = str => {
       .replace(/~/g, '\\textasciitilde[]'),
     /([%$#&_{}])/g
   );
-  const latexChar = spChar && spChar.replace(
+  const latexChar = spChar?.replace(
     /(\\text(?:backslash|ascii(?:circum|tilde)))\[\]/g,
     (m, c) => `${c}{}`
   );

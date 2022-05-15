@@ -99,7 +99,7 @@ export const setAttributeNS = (elm, node = {}) => {
  */
 export const createElement = node => {
   let elm;
-  if (node && node.nodeType === Node.ELEMENT_NODE) {
+  if (node?.nodeType === Node.ELEMENT_NODE) {
     const { attributes, localName, namespaceURI, prefix } = node;
     const ns = namespaceURI || (prefix && nsURI[prefix]) ||
                getNodeNS(node).namespaceURI || nsURI.html;
@@ -125,9 +125,8 @@ export const createFragment = nodes => {
   const frag = document.createDocumentFragment();
   if (Array.isArray(nodes)) {
     for (const node of nodes) {
-      if (node &&
-          (node.nodeType === Node.ELEMENT_NODE ||
-           node.nodeType === Node.TEXT_NODE)) {
+      if (node?.nodeType === Node.ELEMENT_NODE ||
+          node?.nodeType === Node.TEXT_NODE) {
         frag.appendChild(node);
       }
     }
@@ -144,8 +143,7 @@ export const createFragment = nodes => {
  */
 export const appendChildNodes = (elm, node) => {
   const parent = createElement(elm);
-  if (parent && parent.nodeType === Node.ELEMENT_NODE &&
-      node && node.hasChildNodes()) {
+  if (parent?.nodeType === Node.ELEMENT_NODE && node?.hasChildNodes()) {
     const arr = [];
     const nodes = node.childNodes;
     for (const child of nodes) {
@@ -202,8 +200,7 @@ export const serializeDomString = (domstr, mime, reqElm = false) => {
         for (const child of childNodes) {
           if (child.nodeType === Node.ELEMENT_NODE) {
             const elm = appendChildNodes(child, child.cloneNode(true));
-            elm && elm.nodeType === Node.ELEMENT_NODE &&
-              frag.appendChild(elm);
+            elm?.nodeType === Node.ELEMENT_NODE && frag.appendChild(elm);
           } else {
             child.nodeType === Node.TEXT_NODE && child.nodeValue &&
               frag.appendChild(document.createTextNode(child.nodeValue));

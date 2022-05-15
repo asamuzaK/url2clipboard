@@ -61,7 +61,7 @@
       title: null,
       url: null
     };
-    if (node && node.nodeType === Node.ELEMENT_NODE) {
+    if (node?.nodeType === Node.ELEMENT_NODE) {
       const anchor = getAnchorElm(node);
       const canonical = document.querySelector('link[rel=canonical][href]');
       if (anchor) {

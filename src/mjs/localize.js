@@ -18,8 +18,7 @@ const DATA_I18N = 'data-i18n';
  * @returns {void}
  */
 export const localizeAttr = async elm => {
-  if (elm && elm.nodeType === Node.ELEMENT_NODE &&
-      elm.hasAttribute(DATA_I18N)) {
+  if (elm?.nodeType === Node.ELEMENT_NODE && elm?.hasAttribute(DATA_I18N)) {
     const [id] = elm.getAttribute(DATA_I18N).split(/\s*,\s*/);
     if (id) {
       const attrs = {
