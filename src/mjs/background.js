@@ -4,13 +4,11 @@
 
 /* shared */
 import { throwErr } from './common.js';
-import { getAllStorage } from './browser.js';
-import { setFormatData } from './format.js';
 import {
   extractClickedData, handleActiveTab, handleCmd, handleMsg, handleUpdatedTab,
-  setDefaultIcon, setVars
+  setVars, startup
 } from './main.js';
-import { createContextMenu, handleMenusOnShown } from './menu.js';
+import { handleMenusOnShown } from './menu.js';
 
 /* api */
 const { commands, runtime, storage, tabs } = browser;
@@ -29,17 +27,14 @@ menus.onShown && menus.onShown.addListener((info, tab) =>
 storage.onChanged.addListener(data =>
   setVars(data).catch(throwErr)
 );
+runtime.onInstalled.addListener(() => startup().catch(throwErr));
 runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
+runtime.onStartup.addListener(() => startup().catch(throwErr));
 tabs.onActivated.addListener(info =>
   handleActiveTab(info).catch(throwErr)
 );
 tabs.onUpdated.addListener((tabId, info, tab) =>
   handleUpdatedTab(tabId, info, tab).catch(throwErr)
 );
-
-/* startup */
-document.addEventListener('DOMContentLoaded', () =>
-  setFormatData().then(getAllStorage).then(setVars).then(setDefaultIcon)
-    .then(createContextMenu).catch(throwErr));

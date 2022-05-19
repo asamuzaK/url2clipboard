@@ -6,12 +6,12 @@
 import { Clip } from './clipboard.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import {
-  execScriptToTab, execScriptsToTabInOrder, getActiveTab, getAllTabsInWindow,
-  getHighlightedTab, isTab, queryTabs, sendMessage
+  execScriptToTab, execScriptsToTabInOrder, getActiveTab, getAllStorage,
+  getAllTabsInWindow, getHighlightedTab, isTab, queryTabs, sendMessage
 } from './browser.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
-  getFormatTitle, hasFormat, setFormat, toggleEnabledFormats
+  getFormatTitle, hasFormat, setFormat, setFormatData, toggleEnabledFormats
 } from './format.js';
 import {
   createContextMenu, removeContextMenu, updateContextMenu
@@ -567,6 +567,15 @@ export const setVars = async (data = {}) => {
   }
   return Promise.all(func);
 };
+
+/**
+ * startup
+ *
+ * @returns {Function} - promise chain
+ */
+export const startup = async () =>
+  setFormatData().then(getAllStorage).then(setVars).then(setDefaultIcon)
+    .then(createContextMenu);
 
 // For test
 export { enabledFormats };

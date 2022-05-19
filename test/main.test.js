@@ -2755,6 +2755,30 @@ describe('main', () => {
 
   describe('set variables', () => {
     const func = mjs.setVars;
+    beforeEach(() => {
+      const { enabledFormats, vars } = mjs;
+      vars.iconId = '';
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
+      vars.includeTitleMarkdown = false;
+      vars.isWebExt = false;
+      vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
+      vars.promptContent = false;
+      enabledFormats.clear();
+    });
+    afterEach(() => {
+      const { enabledFormats, vars } = mjs;
+      vars.iconId = '';
+      vars.includeTitleHTMLHyper = false;
+      vars.includeTitleHTMLPlain = false;
+      vars.includeTitleMarkdown = false;
+      vars.isWebExt = false;
+      vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
+      vars.promptContent = false;
+      enabledFormats.clear();
+    });
 
     it('should not set variables', async () => {
       const res = await func();
@@ -2768,6 +2792,28 @@ describe('main', () => {
         }
       });
       assert.deepEqual(res, [[]], 'result');
+    });
+  });
+
+  describe('startup', () => {
+    const func = mjs.startup;
+    beforeEach(() => {
+      const { enabledFormats, vars } = mjs;
+      vars.isWebExt = true;
+      enabledFormats.add('HTMLPlain');
+      enabledFormats.add('Markdown');
+      enabledFormats.add('TextURL');
+    });
+    afterEach(() => {
+      const { enabledFormats, vars } = mjs;
+      vars.isWebExt = false;
+      enabledFormats.clear();
+    });
+
+    it('should get empty array', async () => {
+      browser.storage.local.get.resolves({});
+      const res = await func();
+      assert.deepEqual(res.length, 96, 'result');
     });
   });
 });
