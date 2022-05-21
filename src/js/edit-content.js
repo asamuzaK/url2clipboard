@@ -18,7 +18,7 @@
   /**
    * get edited content
    *
-   * @returns {Function} - sendMsg()
+   * @returns {?string} - content
    */
   const getEditedContent = () => {
     const data = window.editContentData;
