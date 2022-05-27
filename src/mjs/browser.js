@@ -424,21 +424,27 @@ export const getOs = async () => {
 /**
  * make a connection
  *
- * @param {string} [extId] - extension ID
+ * @param {number|string} [id] - tab ID / extension ID
  * @param {object} [info] - info
  * @returns {object} - runtime.Port
  */
-export const makeConnection = async (extId, info) => {
+export const makeConnection = async (id, info) => {
   let port;
-  if (isString(extId)) {
+  if (Number.isInteger(id)) {
     if (isObjectNotEmpty(info)) {
-      port = await runtime.connect(extId, info);
+      port = await tabs.connect(id, info);
     } else {
-      port = await runtime.connect(extId);
+      port = await tabs.connect(id);
     }
-  } else if (isObjectNotEmpty(extId)) {
-    port = await runtime.connect(extId);
-  } else if (!extId && isObjectNotEmpty(info)) {
+  } else if (isString(id)) {
+    if (isObjectNotEmpty(info)) {
+      port = await runtime.connect(id, info);
+    } else {
+      port = await runtime.connect(id);
+    }
+  } else if (isObjectNotEmpty(id)) {
+    port = await runtime.connect(id);
+  } else if (!id && isObjectNotEmpty(info)) {
     port = await runtime.connect(info);
   } else {
     port = await runtime.connect();
@@ -728,17 +734,12 @@ export const queryTabs = async opt => {
 export const execScriptToTab = async (tabId, opt = {}) => {
   let res;
   try {
-    const isGranted = await isPermissionGranted({
-      permissions: ['activeTab']
-    });
     if (Number.isInteger(tabId)) {
       res = await tabs.executeScript(tabId, opt);
-    } else if (isGranted) {
-      if (isObjectNotEmpty(tabId)) {
-        res = await tabs.executeScript(tabId);
-      } else {
-        res = await tabs.executeScript(opt);
-      }
+    } else if (isObjectNotEmpty(tabId)) {
+      res = await tabs.executeScript(tabId);
+    } else if (isObjectNotEmpty(opt)) {
+      res = await tabs.executeScript(opt);
     } else {
       res = null;
     }
