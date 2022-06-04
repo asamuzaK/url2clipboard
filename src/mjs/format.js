@@ -305,9 +305,9 @@ export const createLinkText = (data = {}) => {
   if (!isString(template)) {
     throw new TypeError(`Expected String but got ${getType(template)}.`);
   }
+  let content = isString(contentText) ? contentText.replace(/\s+/g, ' ') : '';
   let linkTitle = title || '';
   let linkUrl = url || '';
-  let content = isString(contentText) ? contentText.replace(/\s+/g, ' ') : '';
   switch (formatId) {
     case ASCIIDOC:
       content = escapeMatchingChars(content, /([\]])/g) || '';
