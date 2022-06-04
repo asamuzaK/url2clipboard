@@ -424,8 +424,8 @@ export const getOs = async () => {
 /**
  * make a connection
  *
- * @param {number|string} [id] - tab ID / extension ID
- * @param {object} [info] - info
+ * @param {number|string} [id] - tab ID / extension ID / host name
+ * @param {object|boolean} [info] - connection info / connect to native app
  * @returns {object} - runtime.Port
  */
 export const makeConnection = async (id, info) => {
@@ -437,7 +437,9 @@ export const makeConnection = async (id, info) => {
       port = await tabs.connect(id);
     }
   } else if (isString(id)) {
-    if (isObjectNotEmpty(info)) {
+    if (info && getType(info) === 'Boolean') {
+      port = await runtime.connectNative(id);
+    } else if (isObjectNotEmpty(info)) {
       port = await runtime.connect(id, info);
     } else {
       port = await runtime.connect(id);
@@ -455,7 +457,7 @@ export const makeConnection = async (id, info) => {
 /**
  * send message
  *
- * @param {number|string} id - tabId or extension ID
+ * @param {number|string} id - tab ID / extension ID
  * @param {*} msg - message
  * @param {object} opt - options
  * @returns {?Function} - tabs.sendMessage() | runtime.sendMessage()

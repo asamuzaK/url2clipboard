@@ -32,16 +32,16 @@
     "test_all": "npm-run-all -s test:*"
   },
   "dependencies": {
-    "commander": "^9.2.0",
-    "webext-schema": "^3.0.2",
+    "commander": "^9.3.0",
+    "webext-schema": "^3.0.3",
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {
-    "addons-linter": "^5.5.0",
+    "addons-linter": "^5.6.0",
     "c8": "^7.11.3",
     "chai": "^4.3.6",
     "copyfiles": "^2.4.1",
-    "eslint": "^8.16.0",
+    "eslint": "^8.17.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jsdoc": "^39.3.2",
