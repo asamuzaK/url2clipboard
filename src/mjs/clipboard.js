@@ -109,14 +109,14 @@ export class Clip {
     }
     if (this._content) {
       const { clipboard } = navigator;
-      if (clipboard && typeof clipboard.writeText === 'function' &&
+      if (typeof clipboard?.writeText === 'function' &&
           this._mime === MIME_PLAIN) {
         try {
           await clipboard.writeText(this._content);
         } catch (e) {
           this._copySync();
         }
-      } else if (clipboard && typeof clipboard.write === 'function' &&
+      } else if (typeof clipboard?.write === 'function' &&
                  typeof ClipboardItem === 'function') {
         const data = [];
         if (REG_DOM_PARSE.test(this._mime)) {
