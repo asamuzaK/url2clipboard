@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "commander": "^9.3.0",
-    "webext-schema": "^3.0.3",
+    "webext-schema": "^4.0.0",
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {

@@ -346,8 +346,9 @@ export const createNotification = async (id, opt) => {
   let func;
   if (isGranted) {
     const { notifications } = browser;
-    !notifications.onClosed.hasListener(clearNotification) &&
+    if (!notifications.onClosed.hasListener(clearNotification)) {
       notifications.onClosed.addListener(clearNotification);
+    }
     func = notifications.create(id, opt);
   }
   return func || null;
@@ -981,7 +982,9 @@ export const warmupTab = async tabId => {
   if (!Number.isInteger(tabId)) {
     throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
   }
-  typeof tabs.warmup === 'function' && await tabs.warmup(tabId);
+  if (typeof tabs.warmup === 'function') {
+    await tabs.warmup(tabId);
+  }
 };
 
 /**
@@ -1083,7 +1086,7 @@ export const getWindow = async (windowId, opt) => {
 export const checkIncognitoWindowExists = async () => {
   const arr = await getAllNormalWindows();
   let bool;
-  if (arr && arr.length) {
+  if (arr?.length) {
     for (const win of arr) {
       bool = win.incognito;
       if (bool) {
