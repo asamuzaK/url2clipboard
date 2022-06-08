@@ -8,87 +8,95 @@ import sinon from 'sinon';
 
 /* test */
 import {
-  commander, createBlinkFiles, createBlinkManifest, extractLibraries,
-  includeLibraries, parseCommand, saveLibraryPackage
+  commander, createBlinkCompatFiles, extractLibraries, includeLibraries,
+  parseCommand, saveLibraryPackage
 } from '../modules/commander.js';
 
 /* constants */
 const DIR_CWD = process.cwd();
-const PATH_LIB = './src/lib';
-const PATH_MODULE = './node_modules';
 
-describe('createBlinkManifest', () => {
-  it('should call function', async () => {
-    const stubFunc = sinon.stub(fsPromise, 'writeFile');
-    const stubMkdir = sinon.stub(fsPromise, 'mkdir');
-    const stubRm = sinon.stub(fsPromise, 'rm');
-    const stubInfo = sinon.stub(console, 'info');
-    const res = await createBlinkManifest();
-    const { calledOnce: writeCalled } = stubFunc;
-    const { called: mkdirCalled } = stubMkdir;
-    const { called: rmCalled } = stubRm;
-    const { called: infoCalled } = stubInfo;
-    stubFunc.restore();
-    stubMkdir.restore();
-    stubRm.restore();
-    stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(mkdirCalled, 'not called');
-    assert.isFalse(rmCalled, 'not called');
-    assert.isFalse(infoCalled, 'not called');
-    assert.strictEqual(res, path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
-      'result');
-  });
-
-  it('should call function', async () => {
-    const stubFunc = sinon.stub(fsPromise, 'writeFile');
-    const stubMkdir = sinon.stub(fsPromise, 'mkdir');
-    const stubRm = sinon.stub(fsPromise, 'rm');
-    const stubInfo = sinon.stub(console, 'info');
-    const res = await createBlinkManifest({
-      clean: true,
-      info: true
-    });
-    const { calledOnce: writeCalled } = stubFunc;
-    const { calledOnce: mkdirCalled } = stubMkdir;
-    const { calledOnce: rmCalled } = stubRm;
-    const { calledOnce: infoCalled } = stubInfo;
-    stubFunc.restore();
-    stubMkdir.restore();
-    stubRm.restore();
-    stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(mkdirCalled, 'not called');
-    assert.isTrue(rmCalled, 'not called');
-    assert.isTrue(infoCalled, 'called');
-    assert.strictEqual(res, path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
-      'result');
-  });
-});
-
-describe('create blink compat files', () => {
+describe('create blink compatible files', () => {
   it('should throw', async () => {
-    const stubFunc =
+    const stubWrite =
       sinon.stub(fsPromise, 'writeFile').rejects(new Error('error'));
-    await createBlinkFiles().catch(e => {
+    await createBlinkCompatFiles().catch(e => {
       assert.instanceOf(e, Error, 'error');
       assert.strictEqual(e.message, 'error', 'message');
     });
-    stubFunc.restore();
+    stubWrite.restore();
   });
 
   it('should call function', async () => {
-    const stubFunc = sinon.stub(fsPromise, 'writeFile');
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
-    const res = await createBlinkManifest();
-    const { calledOnce: writeCalled } = stubFunc;
+    const res = await createBlinkCompatFiles();
+    const { called: writeCalled } = stubWrite;
     const { called: infoCalled } = stubInfo;
-    stubFunc.restore();
+    stubWrite.restore();
     stubInfo.restore();
     assert.isTrue(writeCalled, 'called');
     assert.isFalse(infoCalled, 'called');
-    assert.strictEqual(res, path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
-      'result');
+    assert.deepEqual(res, [
+      path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
+      [
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
+      ]
+    ], 'result');
+  });
+
+  it('should call function', async () => {
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
+    const res = await createBlinkCompatFiles({
+      info: true
+    });
+    const { called: writeCalled } = stubWrite;
+    const { called: infoCalled } = stubInfo;
+    stubWrite.restore();
+    stubInfo.restore();
+    assert.isTrue(writeCalled, 'called');
+    assert.isTrue(infoCalled, 'called');
+    assert.deepEqual(res, [
+      path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
+      [
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
+      ]
+    ], 'result');
+  });
+
+  it('should call function', async () => {
+    const stubMkdir = sinon.stub(fsPromise, 'mkdir');
+    const stubRm = sinon.stub(fsPromise, 'rm');
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
+    const res = await createBlinkCompatFiles({
+      clean: true,
+      info: true
+    });
+    const { called: mkdirCalled } = stubMkdir;
+    const { called: rmCalled } = stubRm;
+    const { called: writeCalled } = stubWrite;
+    const { called: infoCalled } = stubInfo;
+    stubMkdir.restore();
+    stubRm.restore();
+    stubWrite.restore();
+    stubInfo.restore();
+    assert.isTrue(mkdirCalled, 'called');
+    assert.isTrue(rmCalled, 'called');
+    assert.isTrue(writeCalled, 'called');
+    assert.isTrue(infoCalled, 'called');
+    assert.deepEqual(res, [
+      path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
+      [
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
+      ]
+    ], 'result');
   });
 });
 
@@ -144,8 +152,9 @@ describe('save library package info', () => {
         ]
       }
     ]).catch(e => {
-      const filePath =
-        path.resolve(DIR_CWD, PATH_MODULE, 'webextension-polyfill', 'foo.txt');
+      const filePath = path.resolve(
+        DIR_CWD, 'node_modules', 'webextension-polyfill', 'foo.txt'
+      );
       assert.instanceOf(e, Error);
       assert.strictEqual(e.message, `${filePath} is not a file.`);
     });
@@ -170,7 +179,7 @@ describe('save library package info', () => {
         ]
       }
     ]).catch(e => {
-      const filePath = path.resolve(DIR_CWD, PATH_LIB, 'mozilla', 'foo');
+      const filePath = path.resolve(DIR_CWD, 'src', 'lib', 'mozilla', 'foo');
       assert.instanceOf(e, Error);
       assert.strictEqual(e.message, `${filePath} is not a file.`);
     });
@@ -179,7 +188,8 @@ describe('save library package info', () => {
   it('should call function', async () => {
     const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
-    const filePath = path.resolve(DIR_CWD, PATH_LIB, 'mozilla', 'package.json');
+    const filePath =
+      path.resolve(DIR_CWD, 'src', 'lib', 'mozilla', 'package.json');
     const res = await saveLibraryPackage([
       'mozilla',
       {
@@ -218,7 +228,8 @@ describe('save library package info', () => {
   it('should call function', async () => {
     const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
-    const filePath = path.resolve(DIR_CWD, PATH_LIB, 'mozilla', 'package.json');
+    const filePath =
+      path.resolve(DIR_CWD, 'src', 'lib', 'mozilla', 'package.json');
     const res = await saveLibraryPackage([
       'mozilla',
       {
