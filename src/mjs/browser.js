@@ -413,6 +413,16 @@ export const getManifestIcons = () => {
 };
 
 /**
+ * get manifest version
+ *
+ * @returns {number} - version
+ */
+export const getManifestVersion = () => {
+  const { manifest_version: version } = runtime.getManifest();
+  return version;
+};
+
+/**
  * get OS
  *
  * @returns {string} - OS
