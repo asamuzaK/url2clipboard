@@ -1713,6 +1713,66 @@ describe('main', () => {
       const menuItemId = `${COPY_LINK}${HTML_PLAIN}`;
       const info = {
         menuItemId,
+        linkUrl: 'https://example.com/'
+      };
+      const tab = {
+        id: 1,
+        title: 'bar',
+        url: 'https://example.com/'
+      };
+      browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.tabs.executeScript.withArgs({
+        file: JS_CONTEXT_INFO
+      }).resolves([{
+        isLink: true,
+        canonicalUrl: null,
+        content: '',
+        selectionText: '',
+        title: 'foo bar',
+        url: 'https://example.com/'
+      }]);
+      browser.tabs.executeScript.withArgs({
+        file: JS_EDIT_CONTENT
+      }).resolves([null]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com/'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://www.example.com/#baz'
+        }
+      ]);
+      enabledFormats.add(menuItemId);
+      vars.notifyOnCopy = false;
+      vars.preferCanonicalUrl = false;
+      vars.promptContent = false;
+      const res = await func(info, tab);
+      assert.strictEqual(browser.tabs.executeScript.withArgs({
+        file: JS_EDIT_CONTENT
+      }).callCount, i, 'not called');
+      assert.strictEqual(browser.tabs.query.callCount, j, 'not called');
+      assert.strictEqual(browser.notifications.create.callCount, k,
+        'not called');
+      assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
+        'called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const { enabledFormats, vars } = mjs;
+      const i = browser.tabs.executeScript.withArgs({
+        file: JS_EDIT_CONTENT
+      }).callCount;
+      const j = browser.tabs.query.callCount;
+      const k = browser.notifications.create.callCount;
+      const l = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_LINK}${HTML_PLAIN}`;
+      const info = {
+        menuItemId,
         linkText: 'baz',
         linkUrl: 'https://example.com/'
       };

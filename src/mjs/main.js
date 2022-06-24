@@ -328,7 +328,7 @@ export const extractClickedData = async (info, tab) => {
             content = linkUrl;
             url = linkUrl;
           } else {
-            content = selectionText || contextContent || linkText;
+            content = selectionText || linkText || contextContent;
             title = contextTitle;
             url = linkUrl;
           }
