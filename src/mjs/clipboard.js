@@ -141,7 +141,9 @@ export class Clip {
           data.push(new ClipboardItem({ [this._mime]: blob }));
         }
         try {
-          data.length && await clipboard.write(data);
+          if (data.length) {
+            await clipboard.write(data);
+          }
         } catch (e) {
           this._copySync();
         }

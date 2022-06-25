@@ -394,7 +394,9 @@ export const extractClickedData = async (info, tab) => {
       }
       if (isString(text)) {
         await new Clip(text, mimeType).copy();
-        notify && func.push(notifyOnCopy(formatTitle));
+        if (notify) {
+          func.push(notifyOnCopy(formatTitle));
+        }
       }
     }
   }
@@ -474,7 +476,9 @@ export const handleMsg = async msg => {
     for (const [key, value] of items) {
       switch (key) {
         case CONTEXT_INFO_GET: {
-          value && func.push(sendContextInfo());
+          if (value) {
+            func.push(sendContextInfo());
+          }
           break;
         }
         case EXEC_COPY: {
@@ -484,7 +488,9 @@ export const handleMsg = async msg => {
         }
         case NOTIFY_COPY: {
           const { notifyOnCopy: notify } = vars;
-          notify && value && func.push(notifyOnCopy());
+          if (notify && value) {
+            func.push(notifyOnCopy());
+          }
           break;
         }
         default:

@@ -21,7 +21,7 @@ commands.onCommand.addListener(cmd =>
 menus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
 );
-menus.onShown && menus.onShown.addListener((info, tab) =>
+menus.onShown?.addListener((info, tab) =>
   handleMenusOnShown(info, tab).catch(throwErr)
 );
 storage.onChanged.addListener(data =>

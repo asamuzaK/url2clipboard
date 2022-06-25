@@ -63,7 +63,9 @@ export const setAttributeNS = (elm, node = {}) => {
           case 'poster':
           case 'src': {
             const { protocol } = new URL(value, origin);
-            /https?/.test(protocol) && elm.setAttributeNS(ns, attrName, value);
+            if (/https?/.test(protocol)) {
+              elm.setAttributeNS(ns, attrName, value);
+            }
             break;
           }
           case 'ping': {
@@ -76,7 +78,9 @@ export const setAttributeNS = (elm, node = {}) => {
                 break;
               }
             }
-            bool && elm.setAttributeNS(ns, attrName, value);
+            if (bool) {
+              elm.setAttributeNS(ns, attrName, value);
+            }
             break;
           }
           case 'value': {
@@ -108,8 +112,9 @@ export const createElement = node => {
       elm = null;
     } else {
       elm = document.createElementNS(ns, name);
-      attributes && !(node instanceof HTMLUnknownElement) &&
+      if (attributes && !(node instanceof HTMLUnknownElement)) {
         setAttributeNS(elm, node);
+      }
     }
   }
   return elm || null;
@@ -149,14 +154,15 @@ export const appendChildNodes = (elm, node) => {
     for (const child of nodes) {
       const { nodeType, nodeValue, parentNode } = child;
       if (nodeType === Node.ELEMENT_NODE) {
-        child === parentNode.firstChild &&
+        if (child === parentNode.firstChild) {
           arr.push(document.createTextNode('\n'));
+        }
         arr.push(appendChildNodes(child, child.cloneNode(true)));
-        child === parentNode.lastChild &&
+        if (child === parentNode.lastChild) {
           arr.push(document.createTextNode('\n'));
-      } else {
-        nodeType === Node.TEXT_NODE &&
-          arr.push(document.createTextNode(nodeValue));
+        }
+      } else if (nodeType === Node.TEXT_NODE) {
+        arr.push(document.createTextNode(nodeValue));
       }
     }
     if (arr.length) {
@@ -200,10 +206,11 @@ export const serializeDomString = (domstr, mime, reqElm = false) => {
         for (const child of childNodes) {
           if (child.nodeType === Node.ELEMENT_NODE) {
             const elm = appendChildNodes(child, child.cloneNode(true));
-            elm?.nodeType === Node.ELEMENT_NODE && frag.appendChild(elm);
-          } else {
-            child.nodeType === Node.TEXT_NODE && child.nodeValue &&
-              frag.appendChild(document.createTextNode(child.nodeValue));
+            if (elm?.nodeType === Node.ELEMENT_NODE) {
+              frag.appendChild(elm);
+            }
+          } else if (child.nodeType === Node.TEXT_NODE && child.nodeValue) {
+            frag.appendChild(document.createTextNode(child.nodeValue));
           }
         }
       }

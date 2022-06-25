@@ -86,7 +86,9 @@ export const createMenuItem = async (id, title, data = {}) => {
       opt.parentId = parentId;
     }
     if (contexts.includes('tab')) {
-      isWebExt && menus.create(opt);
+      if (isWebExt) {
+        menus.create(opt);
+      }
     } else {
       menus.create(opt);
     }
