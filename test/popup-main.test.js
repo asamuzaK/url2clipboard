@@ -252,7 +252,7 @@ describe('popup-main', () => {
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
@@ -276,7 +276,7 @@ describe('popup-main', () => {
     it('should call function', async () => {
       mjs.contextInfo.selectionText = 'foo bar';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
@@ -299,7 +299,7 @@ describe('popup-main', () => {
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
@@ -323,7 +323,7 @@ describe('popup-main', () => {
     it('should call function', async () => {
       document.getElementById(CONTENT_PAGE).value = 'foo bar';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
@@ -348,7 +348,7 @@ describe('popup-main', () => {
       mjs.contextInfo.isLink = true;
       mjs.contextInfo.url = 'https://example.com/';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
@@ -375,7 +375,7 @@ describe('popup-main', () => {
       mjs.contextInfo.isLink = true;
       mjs.contextInfo.url = 'https://example.com/';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs(browser.runtime.id, {
+      browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
             isEdited: true,
