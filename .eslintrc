@@ -20,6 +20,12 @@
   "reportUnusedDisableDirectives": true,
   "rules": {
     "no-await-in-loop": "error",
+    "no-use-before-define": ["error", {
+      "functions": true,
+      "classes": true,
+      "variables": true,
+      "allowNamedExports": false
+    }],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", {
       "anonymous": "always",
