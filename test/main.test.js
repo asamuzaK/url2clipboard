@@ -2870,10 +2870,11 @@ describe('main', () => {
       enabledFormats.clear();
     });
 
-    it('should get empty array', async () => {
+    it('should get array', async () => {
       browser.storage.local.get.resolves({});
       const res = await func();
-      assert.deepEqual(res.length, 96, 'result');
+      assert.isArray(res, 'result');
+      assert.strictEqual(res.length, 96, 'result');
     });
   });
 });

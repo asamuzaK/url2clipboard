@@ -620,31 +620,35 @@ export const setSessionWindowValue = async (key, value, windowId) => {
 /**
  * clear storage
  *
+ * @param {string} area - storage area
  * @returns {void}
  */
-export const clearStorage = async () => {
+export const clearStorage = async (area = 'local') => {
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
-  if (isGranted) {
+  const areas = ['local', 'session', 'sync'];
+  if (isGranted && areas.includes(area)) {
     const { storage } = browser;
-    await storage.local.clear();
+    await storage[area]?.clear();
   }
 };
 
 /**
  * get all storage
  *
+ * @param {string} area - storage area
  * @returns {object} - stored data
  */
-export const getAllStorage = async () => {
+export const getAllStorage = async (area = 'local') => {
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
+  const areas = ['local', 'managed', 'session', 'sync'];
   let data;
-  if (isGranted) {
+  if (isGranted && areas.includes(area)) {
     const { storage } = browser;
-    data = await storage.local.get();
+    data = await storage[area]?.get();
   }
   return data || null;
 };
@@ -653,16 +657,18 @@ export const getAllStorage = async () => {
  * get storage
  *
  * @param {*} key - key
+ * @param {string} area - storage area
  * @returns {object} - stored data
  */
-export const getStorage = async key => {
+export const getStorage = async (key, area = 'local') => {
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
+  const areas = ['local', 'managed', 'session', 'sync'];
   let data;
-  if (isGranted) {
+  if (isGranted && areas.includes(area)) {
     const { storage } = browser;
-    data = await storage.local.get(key);
+    data = await storage[area]?.get(key);
   }
   return data || null;
 };
@@ -671,15 +677,17 @@ export const getStorage = async key => {
  * remove storage
  *
  * @param {*} key - key
+ * @param {string} area - storage area
  * @returns {void}
  */
-export const removeStorage = async key => {
+export const removeStorage = async (key, area = 'local') => {
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
-  if (isGranted) {
+  const areas = ['local', 'session', 'sync'];
+  if (isGranted && areas.includes(area)) {
     const { storage } = browser;
-    await storage.local.remove(key);
+    await storage[area]?.remove(key);
   }
 };
 
@@ -687,15 +695,17 @@ export const removeStorage = async key => {
  * set storage
  *
  * @param {object} obj - object to store
+ * @param {string} area - storage area
  * @returns {void}
  */
-export const setStorage = async obj => {
+export const setStorage = async (obj, area = 'local') => {
   const isGranted = await isPermissionGranted({
     permissions: ['storage']
   });
-  if (isGranted && obj) {
+  const areas = ['local', 'session', 'sync'];
+  if (isGranted && obj && areas.includes(area)) {
     const { storage } = browser;
-    await storage.local.set(obj);
+    await storage[area]?.set(obj);
   }
 };
 
@@ -844,8 +854,12 @@ export const getActiveTabId = async windowId => {
   if (!Number.isInteger(windowId)) {
     windowId = windows.WINDOW_ID_CURRENT;
   }
-  const { id } = await getActiveTab(windowId);
-  return id;
+  const tab = await getActiveTab(windowId);
+  let tabId;
+  if (tab) {
+    tabId = tab.id;
+  }
+  return Number.isInteger(tabId) ? tabId : null;
 };
 
 /**

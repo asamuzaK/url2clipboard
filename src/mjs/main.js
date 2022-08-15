@@ -579,9 +579,11 @@ export const setVars = async (data = {}) => {
  *
  * @returns {Function} - promise chain
  */
-export const startup = async () =>
-  setFormatData().then(getAllStorage).then(setVars).then(setDefaultIcon)
+export const startup = async () => {
+  await setFormatData();
+  return getAllStorage().then(setVars).then(setDefaultIcon)
     .then(createContextMenu);
+};
 
 // For test
 export { enabledFormats };
