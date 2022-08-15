@@ -5,7 +5,7 @@
 /* shared */
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
-  getStorage, setStorage, removePermission, requestPermission
+  getStorage, removePermission, requestPermission, setStorage
 } from './browser.js';
 import { NOTIFY_COPY } from './constant.js';
 
