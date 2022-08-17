@@ -750,4 +750,46 @@ describe('popup-main', () => {
       assert.deepEqual(res, [null], 'result');
     });
   });
+
+  describe('startup', () => {
+    const func = mjs.startup;
+    beforeEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.add('HTMLPlain');
+      enabledFormats.add('Markdown');
+      enabledFormats.add('TextURL');
+      const div = document.createElement('div');
+      const btn = document.createElement('button');
+      const btn2 = document.createElement('button');
+      const elm = document.createElement('input');
+      const elm2 = document.createElement('input');
+      const body = document.querySelector('body');
+      div.id = 'copyLinkDetails';
+      div.appendChild(btn);
+      div.appendChild(btn2);
+      elm.id = CONTENT_PAGE;
+      elm2.id = CONTENT_LINK;
+      body.appendChild(div);
+      body.appendChild(elm);
+      body.appendChild(elm2);
+    });
+    afterEach(() => {
+      const { enabledFormats } = mjs;
+      enabledFormats.clear();
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({});
+      browser.tabs.query.resolves([{ id: 1 }]);
+      const i = browser.runtime.sendMessage.callCount;
+      const j = browser.storage.local.get.callCount;
+      const k = browser.tabs.query.callCount;
+      const res = await func();
+      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.storage.local.get.callCount, j + 1, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
+      assert.isUndefined(res, 'result');
+    });
+  });
 });

@@ -4,10 +4,11 @@
 
 /* shared */
 import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
-import { getActiveTab, sendMessage } from './browser.js';
+import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import {
   getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
 } from './format.js';
+import { localizeHtml } from './localize.js';
 import {
   CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU
@@ -263,7 +264,7 @@ export const prepareTab = async () => {
   });
   await setTabInfo(tab);
   if (Number.isInteger(id) && id !== TAB_ID_NONE) {
-    func.push(sendMessage(runtime.id, {
+    func.push(sendMessage(null, {
       [CONTEXT_INFO_GET]: true
     }));
   }
@@ -328,4 +329,19 @@ export const setVars = async (data = {}) => {
     func.push(setVar(key, newValue || value, !!newValue));
   }
   return Promise.all(func);
+};
+
+/**
+ * startup
+ *
+ * @returns {Function} - promise chain
+ */
+export const startup = async () => {
+  await Promise.all([
+    localizeHtml(),
+    addListenerToMenu(),
+    prepareTab(),
+    setFormatData()
+  ]);
+  return getAllStorage().then(setVars).then(toggleMenuItem);
 };
