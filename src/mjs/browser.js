@@ -35,14 +35,14 @@ export const createBookmark = async opt => {
     const { bookmarks } = browser;
     node = await bookmarks.create(opt);
   }
-  return node || null;
+  return node ?? null;
 };
 
 /**
  * get bookmark tree node
  *
  * @param {string|Array} id - bookmark ID or array of bookmark IDs
- * @returns {Array} - array of bookmarks.BookmarkTreeNode
+ * @returns {?Array} - array of bookmarks.BookmarkTreeNode
  */
 export const getBookmarkTreeNode = async id => {
   const isGranted = await isPermissionGranted({
@@ -59,7 +59,7 @@ export const getBookmarkTreeNode = async id => {
       res = await bookmarks.getTree();
     }
   }
-  return res || null;
+  return res ?? null;
 };
 
 /* browserSettings */
@@ -77,7 +77,7 @@ export const getCloseTabsByDoubleClickValue = async () => {
     const { browserSettings: { closeTabsByDoubleClick } } = browser;
     userValue = await closeTabsByDoubleClick.get({});
   }
-  return userValue || null;
+  return userValue ?? null;
 };
 
 /**
@@ -135,7 +135,7 @@ export const getNewTabPositionValue = async () => {
     const { browserSettings: { newTabPosition } } = browser;
     res = await newTabPosition.get({});
   }
-  return res || null;
+  return res ?? null;
 };
 
 /* commands */
@@ -185,7 +185,7 @@ export const updateCommand = async (id, value = '') => {
       });
     }
   }
-  return func || null;
+  return func ?? null;
 };
 
 /* contextualIdentities */
@@ -201,13 +201,9 @@ export const getAllContextualIdentities = async () => {
   let arr;
   if (isGranted) {
     const { contextualIdentities } = browser;
-    try {
-      arr = await contextualIdentities.query({});
-    } catch (e) {
-      logErr(e);
-    }
+    arr = await contextualIdentities.query({});
   }
-  return arr || null;
+  return arr ?? null;
 };
 
 /**
@@ -226,13 +222,9 @@ export const getContextualId = async cookieStoreId => {
   let id;
   if (isGranted) {
     const { contextualIdentities } = browser;
-    try {
-      id = await contextualIdentities.get(cookieStoreId);
-    } catch (e) {
-      logErr(e);
-    }
+    id = await contextualIdentities.get(cookieStoreId);
   }
-  return id || null;
+  return id ?? null;
 };
 
 /* management */
@@ -248,17 +240,12 @@ export const getEnabledTheme = async () => {
   let res;
   if (isGranted) {
     const { management } = browser;
-    try {
-      const arr = await management.getAll();
-      if (Array.isArray(arr) && arr.length) {
-        res =
-          arr.filter(info => info?.type === 'theme' && info?.enabled && info);
-      }
-    } catch (e) {
-      logErr(e);
+    const arr = await management.getAll();
+    if (Array.isArray(arr) && arr.length) {
+      res = arr.filter(info => info?.type === 'theme' && info?.enabled && info);
     }
   }
-  return res || null;
+  return res ?? null;
 };
 
 /**
@@ -279,13 +266,13 @@ export const getExtensionInfo = async id => {
     const { management } = browser;
     ext = await management.get(id);
   }
-  return ext || null;
+  return ext ?? null;
 };
 
 /**
  * get external extensions
  *
- * @returns {?Array} -array of management.extensionInfo
+ * @returns {?Array|boolean} -array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
   const isGranted = await isPermissionGranted({
@@ -294,17 +281,12 @@ export const getExternalExtensions = async () => {
   let res;
   if (isGranted) {
     const { management } = browser;
-    try {
-      const arr = await management.getAll();
-      if (Array.isArray(arr) && arr.length) {
-        res =
-          arr.filter(info => info?.type === 'extension' && info);
-      }
-    } catch (e) {
-      logErr(e);
+    const arr = await management.getAll();
+    if (Array.isArray(arr) && arr.length) {
+      res = arr.filter(info => info?.type === 'extension' && info);
     }
   }
-  return res || null;
+  return res ?? null;
 };
 
 /* notifications */
@@ -326,7 +308,7 @@ export const clearNotification = async id => {
     const { notifications } = browser;
     func = notifications.clear(id);
   }
-  return func || null;
+  return func ?? null;
 };
 
 /**
@@ -351,7 +333,7 @@ export const createNotification = async (id, opt) => {
     }
     func = notifications.create(id, opt);
   }
-  return func || null;
+  return func ?? null;
 };
 
 /* permissions */
@@ -487,7 +469,55 @@ export const sendMessage = async (id, msg, opt) => {
       func = runtime.sendMessage(msg, opt);
     }
   }
-  return func || null;
+  return func ?? null;
+};
+
+/* scripting */
+/**
+ * is scripting available
+ *
+ * @returns {boolean} - result
+ */
+export const isScriptingAvailable = async () => {
+  const isGranted = await isPermissionGranted({
+    permissions: ['scripting']
+  });
+  let res;
+  if (isGranted) {
+    const { scripting } = browser;
+    res = typeof scripting?.executeScript === 'function';
+  }
+  return !!res;
+};
+
+/**
+ * execute script to tab
+ *
+ * @param {object} opt - options
+ * @returns {?Array|boolean} - array of InjectionResult object
+ */
+export const executeScriptToTab = async (opt = {}) => {
+  const { args, injectImmediately, files, func, target } = opt;
+  const isGranted = await isScriptingAvailable();
+  let fn;
+  if (isGranted && Number.isInteger(target?.tabId)) {
+    const { scripting } = browser;
+    if (Array.isArray(files) && files.length) {
+      fn = scripting.executeScript({
+        files,
+        target,
+        injectImmediately: !!injectImmediately
+      });
+    } else if (typeof func === 'function') {
+      fn = scripting.executeScript({
+        func,
+        target,
+        args: Array.isArray(args) ? args : null,
+        injectImmediately: !!injectImmediately
+      });
+    }
+  }
+  return fn ?? null;
 };
 
 /* search */
@@ -543,7 +573,7 @@ export const getRecentlyClosedTab = async windowId => {
       }
     }
   }
-  return tab || null;
+  return tab ?? null;
 };
 
 /**
@@ -568,7 +598,7 @@ export const getSessionWindowValue = async (key, windowId) => {
     const { sessions } = browser;
     value = await sessions.getWindowValue(windowId, key);
   }
-  return value || null;
+  return value ?? null;
 };
 
 /**
@@ -589,7 +619,7 @@ export const restoreSession = async sessionId => {
     const { sessions } = browser;
     ses = await sessions.restore(sessionId);
   }
-  return ses || null;
+  return ses ?? null;
 };
 
 /**
@@ -650,7 +680,7 @@ export const getAllStorage = async (area = 'local') => {
     const { storage } = browser;
     data = await storage[area]?.get();
   }
-  return data || null;
+  return data ?? null;
 };
 
 /**
@@ -670,7 +700,7 @@ export const getStorage = async (key, area = 'local') => {
     const { storage } = browser;
     data = await storage[area]?.get(key);
   }
-  return data || null;
+  return data ?? null;
 };
 
 /**
@@ -823,7 +853,7 @@ export const execScriptsToTabInOrder = async (tabId, opts = []) => {
     const { value } = await Promise.allSettled(func).then(a => a.pop());
     res = value;
   }
-  return res || null;
+  return res ?? null;
 };
 
 /**
@@ -948,7 +978,7 @@ export const moveTab = async (tabId, opt) => {
   if (arr && !Array.isArray(arr)) {
     arr = [arr];
   }
-  return arr || null;
+  return arr ?? null;
 };
 
 /**
@@ -1047,7 +1077,7 @@ export const getCurrentTheme = async () => {
     const { theme } = browser;
     currentTheme = await theme.getCurrent();
   }
-  return currentTheme || null;
+  return currentTheme ?? null;
 };
 
 /* windows */
