@@ -6,9 +6,11 @@
 import { Clip } from './clipboard.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import {
-  execScriptToTab, execScriptsToTabInOrder, getActiveTab, getAllStorage,
-  getAllTabsInWindow, getHighlightedTab, isTab, queryTabs, sendMessage
+  execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
+  getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
+  isScriptingAvailable, isTab, queryTabs, sendMessage
 } from './browser.js';
+import { editContent } from './edit-content.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
   getFormatTitle, hasFormat, setFormat, setFormatData, toggleEnabledFormats
@@ -210,17 +212,39 @@ export const getSelectedTabsInfo = async menuItemId => {
 /**
  * get context info
  *
+ * @param {number} tabId - tab ID
  * @returns {object} - context info
  */
-export const getContextInfo = async () => {
-  const arr = await execScriptToTab({
-    file: JS_CONTEXT_INFO
-  });
+export const getContextInfo = async tabId => {
+  // TODO: refactoring when switching to MV3
+  const useScripting = await isScriptingAvailable();
   let info;
-  if (Array.isArray(arr)) {
-    [info] = arr;
+  if (useScripting) {
+    if (!Number.isInteger(tabId)) {
+      tabId = await getActiveTabId();
+    }
+    const arr = await executeScriptToTab({
+      files: [JS_CONTEXT_INFO],
+      target: {
+        tabId
+      }
+    });
+    if (Array.isArray(arr) && arr.length) {
+      const [{ error, result }] = arr;
+      if (error) {
+        throw new Error(error.message);
+      }
+      info = result;
+    }
+  } else {
+    const arr = await execScriptToTab({
+      file: JS_CONTEXT_INFO
+    });
+    if (Array.isArray(arr)) {
+      [info] = arr;
+    }
   }
-  return info || null;
+  return info ?? null;
 };
 
 /**
@@ -260,7 +284,7 @@ export const extractClickedData = async (info, tab) => {
       const formatId = getFormatId(menuItemId);
       const formatTitle = getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
-      const contextInfo = await getContextInfo();
+      const contextInfo = await getContextInfo(tabId);
       let contextCanonicalUrl = null;
       let contextContent = null;
       let contextIsLink = false;
@@ -362,21 +386,41 @@ export const extractClickedData = async (info, tab) => {
         }
         if (isString(content) && isString(url)) {
           if (promptContent && formatId !== BBCODE_URL && !isEdited) {
-            const editData = {
-              content,
-              promptMsg: i18n.getMessage(USER_INPUT, formatTitle)
-            };
-            const promptRes = await execScriptsToTabInOrder([
-              {
-                code: `window.editContentData = ${JSON.stringify(editData)};`
-              },
-              {
-                file: JS_EDIT_CONTENT
-              }
-            ]);
+            // TODO: refactoring when switching to MV3
+            const useScripting = await isScriptingAvailable();
+            const promptMsg = i18n.getMessage(USER_INPUT, formatTitle);
             let editedContent;
-            if (Array.isArray(promptRes)) {
-              [editedContent] = promptRes;
+            if (useScripting) {
+              const promptRes = await executeScriptToTab({
+                args: [content, promptMsg],
+                func: editContent,
+                target: {
+                  tabId
+                }
+              });
+              if (Array.isArray(promptRes)) {
+                const [{ error, result }] = promptRes;
+                if (error) {
+                  throw new Error(error.message);
+                }
+                editedContent = result;
+              }
+            } else {
+              const editData = {
+                content,
+                promptMsg
+              };
+              const promptRes = await execScriptsToTabInOrder([
+                {
+                  code: `window.editContentData = ${JSON.stringify(editData)};`
+                },
+                {
+                  file: JS_EDIT_CONTENT
+                }
+              ]);
+              if (Array.isArray(promptRes)) {
+                [editedContent] = promptRes;
+              }
             }
             text = createLinkText({
               content: isString(editedContent) ? editedContent : content,
