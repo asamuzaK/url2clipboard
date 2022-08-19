@@ -33,7 +33,15 @@ export const createManifest = async info => {
       32: 'img/icon-outline-32.png',
       64: 'img/icon-color.png',
       128: 'img/icon-color-128.png'
-    }
+    },
+    // TODO: refactoring when switching to MV3
+    permissions: [
+      'activeTab',
+      'clipboardWrite',
+      'contextMenus',
+      'storage',
+      'tabs'
+    ]
   };
   const items = Object.entries(replaceItems);
   for (const [key, value] of items) {
