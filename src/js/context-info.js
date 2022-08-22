@@ -70,7 +70,7 @@
           contextInfo.isLink = true;
           contextInfo.content = textContent.replace(/\s+/g, ' ').trim();
           contextInfo.title = title;
-          if (Object.prototype.hasOwnProperty.call(href, 'baseVal')) {
+          if (href?.baseVal) {
             contextInfo.url = href.baseVal;
           } else {
             contextInfo.url = href;
