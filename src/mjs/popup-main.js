@@ -136,7 +136,7 @@ export const createCopyData = async evt => {
         } else {
           info.selectionText = selectionText || '';
         }
-        func = sendMessage(runtime.id, {
+        func = sendMessage(null, {
           [EXEC_COPY]: {
             info, tab
           }
