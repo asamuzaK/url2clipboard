@@ -316,6 +316,7 @@ export const createLinkText = (data = {}) => {
     case BBCODE_TEXT:
       content =
         stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || '';
+      linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case BBCODE_URL:
       content = encodeUrlSpecialChar(content);

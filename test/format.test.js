@@ -451,11 +451,11 @@ describe('format', () => {
         content: 'foo [bar] baz',
         formatId: BBCODE_TEXT,
         template: formatData[BBCODE_TEXT].template,
-        url: 'https://example.com/foo'
+        url: 'https://example.com/foo bar'
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '[url=https://example.com/foo]foo [bar] baz[/url]',
+        '[url=https://example.com/foo%20bar]foo [bar] baz[/url]',
         'result');
     });
 
@@ -464,22 +464,22 @@ describe('format', () => {
         content: '',
         formatId: BBCODE_TEXT,
         template: formatData[BBCODE_TEXT].template,
-        url: 'https://example.com/foo'
+        url: 'https://example.com/foo bar'
       };
       const res = await func(data);
-      assert.strictEqual(res, '[url=https://example.com/foo][/url]',
+      assert.strictEqual(res, '[url=https://example.com/foo%20bar][/url]',
         'result');
     });
 
     it('should get string', async () => {
       const data = {
-        content: 'https://example.com/foo\'bar',
+        content: 'https://example.com/foo bar',
         formatId: BBCODE_URL,
         template: formatData[BBCODE_URL].template,
-        url: 'https://example.com/foo\'bar'
+        url: 'https://example.com/foo bar'
       };
       const res = await func(data);
-      assert.strictEqual(res, '[url]https://example.com/foo%27bar[/url]',
+      assert.strictEqual(res, '[url]https://example.com/foo%20bar[/url]',
         'result');
     });
 
