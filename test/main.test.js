@@ -425,7 +425,7 @@ describe('main', () => {
         }
       ]);
       await setFormatData();
-      const res = await func(`${COPY_PAGE}TextURL`);
+      const res = await func(`${COPY_TABS_ALL}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
       assert.deepEqual(res, [
         {
@@ -441,6 +441,46 @@ describe('main', () => {
           formatId: 'TextURL',
           id: 2,
           template: '%content% %url%',
+          title: 'bar',
+          url: 'https://www.example.com'
+        }
+      ], 'result');
+    });
+
+    it('should get result', async () => {
+      const i = browser.tabs.query.callCount;
+      browser.tabs.query.withArgs({
+        windowId: browser.windows.WINDOW_ID_CURRENT,
+        windowType: 'normal'
+      }).resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://www.example.com'
+        }
+      ]);
+      await setFormatData();
+      const res = await func(`${COPY_TABS_ALL}${BBCODE_URL}`);
+      assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
+      assert.deepEqual(res, [
+        {
+          content: 'https://example.com',
+          formatId: BBCODE_URL,
+          id: 1,
+          template: '[url]%content%[/url]',
+          title: 'foo',
+          url: 'https://example.com'
+        },
+        {
+          content: 'https://www.example.com',
+          formatId: BBCODE_URL,
+          id: 2,
+          template: '[url]%content%[/url]',
           title: 'bar',
           url: 'https://www.example.com'
         }
@@ -573,8 +613,38 @@ describe('main', () => {
       assert.isNull(res, 'result');
     });
 
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves([undefined]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
+    it('should get null', async () => {
+      browser.scripting.executeScript.resolves([{}]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      const res = await func();
+      assert.isNull(res, 'result');
+    });
+
     it('should throw', async () => {
       browser.scripting.executeScript.rejects(new Error('error'));
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.instanceOf(e, Error, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: new Error('error')
+      }]);
       browser.tabs.query.resolves([{
         id: 1
       }]);

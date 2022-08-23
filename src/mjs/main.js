@@ -143,7 +143,7 @@ export const getAllTabsInfo = async menuItemId => {
       template,
       title,
       url,
-      content: title
+      content: formatId === BBCODE_URL ? url : title
     });
   });
   return tabsInfo;
@@ -229,12 +229,15 @@ export const getContextInfo = async tabId => {
         tabId
       }
     });
-    if (Array.isArray(arr) && arr.length) {
-      const [{ error, result }] = arr;
-      if (error) {
-        throw new Error(error.message);
+    if (Array.isArray(arr)) {
+      const [res] = arr;
+      if (isObjectNotEmpty(res)) {
+        const { error, result } = res;
+        if (error) {
+          throw new Error(error.message);
+        }
+        info = result;
       }
-      info = result;
     }
   } else {
     const arr = await execScriptToTab({

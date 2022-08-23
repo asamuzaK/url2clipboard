@@ -314,9 +314,11 @@ export const createLinkText = (data = {}) => {
       linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case BBCODE_TEXT:
-    case BBCODE_URL:
       content =
         stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || '';
+      break;
+    case BBCODE_URL:
+      content = encodeUrlSpecialChar(content);
       break;
     case HTML_HYPER:
     case HTML_PLAIN:

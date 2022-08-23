@@ -473,13 +473,13 @@ describe('format', () => {
 
     it('should get string', async () => {
       const data = {
-        content: 'https://example.com/foo',
+        content: 'https://example.com/foo\'bar',
         formatId: BBCODE_URL,
         template: formatData[BBCODE_URL].template,
-        url: 'https://example.com/foo'
+        url: 'https://example.com/foo\'bar'
       };
       const res = await func(data);
-      assert.strictEqual(res, '[url]https://example.com/foo[/url]',
+      assert.strictEqual(res, '[url]https://example.com/foo%27bar[/url]',
         'result');
     });
 
