@@ -3817,7 +3817,6 @@ describe('main', () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.isWebExt = false;
       vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
       vars.promptContent = false;
@@ -3828,7 +3827,6 @@ describe('main', () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.isWebExt = false;
       vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
       vars.promptContent = false;
@@ -4066,7 +4064,6 @@ describe('main', () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.isWebExt = false;
       vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
       vars.promptContent = false;
@@ -4077,7 +4074,6 @@ describe('main', () => {
       vars.includeTitleHTMLHyper = false;
       vars.includeTitleHTMLPlain = false;
       vars.includeTitleMarkdown = false;
-      vars.isWebExt = false;
       vars.notifyOnCopy = false;
       vars.preferCanonicalUrl = false;
       vars.promptContent = false;
@@ -4102,15 +4098,13 @@ describe('main', () => {
   describe('startup', () => {
     const func = mjs.startup;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = true;
+      const { enabledFormats } = mjs;
       enabledFormats.add('HTMLPlain');
       enabledFormats.add('Markdown');
       enabledFormats.add('TextURL');
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = false;
+      const { enabledFormats } = mjs;
       enabledFormats.clear();
     });
 
