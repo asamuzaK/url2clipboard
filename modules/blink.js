@@ -28,10 +28,6 @@ export const createManifest = async info => {
   });
   const manifest = JSON.parse(srcContent);
   const replaceItems = {
-    background: {
-      page: 'html/background.html',
-      persistent: false
-    },
     icons: {
       16: 'img/icon-outline-16.png',
       32: 'img/icon-outline-32.png',
