@@ -15,6 +15,7 @@ import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
   getFormatTitle, hasFormat, setFormat, setFormatData, toggleEnabledFormats
 } from './format.js';
+import { setDefaultIcon, setIcon } from './icon.js';
 import {
   createContextMenu, removeContextMenu, updateContextMenu
 } from './menu.js';
@@ -22,16 +23,16 @@ import { notifyOnCopy } from './notify.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, EXEC_COPY, EXT_NAME, HTML_HYPER, HTML_PLAIN,
-  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_CONTEXT_ID, ICON_DARK,
-  ICON_LIGHT, ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
-  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
-  TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
+  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
+  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN, MIME_HTML, MIME_PLAIN,
+  NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL,
+  USER_INPUT
 } from './constant.js';
 
 /* api */
-const { browserAction, i18n, runtime, tabs, windows } = browser;
+const { i18n, tabs, windows } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
@@ -39,11 +40,9 @@ const { WINDOW_ID_CURRENT } = windows;
 
 /* variables */
 export const vars = {
-  iconId: '',
   includeTitleHTMLHyper: false,
   includeTitleHTMLPlain: false,
   includeTitleMarkdown: false,
-  isWebExt: runtime.id === WEBEXT_ID,
   notifyOnCopy: false,
   preferCanonicalUrl: false,
   promptContent: false,
@@ -88,37 +87,6 @@ export const getFormatTemplate = async id => {
     }
   }
   return template || null;
-};
-
-/**
- * set icon
- *
- * @returns {Promise.<Array>} - results of each handler
- */
-export const setIcon = async () => {
-  const { iconId } = vars;
-  const name = i18n.getMessage(EXT_NAME);
-  const icon = runtime.getURL(ICON);
-  const path = (iconId && `${icon}${iconId}`) || icon;
-  const title = name;
-  return Promise.all([
-    browserAction.setIcon({ path }),
-    browserAction.setTitle({ title })
-  ]);
-};
-
-/**
- * set default icon
- *
- * @returns {?Function} - setIcon()
- */
-export const setDefaultIcon = async () => {
-  let func;
-  if (vars.isWebExt && !vars.iconId) {
-    vars.iconId = ICON_CONTEXT_ID;
-    func = setIcon();
-  }
-  return func || null;
 };
 
 /**
@@ -570,8 +538,7 @@ export const setVar = async (item, obj, changed = false) => {
       case ICON_LIGHT:
       case ICON_WHITE: {
         if (checked) {
-          vars.iconId = value;
-          func.push(setIcon());
+          func.push(setIcon(value));
         }
         break;
       }
