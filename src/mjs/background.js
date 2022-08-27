@@ -24,8 +24,8 @@ menus.onClicked.addListener((info, tab) =>
 menus.onShown?.addListener((info, tab) =>
   handleMenusOnShown(info, tab).catch(throwErr)
 );
-storage.onChanged.addListener(data =>
-  setVars(data).catch(throwErr)
+storage.onChanged.addListener((data, area) =>
+  setVars(data, area).catch(throwErr)
 );
 runtime.onInstalled.addListener(() => startup().catch(throwErr));
 runtime.onMessage.addListener((msg, sender) =>
