@@ -5,8 +5,8 @@
 /* shared */
 import { throwErr } from './common.js';
 import {
-  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleUpdatedTab,
-  setVars, startup
+  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleStorage,
+  handleUpdatedTab, startup
 } from './main.js';
 import { handleMenusOnShown } from './menu.js';
 
@@ -25,7 +25,7 @@ menus.onShown?.addListener((info, tab) =>
   handleMenusOnShown(info, tab).catch(throwErr)
 );
 storage.onChanged.addListener((data, area) =>
-  setVars(data, area).catch(throwErr)
+  handleStorage(data, area).catch(throwErr)
 );
 runtime.onInstalled.addListener(() => startup().catch(throwErr));
 runtime.onMessage.addListener((msg, sender) =>
