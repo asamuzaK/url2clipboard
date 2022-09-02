@@ -18,11 +18,6 @@ const menus = browser.menus ?? browser.contextMenus;
 /* constants */
 const { WINDOW_ID_CURRENT } = windows;
 
-/* variables */
-export const vars = {
-  isWebExt: runtime.id === WEBEXT_ID
-};
-
 /* context menu items */
 export const menuItems = {
   [COPY_PAGE]: {
@@ -74,7 +69,6 @@ export const removeContextMenu = async () => menus.removeAll();
  */
 export const createMenuItem = async (id, title, data = {}) => {
   const { contexts, enabled, parentId } = data;
-  const { isWebExt } = vars;
   if (isString(id) && isString(title) && Array.isArray(contexts)) {
     const opt = {
       id,
@@ -86,7 +80,7 @@ export const createMenuItem = async (id, title, data = {}) => {
       opt.parentId = parentId;
     }
     if (contexts.includes('tab')) {
-      if (isWebExt) {
+      if (runtime.id === WEBEXT_ID) {
         menus.create(opt);
       }
     } else {
@@ -114,13 +108,12 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
   if (!isString(itemKey)) {
     throw new TypeError(`Expected String but got ${getType(itemKey)}.`);
   }
-  const { isWebExt } = vars;
   const { id: keyId, title: keyTitle } = getFormat(key);
   const formatTitle = i18n.getMessage(
     `${itemId}_format_key`,
     [
       keyTitle || keyId,
-      (isWebExt && itemKey) || ` ${itemKey}`
+      (runtime.id === WEBEXT_ID && itemKey) || ` ${itemKey}`
     ]
   );
   return createMenuItem(`${itemId}${key}`, formatTitle, itemData);
@@ -134,14 +127,13 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
 export const createContextMenu = async () => {
   const func = [];
   if (enabledFormats.size) {
-    const { isWebExt } = vars;
     const formats = getFormats(true);
     const items = Object.keys(menuItems);
     for (const item of items) {
       const { contexts, id: itemId, key: itemKey } = menuItems[item];
       let enabled;
       if (itemId === COPY_LINK) {
-        enabled = !!isWebExt;
+        enabled = runtime.id === WEBEXT_ID;
       } else {
         enabled = true;
       }
@@ -152,7 +144,7 @@ export const createContextMenu = async () => {
       } else {
         const itemTitle = i18n.getMessage(
           `${itemId}_key`,
-          (isWebExt && itemKey) || ` ${itemKey}`
+          (runtime.id === WEBEXT_ID && itemKey) || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
         for (const [key, value] of formats) {
@@ -187,7 +179,6 @@ export const updateContextMenu = async (tabId, enabled = false) => {
   }
   const func = [];
   if (enabledFormats.size) {
-    const { isWebExt } = vars;
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
     const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
@@ -196,7 +187,7 @@ export const updateContextMenu = async (tabId, enabled = false) => {
       const { contexts, id: itemId } = menuItems[item];
       if (itemId === COPY_LINK) {
         func.push(menus.update(itemId, { enabled }));
-      } else if (contexts.includes('tab') && isWebExt) {
+      } else if (contexts.includes('tab') && runtime.id === WEBEXT_ID) {
         let visible;
         if (itemId === COPY_TABS_ALL) {
           visible = highlightedTabs.length !== allTabs.length &&

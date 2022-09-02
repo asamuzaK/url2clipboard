@@ -8,12 +8,13 @@ import { getType, isObjectNotEmpty, isString } from './common.js';
 import {
   execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
   getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
-  isScriptingAvailable, isTab, queryTabs, sendMessage
+  getStorage, isScriptingAvailable, isTab, queryTabs, sendMessage
 } from './browser.js';
 import { editContent } from './edit-content.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
-  getFormatTitle, hasFormat, setFormat, setFormatData, toggleEnabledFormats
+  getFormatsKeys, getFormatTitle, hasFormat, setFormat, setFormatData,
+  toggleEnabledFormats
 } from './format.js';
 import { setDefaultIcon, setIcon } from './icon.js';
 import {
@@ -38,15 +39,65 @@ const { i18n, tabs, windows } = browser;
 const { TAB_ID_NONE } = tabs;
 const { WINDOW_ID_CURRENT } = windows;
 
-/* variables */
-export const vars = {
-  includeTitleHTMLHyper: false,
-  includeTitleHTMLPlain: false,
-  includeTitleMarkdown: false,
-  notifyOnCopy: false,
-  preferCanonicalUrl: false,
-  promptContent: false,
-  separateTextURL: false
+/* user options */
+export const userOpts = new Map();
+
+/**
+ * set user options
+ *
+ * @param {object} opt - user option
+ * @returns {object} - userOpts
+ */
+export const setUserOpts = async (opt = {}) => {
+  let opts;
+  if (isObjectNotEmpty(opt)) {
+    opts = opt;
+  } else {
+    opts = await getStorage([
+      INCLUDE_TITLE_HTML_HYPER,
+      INCLUDE_TITLE_HTML_PLAIN,
+      INCLUDE_TITLE_MARKDOWN,
+      NOTIFY_COPY,
+      PREFER_CANONICAL,
+      PROMPT,
+      TEXT_SEP_LINES
+    ]);
+  }
+  const items = Object.entries(opts);
+  for (const [key, value] of items) {
+    const { checked } = value;
+    userOpts.set(key, !!checked);
+  }
+  return userOpts;
+};
+
+/**
+ * set user enabled formats
+ *
+ * @param {object} opt - user option
+ * @returns {object} - enablrfFormats
+ */
+export const setUserEnabledFormats = async (opt = {}) => {
+  let opts;
+  if (isObjectNotEmpty(opt)) {
+    opts = opt;
+  } else {
+    const keys = getFormatsKeys(true);
+    opts = await getStorage(keys);
+  }
+  const items = Object.entries(opts);
+  const func = [];
+  for (const [key, value] of items) {
+    if (hasFormat(key)) {
+      const { checked } = value;
+      const formatItem = getFormat(key);
+      formatItem.enabled = !!checked;
+      setFormat(key, formatItem);
+      func.push(toggleEnabledFormats(key, !!checked));
+    }
+  }
+  await Promise.all(func);
+  return enabledFormats;
 };
 
 /**
@@ -65,22 +116,26 @@ export const getFormatTemplate = async id => {
     const {
       id: itemId, template: itemTmpl, templateAlt: itemTmplAlt
     } = item;
-    const {
-      includeTitleHTMLHyper, includeTitleHTMLPlain, includeTitleMarkdown,
-      separateTextURL
-    } = vars;
     switch (itemId) {
       case HTML_HYPER:
-        template = includeTitleHTMLHyper ? itemTmpl : itemTmplAlt;
+        template = userOpts.get(INCLUDE_TITLE_HTML_HYPER)
+          ? itemTmpl
+          : itemTmplAlt;
         break;
       case HTML_PLAIN:
-        template = includeTitleHTMLPlain ? itemTmpl : itemTmplAlt;
+        template = userOpts.get(INCLUDE_TITLE_HTML_PLAIN)
+          ? itemTmpl
+          : itemTmplAlt;
         break;
       case MARKDOWN:
-        template = includeTitleMarkdown ? itemTmpl : itemTmplAlt;
+        template = userOpts.get(INCLUDE_TITLE_MARKDOWN)
+          ? itemTmpl
+          : itemTmplAlt;
         break;
       case TEXT_TEXT_URL:
-        template = separateTextURL ? itemTmplAlt : itemTmpl;
+        template = userOpts.get(TEXT_SEP_LINES)
+          ? itemTmplAlt
+          : itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -250,7 +305,13 @@ export const extractClickedData = async (info, tab) => {
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-      const { notifyOnCopy: notify, preferCanonicalUrl, promptContent } = vars;
+      if (!userOpts.size) {
+        await setUserOpts();
+      }
+      if (!enabledFormats.size) {
+        await setFormatData();
+        await setUserEnabledFormats();
+      }
       const { hash: tabUrlHash } = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
       const formatTitle = getFormatTitle(formatId);
@@ -263,7 +324,7 @@ export const extractClickedData = async (info, tab) => {
       let contextTitle = null;
       let contextUrl = null;
       if (isObjectNotEmpty(contextInfo)) {
-        if (!tabUrlHash && preferCanonicalUrl) {
+        if (!tabUrlHash && userOpts.get(PREFER_CANONICAL)) {
           contextCanonicalUrl = contextInfo.canonicalUrl;
         }
         contextContent = contextInfo.content;
@@ -356,7 +417,7 @@ export const extractClickedData = async (info, tab) => {
           }
         }
         if (isString(content) && isString(url)) {
-          if (promptContent && formatId !== BBCODE_URL && !isEdited) {
+          if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {
             // TODO: refactoring when switching to MV3
             const useScripting = await isScriptingAvailable();
             const promptMsg = i18n.getMessage(USER_INPUT, formatTitle);
@@ -409,7 +470,7 @@ export const extractClickedData = async (info, tab) => {
       }
       if (isString(text)) {
         await new Clip(text, mimeType).copy();
-        if (notify) {
+        if (userOpts.get(NOTIFY_COPY)) {
           func.push(notifyOnCopy(formatTitle));
         }
       }
@@ -502,8 +563,7 @@ export const handleMsg = async msg => {
           break;
         }
         case NOTIFY_COPY: {
-          const { notifyOnCopy: notify } = vars;
-          if (notify && value) {
+          if (userOpts.get(NOTIFY_COPY) && value) {
             func.push(notifyOnCopy());
           }
           break;
@@ -516,14 +576,14 @@ export const handleMsg = async msg => {
 };
 
 /**
- * set variable
+ * set storage value
  *
  * @param {string} item - item
  * @param {object} obj - value object
  * @param {boolean} changed - changed
  * @returns {Promise.<Array>} - results of each handler
  */
-export const setVar = async (item, obj, changed = false) => {
+export const setStorageValue = async (item, obj, changed = false) => {
   if (!isString(item)) {
     throw new TypeError(`Expected String but got ${getType(item)}.`);
   }
@@ -549,21 +609,27 @@ export const setVar = async (item, obj, changed = false) => {
       case PREFER_CANONICAL:
       case PROMPT:
       case TEXT_SEP_LINES: {
-        vars[item] = !!checked;
+        func.push(setUserOpts({
+          [item]: {
+            checked
+          }
+        }));
         break;
       }
       default: {
         if (hasFormat(item)) {
-          const formatItem = getFormat(item);
-          formatItem.enabled = !!checked;
-          setFormat(item, formatItem);
           if (changed) {
-            func.push(
-              toggleEnabledFormats(item, !!checked).then(removeContextMenu)
-                .then(createContextMenu)
-            );
+            func.push(setUserEnabledFormats({
+              [item]: {
+                checked
+              }
+            }).then(removeContextMenu).then(createContextMenu));
           } else {
-            func.push(toggleEnabledFormats(item, !!checked));
+            func.push(setUserEnabledFormats({
+              [item]: {
+                checked
+              }
+            }));
           }
         }
       }
@@ -573,19 +639,19 @@ export const setVar = async (item, obj, changed = false) => {
 };
 
 /**
- * set variables
+ * handle storage
  *
  * @param {object} data - storage data
  * @param {string} area - storage area
  * @returns {Promise.<Array>} - results of each handler
  */
-export const setVars = async (data = {}, area = 'local') => {
+export const handleStorage = async (data = {}, area = 'local') => {
   const func = [];
   const items = Object.entries(data);
   if (items.length && area === 'local') {
     for (const [key, value] of items) {
       const { newValue } = value;
-      func.push(setVar(key, newValue || value, !!newValue));
+      func.push(setStorageValue(key, newValue || value, !!newValue));
     }
   }
   return Promise.all(func);
@@ -598,7 +664,7 @@ export const setVars = async (data = {}, area = 'local') => {
  */
 export const startup = async () => {
   await setFormatData();
-  return getAllStorage().then(setVars).then(setDefaultIcon)
+  return getAllStorage().then(handleStorage).then(setDefaultIcon)
     .then(createContextMenu);
 };
 

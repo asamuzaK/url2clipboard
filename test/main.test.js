@@ -7,7 +7,9 @@ import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 import { editContent } from '../src/mjs/edit-content.js';
-import { setFormatData } from '../src/mjs/format.js';
+import {
+  getFormat, getFormatsKeys, setFormat, setFormatData
+} from '../src/mjs/format.js';
 import sinon from 'sinon';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
@@ -15,8 +17,8 @@ import {
   COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT,
   ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, NOTIFY_COPY,
-  PREFER_CANONICAL, PROMPT, USER_INPUT_DEFAULT
+  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
+  NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, USER_INPUT_DEFAULT
 } from '../src/mjs/constant.js';
 
 /* test */
@@ -54,6 +56,7 @@ describe('main', () => {
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
     browser.permissions.contains.resolves(true);
+    browser.storage.local.get.resolves({});
     global.browser = browser;
     global.window = window;
     global.document = document;
@@ -130,21 +133,128 @@ describe('main', () => {
     assert.isObject(browser, 'browser');
   });
 
+  describe('set user options', () => {
+    const func = mjs.setUserOpts;
+    beforeEach(() => {
+      mjs.userOpts.clear();
+    });
+    afterEach(() => {
+      mjs.userOpts.clear();
+    });
+
+    it('should set user option', async () => {
+      const res = await func({
+        foo: {
+          checked: true
+        }
+      });
+      assert.deepEqual(res, mjs.userOpts, 'result');
+      assert.strictEqual(res.size, 1, 'size');
+      assert.isTrue(res.has('foo'), 'key');
+      assert.isTrue(res.get('foo'), 'value');
+    });
+
+    it('should call function', async () => {
+      const res = await func();
+      assert.deepEqual(res, mjs.userOpts, 'result');
+      assert.strictEqual(res.size, 0, 'size');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({
+        [INCLUDE_TITLE_HTML_HYPER]: {
+          checked: true
+        },
+        [PROMPT]: {
+          checked: false
+        }
+      });
+      const res = await func();
+      assert.deepEqual(res, mjs.userOpts, 'result');
+      assert.strictEqual(res.size, 2, 'size');
+      assert.isTrue(res.has(INCLUDE_TITLE_HTML_HYPER), 'key');
+      assert.isTrue(res.get(INCLUDE_TITLE_HTML_HYPER), 'value');
+      assert.isTrue(res.has(PROMPT), 'key');
+      assert.isFalse(res.get(PROMPT), 'value');
+    });
+  });
+
+  describe('set user enabled formats', () => {
+    const func = mjs.setUserEnabledFormats;
+    beforeEach(() => {
+      const keys = getFormatsKeys(true);
+      for (const key of keys) {
+        const formatItem = getFormat(key);
+        formatItem.enabled = true;
+        setFormat(key, formatItem);
+      }
+      mjs.enabledFormats.clear();
+    });
+    afterEach(() => {
+      const keys = getFormatsKeys(true);
+      for (const key of keys) {
+        const formatItem = getFormat(key);
+        formatItem.enabled = true;
+        setFormat(key, formatItem);
+      }
+      mjs.enabledFormats.clear();
+    });
+
+    it('should not set format', async () => {
+      const res = await func({
+        foo: {
+          checked: true
+        }
+      });
+      assert.deepEqual(res, mjs.enabledFormats, 'result');
+      assert.strictEqual(res.size, 0, 'size');
+    });
+
+    it('should set format', async () => {
+      const res = await func({
+        [HTML_PLAIN]: {
+          checked: true
+        }
+      });
+      assert.deepEqual(res, mjs.enabledFormats, 'result');
+      assert.strictEqual(res.size, 1, 'size');
+      assert.isTrue(res.has(HTML_PLAIN), 'key');
+    });
+
+    it('should call function', async () => {
+      const res = await func();
+      assert.deepEqual(res, mjs.enabledFormats, 'result');
+      assert.strictEqual(res.size, 0, 'size');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({
+        [HTML_PLAIN]: {
+          checked: true
+        },
+        [HTML_HYPER]: {
+          checked: false
+        },
+        [MARKDOWN]: {
+          checked: true
+        }
+      });
+      const res = await func();
+      assert.deepEqual(res, mjs.enabledFormats, 'result');
+      assert.strictEqual(res.size, 2, 'size');
+      assert.isTrue(res.has(HTML_PLAIN), 'key');
+      assert.isFalse(res.has(HTML_HYPER), 'key');
+      assert.isTrue(res.has(MARKDOWN), 'key');
+    });
+  });
+
   describe('get format template', () => {
     const func = mjs.getFormatTemplate;
     beforeEach(() => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.separateTextURL = false;
+      mjs.userOpts.clear();
     });
     afterEach(() => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.separateTextURL = false;
+      mjs.userOpts.clear();
     });
 
     it('should throw', async () => {
@@ -175,8 +285,7 @@ describe('main', () => {
     });
 
     it('should get value', async () => {
-      const { vars } = mjs;
-      vars.includeTitleMarkdown = true;
+      mjs.userOpts.set(INCLUDE_TITLE_MARKDOWN, true);
       const res = await func(`${COPY_PAGE}Markdown`);
       assert.strictEqual(res, '[%content%](%url% "%title%")', 'result');
     });
@@ -187,8 +296,7 @@ describe('main', () => {
     });
 
     it('should get value', async () => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLHyper = true;
+      mjs.userOpts.set(INCLUDE_TITLE_HTML_HYPER, true);
       const res = await func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(
         res, '<a href="%url%" title="%title%">%content%</a>', 'result'
@@ -201,8 +309,7 @@ describe('main', () => {
     });
 
     it('should get value', async () => {
-      const { vars } = mjs;
-      vars.includeTitleHTMLPlain = true;
+      mjs.userOpts.set(INCLUDE_TITLE_HTML_PLAIN, true);
       const res = await func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, '<a href="%url%" title="%title%">%content%</a>', 'result'
@@ -215,7 +322,7 @@ describe('main', () => {
     });
 
     it('should get value', async () => {
-      mjs.vars.separateTextURL = true;
+      mjs.userOpts.set(TEXT_SEP_LINES, true);
       const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, '%content%\n%url%', 'result');
     });
@@ -698,19 +805,14 @@ describe('main', () => {
       }
     };
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
       browser.i18n.getMessage.returns(USER_INPUT_DEFAULT);
+      browser.storage.local.get.resolves({});
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
 
     it('should not call function', async () => {
@@ -822,6 +924,7 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
+      mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
@@ -829,7 +932,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -840,7 +942,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -851,6 +952,7 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -858,7 +960,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.write.callCount;
       const menuItemId = HTML_HYPER;
       const info = {
@@ -869,7 +970,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -880,6 +980,7 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
@@ -888,7 +989,6 @@ describe('main', () => {
 
     it('should call function', async () => {
       delete navigator.clipboard.write;
-      const { enabledFormats } = mjs;
       const i = document.execCommand.callCount;
       const menuItemId = HTML_HYPER;
       const info = {
@@ -899,7 +999,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -910,13 +1009,13 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(document.execCommand.callCount, i + 1, 'called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -927,7 +1026,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -938,7 +1036,8 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -946,7 +1045,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -957,7 +1055,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/#foo'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -968,7 +1065,8 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -976,7 +1074,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -987,10 +1084,10 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -998,7 +1095,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
       const menuItemId = `${COPY_TABS_ALL}TextURL`;
@@ -1010,7 +1106,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
@@ -1027,6 +1122,7 @@ describe('main', () => {
         title: 'baz',
         url: 'https://example.com/baz'
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1035,7 +1131,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
       const menuItemId = `${COPY_TABS_OTHER}TextURL`;
@@ -1047,7 +1142,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
@@ -1060,6 +1154,7 @@ describe('main', () => {
         title: 'baz',
         url: 'https://example.com/baz'
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1068,7 +1163,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
       const menuItemId = `${COPY_TABS_SELECTED}TextURL`;
@@ -1080,7 +1174,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
@@ -1097,6 +1190,7 @@ describe('main', () => {
         title: 'baz',
         url: 'https://example.com/baz'
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1105,7 +1199,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_TAB}TextURL`;
       const info = {
@@ -1116,10 +1209,10 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1127,7 +1220,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_TAB}${BBCODE_URL}`;
       const info = {
@@ -1138,10 +1230,10 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1149,7 +1241,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}TextURL`;
       const info = {
@@ -1163,7 +1254,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1174,6 +1264,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1181,7 +1272,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}TextURL`;
       const info = {
@@ -1194,7 +1284,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1205,6 +1294,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1212,7 +1302,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}TextURL`;
       const info = {
@@ -1224,7 +1313,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1235,6 +1323,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1242,7 +1331,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}${BBCODE_URL}`;
       const info = {
@@ -1254,7 +1342,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1265,6 +1352,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1272,7 +1360,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}TextURL`;
       const info = {
@@ -1284,7 +1371,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1295,6 +1381,7 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1302,7 +1389,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}TextURL`;
       const info = {
@@ -1313,7 +1399,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1324,7 +1409,8 @@ describe('main', () => {
           url: null
         }
       }]);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1332,7 +1418,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}${BBCODE_URL}`;
       const info = {
@@ -1343,7 +1428,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1354,6 +1438,7 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1361,7 +1446,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}TextURL`;
       const info = {
@@ -1372,7 +1456,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1383,7 +1466,8 @@ describe('main', () => {
           url: null
         }
       }]);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1391,7 +1475,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -1403,7 +1486,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1414,6 +1496,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1421,7 +1504,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -1432,7 +1514,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1443,6 +1524,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1450,7 +1532,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -1461,7 +1542,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1472,6 +1552,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1479,7 +1560,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = BBCODE_URL;
       const info = {
@@ -1490,7 +1570,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: true,
@@ -1501,6 +1580,7 @@ describe('main', () => {
           url: 'https://example.com/foo'
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1508,7 +1588,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = BBCODE_URL;
       const info = {
@@ -1519,7 +1598,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1530,6 +1608,7 @@ describe('main', () => {
           url: null
         }
       }]);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1537,7 +1616,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = BBCODE_URL;
       const info = {
@@ -1548,7 +1626,6 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {
           isLink: false,
@@ -1559,7 +1636,8 @@ describe('main', () => {
           url: null
         }
       }]);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1567,7 +1645,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = BBCODE_URL;
@@ -1579,11 +1656,11 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1593,7 +1670,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
@@ -1606,11 +1682,11 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1620,7 +1696,6 @@ describe('main', () => {
     });
 
     it('should throw', async () => {
-      const { enabledFormats, vars } = mjs;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -1630,20 +1705,19 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
       browser.scripting.executeScript.withArgs(optEdit).rejects(
         new Error('error'));
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       await func(info, tab).catch(e => {
         assert.instanceOf(e, Error, 'error');
       });
     });
 
     it('should throw', async () => {
-      const { enabledFormats, vars } = mjs;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -1653,21 +1727,20 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
       browser.scripting.executeScript.withArgs(optEdit).resolves([{
         error: new Error('error')
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
         assert.instanceOf(e, Error, 'error');
       });
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
@@ -1679,14 +1752,14 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
       browser.scripting.executeScript.withArgs(optEdit).resolves([{
         result: null
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1696,7 +1769,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
@@ -1708,14 +1780,14 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
       browser.scripting.executeScript.withArgs(optEdit).resolves([{
         result: ''
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1725,7 +1797,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
@@ -1737,14 +1808,14 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
       browser.scripting.executeScript.withArgs(optEdit).resolves([{
         result: 'foo bar'
       }]);
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1754,7 +1825,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -1765,11 +1835,11 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      enabledFormats.add(menuItemId);
       browser.scripting.executeScript.withArgs(optInfo).resolves([{
         result: {}
       }]);
-      vars.notifyOnCopy = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1780,21 +1850,16 @@ describe('main', () => {
   describe('extract clicked data (tabs.executeScript)', () => {
     const func = mjs.extractClickedData;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
       browser.permissions.contains.withArgs({
         permissions: ['scripting']
       }).resolves(false);
+      browser.storage.local.get.resolves({});
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
 
     it('should get empty array', async () => {
@@ -1938,6 +2003,7 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
+      mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -1951,7 +2017,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -1993,7 +2058,7 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2007,7 +2072,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2049,10 +2113,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       window.prompt.returns('foo bar');
       global.window.prompt.returns('foo bar');
       const res = await func(info, tab);
@@ -2068,7 +2132,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2111,10 +2174,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2128,7 +2191,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2170,7 +2232,7 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2184,7 +2246,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2226,8 +2287,8 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.preferCanonicalUrl = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2241,7 +2302,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2285,10 +2345,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2302,7 +2362,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2344,10 +2403,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2361,7 +2420,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2403,10 +2461,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2420,7 +2478,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2464,10 +2521,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2481,7 +2538,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2525,10 +2581,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2542,7 +2598,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2584,10 +2639,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2601,7 +2656,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2643,10 +2697,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2660,7 +2714,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2702,10 +2755,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2719,7 +2772,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2761,10 +2813,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2778,7 +2830,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2822,10 +2873,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2839,7 +2890,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2883,10 +2933,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2900,7 +2950,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2943,10 +2992,7 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
+      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -2960,7 +3006,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -2997,10 +3042,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3014,7 +3059,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3058,10 +3102,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3075,7 +3119,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3119,10 +3162,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3136,7 +3179,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3180,10 +3222,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3197,7 +3239,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3241,10 +3282,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3258,7 +3299,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3302,10 +3342,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3319,7 +3359,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
       }).callCount;
@@ -3363,10 +3402,10 @@ describe('main', () => {
           url: 'https://www.example.com/#baz'
         }
       ]);
-      enabledFormats.add(menuItemId);
-      vars.notifyOnCopy = true;
-      vars.preferCanonicalUrl = true;
-      vars.promptContent = true;
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      mjs.userOpts.set(PREFER_CANONICAL, true);
+      mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       assert.strictEqual(browser.tabs.executeScript.withArgs({
         file: JS_EDIT_CONTENT
@@ -3383,12 +3422,10 @@ describe('main', () => {
   describe('handle active tab', () => {
     const func = mjs.handleActiveTab;
     beforeEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
     });
     afterEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
     });
 
     it('should get null', async () => {
@@ -3412,7 +3449,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.tabs.get.callCount;
       const j = browser.menus.update.callCount;
       const k = browser.tabs.query.callCount;
@@ -3426,7 +3462,7 @@ describe('main', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}]);
-      enabledFormats.add(HTML_PLAIN);
+      mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func({
         tabId: 1
       });
@@ -3486,12 +3522,10 @@ describe('main', () => {
   describe('handle command', () => {
     const func = mjs.handleCmd;
     beforeEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
     });
     afterEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
     });
 
     it('should throw', async () => {
@@ -3508,7 +3542,6 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
         active: true,
@@ -3519,7 +3552,7 @@ describe('main', () => {
         active: true,
         windowType: 'normal'
       }).resolves([]);
-      enabledFormats.add(HTML_PLAIN);
+      mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
       assert.strictEqual(browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -3530,7 +3563,6 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
         active: true,
@@ -3543,7 +3575,7 @@ describe('main', () => {
       }).resolves([{
         id: browser.tabs.TAB_ID_NONE
       }]);
-      enabledFormats.add(HTML_PLAIN);
+      mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
       assert.strictEqual(browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -3557,12 +3589,10 @@ describe('main', () => {
   describe('handle message', () => {
     const func = mjs.handleMsg;
     beforeEach(() => {
-      const { vars } = mjs;
-      vars.notifyOnCopy = false;
+      mjs.userOpts.clear();
     });
     afterEach(() => {
-      const { vars } = mjs;
-      vars.notifyOnCopy = false;
+      mjs.userOpts.clear();
     });
 
     it('should get empty array', async () => {
@@ -3755,7 +3785,7 @@ describe('main', () => {
     it('should call function', async () => {
       browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
-      mjs.vars.notifyOnCopy = true;
+      mjs.userOpts.set(NOTIFY_COPY, true);
       const i = browser.notifications.create.callCount;
       browser.notifications.create.resolves(true);
       const res = await func({
@@ -3769,7 +3799,7 @@ describe('main', () => {
     it('should not call function', async () => {
       browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
-      mjs.vars.notifyOnCopy = true;
+      mjs.userOpts.set(NOTIFY_COPY, true);
       const i = browser.notifications.create.callCount;
       const res = await func({
         [NOTIFY_COPY]: false
@@ -3782,7 +3812,7 @@ describe('main', () => {
     it('should not call function', async () => {
       browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
-      mjs.vars.notifyOnCopy = false;
+      mjs.userOpts.set(NOTIFY_COPY, false);
       const i = browser.notifications.create.callCount;
       const res = await func({
         [NOTIFY_COPY]: true
@@ -3810,27 +3840,15 @@ describe('main', () => {
     });
   });
 
-  describe('set variable', () => {
-    const func = mjs.setVar;
+  describe('set storage value', () => {
+    const func = mjs.setStorageValue;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
 
     it('should throw', async () => {
@@ -3845,127 +3863,152 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
+    it('should get empty array', async () => {
+      const res = await func('foo', {
+        checked: true
+      });
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should get empty array', async () => {
+      const res = await func('foo', {
+        checked: true
+      }, true);
+      assert.deepEqual(res, [], 'result');
+    });
+
     it('should set variable', async () => {
-      const { enabledFormats } = mjs;
       await setFormatData();
       const res = await func('TextURL', {
         checked: false
       });
-      assert.isFalse(enabledFormats.has('TextURL'), 'value');
-      assert.deepEqual(res, [enabledFormats], 'result');
+      assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
+      assert.deepEqual(res, [mjs.enabledFormats], 'result');
     });
 
     it('should set variable', async () => {
-      const { enabledFormats } = mjs;
+      await setFormatData();
+      const res = await func('TextURL', {
+        checked: true
+      });
+      assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
+      assert.deepEqual(res, [mjs.enabledFormats], 'result');
+    });
+
+    it('should set variable', async () => {
       await setFormatData();
       const res = await func('TextURL', {
         checked: false
       }, true);
-      assert.isFalse(enabledFormats.has('TextURL'), 'value');
+      assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
       assert.strictEqual(res[0].length, 90, 'result');
     });
 
     it('should set variable', async () => {
-      const { enabledFormats } = mjs;
-      await setFormatData();
-      const res = await func('TextURL', {
-        checked: true
-      });
-      assert.isTrue(enabledFormats.has('TextURL'), 'value');
-      assert.deepEqual(res, [enabledFormats], 'result');
-    });
-
-    it('should set variable', async () => {
-      const { enabledFormats } = mjs;
       await setFormatData();
       const res = await func('TextURL', {
         checked: true
       }, true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'value');
+      assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
       assert.strictEqual(res[0].length, 96, 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
       const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true
       });
-      assert.isTrue(vars.includeTitleHTMLHyper, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
+      const res = await func(INCLUDE_TITLE_HTML_HYPER, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true
       });
-      assert.isTrue(vars.includeTitleHTMLPlain, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
+      const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
       const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: true
       });
-      assert.isTrue(vars.includeTitleMarkdown, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
-      const res = await func(NOTIFY_COPY, {
+      const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: false
       });
-      assert.isFalse(vars.notifyOnCopy, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
       const res = await func(NOTIFY_COPY, {
         checked: true
       });
-      assert.isTrue(vars.notifyOnCopy, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(NOTIFY_COPY), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
-      const res = await func(PREFER_CANONICAL, {
+      const res = await func(NOTIFY_COPY, {
         checked: false
       });
-      assert.isFalse(vars.preferCanonicalUrl, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isFalse(mjs.userOpts.get(NOTIFY_COPY), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
       const res = await func(PREFER_CANONICAL, {
         checked: true
       });
-      assert.isTrue(vars.preferCanonicalUrl, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
-      const res = await func(PROMPT, {
+      const res = await func(PREFER_CANONICAL, {
         checked: false
       });
-      assert.isFalse(vars.promptContent, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isFalse(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should set variable', async () => {
-      const { vars } = mjs;
       const res = await func(PROMPT, {
         checked: true
       });
-      assert.isTrue(vars.promptContent, 'value');
-      assert.deepEqual(res, [], 'result');
+      assert.isTrue(mjs.userOpts.get(PROMPT), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(PROMPT, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(PROMPT), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 
     it('should call function', async () => {
@@ -4057,27 +4100,15 @@ describe('main', () => {
     });
   });
 
-  describe('set variables', () => {
-    const func = mjs.setVars;
+  describe('handle storage', () => {
+    const func = mjs.handleStorage;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.includeTitleHTMLHyper = false;
-      vars.includeTitleHTMLPlain = false;
-      vars.includeTitleMarkdown = false;
-      vars.notifyOnCopy = false;
-      vars.preferCanonicalUrl = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
+      mjs.userOpts.clear();
     });
 
     it('should not set variables', async () => {
@@ -4127,14 +4158,12 @@ describe('main', () => {
   describe('startup', () => {
     const func = mjs.startup;
     beforeEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.add('HTMLPlain');
-      enabledFormats.add('Markdown');
-      enabledFormats.add('TextURL');
+      mjs.enabledFormats.add('HTMLPlain');
+      mjs.enabledFormats.add('Markdown');
+      mjs.enabledFormats.add('TextURL');
     });
     afterEach(() => {
-      const { enabledFormats } = mjs;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
     });
 
     it('should get array', async () => {

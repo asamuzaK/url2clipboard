@@ -295,13 +295,13 @@ export const handleMsg = async msg => {
 };
 
 /**
- * set variable
+ * set storage value
  *
  * @param {string} item - item
  * @param {object} obj - value object
  * @returns {?Function} - toggleEnabledFormats()
  */
-export const setVar = async (item, obj) => {
+export const setStorageValue = async (item, obj) => {
   let func;
   if (item && obj) {
     const { checked } = obj;
@@ -316,17 +316,17 @@ export const setVar = async (item, obj) => {
 };
 
 /**
- * set variables
+ * handle storage
  *
  * @param {object} data - data
  * @returns {Promise.<Array>} - results of each handler
  */
-export const setVars = async (data = {}) => {
+export const handleStorage = async (data = {}) => {
   const items = Object.entries(data);
   const func = [];
   for (const [key, value] of items) {
     const { newValue } = value;
-    func.push(setVar(key, newValue || value, !!newValue));
+    func.push(setStorageValue(key, newValue || value, !!newValue));
   }
   return Promise.all(func);
 };
@@ -343,5 +343,5 @@ export const startup = async () => {
     prepareTab(),
     setFormatData()
   ]);
-  return getAllStorage().then(setVars).then(toggleMenuItem);
+  return getAllStorage().then(handleStorage).then(toggleMenuItem);
 };

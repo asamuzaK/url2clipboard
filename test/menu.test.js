@@ -6,7 +6,7 @@
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
-import { COPY_PAGE } from '../src/mjs/constant.js';
+import { COPY_PAGE, WEBEXT_ID } from '../src/mjs/constant.js';
 
 /* test */
 import * as mjs from '../src/mjs/menu.js';
@@ -16,6 +16,7 @@ describe('menu', () => {
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
     browser.permissions.contains.resolves(true);
+    browser.storage.local.get.resolves({});
     global.browser = browser;
   });
   afterEach(() => {
@@ -40,6 +41,12 @@ describe('menu', () => {
 
   describe('create context menu item', () => {
     const func = mjs.createMenuItem;
+    beforeEach(() => {
+      browser.runtime.id = null;
+    });
+    afterEach(() => {
+      browser.runtime.id = null;
+    });
 
     it('should not call function', async () => {
       const i = browser.menus.create.callCount;
@@ -83,10 +90,9 @@ describe('menu', () => {
       assert.strictEqual(browser.menus.create.callCount, i, 'not called');
     });
 
-    it('should not call function', async () => {
-      const { vars } = mjs;
+    it('should call function', async () => {
       const i = browser.menus.create.callCount;
-      vars.isWebExt = true;
+      browser.runtime.id = WEBEXT_ID;
       await func('foo', 'bar', {
         contexts: ['tab']
       });
@@ -106,12 +112,10 @@ describe('menu', () => {
   describe('create single menu item', () => {
     const func = mjs.createSingleMenuItem;
     beforeEach(() => {
-      const { vars } = mjs;
-      vars.isWebExt = true;
+      browser.runtime.id = null;
     });
     afterEach(() => {
-      const { vars } = mjs;
-      vars.isWebExt = false;
+      browser.runtime.id = null;
     });
 
     it('should throw', async () => {
@@ -139,11 +143,9 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { vars } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
-      vars.isWebExt = false;
       const res = await func('TextURL', COPY_PAGE, '(&C)', {
         contexts: ['page', 'selection'],
         enabled: true
@@ -154,11 +156,10 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { vars } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
-      vars.isWebExt = true;
+      browser.runtime.id = WEBEXT_ID;
       const res = await func('TextURL', COPY_PAGE, '(&C)', {
         contexts: ['page', 'selection'],
         enabled: true
@@ -169,11 +170,9 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { vars } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
-      vars.isWebExt = false;
       const res = await func('Markdown', COPY_PAGE, '(&C)', {
         contexts: ['page', 'selection'],
         enabled: true
@@ -187,22 +186,19 @@ describe('menu', () => {
   describe('create context menu items', () => {
     const func = mjs.createContextMenu;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = true;
-      enabledFormats.add('HTMLPlain');
-      enabledFormats.add('Markdown');
-      enabledFormats.add('TextURL');
+      browser.runtime.id = null;
+      mjs.enabledFormats.add('HTMLPlain');
+      mjs.enabledFormats.add('Markdown');
+      mjs.enabledFormats.add('TextURL');
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = false;
-      enabledFormats.clear();
+      browser.runtime.id = null;
+      mjs.enabledFormats.clear();
     });
 
     it('should not call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.menus.create.callCount;
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i, 'not called');
       assert.deepEqual(res, [], 'result');
@@ -212,6 +208,7 @@ describe('menu', () => {
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.id = WEBEXT_ID;
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 96, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
@@ -219,11 +216,9 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { vars } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
-      vars.isWebExt = false;
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 32, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
@@ -231,12 +226,12 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
-      enabledFormats.delete('HTMLPlain');
-      enabledFormats.delete('Markdown');
+      mjs.enabledFormats.delete('HTMLPlain');
+      mjs.enabledFormats.delete('Markdown');
       browser.i18n.getMessage.callsFake((...args) => args.toString());
+      browser.runtime.id = WEBEXT_ID;
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 6, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
@@ -244,13 +239,11 @@ describe('menu', () => {
     });
 
     it('should call function', async () => {
-      const { enabledFormats, vars } = mjs;
       const i = browser.menus.create.callCount;
       const k = browser.i18n.getMessage.callCount;
-      enabledFormats.delete('HTMLPlain');
-      enabledFormats.delete('Markdown');
+      mjs.enabledFormats.delete('HTMLPlain');
+      mjs.enabledFormats.delete('Markdown');
       browser.i18n.getMessage.callsFake((...args) => args.toString());
-      vars.isWebExt = false;
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 2, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
@@ -261,18 +254,14 @@ describe('menu', () => {
   describe('update context menu', () => {
     const func = mjs.updateContextMenu;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = true;
-      vars.promptContent = false;
-      enabledFormats.add('HTMLPlain');
-      enabledFormats.add('Markdown');
-      enabledFormats.add('TextURL');
+      browser.runtime.id = null;
+      mjs.enabledFormats.add('HTMLPlain');
+      mjs.enabledFormats.add('Markdown');
+      mjs.enabledFormats.add('TextURL');
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = false;
-      vars.promptContent = false;
-      enabledFormats.clear();
+      browser.runtime.id = null;
+      mjs.enabledFormats.clear();
     });
 
     it('should throw', async () => {
@@ -283,7 +272,6 @@ describe('menu', () => {
     });
 
     it('should not call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.menus.update.callCount;
       browser.tabs.query.withArgs({
         windowId: browser.windows.WINDOW_ID_CURRENT,
@@ -294,7 +282,7 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}]);
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
       assert.deepEqual(res, [], 'result');
@@ -312,6 +300,7 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}]);
+      browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 2, 'called');
@@ -330,6 +319,7 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}]);
+      browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 2, 'called');
@@ -340,16 +330,14 @@ describe('menu', () => {
   describe('handle menus on shown', () => {
     const func = mjs.handleMenusOnShown;
     beforeEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = true;
-      enabledFormats.add('HTMLPlain');
-      enabledFormats.add('Markdown');
-      enabledFormats.add('TextURL');
+      browser.runtime.id = WEBEXT_ID;
+      mjs.enabledFormats.add('HTMLPlain');
+      mjs.enabledFormats.add('Markdown');
+      mjs.enabledFormats.add('TextURL');
     });
     afterEach(() => {
-      const { enabledFormats, vars } = mjs;
-      vars.isWebExt = false;
-      enabledFormats.clear();
+      browser.runtime.id = null;
+      mjs.enabledFormats.clear();
     });
 
     it('should get null', async () => {
@@ -368,7 +356,6 @@ describe('menu', () => {
     });
 
     it('should not call function', async () => {
-      const { enabledFormats } = mjs;
       const i = browser.menus.update.callCount;
       const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
@@ -382,7 +369,7 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}]);
-      enabledFormats.clear();
+      mjs.enabledFormats.clear();
       const res = await func({ contexts: ['tab'] }, { id: 1 });
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
       assert.strictEqual(browser.menus.refresh.callCount, j, 'not called');
