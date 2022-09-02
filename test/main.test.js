@@ -1743,6 +1743,34 @@ describe('main', () => {
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
+      const k = window.prompt.callCount;
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([undefined]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
+        'called');
+      assert.strictEqual(window.prompt.callCount, k, 'not called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId

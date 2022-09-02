@@ -430,12 +430,13 @@ export const extractClickedData = async (info, tab) => {
                   tabId
                 }
               });
-              if (Array.isArray(promptRes)) {
+              if (Array.isArray(promptRes) && isObjectNotEmpty(promptRes[0])) {
                 const [{ error, result }] = promptRes;
                 if (error) {
                   throw new Error(error.message);
+                } else if (result) {
+                  editedContent = result;
                 }
-                editedContent = result;
               }
             } else {
               const editData = {
