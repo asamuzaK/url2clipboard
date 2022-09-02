@@ -527,6 +527,10 @@ export const handleCmd = async cmd => {
   }
   const format = cmd.replace(CMD_COPY, '');
   let func;
+  if (!enabledFormats.size) {
+    await setFormatData();
+    await setUserEnabledFormats();
+  }
   if (enabledFormats.has(format)) {
     const tab = await getActiveTab();
     if (tab) {
