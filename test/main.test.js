@@ -1743,7 +1743,6 @@ describe('main', () => {
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
-      const k = window.prompt.callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -1764,7 +1763,6 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.strictEqual(window.prompt.callCount, k, 'not called');
       assert.deepEqual(res, [], 'result');
     });
 
