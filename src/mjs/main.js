@@ -423,19 +423,22 @@ export const extractClickedData = async (info, tab) => {
             const promptMsg = i18n.getMessage(USER_INPUT, formatTitle);
             let editedContent;
             if (useScripting) {
-              const promptRes = await executeScriptToTab({
+              const arr = await executeScriptToTab({
                 args: [content, promptMsg],
                 func: editContent,
                 target: {
                   tabId
                 }
               });
-              if (Array.isArray(promptRes) && isObjectNotEmpty(promptRes[0])) {
-                const [{ error, result }] = promptRes;
-                if (error) {
-                  throw new Error(error.message);
-                } else if (result) {
-                  editedContent = result;
+              if (Array.isArray(arr)) {
+                const [res] = arr;
+                if (isObjectNotEmpty(res)) {
+                  const { error, result } = res;
+                  if (error) {
+                    throw new Error(error.message);
+                  } else if (result) {
+                    editedContent = result;
+                  }
                 }
               }
             } else {
@@ -443,7 +446,7 @@ export const extractClickedData = async (info, tab) => {
                 content,
                 promptMsg
               };
-              const promptRes = await execScriptsToTabInOrder([
+              const res = await execScriptsToTabInOrder([
                 {
                   code: `window.editContentData = ${JSON.stringify(editData)};`
                 },
@@ -451,8 +454,8 @@ export const extractClickedData = async (info, tab) => {
                   file: JS_EDIT_CONTENT
                 }
               ]);
-              if (Array.isArray(promptRes)) {
-                [editedContent] = promptRes;
+              if (Array.isArray(res)) {
+                [editedContent] = res;
               }
             }
             text = createLinkText({
