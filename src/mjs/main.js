@@ -436,9 +436,8 @@ export const extractClickedData = async (info, tab) => {
                   const { error, result } = res;
                   if (error) {
                     throw new Error(error.message);
-                  } else if (result) {
-                    editedContent = result;
                   }
+                  editedContent = result;
                 }
               }
             } else {
