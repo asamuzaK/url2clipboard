@@ -263,11 +263,11 @@ export const getContextInfo = async tabId => {
       }
     }
   } else {
-    const arr = await execScriptToTab({
+    const res = await execScriptToTab({
       file: JS_CONTEXT_INFO
     });
-    if (Array.isArray(arr)) {
-      [info] = arr;
+    if (Array.isArray(res)) {
+      [info] = res;
     }
   }
   return info ?? null;
