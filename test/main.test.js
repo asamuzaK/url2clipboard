@@ -562,14 +562,17 @@ describe('main', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should throw', async () => {
+    it('should log error', async () => {
+      const stubErr = sinon.stub(console, 'error');
       browser.scripting.executeScript.rejects(new Error('error'));
       browser.tabs.query.resolves([{
         id: 1
       }]);
-      await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
-      });
+      const res = await func();
+      const { called: errCalled } = stubErr;
+      stubErr.restore();
+      assert.isTrue(errCalled, 'error called');
+      assert.isNull(res, 'result');
     });
 
     it('should throw', async () => {
@@ -1695,7 +1698,10 @@ describe('main', () => {
       assert.deepEqual(res, [], 'result');
     });
 
-    it('should throw', async () => {
+    it('should log error', async () => {
+      const stubErr = sinon.stub(console, 'error');
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -1711,10 +1717,16 @@ describe('main', () => {
       browser.scripting.executeScript.withArgs(optEdit).rejects(
         new Error('error'));
       mjs.enabledFormats.add(menuItemId);
-      mjs.userOpts.set(PREFER_CANONICAL, true);
-      await func(info, tab).catch(e => {
-        assert.instanceOf(e, Error, 'error');
-      });
+      mjs.userOpts.set(PROMPT, true);
+      const res = await func(info, tab);
+      const { called: errCalled } = stubErr;
+      stubErr.restore();
+      assert.isTrue(errCalled, 'called error');
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
+        'called');
+      assert.deepEqual(res, [], 'result');
     });
 
     it('should throw', async () => {

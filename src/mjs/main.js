@@ -4,7 +4,7 @@
 
 /* shared */
 import { Clip } from './clipboard.js';
-import { getType, isObjectNotEmpty, isString } from './common.js';
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
   execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
   getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
@@ -251,7 +251,7 @@ export const getContextInfo = async tabId => {
       target: {
         tabId
       }
-    });
+    }).catch(logErr);
     if (Array.isArray(arr)) {
       const [res] = arr;
       if (isObjectNotEmpty(res)) {
@@ -429,7 +429,7 @@ export const extractClickedData = async (info, tab) => {
                 target: {
                   tabId
                 }
-              });
+              }).catch(logErr);
               if (Array.isArray(arr)) {
                 const [res] = arr;
                 if (isObjectNotEmpty(res)) {
