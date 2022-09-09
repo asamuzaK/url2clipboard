@@ -556,6 +556,9 @@ export const handleMsg = async msg => {
   const func = [];
   if (isObjectNotEmpty(msg)) {
     const items = Object.entries(msg);
+    if (!userOpts.size) {
+      await setUserOpts();
+    }
     for (const [key, value] of items) {
       switch (key) {
         case CONTEXT_INFO_GET: {
