@@ -4191,6 +4191,17 @@ describe('main', () => {
       }, 'local');
       assert.deepEqual(res, [[]], 'result');
     });
+
+    it('should set variables', async () => {
+      const res = await func({
+        foo: {
+          newValue: {
+            checked: true
+          }
+        }
+      }, 'local', true);
+      assert.deepEqual(res, [[]], 'result');
+    });
   });
 
   describe('startup', () => {
