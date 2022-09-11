@@ -13,6 +13,11 @@ const REG_DOM_PARSE =
 
 /* Clip */
 export class Clip {
+  /* private fields */
+  #content;
+  #mime;
+  #supportedMimeTypes;
+
   /**
    * constructor
    *
@@ -20,9 +25,9 @@ export class Clip {
    * @param {string} mime - mime
    */
   constructor(content, mime) {
-    this._content = isString(content) ? content.trim() : '';
-    this._mime = isString(mime) ? mime.trim() : null;
-    this._supportedMimeTypes = [
+    this.#content = isString(content) ? content.trim() : '';
+    this.#mime = isString(mime) ? mime.trim() : null;
+    this.#supportedMimeTypes = [
       'application/json',
       'application/xhtml+xml',
       'application/xml',
@@ -33,23 +38,22 @@ export class Clip {
       'text/uri-list',
       'text/xml'
     ];
-    Object.freeze(this._supportedMimeTypes);
   }
 
   /* getter / setter */
   get content() {
-    return this._content;
+    return this.#content;
   }
 
   set content(data) {
     if (!isString(data)) {
       throw new TypeError(`Expected String but got ${getType(data)}.`);
     }
-    this._content = data.trim();
+    this.#content = data.trim();
   }
 
   get mime() {
-    return this._mime;
+    return this.#mime;
   }
 
   set mime(type) {
@@ -57,10 +61,10 @@ export class Clip {
       throw new TypeError(`Expected String but got ${getType(type)}.`);
     }
     type = type.trim();
-    if (!this._supportedMimeTypes.includes(type)) {
+    if (!this.#supportedMimeTypes.includes(type)) {
       throw new Error(`Mime type of ${type} is not supported.`);
     }
-    this._mime = type;
+    this.#mime = type;
   }
 
   /**
@@ -79,18 +83,18 @@ export class Clip {
       document.removeEventListener('copy', setClipboardData, true);
       evt.stopImmediatePropagation();
       evt.preventDefault();
-      if (this._supportedMimeTypes.includes(this._mime)) {
-        if (REG_DOM_PARSE.test(this._mime)) {
-          const domstr = serializeDomString(this._content, this._mime);
+      if (this.#supportedMimeTypes.includes(this.#mime)) {
+        if (REG_DOM_PARSE.test(this.#mime)) {
+          const domstr = serializeDomString(this.#content, this.#mime);
           if (isString(domstr)) {
-            evt.clipboardData.setData(this._mime, domstr);
-            if (this._mime === MIME_HTML) {
-              const doc = new DOMParser().parseFromString(domstr, this._mime);
+            evt.clipboardData.setData(this.#mime, domstr);
+            if (this.#mime === MIME_HTML) {
+              const doc = new DOMParser().parseFromString(domstr, this.#mime);
               evt.clipboardData.setData(MIME_PLAIN, doc.body.textContent);
             }
           }
         } else {
-          evt.clipboardData.setData(this._mime, this._content);
+          evt.clipboardData.setData(this.#mime, this.#content);
         }
       }
     };
@@ -104,41 +108,41 @@ export class Clip {
    * @returns {void}
    */
   async copy() {
-    if (!this._supportedMimeTypes.includes(this._mime)) {
-      throw new Error(`Mime type of ${this._mime} is not supported.`);
+    if (!this.#supportedMimeTypes.includes(this.#mime)) {
+      throw new Error(`Mime type of ${this.#mime} is not supported.`);
     }
-    if (this._content) {
+    if (this.#content) {
       const { clipboard } = navigator;
       if (typeof clipboard?.writeText === 'function' &&
-          this._mime === MIME_PLAIN) {
+          this.#mime === MIME_PLAIN) {
         try {
-          await clipboard.writeText(this._content);
+          await clipboard.writeText(this.#content);
         } catch (e) {
           this._copySync();
         }
       } else if (typeof clipboard?.write === 'function' &&
                  typeof ClipboardItem === 'function') {
         const data = [];
-        if (REG_DOM_PARSE.test(this._mime)) {
-          const domstr = serializeDomString(this._content, this._mime);
+        if (REG_DOM_PARSE.test(this.#mime)) {
+          const domstr = serializeDomString(this.#content, this.#mime);
           if (isString(domstr)) {
-            const blob = new Blob([domstr], { type: this._mime });
-            if (this._mime === MIME_HTML) {
-              const doc = new DOMParser().parseFromString(domstr, this._mime);
+            const blob = new Blob([domstr], { type: this.#mime });
+            if (this.#mime === MIME_HTML) {
+              const doc = new DOMParser().parseFromString(domstr, this.#mime);
               const text = new Blob([doc.body.textContent], {
                 type: MIME_PLAIN
               });
               data.push(new ClipboardItem({
-                [this._mime]: blob,
+                [this.#mime]: blob,
                 [MIME_PLAIN]: text
               }));
             } else {
-              data.push(new ClipboardItem({ [this._mime]: blob }));
+              data.push(new ClipboardItem({ [this.#mime]: blob }));
             }
           }
         } else {
-          const blob = new Blob([this._content], { type: this._mime });
-          data.push(new ClipboardItem({ [this._mime]: blob }));
+          const blob = new Blob([this.#content], { type: this.#mime });
+          data.push(new ClipboardItem({ [this.#mime]: blob }));
         }
         try {
           if (data.length) {
