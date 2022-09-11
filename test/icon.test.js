@@ -35,19 +35,17 @@ describe('icon', () => {
     it('should get result', async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
-      const k = browser.browserAction.setIcon.callCount;
-      const l = browser.browserAction.setTitle.callCount;
+      const k = browser.action.setIcon.callCount;
+      const l = browser.action.setTitle.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
-      browser.browserAction.setIcon.callsFake((...args) => args);
-      browser.browserAction.setTitle.callsFake((...args) => args);
+      browser.action.setIcon.callsFake((...args) => args);
+      browser.action.setTitle.callsFake((...args) => args);
       const res = await func();
       assert.strictEqual(browser.i18n.getMessage.callCount, i + 1, 'called');
       assert.strictEqual(browser.runtime.getURL.callCount, j + 1, 'called');
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k + 1,
-        'called');
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l + 1,
-        'called');
+      assert.strictEqual(browser.action.setIcon.callCount, k + 1, 'called');
+      assert.strictEqual(browser.action.setTitle.callCount, l + 1, 'called');
       assert.strictEqual(mjs.icon.size, 1, 'size');
       assert.strictEqual(mjs.icon.get('id'), '', 'value');
       assert.deepEqual(res, [
@@ -67,19 +65,17 @@ describe('icon', () => {
     it('should get result', async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
-      const k = browser.browserAction.setIcon.callCount;
-      const l = browser.browserAction.setTitle.callCount;
+      const k = browser.action.setIcon.callCount;
+      const l = browser.action.setTitle.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
-      browser.browserAction.setIcon.callsFake((...args) => args);
-      browser.browserAction.setTitle.callsFake((...args) => args);
+      browser.action.setIcon.callsFake((...args) => args);
+      browser.action.setTitle.callsFake((...args) => args);
       const res = await func('#baz');
       assert.strictEqual(browser.i18n.getMessage.callCount, i + 1, 'called');
       assert.strictEqual(browser.runtime.getURL.callCount, j + 1, 'called');
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k + 1,
-        'called');
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l + 1,
-        'called');
+      assert.strictEqual(browser.action.setIcon.callCount, k + 1, 'called');
+      assert.strictEqual(browser.action.setTitle.callCount, l + 1, 'called');
       assert.strictEqual(mjs.icon.size, 1, 'size');
       assert.strictEqual(mjs.icon.get('id'), '#baz', 'value');
       assert.deepEqual(res, [
@@ -111,60 +107,54 @@ describe('icon', () => {
     it('should not call function', async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
-      const k = browser.browserAction.setIcon.callCount;
-      const l = browser.browserAction.setTitle.callCount;
+      const k = browser.action.setIcon.callCount;
+      const l = browser.action.setTitle.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
-      browser.browserAction.setIcon.callsFake((...args) => args);
-      browser.browserAction.setTitle.callsFake((...args) => args);
+      browser.action.setIcon.callsFake((...args) => args);
+      browser.action.setTitle.callsFake((...args) => args);
       const res = await func();
       assert.strictEqual(browser.i18n.getMessage.callCount, i, 'not called');
       assert.strictEqual(browser.runtime.getURL.callCount, j, 'not called');
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
-        'not called');
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
-        'not called');
+      assert.strictEqual(browser.action.setIcon.callCount, k, 'not called');
+      assert.strictEqual(browser.action.setTitle.callCount, l, 'not called');
       assert.isNull(res, 'result');
     });
 
     it('should not call function', async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
-      const k = browser.browserAction.setIcon.callCount;
-      const l = browser.browserAction.setTitle.callCount;
+      const k = browser.action.setIcon.callCount;
+      const l = browser.action.setTitle.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
       browser.runtime.id = WEBEXT_ID;
-      browser.browserAction.setIcon.callsFake((...args) => args);
-      browser.browserAction.setTitle.callsFake((...args) => args);
+      browser.action.setIcon.callsFake((...args) => args);
+      browser.action.setTitle.callsFake((...args) => args);
       mjs.icon.set('id', '#foo');
       const res = await func();
       assert.strictEqual(browser.i18n.getMessage.callCount, i, 'not called');
       assert.strictEqual(browser.runtime.getURL.callCount, j, 'not called');
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k,
-        'not called');
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l,
-        'not called');
+      assert.strictEqual(browser.action.setIcon.callCount, k, 'not called');
+      assert.strictEqual(browser.action.setTitle.callCount, l, 'not called');
       assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
       const i = browser.i18n.getMessage.callCount;
       const j = browser.runtime.getURL.callCount;
-      const k = browser.browserAction.setIcon.callCount;
-      const l = browser.browserAction.setTitle.callCount;
+      const k = browser.action.setIcon.callCount;
+      const l = browser.action.setTitle.callCount;
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
       browser.runtime.id = WEBEXT_ID;
-      browser.browserAction.setIcon.callsFake((...args) => args);
-      browser.browserAction.setTitle.callsFake((...args) => args);
+      browser.action.setIcon.callsFake((...args) => args);
+      browser.action.setTitle.callsFake((...args) => args);
       const res = await func();
       assert.strictEqual(browser.i18n.getMessage.callCount, i + 1, 'called');
       assert.strictEqual(browser.runtime.getURL.callCount, j + 1, 'called');
-      assert.strictEqual(browser.browserAction.setIcon.callCount, k + 1,
-        'called');
-      assert.strictEqual(browser.browserAction.setTitle.callCount, l + 1,
-        'called');
+      assert.strictEqual(browser.action.setIcon.callCount, k + 1, 'called');
+      assert.strictEqual(browser.action.setTitle.callCount, l + 1, 'called');
       assert.deepEqual(res, [
         [
           {
