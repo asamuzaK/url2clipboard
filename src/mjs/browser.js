@@ -1066,16 +1066,18 @@ export const isTab = async tabId => {
 /**
  * get current theme
  *
+ * @param {number} windowId - window ID
  * @returns {object} - theme.Theme
  */
-export const getCurrentTheme = async () => {
+export const getCurrentTheme = async windowId => {
   const isGranted = await isPermissionGranted({
     permissions: ['theme']
   });
   let currentTheme;
   if (isGranted) {
     const { theme } = browser;
-    currentTheme = await theme.getCurrent();
+    currentTheme =
+      await theme.getCurrent(Number.isInteger(windowId) ? windowId : null);
   }
   return currentTheme ?? null;
 };
