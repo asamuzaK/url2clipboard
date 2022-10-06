@@ -255,10 +255,10 @@ export const getContextInfo = async tabId => {
     if (Array.isArray(arr)) {
       const [res] = arr;
       if (isObjectNotEmpty(res)) {
-        const { error, result } = res;
-        if (error) {
-          throw new Error(error.message);
+        if (Object.prototype.hasOwnProperty.call(res, 'error')) {
+          throw res.error;
         }
+        const { result } = res;
         info = result;
       }
     }
@@ -433,10 +433,10 @@ export const extractClickedData = async (info, tab) => {
               if (Array.isArray(arr)) {
                 const [res] = arr;
                 if (isObjectNotEmpty(res)) {
-                  const { error, result } = res;
-                  if (error) {
-                    throw new Error(error.message);
+                  if (Object.prototype.hasOwnProperty.call(res, 'error')) {
+                    throw res.error;
                   }
+                  const { result } = res;
                   editedContent = result;
                 }
               }

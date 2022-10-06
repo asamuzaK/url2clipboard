@@ -587,6 +587,30 @@ describe('main', () => {
       });
     });
 
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: null
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.isNull(e, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      browser.scripting.executeScript.resolves([{
+        error: false
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1
+      }]);
+      await func().catch(e => {
+        assert.isFalse(e, 'error');
+      });
+    });
+
     it('should get result', async () => {
       browser.scripting.executeScript.resolves([{
         result: {
@@ -1749,6 +1773,52 @@ describe('main', () => {
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
         assert.instanceOf(e, Error, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([{
+        error: null
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
+      await func(info, tab).catch(e => {
+        assert.isNull(e, 'error');
+      });
+    });
+
+    it('should throw', async () => {
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([{
+        error: false
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(PROMPT, true);
+      await func(info, tab).catch(e => {
+        assert.isFalse(e, 'error');
       });
     });
 
