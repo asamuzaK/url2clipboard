@@ -278,6 +278,15 @@
   "onCopySettings": {
     "message": "Settings On Copy"
   },
+  "openOptions_key": {
+    "message": "Op&tions",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&T)"
+      }
+    }
+  },
   "optionsEnableFormatDetail": {
     "message": "Show $FORMAT$ menu item in the context menu.",
     "placeholders": {

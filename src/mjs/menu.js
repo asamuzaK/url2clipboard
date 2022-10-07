@@ -8,7 +8,7 @@ import { getAllTabsInWindow, getHighlightedTab } from './browser.js';
 import { enabledFormats, getFormat, getFormats } from './format.js';
 import {
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, WEBEXT_ID
+  COPY_TABS_SELECTED, OPTIONS_OPEN, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -20,6 +20,11 @@ const { WINDOW_ID_CURRENT } = windows;
 
 /* context menu items */
 export const menuItems = {
+  [OPTIONS_OPEN]: {
+    id: OPTIONS_OPEN,
+    contexts: ['browser_action'],
+    key: '(&T)'
+  },
   [COPY_PAGE]: {
     id: COPY_PAGE,
     contexts: ['page', 'selection'],
@@ -79,7 +84,7 @@ export const createMenuItem = async (id, title, data = {}) => {
     if (parentId) {
       opt.parentId = parentId;
     }
-    if (contexts.includes('tab')) {
+    if (contexts.includes('browser_action') || contexts.includes('tab')) {
       if (runtime.id === WEBEXT_ID) {
         menus.create(opt);
       }
@@ -147,17 +152,19 @@ export const createContextMenu = async () => {
           (runtime.id === WEBEXT_ID && itemKey) || ` ${itemKey}`
         );
         func.push(createMenuItem(itemId, itemTitle, itemData));
-        for (const [key, value] of formats) {
-          const { enabled: formatEnabled, menu: formatMenuTitle } = value;
-          if (formatEnabled) {
-            const subItemId = `${itemId}${key}`;
-            const subItemTitle = formatMenuTitle;
-            const subItemData = {
-              contexts,
-              enabled: formatEnabled,
-              parentId: itemId
-            };
-            func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+        if (itemId !== OPTIONS_OPEN) {
+          for (const [key, value] of formats) {
+            const { enabled: formatEnabled, menu: formatMenuTitle } = value;
+            if (formatEnabled) {
+              const subItemId = `${itemId}${key}`;
+              const subItemTitle = formatMenuTitle;
+              const subItemData = {
+                contexts,
+                enabled: formatEnabled,
+                parentId: itemId
+              };
+              func.push(createMenuItem(subItemId, subItemTitle, subItemData));
+            }
           }
         }
       }

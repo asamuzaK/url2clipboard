@@ -18,7 +18,8 @@ import {
   ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT,
   ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
   INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
-  NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, USER_INPUT_DEFAULT
+  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
+  USER_INPUT_DEFAULT
 } from '../src/mjs/constant.js';
 
 /* test */
@@ -844,22 +845,29 @@ describe('main', () => {
 
     it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
       const res = await func();
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
-      assert.deepEqual(res, [], 'result');
-    });
-
-    it('should not call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
-      const res = await func({}, {});
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
+      const res = await func({}, {});
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
+        'not called');
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
+        'not called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should not call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
       const info = {
         menuItemId: null
       };
@@ -869,11 +877,14 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
+        'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
       const info = {
         menuItemId: 'foo'
       };
@@ -883,11 +894,14 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
+        'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should not call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
       const info = {
         menuItemId: 'foo'
       };
@@ -897,7 +911,26 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
+        'not called');
       assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.runtime.openOptionsPage.callCount;
+      const info = {
+        menuItemId: OPTIONS_OPEN
+      };
+      const tab = {
+        id: 1
+      };
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
+        'not called');
+      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should throw if tab does not contain tab url', async () => {
@@ -4010,7 +4043,7 @@ describe('main', () => {
       }, true);
       assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
-      assert.strictEqual(res[0].length, 90, 'result');
+      assert.strictEqual(res[0].length, 91, 'result');
     });
 
     it('should set variable', async () => {
@@ -4020,7 +4053,7 @@ describe('main', () => {
       }, true);
       assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
-      assert.strictEqual(res[0].length, 96, 'result');
+      assert.strictEqual(res[0].length, 97, 'result');
     });
 
     it('should set variable', async () => {
@@ -4289,7 +4322,7 @@ describe('main', () => {
       browser.storage.local.get.resolves({});
       const res = await func();
       assert.isArray(res, 'result');
-      assert.strictEqual(res.length, 96, 'result');
+      assert.strictEqual(res.length, 97, 'result');
     });
   });
 });

@@ -28,12 +28,12 @@ import {
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN, MIME_HTML, MIME_PLAIN,
-  NOTIFY_COPY, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL,
-  USER_INPUT
+  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
+  TEXT_TEXT_URL, USER_INPUT
 } from './constant.js';
 
 /* api */
-const { i18n, tabs, windows } = browser;
+const { i18n, runtime, tabs, windows } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
@@ -303,7 +303,9 @@ export const extractClickedData = async (info, tab) => {
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
     const { isEdited, linkText, linkUrl, menuItemId, selectionText } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
-    if (isString(menuItemId) &&
+    if (menuItemId === OPTIONS_OPEN) {
+      func.push(runtime.openOptionsPage());
+    } else if (isString(menuItemId) &&
         Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       if (!userOpts.size) {
         await setUserOpts();

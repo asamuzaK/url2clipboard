@@ -210,9 +210,9 @@ describe('menu', () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.id = WEBEXT_ID;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 96, 'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
-      assert.strictEqual(res.length, 96, 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 97, 'called');
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 7, 'called');
+      assert.strictEqual(res.length, 97, 'result');
     });
 
     it('should call function', async () => {
@@ -221,8 +221,8 @@ describe('menu', () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 32, 'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
-      assert.strictEqual(res.length, 96, 'result');
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 7, 'called');
+      assert.strictEqual(res.length, 97, 'result');
     });
 
     it('should call function', async () => {
@@ -233,9 +233,9 @@ describe('menu', () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       browser.runtime.id = WEBEXT_ID;
       const res = await func();
-      assert.strictEqual(browser.menus.create.callCount, i + 6, 'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
-      assert.strictEqual(res.length, 6, 'result');
+      assert.strictEqual(browser.menus.create.callCount, i + 7, 'called');
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 7, 'called');
+      assert.strictEqual(res.length, 7, 'result');
     });
 
     it('should call function', async () => {
@@ -246,8 +246,8 @@ describe('menu', () => {
       browser.i18n.getMessage.callsFake((...args) => args.toString());
       const res = await func();
       assert.strictEqual(browser.menus.create.callCount, i + 2, 'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, k + 6, 'called');
-      assert.strictEqual(res.length, 6, 'result');
+      assert.strictEqual(browser.i18n.getMessage.callCount, k + 7, 'called');
+      assert.strictEqual(res.length, 7, 'result');
     });
   });
 

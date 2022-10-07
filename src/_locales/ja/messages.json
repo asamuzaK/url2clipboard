@@ -278,6 +278,15 @@
   "onCopySettings": {
     "message": "コピー時の設定"
   },
+  "openOptions_key": {
+    "message": "設定 $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&T)"
+      }
+    }
+  },
   "optionsEnableFormatDetail": {
     "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
     "placeholders": {

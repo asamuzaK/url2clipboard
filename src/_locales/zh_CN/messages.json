@@ -278,6 +278,15 @@
   "onCopySettings": {
     "message": "复制时"
   },
+  "openOptions_key": {
+    "message": "设置 $KEY$",
+    "placeholders": {
+      "key": {
+        "content": "$1",
+        "example": "(&T)"
+      }
+    }
+  },
   "optionsEnableFormatDetail": {
     "message": "在右键菜单中显示 $FORMAT$。",
     "placeholders": {
