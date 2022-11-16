@@ -272,7 +272,7 @@ export const getExtensionInfo = async id => {
 /**
  * get external extensions
  *
- * @returns {?Array|boolean} -array of management.extensionInfo
+ * @returns {?Array|boolean} - array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
   const isGranted = await isPermissionGranted({
