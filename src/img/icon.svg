@@ -25,6 +25,9 @@
       fill: context-fill rgb(251,251,254);
     }
     @media (prefers-color-scheme: dark) {
+      #color > use[href="#background"] {
+        fill: transparent;
+      }
       #color > use[href="#board"],
       #color > use[href="#clip"],
       #current {
