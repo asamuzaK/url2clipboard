@@ -17,12 +17,8 @@
     g:target ~ #color {
       display: none;
     }
-    #context,
     #current {
       fill: context-fill rgb(91,91,102);
-    }
-    #context-light {
-      fill: context-fill rgb(251,251,254);
     }
     @media (prefers-color-scheme: dark) {
       #color > use[href="#background"] {
@@ -47,12 +43,6 @@
   <symbol id="clip">
     <path d="m64 4a12 12 0 0 0-12 12h-10v28h44v-28h-10a12 12 0 0 0-12-12z"/>
   </symbol>
-  <g id="context">
-    <use href="#outline"/>
-  </g>
-  <g id="context-light">
-    <use href="#outline"/>
-  </g>
   <g id="current">
     <use href="#outline"/>
   </g>

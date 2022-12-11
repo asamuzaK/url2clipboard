@@ -8,7 +8,7 @@ import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
   execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
   getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
-  getStorage, isScriptingAvailable, isTab, queryTabs, sendMessage
+  getStorage, isScriptingAvailable, isTab, queryTabs, removeStorage, sendMessage
 } from './browser.js';
 import { editContent } from './edit-content.js';
 import {
@@ -16,7 +16,7 @@ import {
   getFormatsKeys, getFormatTitle, hasFormat, setFormat, setFormatData,
   toggleEnabledFormats
 } from './format.js';
-import { setDefaultIcon, setIcon } from './icon.js';
+import { setIcon } from './icon.js';
 import {
   createContextMenu, removeContextMenu, updateContextMenu
 } from './menu.js';
@@ -29,7 +29,7 @@ import {
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN, MIME_HTML, MIME_PLAIN,
   NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
-  TEXT_TEXT_URL, USER_INPUT
+  TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -609,7 +609,9 @@ export const setStorageValue = async (item, obj, changed = false) => {
       case ICON_DARK:
       case ICON_LIGHT:
       case ICON_WHITE: {
-        if (checked) {
+        if (runtime.id === WEBEXT_ID) {
+          func.push(removeStorage(item));
+        } else if (checked) {
           func.push(setIcon(value));
         }
         break;
@@ -688,8 +690,7 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
  */
 export const startup = async () => {
   await setFormatData();
-  return getAllStorage().then(handleStorage).then(setDefaultIcon)
-    .then(createContextMenu);
+  return getAllStorage().then(handleStorage).then(createContextMenu);
 };
 
 // For test

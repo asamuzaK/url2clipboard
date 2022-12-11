@@ -6,19 +6,8 @@
   "browser_action": {
     "browser_style": true,
     "default_popup": "html/popup.html",
-    "default_title": "__MSG_extensionName__",
-    "theme_icons": [
-      {
-        "dark": "img/icon.svg#context",
-        "light": "img/icon.svg#context-light",
-        "size": 16
-      },
-      {
-        "dark": "img/icon.svg#context",
-        "light": "img/icon.svg#context-light",
-        "size": 32
-      }
-    ]
+    "default_icon": "img/icon.svg#current",
+    "default_title": "__MSG_extensionName__"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -82,6 +71,7 @@
   "description": "__MSG_extensionDescription__",
   "homepage_url": "https://github.com/asamuzaK/url2clipboard",
   "icons": {
+    "16": "img/icon.svg#current",
     "32": "img/icon.svg#current",
     "64": "img/icon.svg"
   },
@@ -104,5 +94,5 @@
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "9.2.0"
+  "version": "9.2.0.1"
 }

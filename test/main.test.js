@@ -19,7 +19,7 @@ import {
   ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
   INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
   NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
-  USER_INPUT_DEFAULT
+  USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
 
 /* test */
@@ -3984,10 +3984,12 @@ describe('main', () => {
   describe('set storage value', () => {
     const func = mjs.setStorageValue;
     beforeEach(() => {
+      browser.runtime.id = null;
       mjs.enabledFormats.clear();
       mjs.userOpts.clear();
     });
     afterEach(() => {
+      browser.runtime.id = null;
       mjs.enabledFormats.clear();
       mjs.userOpts.clear();
     });
@@ -4153,6 +4155,18 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
+      browser.runtime.id = WEBEXT_ID;
+      const i = browser.storage.local.remove.callCount;
+      const res = await func(ICON_AUTO, {
+        checked: true,
+        value: '#auto'
+      });
+      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
       const i = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_AUTO, {
         checked: true,
@@ -4160,7 +4174,7 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -4171,7 +4185,7 @@ describe('main', () => {
       }, true);
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should not call function', async () => {
@@ -4193,7 +4207,18 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_BLACK, {
+        checked: true,
+        value: '#foo'
+      });
+      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -4204,7 +4229,18 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_COLOR, {
+        checked: true,
+        value: '#foo'
+      });
+      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -4215,7 +4251,18 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_DARK, {
+        checked: true,
+        value: '#foo'
+      });
+      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -4226,7 +4273,18 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_LIGHT, {
+        checked: true,
+        value: '#foo'
+      });
+      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -4237,7 +4295,18 @@ describe('main', () => {
       });
       assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [[undefined, undefined]], 'result');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_WHITE, {
+        checked: true,
+        value: '#foo'
+      });
+      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 

@@ -3,10 +3,10 @@
  */
 
 /* shared */
-import { EXT_NAME, ICON, ICON_CONTEXT_ID, WEBEXT_ID } from './constant.js';
+import { ICON } from './constant.js';
 
 /* api */
-const { i18n, runtime } = browser;
+const { runtime } = browser;
 const action = browser.action ?? browser.browserAction;
 
 /* variables */
@@ -19,27 +19,8 @@ export const icon = new Map();
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setIcon = async (iconId = icon.get('id')) => {
-  const name = i18n.getMessage(EXT_NAME);
   const iconPath = runtime.getURL(ICON);
   const path = (iconId && `${iconPath}${iconId}`) || iconPath;
-  const title = name;
   icon.set('id', iconId ?? '');
-  return Promise.all([
-    action.setIcon({ path }),
-    action.setTitle({ title })
-  ]);
-};
-
-/**
- * set default icon
- *
- * @returns {?Function} - setIcon()
- */
-export const setDefaultIcon = async () => {
-  let func;
-  if (!icon.get('id') && runtime.id === WEBEXT_ID) {
-    icon.set('id', ICON_CONTEXT_ID);
-    func = setIcon(ICON_CONTEXT_ID);
-  }
-  return func || null;
+  return action.setIcon({ path });
 };

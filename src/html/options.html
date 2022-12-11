@@ -13,7 +13,7 @@
     </header>
     <main>
       <form id="optionsForm">
-        <fieldset id="toolbarIcon">
+        <fieldset id="toolbarIcon" hidden>
           <legend data-i18n="optionsToolbarIcon">
             Toolbar Button Icon
           </legend>
@@ -54,22 +54,11 @@
                 <img id="iconWhite" data-i18n="optionsIconWhite"
                      src="../img/icon.svg#white" alt="White" />
               </label>
-              <input type="radio" id="buttonIconAuto" name="buttonIconRadio"
-                     value="#context" />
-              <label for="buttonIconAuto"
-                     aria-label="Auto">
-                <span id="iconAuto" data-i18n="optionsIconAuto">
-                  Auto
-                </span>
-              </label>
             </p>
             <details id="iconDetail">
               <div>
                 <p data-i18n="optionsIconDetail">
                   Choose the icon.
-                </p>
-                <p data-i18n="optionsIconDetail2">
-                  "Auto" only applies to Gecko (57.0 and later), and you need to set "svg.context-properties.content.enabled" to "true" from "about:config".
                 </p>
               </div>
             </details>

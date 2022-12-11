@@ -51,6 +51,7 @@ export const MIME_XHTML = 'application/xhtml+xml';
 export const NOTIFY_COPY = 'notifyOnCopy';
 export const ORG_MODE = 'OrgMode';
 export const OPTIONS_OPEN = 'openOptions';
+export const OPTIONS_ICON_TOOLBAR = 'toolbarIcon';
 export const PREFER_CANONICAL = 'preferCanonicalUrl';
 export const PROMPT = 'promptContent';
 export const REST = 'reStructuredText';
