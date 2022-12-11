@@ -3,36 +3,21 @@
  */
 
 /* shared */
-import { isString } from './common.js';
-import { ICON_AUTO, WEBEXT_ID } from './constant.js';
+import { OPTIONS_ICON_TOOLBAR, WEBEXT_ID } from './constant.js';
 
 /* api */
 const { runtime } = browser;
 
 /**
- * disable input
+ * show toolbar icon options
  *
- * @param {string} id - ID
  * @returns {void}
  */
-export const disableInput = async id => {
-  if (isString(id)) {
-    const elm = document.getElementById(id);
+export const showToolbarIconOptions = async () => {
+  if (runtime.id !== WEBEXT_ID) {
+    const elm = document.getElementById(OPTIONS_ICON_TOOLBAR);
     if (elm) {
-      elm.disabled = true;
+      elm.hidden = false;
     }
   }
-};
-
-/**
- * disable incompatible inputs
- *
- * @returns {?Function} - disableInput()
- */
-export const disableIncompatibleInputs = async () => {
-  let func;
-  if (runtime.id !== WEBEXT_ID) {
-    func = disableInput(ICON_AUTO);
-  }
-  return func || null;
 };

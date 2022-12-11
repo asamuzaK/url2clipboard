@@ -299,15 +299,6 @@
   "optionsHtmlOutputLabel": {
     "message": "粘贴为:"
   },
-  "optionsIconAuto": {
-    "message": "自动"
-  },
-  "optionsIconAuto_alt": {
-    "message": ""
-  },
-  "optionsIconAutoLabel": {
-    "message": "自动"
-  },
   "optionsIconBlack": {
     "message": ""
   },
@@ -346,9 +337,6 @@
   },
   "optionsIconDetail": {
     "message": "选择图标。"
-  },
-  "optionsIconDetail2": {
-    "message": "“自动” 只适用 Firefox 57 或更新版本，同时需要在 \"about:config\" 中手动将 \"svg.context-properties.content.enabled\" 调整为 \"true\"。"
   },
   "optionsIconLight": {
     "message": ""
