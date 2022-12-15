@@ -34,6 +34,7 @@ export const createManifest = async info => {
         16: 'img/icon-outline-16.png',
         32: 'img/icon-outline-32.png'
       },
+      default_popup: 'html/popup.html',
       default_title: '__MSG_extensionName__'
     },
     icons: {
