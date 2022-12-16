@@ -5,8 +5,8 @@
   },
   "browser_action": {
     "browser_style": true,
-    "default_popup": "html/popup.html",
     "default_icon": "img/icon.svg#current",
+    "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__"
   },
   "browser_specific_settings": {
