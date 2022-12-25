@@ -12,7 +12,7 @@ import { handleMenusOnShown } from './menu.js';
 
 /* api */
 const { commands, runtime, storage, tabs } = browser;
-const menus = browser.menus || browser.contextMenus;
+const menus = browser.menus ?? browser.contextMenus;
 
 /* listeners */
 commands.onCommand.addListener(cmd =>
