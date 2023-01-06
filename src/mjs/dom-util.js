@@ -220,8 +220,8 @@ export const serializeDomString = (domstr, mime, reqElm = false) => {
       frag.appendChild(elm);
     }
   } catch (e) {
-    logErr(e);
     frag = null;
+    logErr(e);
   }
   return frag ? new XMLSerializer().serializeToString(frag) : null;
 };
