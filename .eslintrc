@@ -17,6 +17,9 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
+  "plugins": [
+    "unicorn"
+  ],
   "reportUnusedDisableDirectives": true,
   "rules": {
     "no-await-in-loop": "error",
@@ -31,6 +34,7 @@
       "anonymous": "always",
       "asyncArrow": "always",
       "named": "never"
-    }]
+    }],
+    "unicorn/prefer-node-protocol": "error"
   }
 }

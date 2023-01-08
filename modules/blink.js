@@ -5,8 +5,8 @@
 /* api */
 import { getType, isString } from './common.js';
 import { createFile, mkdir, readFile, rm } from './file-util.js';
-import path from 'path';
-import process from 'process';
+import path from 'node:path';
+import process from 'node:process';
 
 /* constants */
 const CHAR = 'utf8';

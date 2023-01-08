@@ -1,9 +1,9 @@
 /* api */
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
-import { promises as fsPromise } from 'fs';
-import path from 'path';
-import process from 'process';
+import { promises as fsPromise } from 'node:fs';
+import path from 'node:path';
+import process from 'node:process';
 import sinon from 'sinon';
 
 /* test */

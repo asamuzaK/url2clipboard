@@ -3,8 +3,8 @@
  */
 
 import { getType, isString } from './common.js';
-import fs, { promises as fsPromise } from 'fs';
-import path from 'path';
+import fs, { promises as fsPromise } from 'node:fs';
+import path from 'node:path';
 
 /* constants */
 const CHAR = 'utf8';
