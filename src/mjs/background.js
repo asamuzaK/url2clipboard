@@ -3,6 +3,7 @@
  */
 
 /* shared */
+import '../lib/purify/purify.min.js';
 import { throwErr } from './common.js';
 import {
   extractClickedData, handleActiveTab, handleCmd, handleMsg, handleStorage,

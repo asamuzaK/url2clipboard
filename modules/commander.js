@@ -118,6 +118,28 @@ export const extractLibraries = async (cmdOpts = {}) => {
           path: 'dist/browser-polyfill.min.js.map'
         }
       ]
+    },
+    purify: {
+      name: 'dompurify',
+      origin: 'https://unpkg.com/dompurify',
+      repository: {
+        type: 'git',
+        url: 'git://github.com/cure53/DOMPurify.git'
+      },
+      files: [
+        {
+          file: 'LICENSE',
+          path: 'LICENSE'
+        },
+        {
+          file: 'purify.min.js',
+          path: 'dist/purify.min.js'
+        },
+        {
+          file: 'purify.min.js.map',
+          path: 'dist/purify.min.js.map'
+        }
+      ]
     }
   };
   const func = [];
