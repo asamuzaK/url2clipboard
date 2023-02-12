@@ -3,6 +3,7 @@
  */
 
 /* shared */
+import '../lib/purify/purify.min.js';
 import { Clip } from './clipboard.js';
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
