@@ -12,15 +12,18 @@
   "origins": [
     {
       "file": "LICENSE",
-      "url": "https://unpkg.com/dompurify@2.3.5/LICENSE"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/2.3.5/LICENSE",
+      "cdn": "https://unpkg.com/dompurify@2.3.5/LICENSE"
     },
     {
       "file": "purify.min.js",
-      "url": "https://unpkg.com/dompurify@2.3.5/dist/purify.min.js"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/2.3.5/dist/purify.min.js",
+      "cdn": "https://unpkg.com/dompurify@2.3.5/dist/purify.min.js"
     },
     {
       "file": "purify.min.js.map",
-      "url": "https://unpkg.com/dompurify@2.3.5/dist/purify.min.js.map"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/2.3.5/dist/purify.min.js.map",
+      "cdn": "https://unpkg.com/dompurify@2.3.5/dist/purify.min.js.map"
     }
   ]
 }

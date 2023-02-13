@@ -13,15 +13,15 @@
   "origins": [
     {
       "file": "LICENSE",
-      "url": "https://unpkg.com/webextension-polyfill@0.10.0/LICENSE"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.10.0/LICENSE"
     },
     {
       "file": "browser-polyfill.min.js",
-      "url": "https://unpkg.com/webextension-polyfill@0.10.0/dist/browser-polyfill.min.js"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.10.0/dist/browser-polyfill.min.js"
     },
     {
       "file": "browser-polyfill.min.js.map",
-      "url": "https://unpkg.com/webextension-polyfill@0.10.0/dist/browser-polyfill.min.js.map"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.10.0/dist/browser-polyfill.min.js.map"
     }
   ]
 }
