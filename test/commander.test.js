@@ -389,12 +389,12 @@ describe('save library package info', () => {
             path: 'LICENSE'
           },
           {
-            file: 'url-sanitizer.wo.dompurify.min.js',
-            path: 'dist/url-sanitizer.wo.dompurify.min.js'
+            file: 'url-sanitizer-wo-dompurify.min.js',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js'
           },
           {
-            file: 'url-sanitizer.wo.dompurify.min.js.map',
-            path: 'dist/url-sanitizer.wo.dompurify.min.js.map'
+            file: 'url-sanitizer-wo-dompurify.min.js.map',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js.map'
           }
         ]
       }
@@ -435,12 +435,12 @@ describe('save library package info', () => {
             path: 'LICENSE'
           },
           {
-            file: 'url-sanitizer.wo.dompurify.min.js',
-            path: 'dist/url-sanitizer.wo.dompurify.min.js'
+            file: 'url-sanitizer-wo-dompurify.min.js',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js'
           },
           {
-            file: 'url-sanitizer.wo.dompurify.min.js.map',
-            path: 'dist/url-sanitizer.wo.dompurify.min.js.map'
+            file: 'url-sanitizer-wo-dompurify.min.js.map',
+            path: 'dist/url-sanitizer-wo-dompurify.min.js.map'
           }
         ]
       }
