@@ -38,13 +38,13 @@ describe('main', () => {
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
-    document = window && window.document;
+    document = window.document;
     if (document.execCommand) {
       sinon.stub(document, 'execCommand');
     } else {
       document.execCommand = sinon.fake();
     }
-    navigator = window && window.navigator;
+    navigator = window.navigator;
     if (navigator.clipboard) {
       sinon.stub(navigator.clipboard, 'write');
       sinon.stub(navigator.clipboard, 'writeText');
@@ -132,6 +132,10 @@ describe('main', () => {
 
   it('should get browser object', () => {
     assert.isObject(browser, 'browser');
+  });
+
+  it('should get DOMPurify', () => {
+    assert.isFunction(window.DOMPurify, 'DOMPurify');
   });
 
   describe('set user options', () => {
