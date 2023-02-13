@@ -15,6 +15,7 @@
   "dependencies": {
     "commander": "^10.0.0",
     "dompurify": "^2.3.5",
+    "url-sanitizer": "^0.8.7",
     "webext-schema": "^5.1.1",
     "webextension-polyfill": "^0.10.0"
   },
@@ -47,6 +48,7 @@
     "include-browser": "copyfiles --up=3 --verbose node_modules/webext-schema/modules/browser.js src/mjs",
     "include-polyfill": "copyfiles -f --verbose node_modules/webextension-polyfill/LICENSE node_modules/webextension-polyfill/dist/browser-polyfill.min.js node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map src/lib/mozilla && node index include --dir=mozilla -i",
     "include-purify": "copyfiles -f --verbose node_modules/dompurify/LICENSE node_modules/dompurify/dist/purify.min.js node_modules/dompurify/dist/purify.min.js.map src/lib/purify && node index include --dir=purify -i",
+    "include-url": "copyfiles -f --verbose node_modules/url-sanitizer/LICENSE node_modules/url-sanitizer/dist/url-sanitizer-wo-dompurify.min.js node_modules/url-sanitizer/dist/url-sanitizer-wo-dompurify.min.js.map src/lib/url && node index include --dir=url -i",
     "lint": "npm-run-all -s lint-*",
     "lint-addons-linter": "addons-linter src",
     "lint-eslint": "eslint --fix .",
