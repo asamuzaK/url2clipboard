@@ -21,6 +21,7 @@ import {
   createContextMenu, removeContextMenu, updateContextMenu
 } from './menu.js';
 import { notifyOnCopy } from './notify.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
@@ -417,6 +418,18 @@ export const extractClickedData = async (info, tab) => {
             title = tabTitle;
             url = contextCanonicalUrl || tabUrl;
           }
+        }
+        if (formatId === BBCODE_URL && content) {
+          content = await sanitizeURL(content, {
+            allow: ['data', 'file'],
+            remove: true
+          });
+        }
+        if (url) {
+          url = await sanitizeURL(url, {
+            allow: ['data', 'file'],
+            remove: true
+          });
         }
         if (isString(content) && isString(url)) {
           if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {

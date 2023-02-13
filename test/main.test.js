@@ -50,8 +50,8 @@ describe('main', () => {
       sinon.stub(navigator.clipboard, 'writeText');
     } else {
       navigator.clipboard = {
-        write: sinon.fake(),
-        writeText: sinon.fake()
+        write: sinon.stub(),
+        writeText: sinon.stub()
       };
     }
     browser._sandbox.reset();
@@ -1989,6 +1989,66 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.deepEqual(res, [null], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText
+        .withArgs('[url]https://example.com/[/url]').callCount;
+      const menuItemId = BBCODE_URL;
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/"onclick="alert(1)"'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText
+        .withArgs('[url]https://example.com/[/url]').callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText
+        .withArgs('foo https://example.com/').callCount;
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/"onclick="alert(1)"'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText
+        .withArgs('foo https://example.com/').callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [], 'result');
     });
   });
 
