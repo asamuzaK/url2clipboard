@@ -2017,7 +2017,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('[url]https://example.com/[/url]').callCount, i + 1,
-        'called');
+      'called');
       assert.deepEqual(res, [], 'result');
     });
 
@@ -2047,7 +2047,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('foo https://example.com/').callCount, i + 1,
-        'called');
+      'called');
       assert.deepEqual(res, [], 'result');
     });
   });

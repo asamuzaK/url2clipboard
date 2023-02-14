@@ -14,9 +14,9 @@
   "type": "module",
   "dependencies": {
     "commander": "^10.0.0",
-    "dompurify": "^2.3.5",
-    "url-sanitizer": "^0.8.7",
-    "webext-schema": "^5.1.1",
+    "dompurify": "^3.0.0",
+    "url-sanitizer": "^0.8.9",
+    "webext-schema": "^5.1.3",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
