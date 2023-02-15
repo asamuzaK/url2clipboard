@@ -1,7 +1,7 @@
 module.exports = {
   ignoreFiles: [
     './img/*.png',
-    './lib',
+    './lib/mozilla',
     './mjs/package.json',
     'package.json',
     'web-ext-config.js'
