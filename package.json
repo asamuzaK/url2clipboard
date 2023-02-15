@@ -61,5 +61,5 @@
     "test-release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
     "test_all": "npm-run-all -s test-*"
   },
-  "version": "9.3.2"
+  "version": "9.3.3"
 }
