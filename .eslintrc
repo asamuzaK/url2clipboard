@@ -1,9 +1,9 @@
 {
   "env": {
     "browser": true,
+    "es6": true,
     "node": true,
-    "webextensions": true,
-    "es6": true
+    "webextensions": true
   },
   "extends": [
     "plugin:jsdoc/recommended",
@@ -24,10 +24,10 @@
   "rules": {
     "no-await-in-loop": "error",
     "no-use-before-define": ["error", {
-      "functions": true,
+      "allowNamedExports": false,
       "classes": true,
-      "variables": true,
-      "allowNamedExports": false
+      "functions": true,
+      "variables": true
     }],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", {
