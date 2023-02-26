@@ -263,73 +263,70 @@ describe('main', () => {
       mjs.userOpts.clear();
     });
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
-    it('should get null', async () => {
-      const res = await func('foo');
+    it('should get null', () => {
+      const res = func('foo');
       assert.isNull(res, 'result');
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}BBCodeText`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}BBCodeText`);
       assert.strictEqual(res, '[url=%url%]%content%[/url]', 'result');
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}TextURL`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, '%content% %url%', 'result');
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}Markdown`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}Markdown`);
       assert.strictEqual(res, '[%content%](%url%)', 'result');
     });
 
-    it('should get value', async () => {
+    it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_MARKDOWN, true);
-      const res = await func(`${COPY_PAGE}Markdown`);
+      const res = func(`${COPY_PAGE}Markdown`);
       assert.strictEqual(res, '[%content%](%url% "%title%")', 'result');
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}HTMLHyper`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
     });
 
-    it('should get value', async () => {
+    it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_HYPER, true);
-      const res = await func(`${COPY_PAGE}HTMLHyper`);
+      const res = func(`${COPY_PAGE}HTMLHyper`);
       assert.strictEqual(
         res, '<a href="%url%" title="%title%">%content%</a>', 'result'
       );
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}HTMLPlain`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
     });
 
-    it('should get value', async () => {
+    it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_PLAIN, true);
-      const res = await func(`${COPY_PAGE}HTMLPlain`);
+      const res = func(`${COPY_PAGE}HTMLPlain`);
       assert.strictEqual(
         res, '<a href="%url%" title="%title%">%content%</a>', 'result'
       );
     });
 
-    it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}TextURL`);
+    it('should get value', () => {
+      const res = func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, '%content% %url%', 'result');
     });
 
-    it('should get value', async () => {
+    it('should get value', () => {
       mjs.userOpts.set(TEXT_SEP_LINES, true);
-      const res = await func(`${COPY_PAGE}TextURL`);
+      const res = func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(res, '%content%\n%url%', 'result');
     });
   });

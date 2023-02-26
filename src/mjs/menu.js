@@ -60,7 +60,7 @@ export const menuItems = {
 /**
  * remove context menu
  *
- * @returns {Function} - menus.removeAll()
+ * @returns {Promise} - menus.removeAll()
  */
 export const removeContextMenu = async () => menus.removeAll();
 
@@ -70,7 +70,7 @@ export const removeContextMenu = async () => menus.removeAll();
  * @param {string} id - menu item ID
  * @param {string} title - menu item title
  * @param {object} data - context data
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const createMenuItem = async (id, title, data = {}) => {
   const { contexts, enabled, parentId } = data;
@@ -101,7 +101,7 @@ export const createMenuItem = async (id, title, data = {}) => {
  * @param {string} itemId - item ID
  * @param {string} itemKey - item key
  * @param {object} itemData - item data
- * @returns {Function} - createMenuItem()
+ * @returns {Promise} - createMenuItem()
  */
 export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
   if (!isString(key)) {
@@ -218,7 +218,7 @@ export const updateContextMenu = async (tabId, enabled = false) => {
  *
  * @param {object} info - menu info
  * @param {object} tab - tabs.Tab
- * @returns {?Function} - menus.reflesh()
+ * @returns {?Promise} - menus.reflesh()
  */
 export const handleMenusOnShown = async (info, tab) => {
   const { contexts } = info;

@@ -19,7 +19,7 @@ const INDENT = 2;
  * create blink specific manifest.json
  *
  * @param {boolean} info - console info
- * @returns {string} - file path
+ * @returns {Promise.<string>} - file path
  */
 export const createManifest = async info => {
   const srcContent = await readFile(path.join(DIR_SRC, 'manifest.json'), {
@@ -70,7 +70,7 @@ export const createManifest = async info => {
  *
  * @param {string} file - file path
  * @param {boolean} info - console info
- * @returns {string} - file path
+ * @returns {Promise.<string>} - file path
  */
 export const createPolyfilledJsFile = async (file, info) => {
   if (!isString(file)) {

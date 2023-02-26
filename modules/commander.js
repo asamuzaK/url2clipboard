@@ -8,7 +8,7 @@ import process from 'node:process';
 import { program as commander } from 'commander';
 import { createBlinkFiles } from './blink.js';
 import { getType, throwErr } from './common.js';
-import { createFile, isFile, readFile } from './file-util.js';
+import { createFile, isDir, isFile, readFile, removeDir } from './file-util.js';
 
 /* constants */
 const CHAR = 'utf8';
@@ -19,7 +19,7 @@ const INDENT = 2;
  * create blink compatible files
  *
  * @param {object} cmdOpts - command options
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const createBlinkCompatFiles = cmdOpts =>
   createBlinkFiles(cmdOpts).catch(throwErr);
@@ -29,7 +29,7 @@ export const createBlinkCompatFiles = cmdOpts =>
  *
  * @param {Array} lib - library
  * @param {boolean} info - console info
- * @returns {string} - package.json file path
+ * @returns {Promise.<string>} - package.json file path
  */
 export const saveLibraryPackage = async (lib, info) => {
   if (!Array.isArray(lib)) {
@@ -96,7 +96,7 @@ export const saveLibraryPackage = async (lib, info) => {
  * extract libraries
  *
  * @param {object} cmdOpts - command options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const extractLibraries = async (cmdOpts = {}) => {
   const { dir, info } = cmdOpts;
@@ -195,10 +195,26 @@ export const extractLibraries = async (cmdOpts = {}) => {
  * include libraries
  *
  * @param {object} cmdOpts - command options
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const includeLibraries = cmdOpts =>
   extractLibraries(cmdOpts).catch(throwErr);
+
+/**
+ * clean directory
+ *
+ * @param {object} cmdOpts - command options
+ * @returns {void}
+ */
+export const cleanDirectory = (cmdOpts = {}) => {
+  const { dir, info } = cmdOpts;
+  if (isDir(dir)) {
+    removeDir(dir);
+    if (info) {
+      console.info(`Removed: ${path.resolve(dir)}`);
+    }
+  }
+};
 
 /**
  * parse command
@@ -211,6 +227,11 @@ export const parseCommand = args => {
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(process.env.npm_package_version, '-v, --version');
+    commander.command('clean')
+      .description('clean directory')
+      .option('-d, --dir <name>', 'specify directory')
+      .option('-i, --info', 'console info')
+      .action(cleanDirectory);
     commander.command('compat').alias('c')
       .description('create blink compatible files')
       .option('-c, --clean', 'clean directory')

@@ -47,7 +47,7 @@ export const userOpts = new Map();
  * set user options
  *
  * @param {object} opt - user option
- * @returns {object} - userOpts
+ * @returns {Promise.<object>} - userOpts
  */
 export const setUserOpts = async (opt = {}) => {
   let opts;
@@ -76,7 +76,7 @@ export const setUserOpts = async (opt = {}) => {
  * set user enabled formats
  *
  * @param {object} opt - user option
- * @returns {object} - enablrfFormats
+ * @returns {Promise.<object>} - enablrfFormats
  */
 export const setUserEnabledFormats = async (opt = {}) => {
   let opts;
@@ -107,7 +107,7 @@ export const setUserEnabledFormats = async (opt = {}) => {
  * @param {string} id - menu item ID
  * @returns {?string} - template
  */
-export const getFormatTemplate = async id => {
+export const getFormatTemplate = id => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
@@ -149,14 +149,14 @@ export const getFormatTemplate = async id => {
  * get all tabs info
  *
  * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
+ * @returns {Promise.<Array>} - tabs info
  */
 export const getAllTabsInfo = async menuItemId => {
   if (!isString(menuItemId)) {
     throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
   }
   const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
+  const template = getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const { id, title, url } = tab;
@@ -177,14 +177,14 @@ export const getAllTabsInfo = async menuItemId => {
  * get other tabs info
  *
  * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
+ * @returns {Promise.<Array>} - tabs info
  */
 export const getOtherTabsInfo = async menuItemId => {
   if (!isString(menuItemId)) {
     throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
   }
   const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
+  const template = getFormatTemplate(menuItemId);
   const arr = await queryTabs({
     active: false,
     windowId: WINDOW_ID_CURRENT,
@@ -209,14 +209,14 @@ export const getOtherTabsInfo = async menuItemId => {
  * get selected tabs info
  *
  * @param {string} menuItemId - menu item ID
- * @returns {Array} - tabs info
+ * @returns {Promise.<Array>} - tabs info
  */
 export const getSelectedTabsInfo = async menuItemId => {
   if (!isString(menuItemId)) {
     throw new TypeError(`Expected String but got ${getType(menuItemId)}.`);
   }
   const tabsInfo = [];
-  const template = await getFormatTemplate(menuItemId);
+  const template = getFormatTemplate(menuItemId);
   const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
   arr.forEach(tab => {
     const { id, title, url } = tab;
@@ -236,8 +236,8 @@ export const getSelectedTabsInfo = async menuItemId => {
 /**
  * get context info
  *
- * @param {number} tabId - tab ID
- * @returns {object} - context info
+ * @param {number} [tabId] - tab ID
+ * @returns {Promise.<object>} - context info
  */
 export const getContextInfo = async tabId => {
   // TODO: refactoring when switching to MV3
@@ -277,7 +277,7 @@ export const getContextInfo = async tabId => {
 /**
  * send context info
  *
- * @returns {?Function} - sendMessage();
+ * @returns {?Promise} - sendMessage();
  */
 export const sendContextInfo = async () => {
   const contextInfo = await getContextInfo();
@@ -362,7 +362,7 @@ export const extractClickedData = async (info, tab) => {
         const tmplArr = await Promise.all(arr);
         text = createTabsLinkText(tmplArr, mimeType);
       } else if (menuItemId.startsWith(COPY_TAB)) {
-        const template = await getFormatTemplate(formatId);
+        const template = getFormatTemplate(formatId);
         let content;
         let title;
         let url;
@@ -378,7 +378,7 @@ export const extractClickedData = async (info, tab) => {
           content, formatId, template, title, url
         });
       } else {
-        const template = await getFormatTemplate(formatId);
+        const template = getFormatTemplate(formatId);
         let content;
         let title;
         let url;
@@ -501,7 +501,7 @@ export const extractClickedData = async (info, tab) => {
  * handle active tab
  *
  * @param {object} info - active tab info
- * @returns {?Function} - updateContextMenu()
+ * @returns {?Promise} - updateContextMenu()
  */
 export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
@@ -518,7 +518,7 @@ export const handleActiveTab = async (info = {}) => {
  * @param {number} tabId - tab ID
  * @param {object} info - info
  * @param {object} tab - tabs.Tab
- * @returns {?Function} - handleActiveTab()
+ * @returns {?Promise} - handleActiveTab()
  */
 export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   if (!Number.isInteger(tabId)) {
@@ -537,7 +537,7 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
  * handle command
  *
  * @param {!string} cmd - command
- * @returns {?Function} - extractClickedData()
+ * @returns {?Promise} - extractClickedData()
  */
 export const handleCmd = async cmd => {
   if (!isString(cmd)) {
@@ -699,7 +699,7 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
 /**
  * startup
  *
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const startup = async () => {
   await setFormatData();

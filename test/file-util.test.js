@@ -8,7 +8,7 @@ import { assert } from 'chai';
 
 /* test */
 import {
-  createFile, getStat, isFile, mkdir, readFile, rm
+  createFile, getStat, isDir, isFile, mkdir, readFile, removeDir, rm
 } from '../modules/file-util.js';
 
 /* constants */
@@ -28,6 +28,30 @@ describe('getStat', () => {
   it('should get null if file does not exist', () => {
     const p = path.resolve('test', 'file', 'foo.txt');
     assert.isNull(getStat(p));
+  });
+});
+
+describe('isDir', () => {
+  it('should get true if dir exists', () => {
+    const p = path.resolve(path.join('test', 'file'));
+    assert.strictEqual(isDir(p), true);
+  });
+
+  it('should get false if dir does not exist', () => {
+    const p = path.resolve(path.join('test', 'foo'));
+    assert.strictEqual(isDir(p), false);
+  });
+});
+
+describe('isFile', () => {
+  it('should get true if file exists', () => {
+    const p = path.resolve('test', 'file', 'test.txt');
+    assert.isTrue(isFile(p));
+  });
+
+  it('should get false if file does not exist', () => {
+    const p = path.resolve('test', 'file', 'foo.txt');
+    assert.isFalse(isFile(p));
   });
 });
 
@@ -73,15 +97,36 @@ describe('remove files and directories', () => {
   });
 });
 
-describe('isFile', () => {
-  it('should get true if file exists', () => {
-    const p = path.resolve('test', 'file', 'test.txt');
-    assert.isTrue(isFile(p));
+describe('removeDir', () => {
+  it('should throw', () => {
+    const foo = path.resolve('foo');
+    assert.isFalse(isDir(foo));
+    assert.throws(() => removeDir(foo), `No such directory: ${foo}`);
   });
 
-  it('should get false if file does not exist', () => {
-    const p = path.resolve('test', 'file', 'foo.txt');
-    assert.isFalse(isFile(p));
+  it("should remove dir and it's files", async () => {
+    const dirPath = path.join(TMPDIR, 'url-sanitizer');
+    fs.mkdirSync(dirPath);
+    const subDirPath = path.join(dirPath, 'foo');
+    fs.mkdirSync(subDirPath);
+    const filePath = path.join(subDirPath, 'test.txt');
+    const value = 'test file.\n';
+    await fsPromise.writeFile(filePath, value, {
+      encoding: 'utf8', flag: 'w', mode: 0o666
+    });
+    const res1 = await Promise.all([
+      fs.existsSync(dirPath),
+      fs.existsSync(subDirPath),
+      fs.existsSync(filePath)
+    ]);
+    removeDir(dirPath);
+    const res2 = await Promise.all([
+      fs.existsSync(dirPath),
+      fs.existsSync(subDirPath),
+      fs.existsSync(filePath)
+    ]);
+    assert.deepEqual(res1, [true, true, true]);
+    assert.deepEqual(res2, [false, false, false]);
   });
 });
 

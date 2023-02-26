@@ -13,7 +13,7 @@ const { runtime } = browser;
  *
  * @returns {void}
  */
-export const showToolbarIconOptions = async () => {
+export const showToolbarIconOptions = () => {
   if (runtime.id !== WEBEXT_ID) {
     const elm = document.getElementById(OPTIONS_ICON_TOOLBAR);
     if (elm) {

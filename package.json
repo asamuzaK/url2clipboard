@@ -38,7 +38,8 @@
     "npm-run-all": "^4.1.5",
     "sinon": "^15.0.1",
     "stylelint": "^15.2.0",
-    "stylelint-config-standard": "^30.0.1"
+    "stylelint-config-standard": "^30.0.1",
+    "typescript": "^4.9.5"
   },
   "scripts": {
     "bundle": "npm-run-all -s bundle-*",
@@ -59,7 +60,8 @@
     "test-central": "c8 mocha --require=test/mocha/setup.js --channel=central --exit test/*.test.js",
     "test-esr": "c8 mocha --require=test/mocha/setup.js --channel=esr --exit test/*.test.js",
     "test-release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
-    "test_all": "npm-run-all -s test-*"
+    "test_all": "npm-run-all -s test-*",
+    "tsc": "node index clean --dir=types -i && npx tsc"
   },
   "version": "9.3.3"
 }

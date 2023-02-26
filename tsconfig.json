@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "declarationDir": "types",
+    "emitDeclarationOnly": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "newLine": "LF",
+    "removeComments": true,
+    "resolveJsonModule": true,
+    "target": "esnext"
+  },
+  "include": ["index.js", "src/mjs/*", "src/js/*"]
+}

@@ -13,10 +13,10 @@ const { i18n, runtime } = browser;
 /**
  * notify on copy
  *
- * @param {string} label - label
- * @returns {Function} - createNotification()
+ * @param {string} [label] - label
+ * @returns {Promise} - createNotification()
  */
-export const notifyOnCopy = async label => {
+export const notifyOnCopy = label => {
   const message =
     (isString(label) && label &&
      i18n.getMessage('notifyOnCopyMsg_format', label)) ||

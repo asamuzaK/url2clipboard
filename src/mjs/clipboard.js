@@ -105,7 +105,7 @@ export class Clip {
   /**
    * copy to clipboard
    *
-   * @returns {void}
+   * @returns {Promise.<void>} - void
    */
   async copy() {
     if (!this.#supportedMimeTypes.includes(this.#mime)) {

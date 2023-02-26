@@ -245,7 +245,7 @@ export const enabledFormats = new Set();
  *
  * @param {string} id - format id
  * @param {boolean} enabled - format is enabled
- * @returns {object} - enabledFormats
+ * @returns {Promise.<object>} - enabledFormats
  */
 export const toggleEnabledFormats = async (id, enabled) => {
   if (!isString(id)) {

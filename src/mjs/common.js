@@ -91,7 +91,7 @@ export const isObjectNotEmpty = o => {
  *
  * @param {number} msec - milisec
  * @param {boolean} doReject - reject instead of resolve
- * @returns {?Function} - resolve / reject
+ * @returns {?Promise} - resolve / reject
  */
 export const sleep = (msec = 0, doReject = false) => {
   let func;

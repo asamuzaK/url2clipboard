@@ -1,0 +1,15 @@
+export function logErr(e: object): boolean;
+export function throwErr(e: object): never;
+export function logWarn(msg: any): boolean;
+export function logMsg(msg: any): object;
+export function getType(o: any): string;
+export function isString(o: any): boolean;
+export function isObjectNotEmpty(o: any): boolean;
+export function sleep(msec?: number, doReject?: boolean): Promise<any> | null;
+export function escapeMatchingChars(str: string, re: RegExp): string | null;
+export function stripMatchingChars(str: string, re: RegExp): string | null;
+export function convertNumCharRef(str: string, re: RegExp): string | null;
+export function convertHtmlChar(str: string): string | null;
+export function convertLaTeXChar(str: string): string | null;
+export function encodeUrlPart(part: string): string;
+export function encodeUrlSpecialChar(str: string): string | undefined;

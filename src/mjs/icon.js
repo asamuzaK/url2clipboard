@@ -16,7 +16,7 @@ export const icon = new Map();
  * set icon
  *
  * @param {string} iconId - icon ID
- * @returns {Function} - action.setIcon()
+ * @returns {Promise} - action.setIcon()
  */
 export const setIcon = async (iconId = icon.get('id')) => {
   const iconPath = runtime.getURL(ICON);

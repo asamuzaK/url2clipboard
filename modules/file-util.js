@@ -21,32 +21,14 @@ export const getStat = file =>
   isString(file) && fs.existsSync(file) ? fs.statSync(file) : null;
 
 /**
- * make directory
+ * the directory is a directory
  *
  * @param {string} dir - directory path
- * @param {object} opt - options
- * @returns {string} - directory path
+ * @returns {boolean} - result
  */
-export const mkdir = async (dir, opt = { mode: PERM_DIR, recursive: true }) => {
-  if (!isString(dir)) {
-    throw new TypeError(`Expected String but got ${getType(dir)}.`);
-  }
-  await fsPromise.mkdir(dir, opt);
-  return dir;
-};
-
-/**
- * remove files and directories
- *
- * @param {string} dir - directory path
- * @param {object} opt - options
- * @returns {void}
- */
-export const rm = async (dir, opt = { force: true, recursive: true }) => {
-  if (!isString(dir)) {
-    throw new TypeError(`Expected String but got ${getType(dir)}.`);
-  }
-  await fsPromise.rm(dir, opt);
+export const isDir = dir => {
+  const stat = getStat(dir);
+  return stat ? stat.isDirectory() : false;
 };
 
 /**
@@ -61,13 +43,58 @@ export const isFile = file => {
 };
 
 /**
+ * make directory
+ *
+ * @param {string} dir - directory path
+ * @param {object} opt - options
+ * @returns {Promise.<string>} - directory path
+ */
+export const mkdir = async (dir, opt = { mode: PERM_DIR, recursive: true }) => {
+  if (!isString(dir)) {
+    throw new TypeError(`Expected String but got ${getType(dir)}.`);
+  }
+  await fsPromise.mkdir(dir, opt);
+  return dir;
+};
+
+/**
+ * remove files and directories
+ *
+ * @param {string} dir - directory path
+ * @param {object} opt - options
+ * @returns {Promise.<void>} - void
+ */
+export const rm = async (dir, opt = { force: true, recursive: true }) => {
+  if (!isString(dir)) {
+    throw new TypeError(`Expected String but got ${getType(dir)}.`);
+  }
+  await fsPromise.rm(dir, opt);
+};
+
+/**
+ * remove the directory and it's files synchronously
+ *
+ * @param {string} dir - directory path
+ * @returns {void}
+ */
+export const removeDir = dir => {
+  if (!isDir(dir)) {
+    throw new Error(`No such directory: ${dir}`);
+  }
+  fs.rmSync(dir, {
+    force: true,
+    recursive: true
+  });
+};
+
+/**
  * read a file
  *
  * @param {string} file - file path
  * @param {object} [opt] - options
  * @param {string} [opt.encoding] - encoding
  * @param {string} [opt.flag] - flag
- * @returns {string|Buffer} - file content
+ * @returns {Promise.<string|Buffer>} - file content
  */
 export const readFile = async (file, opt = { encoding: null, flag: 'r' }) => {
   if (!isFile(file)) {
@@ -82,7 +109,7 @@ export const readFile = async (file, opt = { encoding: null, flag: 'r' }) => {
  *
  * @param {string} file - file path to create
  * @param {string} value - value to write
- * @returns {string} - file path
+ * @returns {Promise.<string>} - file path
  */
 export const createFile = async (file, value) => {
   if (!isString(file)) {

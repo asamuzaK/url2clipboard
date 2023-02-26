@@ -73,28 +73,25 @@ describe('popup-main', () => {
       enabledFormats.clear();
     });
 
-    it('should throw', async () => {
-      await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
-      });
+    it('should throw', () => {
+      assert.throws(() => func(), 'Expected String but got Undefined.');
     });
 
-    it('should not add', async () => {
+    it('should not add', () => {
       const { enabledFormats } = mjs;
-      await func('foo');
+      func('foo');
       assert.isFalse(enabledFormats.has('foo'), 'result');
     });
 
-    it('should not add', async () => {
+    it('should not add', () => {
       const { enabledFormats } = mjs;
-      await func('TextURL', false);
+      func('TextURL', false);
       assert.isFalse(enabledFormats.has('TextURL'), 'result');
     });
 
-    it('should add', async () => {
+    it('should add', () => {
       const { enabledFormats } = mjs;
-      await func('TextURL', true);
+      func('TextURL', true);
       assert.isTrue(enabledFormats.has('TextURL'), 'result');
     });
   });
@@ -704,33 +701,27 @@ describe('popup-main', () => {
       enabledFormats.clear();
     });
 
-    it('should get null', async () => {
-      const res = await func();
-      assert.isNull(res, 'result');
-    });
-
-    it('should get null', async () => {
-      const res = await func('foo');
-      assert.isNull(res, 'result');
-    });
-
-    it('should set variable', async () => {
+    it('should get null', () => {
       const { enabledFormats } = mjs;
-      const res = await func('TextURL', {
+      func('foo');
+      assert.isFalse(enabledFormats.has('foo'));
+    });
+
+    it('should set variable', () => {
+      const { enabledFormats } = mjs;
+      func('TextURL', {
         checked: true
       });
       assert.isTrue(enabledFormats.has('TextURL'), 'variable');
-      assert.isUndefined(res, 'result');
     });
 
-    it('should set variable', async () => {
+    it('should set variable', () => {
       const { enabledFormats } = mjs;
       enabledFormats.add('TextURL');
-      const res = await func('TextURL', {
+      func('TextURL', {
         checked: false
       });
       assert.isFalse(enabledFormats.has('TextURL'), 'variable');
-      assert.isUndefined(res, 'result');
     });
   });
 
@@ -748,7 +739,7 @@ describe('popup-main', () => {
           checked: true
         }
       });
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 

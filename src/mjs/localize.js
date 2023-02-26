@@ -15,7 +15,7 @@ const DATA_I18N = 'data-i18n';
  * localize attribute value
  *
  * @param {object} elm - element
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const localizeAttr = async elm => {
   if (elm?.nodeType === Node.ELEMENT_NODE && elm?.hasAttribute(DATA_I18N)) {
@@ -42,7 +42,7 @@ export const localizeAttr = async elm => {
 /**
  * localize html
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const localizeHtml = async () => {
   const lang = i18n.getMessage(EXT_LOCALE);

@@ -31,12 +31,12 @@ export const enabledFormats = new Set();
  * @param {boolean} enabled - format is enabled
  * @returns {void}
  */
-export const toggleEnabledFormats = async (id, enabled) => {
+export const toggleEnabledFormats = (id, enabled) => {
   if (!isString(id)) {
     throw new TypeError(`Expected String but got ${getType(id)}.`);
   }
-  const keys = await getFormatsKeys(true);
-  const formatId = await getFormatId(id);
+  const keys = getFormatsKeys(true);
+  const formatId = getFormatId(id);
   if (keys.includes(formatId) && enabled) {
     enabledFormats.add(formatId);
   } else {
@@ -50,7 +50,7 @@ export const toggleEnabledFormats = async (id, enabled) => {
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
-  const items = await getFormats(true);
+  const items = getFormats(true);
   const func = [];
   for (const [key, value] of items) {
     const { enabled } = value;
@@ -72,7 +72,7 @@ export const contextInfo = {
 /**
  * init context info
  *
- * @returns {object} - context info
+ * @returns {Promise.<object>} - context info
  */
 export const initContextInfo = async () => {
   contextInfo.canonicalUrl = null;
@@ -93,7 +93,7 @@ export const tabInfo = {
  * set tab info
  *
  * @param {object} tab - tabs.Tab
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const setTabInfo = async tab => {
   if (isObjectNotEmpty(tab)) {
@@ -111,7 +111,7 @@ export const setTabInfo = async tab => {
  * create copy data
  *
  * @param {!object} evt - Event
- * @returns {?Function} - sendMessage();
+ * @returns {?Promise} - sendMessage();
  */
 export const createCopyData = async evt => {
   let func;
@@ -159,7 +159,7 @@ export const closeWindow = () => {
 /**
  * handle open options on click
  *
- * @returns {Function} - runtime.openOptionsPage()
+ * @returns {Promise} - runtime.openOptionsPage()
  */
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
@@ -167,7 +167,7 @@ export const openOptionsOnClick = () => runtime.openOptionsPage();
  * handle menu on click
  *
  * @param {!object} evt - Event
- * @returns {(Function|Error)} - Promise chain
+ * @returns {Promise} - Promise chain
  */
 export const menuOnClick = evt =>
   createCopyData(evt).then(closeWindow).catch(throwErr);
@@ -175,7 +175,7 @@ export const menuOnClick = evt =>
 /**
  * add listener to menu
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const addListenerToMenu = async () => {
   const nodes = document.querySelectorAll('button');
@@ -192,11 +192,11 @@ export const addListenerToMenu = async () => {
 /**
  * toggle menu item
  *
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const toggleMenuItem = async () => {
   const nodes = document.querySelectorAll('button');
-  const formatsKeys = await getFormatsKeys(true);
+  const formatsKeys = getFormatsKeys(true);
   for (const node of nodes) {
     const { id, parentNode } = node;
     const formatId = getFormatId(id);
@@ -214,7 +214,7 @@ export const toggleMenuItem = async () => {
  * update menu
  *
  * @param {object} data - context data;
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const updateMenu = async data => {
   await initContextInfo();
@@ -299,20 +299,18 @@ export const handleMsg = async msg => {
  *
  * @param {string} item - item
  * @param {object} obj - value object
- * @returns {?Function} - toggleEnabledFormats()
+ * @returns {void}
  */
-export const setStorageValue = async (item, obj) => {
-  let func;
+export const setStorageValue = (item, obj) => {
   if (item && obj) {
     const { checked } = obj;
-    if (await hasFormat(item)) {
-      const formatItem = await getFormat(item);
+    if (hasFormat(item)) {
+      const formatItem = getFormat(item);
       formatItem.enabled = !!checked;
-      await setFormat(item, formatItem);
-      func = toggleEnabledFormats(item, !!checked);
+      setFormat(item, formatItem);
+      toggleEnabledFormats(item, !!checked);
     }
   }
-  return func || null;
 };
 
 /**
@@ -326,7 +324,7 @@ export const handleStorage = async (data = {}) => {
   const func = [];
   for (const [key, value] of items) {
     const { newValue } = value;
-    func.push(setStorageValue(key, newValue || value, !!newValue));
+    func.push(setStorageValue(key, newValue || value));
   }
   return Promise.all(func);
 };
@@ -334,7 +332,7 @@ export const handleStorage = async (data = {}) => {
 /**
  * startup
  *
- * @returns {Function} - promise chain
+ * @returns {Promise} - promise chain
  */
 export const startup = async () => {
   await Promise.all([
