@@ -424,14 +424,12 @@ export const extractClickedData = async (info, tab) => {
             allow: ['data', 'file'],
             remove: true
           });
-          console.log(`BBCODE ${content}`)
         }
         if (url) {
           url = await sanitizeURL(url, {
             allow: ['data', 'file'],
             remove: true
           });
-          console.log(`URL ${url}`)
         }
         if (isString(content) && isString(url)) {
           if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {

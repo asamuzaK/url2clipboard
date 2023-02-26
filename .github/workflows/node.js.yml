@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        node-version: [ 18.x, 19.x ]
+        node-version: [ 18.x, 19.6.x ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
