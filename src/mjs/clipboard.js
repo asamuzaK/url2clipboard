@@ -112,6 +112,7 @@ export class Clip {
       throw new Error(`Mime type of ${this.#mime} is not supported.`);
     }
     if (this.#content) {
+      console.log(this.#content)
       const { clipboard } = navigator;
       if (typeof clipboard?.writeText === 'function' &&
           this.#mime === MIME_PLAIN) {
