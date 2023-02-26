@@ -3,8 +3,8 @@
  */
 
 /* shared */
-import { isString } from './common.js';
 import { createNotification } from './browser.js';
+import { isString } from './common.js';
 import { ICON, NOTIFY_COPY } from './constant.js';
 
 /* api */

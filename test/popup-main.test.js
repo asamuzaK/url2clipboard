@@ -1,19 +1,20 @@
 /**
  * popup-main.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
-import { formatData } from '../src/mjs/format.js';
+import { browser, createJsdom } from './mocha/setup.js';
+
+/* test */
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
   EXEC_COPY
 } from '../src/mjs/constant.js';
-
-/* test */
+import { formatData } from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/popup-main.js';
 
 /* constants */

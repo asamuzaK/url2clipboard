@@ -3,10 +3,10 @@
  */
 
 /* api */
-import { getType, isString } from './common.js';
-import { createFile, mkdir, readFile, rm } from './file-util.js';
 import path from 'node:path';
 import process from 'node:process';
+import { getType, isString } from './common.js';
+import { createFile, mkdir, readFile, rm } from './file-util.js';
 
 /* constants */
 const CHAR = 'utf8';

@@ -3,8 +3,8 @@
  */
 
 /* shared */
-import { getType, isString } from './common.js';
 import { getAllTabsInWindow, getHighlightedTab } from './browser.js';
+import { getType, isString } from './common.js';
 import { enabledFormats, getFormat, getFormats } from './format.js';
 import {
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,

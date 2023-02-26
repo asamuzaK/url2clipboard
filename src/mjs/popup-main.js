@@ -3,8 +3,8 @@
  */
 
 /* shared */
-import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
+import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
   getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
 } from './format.js';

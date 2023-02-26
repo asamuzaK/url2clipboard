@@ -12,7 +12,7 @@ const { permissions, runtime, tabs, windows } = browser;
  * check if permission is granted
  *
  * @param {object} perm - permissions.Permission
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const isPermissionGranted = async perm => {
   const bool = await permissions.contains(perm);
@@ -24,7 +24,7 @@ export const isPermissionGranted = async perm => {
  * create bookmark
  *
  * @param {object} opt - bookmarks.CreateDetails
- * @returns {object} - bookmarks.BookmarkTreeNode
+ * @returns {Promise.<object>} - bookmarks.BookmarkTreeNode
  */
 export const createBookmark = async opt => {
   const isGranted = await isPermissionGranted({
@@ -42,7 +42,7 @@ export const createBookmark = async opt => {
  * get bookmark tree node
  *
  * @param {string|Array} id - bookmark ID or array of bookmark IDs
- * @returns {?Array} - array of bookmarks.BookmarkTreeNode
+ * @returns {Promise.<?Array>} - array of bookmarks.BookmarkTreeNode
  */
 export const getBookmarkTreeNode = async id => {
   const isGranted = await isPermissionGranted({
@@ -66,7 +66,7 @@ export const getBookmarkTreeNode = async id => {
 /**
  * get closeTabsByDoubleClick user value
  *
- * @returns {object} - user value
+ * @returns {Promise.<object>} - user value
  */
 export const getCloseTabsByDoubleClickValue = async () => {
   const isGranted = await isPermissionGranted({
@@ -83,7 +83,7 @@ export const getCloseTabsByDoubleClickValue = async () => {
 /**
  * set context menu on mouseup
  *
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const setContextMenuOnMouseup = async () => {
   const isGranted = await isPermissionGranted({
@@ -107,7 +107,7 @@ export const setContextMenuOnMouseup = async () => {
 /**
  * clear context menu on mouseup
  *
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const clearContextMenuOnMouseup = async () => {
   const isGranted = await isPermissionGranted({
@@ -124,7 +124,7 @@ export const clearContextMenuOnMouseup = async () => {
 /**
  * get new tab position value
  *
- * @returns {object} - result
+ * @returns {Promise.<object>} - result
  */
 export const getNewTabPositionValue = async () => {
   const isGranted = await isPermissionGranted({
@@ -142,7 +142,7 @@ export const getNewTabPositionValue = async () => {
 /**
  * is command customizable
  *
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const isCommandCustomizable = async () => {
   const isGranted = await isPermissionGranted({
@@ -162,7 +162,7 @@ export const isCommandCustomizable = async () => {
  *
  * @param {string} id - command ID
  * @param {string} value - key value
- * @returns {?Function} - commands.update() | commands.reset()
+ * @returns {Promise.<?void>} - commands.update() | commands.reset()
  */
 export const updateCommand = async (id, value = '') => {
   if (!isString(id)) {
@@ -192,7 +192,7 @@ export const updateCommand = async (id, value = '') => {
 /**
  * get all contextual identities
  *
- * @returns {?Array} - array of contextualIdentities.ContextualIdentity
+ * @returns {Promise.<?Array>} - array of contextualIdentities.ContextualIdentity
  */
 export const getAllContextualIdentities = async () => {
   const isGranted = await isPermissionGranted({
@@ -210,7 +210,7 @@ export const getAllContextualIdentities = async () => {
  * get contextual identities
  *
  * @param {string} cookieStoreId - cookie store ID
- * @returns {object} - contextualIdentities.ContextualIdentity
+ * @returns {Promise.<object>} - contextualIdentities.ContextualIdentity
  */
 export const getContextualId = async cookieStoreId => {
   if (!isString(cookieStoreId)) {
@@ -231,7 +231,7 @@ export const getContextualId = async cookieStoreId => {
 /**
  * get enabled theme
  *
- * @returns {?Array} - array of management.ExtensionInfo
+ * @returns {Promise.<?Array>} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
   const isGranted = await isPermissionGranted({
@@ -252,7 +252,7 @@ export const getEnabledTheme = async () => {
  * get extension info
  *
  * @param {string} id - extension ID
- * @returns {object} - management.extensionInfo
+ * @returns {Promise.<object>} - management.extensionInfo
  */
 export const getExtensionInfo = async id => {
   if (!isString(id)) {
@@ -272,7 +272,7 @@ export const getExtensionInfo = async id => {
 /**
  * get external extensions
  *
- * @returns {?Array|boolean} - array of management.extensionInfo
+ * @returns {Promise.<?Array|boolean>} - array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
   const isGranted = await isPermissionGranted({
@@ -294,7 +294,7 @@ export const getExternalExtensions = async () => {
  * clear notification
  *
  * @param {string} id - notification ID
- * @returns {?Function} - notifications.clear()
+ * @returns {Promise.<?boolean>} - notifications.clear()
  */
 export const clearNotification = async id => {
   if (!isString(id)) {
@@ -316,7 +316,7 @@ export const clearNotification = async id => {
  *
  * @param {string} id - notification ID
  * @param {object} opt - options
- * @returns {?Function} - notifications.create()
+ * @returns {Promise.<?string>} - notifications.create()
  */
 export const createNotification = async (id, opt) => {
   if (!isString(id)) {
@@ -341,7 +341,7 @@ export const createNotification = async (id, opt) => {
  * remove permission
  *
  * @param {string|Array} perm - permission
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const removePermission = async perm => {
   if (!(isString(perm) || Array.isArray(perm))) {
@@ -364,7 +364,7 @@ export const removePermission = async perm => {
  * request permission
  *
  * @param {string|Array} perm - permission
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const requestPermission = async perm => {
   if (!(isString(perm) || Array.isArray(perm))) {
@@ -407,7 +407,7 @@ export const getManifestVersion = () => {
 /**
  * get OS
  *
- * @returns {string} - OS
+ * @returns {Promise.<string>} - OS
  */
 export const getOs = async () => {
   const { os } = await runtime.getPlatformInfo();
@@ -419,7 +419,7 @@ export const getOs = async () => {
  *
  * @param {number|string} [id] - tab ID / extension ID / host name
  * @param {object|boolean} [info] - connection info / connect to native app
- * @returns {object} - runtime.Port
+ * @returns {Promise.<object>} - runtime.Port
  */
 export const makeConnection = async (id, info) => {
   let port;
@@ -453,7 +453,7 @@ export const makeConnection = async (id, info) => {
  * @param {number|string} id - tab ID / extension ID
  * @param {*} msg - message
  * @param {object} opt - options
- * @returns {?Function} - tabs.sendMessage() | runtime.sendMessage()
+ * @returns {Promise.<object>} - tabs.sendMessage() | runtime.sendMessage()
  */
 export const sendMessage = async (id, msg, opt) => {
   let func;
@@ -476,7 +476,7 @@ export const sendMessage = async (id, msg, opt) => {
 /**
  * is scripting available
  *
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const isScriptingAvailable = async () => {
   const isGranted = await isPermissionGranted({
@@ -494,7 +494,7 @@ export const isScriptingAvailable = async () => {
  * execute script to tab
  *
  * @param {object} opt - options
- * @returns {?Array|boolean} - array of InjectionResult object
+ * @returns {Promise.<?Array|boolean>} - array of InjectionResult object
  */
 export const executeScriptToTab = async (opt = {}) => {
   const { args, injectImmediately, files, func, target } = opt;
@@ -526,7 +526,7 @@ export const executeScriptToTab = async (opt = {}) => {
  *
  * @param {string} query - search query
  * @param {object} opt - options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const searchWithSearchEngine = async (query, opt = {}) => {
   if (!isString(query)) {
@@ -546,8 +546,8 @@ export const searchWithSearchEngine = async (query, opt = {}) => {
 /**
  * get recently closed tab
  *
- * @param {number} windowId - window ID
- * @returns {object} - tabs.Tab
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const getRecentlyClosedTab = async windowId => {
   const isGranted = await isPermissionGranted({
@@ -580,8 +580,8 @@ export const getRecentlyClosedTab = async windowId => {
  * get session window value
  *
  * @param {string} key - key
- * @param {number} windowId - window ID
- * @returns {string} - value
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<?string>} - value
  */
 export const getSessionWindowValue = async (key, windowId) => {
   if (!isString(key)) {
@@ -605,7 +605,7 @@ export const getSessionWindowValue = async (key, windowId) => {
  * restore session
  *
  * @param {string} sessionId - session ID
- * @returns {object} - sessions.Session
+ * @returns {Promise.<object>} - sessions.Session
  */
 export const restoreSession = async sessionId => {
   if (!isString(sessionId)) {
@@ -627,8 +627,8 @@ export const restoreSession = async sessionId => {
  *
  * @param {string} key - key
  * @param {string|object} value - value
- * @param {number} windowId - window ID
- * @returns {void}
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<void>} - void
  */
 export const setSessionWindowValue = async (key, value, windowId) => {
   if (!isString(key)) {
@@ -651,7 +651,7 @@ export const setSessionWindowValue = async (key, value, windowId) => {
  * clear storage
  *
  * @param {string} area - storage area
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const clearStorage = async (area = 'local') => {
   const isGranted = await isPermissionGranted({
@@ -668,7 +668,7 @@ export const clearStorage = async (area = 'local') => {
  * get all storage
  *
  * @param {string} area - storage area
- * @returns {object} - stored data
+ * @returns {Promise.<object>} - stored data
  */
 export const getAllStorage = async (area = 'local') => {
   const isGranted = await isPermissionGranted({
@@ -688,7 +688,7 @@ export const getAllStorage = async (area = 'local') => {
  *
  * @param {*} key - key
  * @param {string} area - storage area
- * @returns {object} - stored data
+ * @returns {Promise.<object>} - stored data
  */
 export const getStorage = async (key, area = 'local') => {
   const isGranted = await isPermissionGranted({
@@ -708,7 +708,7 @@ export const getStorage = async (key, area = 'local') => {
  *
  * @param {*} key - key
  * @param {string} area - storage area
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const removeStorage = async (key, area = 'local') => {
   const isGranted = await isPermissionGranted({
@@ -726,7 +726,7 @@ export const removeStorage = async (key, area = 'local') => {
  *
  * @param {object} obj - object to store
  * @param {string} area - storage area
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const setStorage = async (obj, area = 'local') => {
   const isGranted = await isPermissionGranted({
@@ -744,7 +744,7 @@ export const setStorage = async (obj, area = 'local') => {
  * create tab
  *
  * @param {object} opt - options
- * @returns {object} - tabs.Tab
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const createTab = async (opt = {}) => {
   const tab = await tabs.create(isObjectNotEmpty(opt) ? opt : null);
@@ -756,7 +756,7 @@ export const createTab = async (opt = {}) => {
  *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
- * @returns {object} - tabs.Tab
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const duplicateTab = async (tabId, opt) => {
   if (!Number.isInteger(tabId)) {
@@ -770,7 +770,7 @@ export const duplicateTab = async (tabId, opt) => {
  * query tabs
  *
  * @param {object} opt - options
- * @returns {?Array} - result
+ * @returns {Promise.<?Array>} - result
  */
 export const queryTabs = async opt => {
   const res = await tabs.query(opt);
@@ -782,7 +782,7 @@ export const queryTabs = async opt => {
  *
  * @param {number|object} tabId - tab ID or options
  * @param {object} opt - options
- * @returns {?Array|boolean} - result
+ * @returns {Promise.<?Array|boolean>} - result
  */
 export const execScriptToTab = async (tabId, opt = {}) => {
   let res;
@@ -829,7 +829,7 @@ export const execScriptToTabs = async (opt = {}) => {
  *
  * @param {number|Array} tabId - tabId or array of options
  * @param {Array} opts - array of options
- * @returns {*} - result of the last executed script
+ * @returns {Promise.<*>} - result of the last executed script
  */
 export const execScriptsToTabInOrder = async (tabId, opts = []) => {
   const func = [];
@@ -859,8 +859,8 @@ export const execScriptsToTabInOrder = async (tabId, opts = []) => {
 /**
  * get active tab
  *
- * @param {number} windowId - window ID
- * @returns {object} - tabs.Tab
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const getActiveTab = async windowId => {
   if (!Number.isInteger(windowId)) {
@@ -877,8 +877,8 @@ export const getActiveTab = async windowId => {
 /**
  * get active tab ID
  *
- * @param {number} windowId - window ID
- * @returns {?number} - tab ID
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<?number>} - tab ID
  */
 export const getActiveTabId = async windowId => {
   if (!Number.isInteger(windowId)) {
@@ -895,8 +895,8 @@ export const getActiveTabId = async windowId => {
 /**
  * get all tabs in window
  *
- * @param {number} windowId - window ID
- * @returns {?Array} - array of tabs.Tab
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const getAllTabsInWindow = async windowId => {
   if (!Number.isInteger(windowId)) {
@@ -912,8 +912,8 @@ export const getAllTabsInWindow = async windowId => {
 /**
  * get highlighted tab
  *
- * @param {number} windowId - window ID
- * @returns {?Array} - array of tabs.Tab
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const getHighlightedTab = async windowId => {
   if (!Number.isInteger(windowId)) {
@@ -931,7 +931,7 @@ export const getHighlightedTab = async windowId => {
  * get tab
  *
  * @param {number} tabId - tab ID
- * @returns {object} - tabs.Tab
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const getTab = async tabId => {
   if (!Number.isInteger(tabId)) {
@@ -945,8 +945,8 @@ export const getTab = async tabId => {
  * highlight tab
  *
  * @param {number|Array} index - tab index
- * @param {number} windowId - window ID
- * @returns {object} - windows.Window
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<object>} - windows.Window
  */
 export const highlightTab = async (index, windowId) => {
   if (!(Array.isArray(index) || Number.isInteger(index))) {
@@ -967,8 +967,8 @@ export const highlightTab = async (index, windowId) => {
  * move tab
  *
  * @param {number|Array} tabId - tab ID
- * @param {object} opt - options
- * @returns {?Array} - array of tabs.Tab
+ * @param {object} [opt] - options
+ * @returns {Promise.<?Array>} - array of tabs.Tab
  */
 export const moveTab = async (tabId, opt) => {
   if (!(Array.isArray(tabId) || Number.isInteger(tabId))) {
@@ -978,7 +978,7 @@ export const moveTab = async (tabId, opt) => {
   if (arr && !Array.isArray(arr)) {
     arr = [arr];
   }
-  return arr ?? null;
+  return arr || null;
 };
 
 /**
@@ -986,7 +986,7 @@ export const moveTab = async (tabId, opt) => {
  *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const reloadTab = async (tabId, opt) => {
   if (!Number.isInteger(tabId)) {
@@ -999,7 +999,7 @@ export const reloadTab = async (tabId, opt) => {
  * remove tab
  *
  * @param {number|Array} arg - tab ID or array of tab ID
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const removeTab = async arg => {
   if (Number.isInteger(arg)) {
@@ -1016,7 +1016,7 @@ export const removeTab = async arg => {
  *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
- * @returns {object} - tabs.Tab
+ * @returns {Promise.<object>} - tabs.Tab
  */
 export const updateTab = async (tabId, opt) => {
   if (!Number.isInteger(tabId)) {
@@ -1030,7 +1030,7 @@ export const updateTab = async (tabId, opt) => {
  * warmup tab
  *
  * @param {number} tabId - tab ID
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const warmupTab = async tabId => {
   if (!Number.isInteger(tabId)) {
@@ -1045,7 +1045,7 @@ export const warmupTab = async tabId => {
  * is tab
  *
  * @param {*} tabId - tab ID
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const isTab = async tabId => {
   if (!Number.isInteger(tabId)) {
@@ -1066,8 +1066,8 @@ export const isTab = async tabId => {
 /**
  * get current theme
  *
- * @param {number} windowId - window ID
- * @returns {object} - theme.Theme
+ * @param {number} [windowId] - window ID
+ * @returns {Promise.<object>} - theme.Theme
  */
 export const getCurrentTheme = async windowId => {
   const isGranted = await isPermissionGranted({
@@ -1087,7 +1087,7 @@ export const getCurrentTheme = async windowId => {
  * create new window
  *
  * @param {object} opt - options
- * @returns {object} - windows.Window
+ * @returns {Promise.<object>} - windows.Window
  */
 export const createNewWindow = async opt => {
   const win = await windows.create(isObjectNotEmpty(opt) ? opt : null);
@@ -1098,7 +1098,7 @@ export const createNewWindow = async opt => {
  * get all windows
  *
  * @param {boolean} populate - populate tabs
- * @returns {Array} - array of windows.Window
+ * @returns {Promise.<Array>} - array of windows.Window
  */
 export const getAllNormalWindows = async (populate = false) => {
   const arr = await windows.getAll({
@@ -1112,7 +1112,7 @@ export const getAllNormalWindows = async (populate = false) => {
  * get current window
  *
  * @param {object} opt - options
- * @returns {object} - windows.Window
+ * @returns {Promise.<object>} - windows.Window
  */
 export const getCurrentWindow = async opt => {
   const win = await windows.getCurrent(isObjectNotEmpty(opt) ? opt : null);
@@ -1124,7 +1124,7 @@ export const getCurrentWindow = async opt => {
  *
  * @param {number} windowId - window ID
  * @param {object} opt - options
- * @returns {object} - windows.Window
+ * @returns {Promise.<object>} - windows.Window
  */
 export const getWindow = async (windowId, opt) => {
   if (!Number.isInteger(windowId)) {
@@ -1137,7 +1137,7 @@ export const getWindow = async (windowId, opt) => {
 /**
  * check whether incognito window exists
  *
- * @returns {boolean} - result
+ * @returns {Promise.<boolean>} - result
  */
 export const checkIncognitoWindowExists = async () => {
   const arr = await getAllNormalWindows();

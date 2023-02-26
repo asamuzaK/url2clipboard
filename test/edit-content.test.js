@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
+// eslint-disable-next-line import/order
 import * as cjs from '../src/js/edit-content.js';
 
 describe('edit-content', () => {

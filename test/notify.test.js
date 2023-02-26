@@ -1,14 +1,15 @@
 /**
  * notify.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
-import { ICON, NOTIFY_COPY } from '../src/mjs/constant.js';
 
 /* test */
+import { ICON, NOTIFY_COPY } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/notify.js';
 
 describe('notify', () => {

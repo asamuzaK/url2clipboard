@@ -3,8 +3,8 @@
  */
 
 /* shared */
-import { getType, isString, logErr } from './common.js';
 import nsURI from './ns-uri.js';
+import { getType, isString, logErr } from './common.js';
 import { MIME_HTML } from './constant.js';
 
 /**

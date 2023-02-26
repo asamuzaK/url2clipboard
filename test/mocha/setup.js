@@ -2,10 +2,10 @@
  * setup.js
  */
 
-import { JSDOM } from 'jsdom';
-import { Schema } from 'webext-schema';
 import domPurify from 'dompurify';
 import sinon from 'sinon';
+import { JSDOM } from 'jsdom';
+import { Schema } from 'webext-schema';
 
 /**
  * create jsdom

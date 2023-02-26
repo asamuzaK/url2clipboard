@@ -1,14 +1,15 @@
 /**
  * menu.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
-import { COPY_PAGE, WEBEXT_ID } from '../src/mjs/constant.js';
 
 /* test */
+import { COPY_PAGE, WEBEXT_ID } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/menu.js';
 
 describe('menu', () => {

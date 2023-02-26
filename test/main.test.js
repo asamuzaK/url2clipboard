@@ -1,16 +1,15 @@
 /**
  * main.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
+import sinon from 'sinon';
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
-import { editContent } from '../src/mjs/edit-content.js';
-import {
-  getFormat, getFormatsKeys, setFormat, setFormatData
-} from '../src/mjs/format.js';
-import sinon from 'sinon';
+
+/* test */
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
@@ -21,8 +20,10 @@ import {
   NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
   USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
-
-/* test */
+import { editContent } from '../src/mjs/edit-content.js';
+import {
+  getFormat, getFormatsKeys, setFormat, setFormatData
+} from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/main.js';
 
 describe('main', () => {

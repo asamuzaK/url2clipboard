@@ -3,10 +3,10 @@
  */
 
 /* shared */
-import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
   getStorage, removePermission, requestPermission, setStorage
 } from './browser.js';
+import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import { NOTIFY_COPY } from './constant.js';
 
 /**

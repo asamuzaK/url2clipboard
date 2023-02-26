@@ -1,14 +1,15 @@
 /**
  * compat.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
-import { OPTIONS_ICON_TOOLBAR, WEBEXT_ID } from '../src/mjs/constant.js';
 
 /* test */
+import { OPTIONS_ICON_TOOLBAR, WEBEXT_ID } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/compat.js';
 
 describe('compat', () => {

@@ -2,9 +2,9 @@
  * file-util.js
  */
 
-import { getType, isString } from './common.js';
 import fs, { promises as fsPromise } from 'node:fs';
 import path from 'node:path';
+import { getType, isString } from './common.js';
 
 /* constants */
 const CHAR = 'utf8';

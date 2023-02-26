@@ -1,15 +1,16 @@
 /**
  * options-main.test.js
  */
+/* eslint-disable import/order */
 
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { browser, createJsdom } from './mocha/setup.js';
 import sinon from 'sinon';
-import { NOTIFY_COPY } from '../src/mjs/constant.js';
+import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
+import { NOTIFY_COPY } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/options-main.js';
 
 describe('options-main', () => {

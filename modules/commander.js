@@ -3,12 +3,12 @@
  */
 
 /* api */
-import { getType, throwErr } from './common.js';
-import { createFile, isFile, readFile } from './file-util.js';
-import { createBlinkFiles } from './blink.js';
-import { program as commander } from 'commander';
 import path from 'node:path';
 import process from 'node:process';
+import { program as commander } from 'commander';
+import { createBlinkFiles } from './blink.js';
+import { getType, throwErr } from './common.js';
+import { createFile, isFile, readFile } from './file-util.js';
 
 /* constants */
 const CHAR = 'utf8';

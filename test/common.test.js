@@ -1,7 +1,7 @@
 /* api */
+import sinon from 'sinon';
 import { assert } from 'chai';
 import { describe, it } from 'mocha';
-import sinon from 'sinon';
 
 /* test */
 import {

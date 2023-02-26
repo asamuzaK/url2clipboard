@@ -3,12 +3,13 @@
  */
 
 /* api */
+import sinon from 'sinon';
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { createJsdom } from './mocha/setup.js';
-import sinon from 'sinon';
 
 /* test */
+// eslint-disable-next-line import/order
 import * as mjs from '../src/mjs/common.js';
 
 describe('common', () => {
