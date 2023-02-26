@@ -424,6 +424,7 @@ export const extractClickedData = async (info, tab) => {
             allow: ['data', 'file'],
             remove: true
           });
+          console.log(content)
         }
         if (url) {
           url = await sanitizeURL(url, {
