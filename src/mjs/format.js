@@ -310,12 +310,12 @@ export const createLinkText = (data = {}) => {
   let linkUrl = url || '';
   switch (formatId) {
     case ASCIIDOC:
-      content = escapeMatchingChars(content, /([\]])/g) || '';
+      content = escapeMatchingChars(content, /(\])/g) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case BBCODE_TEXT:
       content =
-        stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/ig) || '';
+        stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/gi) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
       break;
     case BBCODE_URL:
