@@ -15,12 +15,12 @@
   "dependencies": {
     "commander": "^10.0.0",
     "dompurify": "^3.0.0",
-    "url-sanitizer": "^0.9.6",
-    "webext-schema": "^5.1.6",
+    "url-sanitizer": "^0.9.8",
+    "webext-schema": "^5.1.8",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
-    "addons-linter": "^5.28.0",
+    "addons-linter": "^5.30.0",
     "c8": "^7.13.0",
     "chai": "^4.3.7",
     "copyfiles": "^2.4.1",
@@ -31,6 +31,7 @@
     "eslint-plugin-no-unsanitized": "^4.0.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-regexp": "^1.12.0",
     "eslint-plugin-unicorn": "^45.0.2",
     "html-validate": "^7.13.2",
     "jsdom": "^21.1.0",
