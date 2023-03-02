@@ -1,6 +1,6 @@
 {
   "name": "url-sanitizer",
-  "description": "URL sanitizer for Node.js (>=18), browsers and web sites.",
+  "description": "URL sanitizer for Node.js, browsers and web sites.",
   "author": "asamuzaK",
   "license": "MIT",
   "homepage": "https://github.com/asamuzaK/urlSanitizer",
@@ -9,22 +9,22 @@
     "url": "https://github.com/asamuzaK/urlSanitizer.git"
   },
   "type": "module",
-  "version": "0.9.8",
+  "version": "0.9.14",
   "origins": [
     {
       "file": "LICENSE",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.8/LICENSE",
-      "cdn": "https://unpkg.com/url-sanitizer@0.9.8/LICENSE"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.14/LICENSE",
+      "cdn": "https://unpkg.com/url-sanitizer@0.9.14/LICENSE"
     },
     {
       "file": "url-sanitizer-wo-dompurify.min.js",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.8/dist/url-sanitizer-wo-dompurify.min.js",
-      "cdn": "https://unpkg.com/url-sanitizer@0.9.8/dist/url-sanitizer-wo-dompurify.min.js"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.14/dist/url-sanitizer-wo-dompurify.min.js",
+      "cdn": "https://unpkg.com/url-sanitizer@0.9.14/dist/url-sanitizer-wo-dompurify.min.js"
     },
     {
       "file": "url-sanitizer-wo-dompurify.min.js.map",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.8/dist/url-sanitizer-wo-dompurify.min.js.map",
-      "cdn": "https://unpkg.com/url-sanitizer@0.9.8/dist/url-sanitizer-wo-dompurify.min.js.map"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.9.14/dist/url-sanitizer-wo-dompurify.min.js.map",
+      "cdn": "https://unpkg.com/url-sanitizer@0.9.14/dist/url-sanitizer-wo-dompurify.min.js.map"
     }
   ]
 }
