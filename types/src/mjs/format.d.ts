@@ -247,7 +247,7 @@ export function getFormat(id: string): any | null;
 export function setFormat(id: string, value: any): void;
 export function getFormatTitle(id: string): string | null;
 export const enabledFormats: Set<any>;
-export function toggleEnabledFormats(id: string, enabled: boolean): Promise<object>;
+export function toggleEnabledFormats(id: string, enabled?: boolean): Promise<object>;
 export function setFormatData(): Promise<any[]>;
 export function createTabsLinkText(arr: any[], opt?: {
     mimeType?: string;

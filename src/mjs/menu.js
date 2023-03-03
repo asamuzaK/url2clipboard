@@ -67,9 +67,9 @@ export const removeContextMenu = async () => menus.removeAll();
 /**
  * create context menu item
  *
- * @param {string} id - menu item ID
- * @param {string} title - menu item title
- * @param {object} data - context data
+ * @param {string} [id] - menu item ID
+ * @param {string} [title] - menu item title
+ * @param {object} [data] - context data
  * @returns {Promise.<void>} - void
  */
 export const createMenuItem = async (id, title, data = {}) => {
@@ -100,7 +100,7 @@ export const createMenuItem = async (id, title, data = {}) => {
  * @param {string} key - key
  * @param {string} itemId - item ID
  * @param {string} itemKey - item key
- * @param {object} itemData - item data
+ * @param {object} [itemData] - item data
  * @returns {Promise} - createMenuItem()
  */
 export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
@@ -177,7 +177,7 @@ export const createContextMenu = async () => {
  * update context menu
  *
  * @param {number} tabId - tab ID
- * @param {boolean} enabled - enabled
+ * @param {boolean} [enabled] - enabled
  * @returns {Promise.<Array>} - results of each handler
  */
 export const updateContextMenu = async (tabId, enabled = false) => {

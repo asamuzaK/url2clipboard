@@ -46,7 +46,7 @@ export const userOpts = new Map();
 /**
  * set user options
  *
- * @param {object} opt - user option
+ * @param {object} [opt] - user option
  * @returns {Promise.<object>} - userOpts
  */
 export const setUserOpts = async (opt = {}) => {
@@ -75,7 +75,7 @@ export const setUserOpts = async (opt = {}) => {
 /**
  * set user enabled formats
  *
- * @param {object} opt - user option
+ * @param {object} [opt] - user option
  * @returns {Promise.<object>} - enablrfFormats
  */
 export const setUserEnabledFormats = async (opt = {}) => {
@@ -296,8 +296,8 @@ export const sendContextInfo = async () => {
 /**
  * extract clicked data
  *
- * @param {object} info - clicked info
- * @param {object} tab - tabs.Tab
+ * @param {object} [info] - clicked info
+ * @param {object} [tab] - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
  */
 export const extractClickedData = async (info, tab) => {
@@ -512,7 +512,7 @@ export const extractClickedData = async (info, tab) => {
 /**
  * handle active tab
  *
- * @param {object} info - active tab info
+ * @param {object} [info] - active tab info
  * @returns {?Promise} - updateContextMenu()
  */
 export const handleActiveTab = async (info = {}) => {
@@ -528,8 +528,8 @@ export const handleActiveTab = async (info = {}) => {
  * handle updated tab
  *
  * @param {number} tabId - tab ID
- * @param {object} info - info
- * @param {object} tab - tabs.Tab
+ * @param {object} [info] - info
+ * @param {object} [tab] - tabs.Tab
  * @returns {?Promise} - handleActiveTab()
  */
 export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
@@ -576,7 +576,7 @@ export const handleCmd = async cmd => {
 /**
  * handle message
  *
- * @param {*} msg - message
+ * @param {object} [msg] - message
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async msg => {
@@ -616,8 +616,8 @@ export const handleMsg = async msg => {
  * set storage value
  *
  * @param {string} item - item
- * @param {object} obj - value object
- * @param {boolean} changed - changed
+ * @param {object} [obj] - value object
+ * @param {boolean} [changed] - changed
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setStorageValue = async (item, obj, changed = false) => {
@@ -682,7 +682,7 @@ export const setStorageValue = async (item, obj, changed = false) => {
  *
  * @param {object} data - storage data
  * @param {string} area - storage area
- * @param {boolean} changed - storage changed
+ * @param {boolean} [changed] - storage changed
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleStorage = async (data, area = 'local', changed = false) => {

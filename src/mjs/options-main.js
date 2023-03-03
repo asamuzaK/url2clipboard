@@ -12,7 +12,7 @@ import { NOTIFY_COPY } from './constant.js';
 /**
  * create pref
  *
- * @param {object} elm - element
+ * @param {object} [elm] - element
  * @returns {Promise.<object>} - pref data
  */
 export const createPref = async (elm = {}) => {
@@ -84,7 +84,7 @@ export const addInputChangeListener = async () => {
 /**
  * set html input value
  *
- * @param {object} data - storage data
+ * @param {object} [data] - storage data
  * @returns {Promise.<void>} - void
  */
 export const setHtmlInputValue = async (data = {}) => {

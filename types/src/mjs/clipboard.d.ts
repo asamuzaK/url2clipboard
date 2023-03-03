@@ -1,5 +1,5 @@
 export class Clip {
-    constructor(content: string, mime: string);
+    constructor(content?: string, mime?: string);
     set content(arg: string);
     get content(): string;
     set mime(arg: string);

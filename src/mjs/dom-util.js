@@ -179,7 +179,7 @@ export const appendChildNodes = (elm, node) => {
  *
  * @param {string} domstr - DOM string
  * @param {string} mime - mime type
- * @param {boolean} reqElm - require first element child
+ * @param {boolean} [reqElm] - require first element child
  * @returns {?string} - serialized DOM string
  */
 export const serializeDomString = (domstr, mime, reqElm = false) => {

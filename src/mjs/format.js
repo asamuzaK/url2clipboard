@@ -127,7 +127,7 @@ export const formats = new Map(Object.entries(formatData));
 /**
  * get formats
  *
- * @param {boolean} inArray - return in an array
+ * @param {boolean} [inArray] - return in an array
  * @returns {object|Array} - formats
  */
 export const getFormats = (inArray = false) =>
@@ -136,7 +136,7 @@ export const getFormats = (inArray = false) =>
 /**
  * get formats keys
  *
- * @param {boolean} inArray - return in an array
+ * @param {boolean} [inArray] - return in an array
  * @returns {object|Array} - formats
  */
 export const getFormatsKeys = (inArray = false) =>
@@ -243,7 +243,7 @@ export const enabledFormats = new Set();
  * toggle enabled formats
  *
  * @param {string} id - format id
- * @param {boolean} enabled - format is enabled
+ * @param {boolean} [enabled] - format is enabled
  * @returns {Promise.<object>} - enabledFormats
  */
 export const toggleEnabledFormats = async (id, enabled) => {
@@ -303,7 +303,7 @@ export const createTabsLinkText = (arr, opt = {}) => {
 /**
  * create link text
  *
- * @param {object} data - copy data
+ * @param {object} [data] - copy data
  * @returns {string} - link text
  */
 export const createLinkText = (data = {}) => {

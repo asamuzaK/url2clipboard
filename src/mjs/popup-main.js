@@ -28,7 +28,7 @@ export const enabledFormats = new Set();
  * toggle enabled formats
  *
  * @param {string} id - format id
- * @param {boolean} enabled - format is enabled
+ * @param {boolean} [enabled] - format is enabled
  * @returns {void}
  */
 export const toggleEnabledFormats = (id, enabled) => {
@@ -92,7 +92,7 @@ export const tabInfo = {
 /**
  * set tab info
  *
- * @param {object} tab - tabs.Tab
+ * @param {object} [tab] - tabs.Tab
  * @returns {Promise.<void>} - void
  */
 export const setTabInfo = async tab => {
@@ -110,7 +110,7 @@ export const setTabInfo = async tab => {
 /**
  * create copy data
  *
- * @param {!object} evt - Event
+ * @param {object} [evt] - Event
  * @returns {?Promise} - sendMessage();
  */
 export const createCopyData = async evt => {
@@ -166,7 +166,7 @@ export const openOptionsOnClick = () => runtime.openOptionsPage();
 /**
  * handle menu on click
  *
- * @param {!object} evt - Event
+ * @param {object} [evt] - Event
  * @returns {Promise} - Promise chain
  */
 export const menuOnClick = evt =>
@@ -213,7 +213,7 @@ export const toggleMenuItem = async () => {
 /**
  * update menu
  *
- * @param {object} data - context data;
+ * @param {object} [data] - context data;
  * @returns {Promise.<void>} - void
  */
 export const updateMenu = async data => {
@@ -278,7 +278,7 @@ export const prepareTab = async () => {
 /**
  * handle message
  *
- * @param {*} msg - message
+ * @param {object} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
 export const handleMsg = async msg => {

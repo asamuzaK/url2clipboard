@@ -21,8 +21,8 @@ export class Clip {
   /**
    * constructor
    *
-   * @param {string} content - content
-   * @param {string} mime - mime
+   * @param {string} [content] - content
+   * @param {string} [mime] - mime
    */
   constructor(content, mime) {
     this.#content = isString(content) ? content.trim() : '';

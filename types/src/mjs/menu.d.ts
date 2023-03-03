@@ -48,8 +48,8 @@ export namespace menuItems {
     }
 }
 export function removeContextMenu(): Promise<any>;
-export function createMenuItem(id: string, title: string, data?: object): Promise<void>;
-export function createSingleMenuItem(key: string, itemId: string, itemKey: string, itemData: object): Promise<any>;
+export function createMenuItem(id?: string, title?: string, data?: object): Promise<void>;
+export function createSingleMenuItem(key: string, itemId: string, itemKey: string, itemData?: object): Promise<any>;
 export function createContextMenu(): Promise<any[]>;
 export function updateContextMenu(tabId: number, enabled?: boolean): Promise<any[]>;
 export function handleMenusOnShown(info: object, tab: object): Promise<any> | null;
