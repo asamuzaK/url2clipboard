@@ -30,7 +30,7 @@
   /**
    * get anchor element
    *
-   * @param {object} node - element
+   * @param {object} [node] - element
    * @returns {object} - anchor element
    */
   const getAnchorElm = node => {
@@ -49,7 +49,7 @@
   /**
    * create context info
    *
-   * @param {object} node - element
+   * @param {object} [node] - element
    * @returns {object} - context info
    */
   const createContextInfo = node => {
