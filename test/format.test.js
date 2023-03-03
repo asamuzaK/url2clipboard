@@ -392,12 +392,32 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
-      const res = await func(['foo', 'bar'], MIME_PLAIN);
+      const res = await func(['foo', 'bar'], {
+        mimeType: MIME_PLAIN
+      });
       assert.strictEqual(res, 'foo\nbar', 'result');
     });
 
     it('should get string', async () => {
-      const res = await func(['foo', 'bar'], MIME_HTML);
+      const res = await func(['foo', 'bar'], {
+        mimeType: MIME_HTML
+      });
+      assert.strictEqual(res, 'foo<br />\nbar', 'result');
+    });
+
+    it('should get string', async () => {
+      const res = await func(['foo', 'bar'], {
+        mimeType: MIME_PLAIN,
+        newLine: true
+      });
+      assert.strictEqual(res, 'foo\n\nbar', 'result');
+    });
+
+    it('should get string', async () => {
+      const res = await func(['foo', 'bar'], {
+        mimeType: MIME_HTML,
+        newLine: true
+      });
       assert.strictEqual(res, 'foo<br />\nbar', 'result');
     });
   });
