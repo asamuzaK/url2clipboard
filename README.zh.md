@@ -2,9 +2,6 @@
 
 [![build](https://github.com/asamuzaK/url2clipboard/workflows/build/badge.svg)](https://github.com/asamuzaK/url2clipboard/actions?query=workflow%3Abuild)
 [![CodeQL](https://github.com/asamuzaK/url2clipboard/workflows/CodeQL/badge.svg)](https://github.com/asamuzaK/url2clipboard/actions?query=workflow%3ACodeQL)
-<!--
-[![devDependency Status](https://david-dm.org/asamuzaK/url2clipboard/dev-status.svg)](https://david-dm.org/asamuzaK/url2clipboard?type=dev)
--->
 [![Mozilla Add-on](https://img.shields.io/amo/v/url2clipboard@asamuzak.jp.svg)](https://addons.mozilla.org/firefox/addon/url2clipboard/)
 [![Chrome Web Store](https://img.shields.io/chrome-web-store/v/miancenhdlkbmjmhlginhaaepbdnlllc.svg)](https://chrome.google.com/webstore/detail/copy-url-to-clipboard/miancenhdlkbmjmhlginhaaepbdnlllc)
 
