@@ -11,7 +11,7 @@ import {
 import { localizeHtml } from './localize.js';
 import {
   CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_MENU
+  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_DETAILS, LINK_MENU
 } from './constant.js';
 
 /* api */
@@ -222,6 +222,7 @@ export const updateMenu = async data => {
     const { contextInfo: info } = data;
     if (info) {
       const { canonicalUrl, content, isLink, title, url } = info;
+      const elm = document.getElementById(LINK_DETAILS);
       const nodes = document.querySelectorAll(LINK_MENU);
       contextInfo.canonicalUrl = canonicalUrl;
       contextInfo.content = content;
@@ -229,7 +230,10 @@ export const updateMenu = async data => {
       contextInfo.title = title;
       contextInfo.url = url;
       if (isLink) {
+        elm.removeAttribute('hidden');
         document.getElementById(CONTENT_LINK).value = content;
+      } else {
+        elm.setAttribute('hidden', 'hidden');
       }
       for (const node of nodes) {
         const attr = 'disabled';

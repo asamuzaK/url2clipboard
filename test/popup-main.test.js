@@ -543,30 +543,36 @@ describe('popup-main', () => {
       div.id = 'copyLinkDetails';
       div.appendChild(elm);
       div.appendChild(elm2);
+      div.setAttribute('hidden', 'hidden');
       elm3.id = CONTENT_LINK;
       body.appendChild(div);
       body.appendChild(elm3);
     });
 
     it('should not set attr', async () => {
+      const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       await func();
+      assert.isTrue(elm.hidden, 'hidden');
       for (const item of items) {
         assert.isFalse(item.hasAttribute('disabled'), 'attr');
       }
     });
 
     it('should not set attr', async () => {
+      const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       await func({
         foo: {}
       });
+      assert.isTrue(elm.hidden, 'hidden');
       for (const item of items) {
         assert.isFalse(item.hasAttribute('disabled'), 'attr');
       }
     });
 
     it('should set attr but not value', async () => {
+      const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
@@ -579,6 +585,7 @@ describe('popup-main', () => {
         }
       };
       await func(data);
+      assert.isTrue(elm.hidden, 'hidden');
       for (const item of items) {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
@@ -586,6 +593,7 @@ describe('popup-main', () => {
     });
 
     it('should set attr but not value', async () => {
+      const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
@@ -598,6 +606,7 @@ describe('popup-main', () => {
         }
       };
       await func(data);
+      assert.isTrue(elm.hidden, 'hidden');
       for (const item of items) {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
@@ -605,6 +614,7 @@ describe('popup-main', () => {
     });
 
     it('should set attr and value', async () => {
+      const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
@@ -620,6 +630,7 @@ describe('popup-main', () => {
         item.setAttribute('disabled', 'disabled');
       }
       await func(data);
+      assert.isFalse(elm.hidden, 'hidden');
       for (const item of items) {
         assert.isFalse(item.hasAttribute('disabled'), 'attr');
       }
