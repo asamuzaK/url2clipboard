@@ -1,6 +1,6 @@
 export function isPermissionGranted(perm: object): Promise<boolean>;
 export function createBookmark(opt: object): Promise<object>;
-export function getBookmarkTreeNode(id: string | any[]): Promise<any[] | null>;
+export function getBookmarkTreeNode(id?: string | any[]): Promise<any[] | null>;
 export function getCloseTabsByDoubleClickValue(): Promise<object>;
 export function setContextMenuOnMouseup(): Promise<boolean>;
 export function clearContextMenuOnMouseup(): Promise<boolean>;

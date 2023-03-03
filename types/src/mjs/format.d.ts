@@ -249,7 +249,10 @@ export function getFormatTitle(id: string): string | null;
 export const enabledFormats: Set<any>;
 export function toggleEnabledFormats(id: string, enabled: boolean): Promise<object>;
 export function setFormatData(): Promise<any[]>;
-export function createTabsLinkText(arr: any[], mime?: string): string;
+export function createTabsLinkText(arr: any[], opt?: {
+    mimeType?: string;
+    newLine?: boolean;
+}): string;
 export function createLinkText(data?: object): string;
 import { HTML_PLAIN } from "./constant.js";
 import { HTML_HYPER } from "./constant.js";
