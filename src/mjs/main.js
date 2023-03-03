@@ -187,6 +187,7 @@ export const getOtherTabsInfo = async menuItemId => {
   const template = getFormatTemplate(menuItemId);
   const arr = await queryTabs({
     active: false,
+    highlighted: false,
     windowId: WINDOW_ID_CURRENT,
     windowType: 'normal'
   });

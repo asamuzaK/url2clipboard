@@ -436,6 +436,7 @@ describe('main', () => {
       const i = browser.tabs.query.callCount;
       browser.tabs.query.withArgs({
         active: false,
+        highlighted: false,
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([
