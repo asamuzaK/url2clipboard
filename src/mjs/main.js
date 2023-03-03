@@ -319,6 +319,8 @@ export const extractClickedData = async (info, tab) => {
       const formatId = getFormatId(menuItemId);
       const formatTitle = getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
+      const newLine =
+        !!(formatId === TEXT_TEXT_URL && userOpts.get(TEXT_SEP_LINES));
       const contextInfo = await getContextInfo(tabId);
       let contextCanonicalUrl = null;
       let contextContent = null;
@@ -344,7 +346,10 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, {
+          mimeType,
+          newLine
+        });
       } else if (menuItemId.startsWith(COPY_TABS_OTHER)) {
         const otherTabs = await getOtherTabsInfo(menuItemId);
         const arr = [];
@@ -352,7 +357,10 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, {
+          mimeType,
+          newLine
+        });
       } else if (menuItemId.startsWith(COPY_TABS_SELECTED)) {
         const selectedTabs = await getSelectedTabsInfo(menuItemId);
         const arr = [];
@@ -360,7 +368,10 @@ export const extractClickedData = async (info, tab) => {
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
-        text = createTabsLinkText(tmplArr, mimeType);
+        text = createTabsLinkText(tmplArr, {
+          mimeType,
+          newLine
+        });
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = getFormatTemplate(formatId);
         let content;

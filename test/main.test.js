@@ -1195,6 +1195,43 @@ describe('main', () => {
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.tabs.query.callCount;
+      const menuItemId = `${COPY_TABS_ALL}TextURL`;
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      }, {
+        id: 2,
+        title: 'bar',
+        url: 'https://example.com/bar'
+      }, {
+        id: 3,
+        title: 'baz',
+        url: 'https://example.com/baz'
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_SEP_LINES, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
       const menuItemId = `${COPY_TABS_OTHER}TextURL`;
       const info = {
         menuItemId
@@ -1208,6 +1245,75 @@ describe('main', () => {
         result: {}
       }]);
       browser.tabs.query.resolves([{
+        id: 2,
+        title: 'bar',
+        url: 'https://example.com/bar'
+      }, {
+        id: 3,
+        title: 'baz',
+        url: 'https://example.com/baz'
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
+      const menuItemId = `${COPY_TABS_OTHER}TextURL`;
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.tabs.query.resolves([{
+        id: 2,
+        title: 'bar',
+        url: 'https://example.com/bar'
+      }, {
+        id: 3,
+        title: 'baz',
+        url: 'https://example.com/baz'
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_SEP_LINES, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
+      assert.deepEqual(res, [], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const j = browser.tabs.query.callCount;
+      const menuItemId = `${COPY_TABS_SELECTED}TextURL`;
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {}
+      }]);
+      browser.tabs.query.resolves([{
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      }, {
         id: 2,
         title: 'bar',
         url: 'https://example.com/bar'
@@ -1253,6 +1359,7 @@ describe('main', () => {
         url: 'https://example.com/baz'
       }]);
       mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_SEP_LINES, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');

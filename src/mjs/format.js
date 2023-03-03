@@ -12,9 +12,8 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
-  MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
-  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
+  ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
 /* format data */
@@ -280,14 +279,24 @@ export const setFormatData = async () => {
  * create multiple tabs link text
  *
  * @param {Array} arr - array of link text
- * @param {string} mime - mime type
+ * @param {object} [opt] - options
+ * @param {string} [opt.mimeType] - mime type
+ * @param {boolean} [opt.newLine] - new line
  * @returns {string} - joined link text
  */
-export const createTabsLinkText = (arr, mime = MIME_PLAIN) => {
+export const createTabsLinkText = (arr, opt = {}) => {
   if (!Array.isArray(arr)) {
     throw new TypeError(`Expected Array but got ${getType(arr)}.`);
   }
-  const joiner = mime === MIME_HTML ? '<br />\n' : '\n';
+  const { mimeType, newLine } = opt;
+  let joiner;
+  if (mimeType === MIME_HTML) {
+    joiner = '<br />\n';
+  } else if (newLine) {
+    joiner = '\n\n';
+  } else {
+    joiner = '\n';
+  }
   return arr.filter(i => i).join(joiner);
 };
 
