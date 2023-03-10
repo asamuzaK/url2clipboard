@@ -11,7 +11,7 @@ import {
 import { localizeHtml } from './localize.js';
 import {
   CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_DETAILS, LINK_MENU
+  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_DETAILS, LINK_MENU, OPTIONS_OPEN
 } from './constant.js';
 
 /* api */
@@ -19,7 +19,8 @@ const { runtime, tabs } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
-export const OPTIONS_OPEN = 'openOptions';
+const ATTR_DISABLED = 'disabled';
+const ATTR_HIDDEN = 'hidden';
 
 /* enabled formats */
 export const enabledFormats = new Set();
@@ -202,9 +203,9 @@ export const toggleMenuItem = async () => {
     const formatId = getFormatId(id);
     if (formatsKeys.includes(formatId)) {
       if (enabledFormats.has(formatId)) {
-        parentNode.removeAttribute('hidden');
+        parentNode.removeAttribute(ATTR_HIDDEN);
       } else {
-        parentNode.setAttribute('hidden', 'hidden');
+        parentNode.setAttribute(ATTR_HIDDEN, ATTR_HIDDEN);
       }
     }
   }
@@ -230,17 +231,16 @@ export const updateMenu = async data => {
       contextInfo.title = title;
       contextInfo.url = url;
       if (isLink) {
-        elm.removeAttribute('hidden');
+        elm.removeAttribute(ATTR_HIDDEN);
         document.getElementById(CONTENT_LINK).value = content;
       } else {
-        elm.setAttribute('hidden', 'hidden');
+        elm.setAttribute(ATTR_HIDDEN, ATTR_HIDDEN);
       }
       for (const node of nodes) {
-        const attr = 'disabled';
         if (isLink) {
-          node.removeAttribute(attr);
+          node.removeAttribute(ATTR_DISABLED);
         } else {
-          node.setAttribute(attr, attr);
+          node.setAttribute(ATTR_DISABLED, ATTR_DISABLED);
         }
       }
     }

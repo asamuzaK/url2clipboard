@@ -12,13 +12,10 @@ import { browser, createJsdom } from './mocha/setup.js';
 /* test */
 import {
   BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
-  EXEC_COPY
+  EXEC_COPY, OPTIONS_OPEN
 } from '../src/mjs/constant.js';
 import { formatData } from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/popup-main.js';
-
-/* constants */
-const { OPTIONS_OPEN } = mjs;
 
 describe('popup-main', () => {
   let window, document, navigator;
