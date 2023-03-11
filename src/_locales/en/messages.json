@@ -387,7 +387,7 @@
     "message": "If enabled, prompt window will appear when copying and you can edit content text of the link. Note that in privileged URLs, the prompt window may not appear so that you may not be able to edit."
   },
   "optionsSeparateTextURL": {
-    "message": "Copy text and URL in separate lines"
+    "message": "Copy text and URL on separate lines"
   },
   "optionsTextOutputOnlyTextLabel": {
     "message": "Copy only text"
