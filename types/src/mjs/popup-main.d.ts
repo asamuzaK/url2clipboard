@@ -1,4 +1,3 @@
-export const OPTIONS_OPEN: "openOptions";
 export const enabledFormats: Set<any>;
 export function toggleEnabledFormats(id: string, enabled?: boolean): void;
 export function setFormatData(): Promise<any[]>;
