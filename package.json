@@ -15,8 +15,8 @@
   "dependencies": {
     "commander": "^10.0.0",
     "dompurify": "^3.0.1",
-    "url-sanitizer": "^0.9.14",
-    "webext-schema": "^5.1.9",
+    "url-sanitizer": "^0.9.15",
+    "webext-schema": "^5.1.10",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "eslint": "^8.36.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-jsdoc": "^40.0.1",
+    "eslint-plugin-jsdoc": "^40.0.2",
     "eslint-plugin-no-unsanitized": "^4.0.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
