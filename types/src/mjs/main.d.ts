@@ -16,4 +16,4 @@ export function setStorageValue(item: string, obj?: object, changed?: boolean): 
 export function handleStorage(data: object, area?: string, changed?: boolean): Promise<any[]>;
 export function startup(): Promise<any>;
 export { enabledFormats };
-import { enabledFormats } from "./format.js";
+import { enabledFormats } from './format.js';
