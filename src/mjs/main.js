@@ -4,14 +4,14 @@
 
 /* shared */
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
-import { Clip } from './clipboard.js';
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import {
   execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
   getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
   getStorage, isScriptingAvailable, isTab, queryTabs, removeStorage, sendMessage
 } from './browser.js';
+import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import { editContent } from './edit-content.js';
+import { execCopy } from './exec-copy.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
   getFormatsKeys, getFormatTitle, hasFormat, setFormat, setFormatData,
@@ -499,10 +499,12 @@ export const extractClickedData = async (info, tab) => {
         }
       }
       if (isString(text)) {
-        await new Clip(text, mimeType).copy();
-        if (userOpts.get(NOTIFY_COPY)) {
-          func.push(notifyOnCopy(formatTitle));
-        }
+        func.push(execCopy({
+          formatTitle,
+          mimeType,
+          text,
+          notify: userOpts.get(NOTIFY_COPY)
+        }));
       }
     }
   }

@@ -1019,7 +1019,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1047,7 +1047,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1075,7 +1075,7 @@ describe('main', () => {
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(document.execCommand.callCount, i + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1104,7 +1104,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1133,7 +1133,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1154,7 +1154,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1190,7 +1190,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1227,7 +1227,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1259,7 +1259,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1292,7 +1292,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1328,7 +1328,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1365,7 +1365,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1386,7 +1386,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1407,7 +1407,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1438,7 +1438,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1468,7 +1468,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1497,7 +1497,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1526,7 +1526,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1555,7 +1555,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1584,7 +1584,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1612,7 +1612,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1641,7 +1641,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1670,7 +1670,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1698,7 +1698,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1726,7 +1726,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1754,7 +1754,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1782,7 +1782,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1811,7 +1811,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1836,7 +1836,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -1862,7 +1862,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should log error', async () => {
@@ -1893,7 +1893,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should throw', async () => {
@@ -1988,7 +1988,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2016,7 +2016,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2044,7 +2044,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2072,7 +2072,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2094,7 +2094,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2124,7 +2124,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('[url]https://example.com/[/url]').callCount, i + 1,
       'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2154,7 +2154,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('foo https://example.com/').callCount, i + 1,
       'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 
@@ -2379,7 +2379,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2439,7 +2439,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l,
         'not called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2498,7 +2498,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2553,7 +2553,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2609,7 +2609,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2669,7 +2669,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2727,7 +2727,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2785,7 +2785,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2845,7 +2845,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2905,7 +2905,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -2963,7 +2963,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3021,7 +3021,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3079,7 +3079,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3137,7 +3137,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3197,7 +3197,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3257,7 +3257,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3313,7 +3313,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3366,7 +3366,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3426,7 +3426,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3486,7 +3486,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3546,7 +3546,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3606,7 +3606,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3666,7 +3666,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
@@ -3726,7 +3726,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(navigator.clipboard.writeText.callCount, l + 1,
         'called');
-      assert.deepEqual(res, [null], 'result');
+      assert.deepEqual(res, [undefined], 'result');
     });
   });
 
