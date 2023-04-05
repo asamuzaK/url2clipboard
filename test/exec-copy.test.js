@@ -129,6 +129,25 @@ describe('exec-copy', () => {
       browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
+      delete navigator.clipboard;
+      const i = document.execCommand.callCount;
+      const j = browser.notifications.create.callCount;
+      const opt = {
+        formatTitle: 'Text & URL',
+        mimeType: 'text/foo',
+        notify: false,
+        text: 'foo https://example.com'
+      };
+      await func(opt);
+      assert.strictEqual(document.execCommand.callCount, i, 'not called');
+      assert.strictEqual(browser.notifications.create.callCount, j,
+        'not called');
+    });
+
+    it('should not call function', async () => {
+      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
+      browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.notifications.create.callCount;
       const opt = {
