@@ -120,7 +120,7 @@ export class Clip {
         } catch (e) {
           this._copySync();
         }
-      } else if (typeof clipboard?.write === 'function' &&
+      } else if (typeof clipboard.write === 'function' &&
                  typeof ClipboardItem === 'function') {
         const data = [];
         if (REG_DOM_PARSE.test(this.#mime)) {
