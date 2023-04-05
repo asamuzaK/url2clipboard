@@ -6,8 +6,7 @@
 import { ICON } from './constant.js';
 
 /* api */
-const { runtime } = browser;
-const action = browser.action ?? browser.browserAction;
+const { action, runtime } = browser;
 
 /* variables */
 export const icon = new Map();
