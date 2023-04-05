@@ -16,11 +16,11 @@
     "commander": "^10.0.0",
     "dompurify": "^3.0.1",
     "url-sanitizer": "^0.10.2",
-    "webext-schema": "^5.1.11",
+    "webext-schema": "^5.1.12",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
-    "addons-linter": "^6.0.0",
+    "addons-linter": "^6.1.0",
     "c8": "^7.13.0",
     "chai": "^4.3.7",
     "copyfiles": "^2.4.1",
