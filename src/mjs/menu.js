@@ -22,7 +22,7 @@ const { WINDOW_ID_CURRENT } = windows;
 export const menuItems = {
   [OPTIONS_OPEN]: {
     id: OPTIONS_OPEN,
-    contexts: ['action'],
+    contexts: ['browser_action'],
     key: '(&T)'
   },
   [COPY_PAGE]: {
@@ -84,7 +84,7 @@ export const createMenuItem = async (id, title, data = {}) => {
     if (parentId) {
       opt.parentId = parentId;
     }
-    if (contexts.includes('action') || contexts.includes('tab')) {
+    if (contexts.includes('browser_action') || contexts.includes('tab')) {
       if (runtime.id === WEBEXT_ID) {
         menus.create(opt);
       }
