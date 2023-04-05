@@ -31,6 +31,7 @@ export class Clip {
       'application/json',
       'application/xhtml+xml',
       'application/xml',
+      'image/png',
       'image/svg+xml',
       'text/csv',
       'text/html',
@@ -113,8 +114,7 @@ export class Clip {
     }
     if (this.#content) {
       const { clipboard } = navigator;
-      if (typeof clipboard?.writeText === 'function' &&
-          this.#mime === MIME_PLAIN) {
+      if (this.#mime === MIME_PLAIN) {
         try {
           await clipboard.writeText(this.#content);
         } catch (e) {

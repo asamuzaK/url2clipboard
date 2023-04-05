@@ -161,15 +161,15 @@ describe('clipboard', () => {
       it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
-          clip.mime = 'image/png';
-        }, 'Mime type of image/png is not supported.');
+          clip.mime = 'image/jpg';
+        }, 'Mime type of image/jpg is not supported.');
       });
 
       it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
-          clip.mime = ' image/png ';
-        }, 'Mime type of image/png is not supported.');
+          clip.mime = ' image/jpg ';
+        }, 'Mime type of image/jpg is not supported.');
       });
 
       it('should set value', () => {
@@ -188,6 +188,12 @@ describe('clipboard', () => {
         const clip = new Clip();
         clip.mime = 'text/html';
         assert.strictEqual(clip.mime, 'text/html', 'value');
+      });
+
+      it('should set value', () => {
+        const clip = new Clip();
+        clip.mime = 'image/png';
+        assert.strictEqual(clip.mime, 'image/png', 'value');
       });
     });
 
@@ -372,7 +378,7 @@ describe('clipboard', () => {
         assert.isTrue(stubRemove.calledOnce, 'called');
         assert.isTrue(stubPropagate.calledOnce, 'called');
         assert.isTrue(stubPreventDefault.calledOnce, 'called');
-        assert.strictEqual(stubSetData.callCount, i, 'not called');
+        assert.strictEqual(stubSetData.callCount, i + 1, 'called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
@@ -381,11 +387,11 @@ describe('clipboard', () => {
 
     describe('copy to clipboard', () => {
       it('should throw', async () => {
-        const clip = new Clip('foo', 'image/png');
+        const clip = new Clip('foo', 'image/jpg');
         await clip.copy().catch(e => {
           assert.instanceOf(e, Error);
           assert.strictEqual(e.message,
-            'Mime type of image/png is not supported.');
+            'Mime type of image/jpg is not supported.');
         });
       });
 
@@ -572,6 +578,29 @@ describe('clipboard', () => {
 
       it('should call function', async () => {
         const clip = new Clip('<xml></xml>', 'text/xml');
+        const fakeWriteText = sinon.fake();
+        const fakeWrite = sinon.fake();
+        navigator.clipboard = {
+          writeText: fakeWriteText,
+          write: fakeWrite
+        };
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
+        const res = await clip.copy();
+        const { called: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWrite } = fakeWrite;
+        const { called: calledExec } = fakeExec;
+        delete navigator.clipboard;
+        delete document.execCommand;
+        assert.isFalse(calledWriteText, 'not called');
+        assert.isTrue(calledWrite, 'called');
+        assert.isFalse(calledExec, 'not called');
+        assert.isUndefined(res, 'result');
+      });
+
+      it('should call function', async () => {
+        const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==', 'base64');
+        const clip = new Clip(png.toString('binary'), 'image/png');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
