@@ -65,10 +65,11 @@
       const anchor = getAnchorElm(node);
       const canonical = document.querySelector('link[rel=canonical][href]');
       if (anchor) {
-        const { textContent, href, title } = anchor;
+        const { href, innerText, textContent, title } = anchor;
         if (href) {
+          const content = innerText ?? textContent;
           contextInfo.isLink = true;
-          contextInfo.content = textContent.replace(/\s+/g, ' ').trim();
+          contextInfo.content = content.replace(/\s+/g, ' ').trim();
           contextInfo.title = title;
           if (href?.baseVal) {
             contextInfo.url = href.baseVal;
