@@ -289,6 +289,25 @@ describe('context-info', () => {
     });
 
     it('should get result', async () => {
+      const text = document.createTextNode('foo\nbar');
+      const a = document.createElement('a');
+      const body = document.querySelector('body');
+      a.appendChild(text);
+      a.href = 'https://www.example.com/bar';
+      a.title = 'baz qux';
+      body.appendChild(a);
+      const res = await func(a);
+      assert.deepEqual(res, {
+        isLink: true,
+        canonicalUrl: null,
+        content: 'foo bar',
+        selectionText: '',
+        title: 'baz qux',
+        url: 'https://www.example.com/bar'
+      }, 'result');
+    });
+
+    it('should get result', async () => {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       const a = document.createElementNS('http://www.w3.org/2000/svg', 'a');
       const body = document.querySelector('body');
