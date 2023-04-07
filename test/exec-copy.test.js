@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import { ICON, MIME_PLAIN } from '../src/mjs/constant.js';
+import { MIME_PLAIN } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/exec-copy.js';
 
 describe('exec-copy', () => {
@@ -126,7 +126,7 @@ describe('exec-copy', () => {
     const func = mjs.execCopy;
 
     it('should not call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.returns('foo/bar');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       delete navigator.clipboard;
@@ -145,7 +145,7 @@ describe('exec-copy', () => {
     });
 
     it('should not call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.returns('foo/bar');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       const i = navigator.clipboard.writeText.callCount;
@@ -164,7 +164,7 @@ describe('exec-copy', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.returns('foo/bar');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       const i = navigator.clipboard.writeText.callCount;
@@ -183,7 +183,7 @@ describe('exec-copy', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.returns('foo/bar');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       const i = navigator.clipboard.writeText.callCount;

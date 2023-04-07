@@ -31,16 +31,17 @@ export const createManifest = async info => {
     browser_action: {
       browser_style: true,
       default_icon: {
-        16: 'img/icon-outline-16.png',
-        32: 'img/icon-outline-32.png'
+        16: 'img/icon-color-16.png',
+        32: 'img/icon-color-32.png'
       },
       default_popup: 'html/popup.html',
       default_title: '__MSG_extensionName__'
     },
     icons: {
-      16: 'img/icon-outline-16.png',
-      32: 'img/icon-outline-32.png',
-      64: 'img/icon-color.png',
+      16: 'img/icon-black-16.png',
+      32: 'img/icon-black-32.png',
+      48: 'img/icon-color-48.png',
+      96: 'img/icon-color-96.png',
       128: 'img/icon-color-128.png'
     },
     // TODO: refactoring when switching to MV3

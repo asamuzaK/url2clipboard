@@ -14,11 +14,10 @@ import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
   COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
-  ICON, ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT,
-  ICON_WHITE, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN,
-  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
-  USER_INPUT_DEFAULT, WEBEXT_ID
+  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
+  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
+  JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN, NOTIFY_COPY, OPTIONS_OPEN,
+  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
 import { editContent } from '../src/mjs/edit-content.js';
 import {
@@ -4094,7 +4093,7 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
+      browser.runtime.getURL.returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
       mjs.userOpts.set(NOTIFY_COPY, true);
       const i = browser.notifications.create.callCount;
@@ -4108,7 +4107,7 @@ describe('main', () => {
     });
 
     it('should not call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
+      browser.runtime.getURL.returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
       mjs.userOpts.set(NOTIFY_COPY, true);
       const i = browser.notifications.create.callCount;
@@ -4121,7 +4120,7 @@ describe('main', () => {
     });
 
     it('should not call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('/foo/bar');
+      browser.runtime.getURL.returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);
       mjs.userOpts.set(NOTIFY_COPY, false);
       const i = browser.notifications.create.callCount;
@@ -4327,156 +4326,129 @@ describe('main', () => {
     it('should call function', async () => {
       browser.runtime.id = WEBEXT_ID;
       const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_AUTO, {
         checked: true,
-        value: '#auto'
+        value: '#foo'
       });
       assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
         'called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j,
+        'not called');
       assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_AUTO, {
+      browser.runtime.id = WEBEXT_ID;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_BLACK, {
         checked: true,
         value: '#foo'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
         'called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j,
+        'not called');
       assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_AUTO, {
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_BLACK, {
         checked: true,
         value: '#foo'
-      }, true);
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      });
+      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
         'called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j,
+        'not called');
       assert.deepEqual(res, [undefined], 'result');
     });
 
     it('should not call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_AUTO, {
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
+      const res = await func(ICON_BLACK, {
         checked: false,
-        value: '#foo'
+        value: 'icon-black-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j,
         'not called');
       assert.deepEqual(res, [], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_BLACK, {
         checked: true,
-        value: '#foo'
+        value: 'icon-black-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_BLACK, {
-        checked: true,
-        value: '#foo'
-      });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [undefined], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_COLOR, {
         checked: true,
-        value: '#foo'
+        value: 'icon-color-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_COLOR, {
-        checked: true,
-        value: '#foo'
-      });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [undefined], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_DARK, {
         checked: true,
-        value: '#foo'
+        value: 'icon-dark-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_DARK, {
-        checked: true,
-        value: '#foo'
-      });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [undefined], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_LIGHT, {
         checked: true,
-        value: '#foo'
+        value: 'icon-light-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_LIGHT, {
-        checked: true,
-        value: '#foo'
-      });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [undefined], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
+      const i = browser.storage.local.remove.callCount;
+      const j = browser.browserAction.setIcon.callCount;
       const res = await func(ICON_WHITE, {
         checked: true,
-        value: '#foo'
+        value: 'icon-white-32.png'
       });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
+      assert.strictEqual(browser.storage.local.remove.callCount, i,
+        'not called');
+      assert.strictEqual(browser.browserAction.setIcon.callCount, j + 1,
         'called');
-      assert.deepEqual(res, [undefined], 'result');
-    });
-
-    it('should call function', async () => {
-      const i = browser.browserAction.setIcon.callCount;
-      const res = await func(ICON_WHITE, {
-        checked: true,
-        value: '#foo'
-      });
-      assert.strictEqual(browser.browserAction.setIcon.callCount, i + 1,
-        'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.deepEqual(res, [null], 'result');
     });
   });
 
