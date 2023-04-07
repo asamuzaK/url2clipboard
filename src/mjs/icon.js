@@ -6,11 +6,11 @@
 import { isString } from './common.js';
 
 /* api */
-const { runtime } = browser;
-const action = browser.action ?? browser.browserAction;
+const { action, runtime } = browser;
 
 /**
  * set icon
+ * NOTE: only for Blink
  *
  * @param {string} icon - icon
  * @returns {Promise} - action.setIcon()
