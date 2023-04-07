@@ -38,8 +38,8 @@ export const createManifest = async info => {
       default_title: '__MSG_extensionName__'
     },
     icons: {
-      16: 'img/icon-color-16.png',
-      32: 'img/icon-color-32.png',
+      16: 'img/icon-black-16.png',
+      32: 'img/icon-black-32.png',
       48: 'img/icon-color-48.png',
       96: 'img/icon-color-96.png',
       128: 'img/icon-color-128.png'
