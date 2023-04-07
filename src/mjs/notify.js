@@ -5,7 +5,7 @@
 /* shared */
 import { createNotification } from './browser.js';
 import { isString } from './common.js';
-import { ICON, NOTIFY_COPY } from './constant.js';
+import { NOTIFY_COPY } from './constant.js';
 
 /* api */
 const { i18n, runtime } = browser;
@@ -21,9 +21,10 @@ export const notifyOnCopy = label => {
     (isString(label) && label &&
      i18n.getMessage('notifyOnCopyMsg_format', label)) ||
     i18n.getMessage('notifyOnCopyMsg');
+  const ext = typeof window === 'undefined' ? 'png' : 'svg';
   const msg = {
     message,
-    iconUrl: runtime.getURL(ICON),
+    iconUrl: runtime.getURL(`img/icon.${ext}`),
     title: i18n.getMessage('extensionName'),
     type: 'basic'
   };

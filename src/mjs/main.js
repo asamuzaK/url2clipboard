@@ -631,12 +631,14 @@ export const setStorageValue = async (item, obj, changed = false) => {
     const { checked, value } = obj;
     switch (item) {
       case ICON_AUTO:
+        func.push(removeStorage(item));
+        break;
       case ICON_BLACK:
       case ICON_COLOR:
       case ICON_DARK:
       case ICON_LIGHT:
       case ICON_WHITE: {
-        if (runtime.id === WEBEXT_ID) {
+        if (runtime.id === WEBEXT_ID || value.startsWith('#')) {
           func.push(removeStorage(item));
         } else if (checked) {
           func.push(setIcon(value));

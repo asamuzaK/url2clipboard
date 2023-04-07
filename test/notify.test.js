@@ -6,10 +6,10 @@
 /* api */
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { browser } from './mocha/setup.js';
+import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import { ICON, NOTIFY_COPY } from '../src/mjs/constant.js';
+import { NOTIFY_COPY } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/notify.js';
 
 describe('notify', () => {
@@ -32,11 +32,11 @@ describe('notify', () => {
     const func = mjs.notifyOnCopy;
 
     it('should call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.withArgs('img/icon.png').returns('img/icon.png');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg').returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       browser.notifications.create.withArgs(NOTIFY_COPY, {
-        iconUrl: 'foo/bar',
+        iconUrl: 'img/icon.png',
         message: 'foo',
         title: 'bar',
         type: 'basic'
@@ -46,17 +46,52 @@ describe('notify', () => {
     });
 
     it('should call function', async () => {
-      browser.runtime.getURL.withArgs(ICON).returns('foo/bar');
+      browser.runtime.getURL.withArgs('img/icon.png').returns('img/icon.png');
       browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format', 'foo')
         .returns('foo');
       browser.i18n.getMessage.withArgs('extensionName').returns('bar');
       browser.notifications.create.withArgs(NOTIFY_COPY, {
-        iconUrl: 'foo/bar',
+        iconUrl: 'img/icon.png',
         message: 'foo',
         title: 'bar',
         type: 'basic'
       }).resolves(true);
       const res = await func('foo');
+      assert.isTrue(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const { window } = createJsdom();
+      global.window = window;
+      browser.runtime.getURL.withArgs('img/icon.svg').returns('img/icon.svg');
+      browser.i18n.getMessage.withArgs('notifyOnCopyMsg').returns('foo');
+      browser.i18n.getMessage.withArgs('extensionName').returns('bar');
+      browser.notifications.create.withArgs(NOTIFY_COPY, {
+        iconUrl: 'img/icon.svg',
+        message: 'foo',
+        title: 'bar',
+        type: 'basic'
+      }).resolves(true);
+      const res = await func();
+      delete global.window;
+      assert.isTrue(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const { window } = createJsdom();
+      global.window = window;
+      browser.runtime.getURL.withArgs('img/icon.svg').returns('img/icon.svg');
+      browser.i18n.getMessage.withArgs('notifyOnCopyMsg_format', 'foo')
+        .returns('foo');
+      browser.i18n.getMessage.withArgs('extensionName').returns('bar');
+      browser.notifications.create.withArgs(NOTIFY_COPY, {
+        iconUrl: 'img/icon.svg',
+        message: 'foo',
+        title: 'bar',
+        type: 'basic'
+      }).resolves(true);
+      const res = await func('foo');
+      delete global.window;
       assert.isTrue(res, 'result');
     });
   });
