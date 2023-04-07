@@ -93,6 +93,34 @@ describe('create polyfilled *.js file', () => {
   it('should call function', async () => {
     const stubWrite = sinon.stub(fsPromise, 'writeFile');
     const stubInfo = sinon.stub(console, 'info');
+    const res = await createPolyfilledJsFile('offscreen.js');
+    const { calledOnce: writeCalled } = stubWrite;
+    const { called: infoCalled } = stubInfo;
+    stubWrite.restore();
+    stubInfo.restore();
+    assert.isTrue(writeCalled, 'called');
+    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(res,
+      path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'), 'result');
+  });
+
+  it('should call function', async () => {
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
+    const res = await createPolyfilledJsFile('offscreen.js', true);
+    const { calledOnce: writeCalled } = stubWrite;
+    const { calledOnce: infoCalled } = stubInfo;
+    stubWrite.restore();
+    stubInfo.restore();
+    assert.isTrue(writeCalled, 'called');
+    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(res,
+      path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'), 'result');
+  });
+
+  it('should call function', async () => {
+    const stubWrite = sinon.stub(fsPromise, 'writeFile');
+    const stubInfo = sinon.stub(console, 'info');
     const res = await createPolyfilledJsFile('options.js');
     const { calledOnce: writeCalled } = stubWrite;
     const { called: infoCalled } = stubInfo;
@@ -160,6 +188,7 @@ describe('create blink specific *.js files', () => {
     assert.isFalse(infoCalled, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+      path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
     ], 'result');
@@ -177,6 +206,7 @@ describe('create blink specific *.js files', () => {
     assert.isTrue(infoCalled, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+      path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
     ], 'result');
@@ -198,6 +228,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]
@@ -220,6 +251,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]
@@ -251,6 +283,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]

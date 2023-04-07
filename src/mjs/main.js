@@ -5,9 +5,9 @@
 /* shared */
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import {
-  execScriptToTab, execScriptsToTabInOrder, executeScriptToTab, getActiveTab,
-  getActiveTabId, getAllStorage, getAllTabsInWindow, getHighlightedTab,
-  getStorage, isScriptingAvailable, isTab, queryTabs, removeStorage, sendMessage
+  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage,
+  getAllTabsInWindow, getHighlightedTab, getStorage, isTab, queryTabs,
+  removeStorage, sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import { editContent } from './edit-content.js';
@@ -28,9 +28,8 @@ import {
   COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  JS_CONTEXT_INFO, JS_EDIT_CONTENT, MARKDOWN, MIME_HTML, MIME_PLAIN,
-  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES,
-  TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
+  JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN,
+  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -241,35 +240,24 @@ export const getSelectedTabsInfo = async menuItemId => {
  * @returns {Promise.<object>} - context info
  */
 export const getContextInfo = async tabId => {
-  // TODO: refactoring when switching to MV3
-  const useScripting = await isScriptingAvailable();
+  if (!Number.isInteger(tabId)) {
+    tabId = await getActiveTabId();
+  }
+  const arr = await executeScriptToTab({
+    files: [JS_CONTEXT_INFO],
+    target: {
+      tabId
+    }
+  }).catch(logErr);
   let info;
-  if (useScripting) {
-    if (!Number.isInteger(tabId)) {
-      tabId = await getActiveTabId();
-    }
-    const arr = await executeScriptToTab({
-      files: [JS_CONTEXT_INFO],
-      target: {
-        tabId
+  if (Array.isArray(arr)) {
+    const [res] = arr;
+    if (isObjectNotEmpty(res)) {
+      if (Object.prototype.hasOwnProperty.call(res, 'error')) {
+        throw res.error;
       }
-    }).catch(logErr);
-    if (Array.isArray(arr)) {
-      const [res] = arr;
-      if (isObjectNotEmpty(res)) {
-        if (Object.prototype.hasOwnProperty.call(res, 'error')) {
-          throw res.error;
-        }
-        const { result } = res;
-        info = result;
-      }
-    }
-  } else {
-    const res = await execScriptToTab({
-      file: JS_CONTEXT_INFO
-    });
-    if (Array.isArray(res)) {
-      [info] = res;
+      const { result } = res;
+      info = result;
     }
   }
   return info ?? null;
@@ -445,43 +433,23 @@ export const extractClickedData = async (info, tab) => {
         }
         if (isString(content) && isString(url)) {
           if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {
-            // TODO: refactoring when switching to MV3
-            const useScripting = await isScriptingAvailable();
             const promptMsg = i18n.getMessage(USER_INPUT, formatTitle);
-            let editedContent;
-            if (useScripting) {
-              const arr = await executeScriptToTab({
-                args: [content, promptMsg],
-                func: editContent,
-                target: {
-                  tabId
-                }
-              }).catch(logErr);
-              if (Array.isArray(arr)) {
-                const [res] = arr;
-                if (isObjectNotEmpty(res)) {
-                  if (Object.prototype.hasOwnProperty.call(res, 'error')) {
-                    throw res.error;
-                  }
-                  const { result } = res;
-                  editedContent = result;
-                }
+            const arr = await executeScriptToTab({
+              args: [content, promptMsg],
+              func: editContent,
+              target: {
+                tabId
               }
-            } else {
-              const editData = {
-                content,
-                promptMsg
-              };
-              const res = await execScriptsToTabInOrder([
-                {
-                  code: `window.editContentData = ${JSON.stringify(editData)};`
-                },
-                {
-                  file: JS_EDIT_CONTENT
+            }).catch(logErr);
+            let editedContent;
+            if (Array.isArray(arr)) {
+              const [res] = arr;
+              if (isObjectNotEmpty(res)) {
+                if (Object.prototype.hasOwnProperty.call(res, 'error')) {
+                  throw res.error;
                 }
-              ]);
-              if (Array.isArray(res)) {
-                [editedContent] = res;
+                const { result } = res;
+                editedContent = result;
               }
             }
             text = createLinkText({
@@ -603,7 +571,7 @@ export const handleMsg = async msg => {
         }
         case NOTIFY_COPY: {
           if (userOpts.get(NOTIFY_COPY) && value) {
-            func.push(notifyOnCopy());
+            func.push(notifyOnCopy(isString(value) ? value : null));
           }
           break;
         }
