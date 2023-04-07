@@ -2519,6 +2519,20 @@ describe('main', () => {
       assert.deepEqual(res, [true], 'result');
     });
 
+    it('should call function', async () => {
+      browser.runtime.getURL.returns('/foo/bar');
+      browser.i18n.getMessage.callsFake(msg => msg);
+      mjs.userOpts.set(NOTIFY_COPY, true);
+      const i = browser.notifications.create.callCount;
+      browser.notifications.create.resolves(true);
+      const res = await func({
+        [NOTIFY_COPY]: 'foo'
+      });
+      assert.strictEqual(browser.notifications.create.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [true], 'result');
+    });
+
     it('should not call function', async () => {
       browser.runtime.getURL.returns('/foo/bar');
       browser.i18n.getMessage.callsFake(msg => msg);

@@ -571,7 +571,7 @@ export const handleMsg = async msg => {
         }
         case NOTIFY_COPY: {
           if (userOpts.get(NOTIFY_COPY) && value) {
-            func.push(notifyOnCopy());
+            func.push(notifyOnCopy(isString(value) ? value : null));
           }
           break;
         }

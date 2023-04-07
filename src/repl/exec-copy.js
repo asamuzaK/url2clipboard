@@ -3,9 +3,10 @@
  */
 
 /* shared */
-import { Clip } from '../mjs/clipboard.js';
-import { notifyOnCopy } from '../mjs/notify.js';
-import { MIME_HTML, MIME_PLAIN } from '../mjs/constant.js';
+import { EXEC_COPY } from '../mjs/constant.js';
+
+/* api */
+const { offscreen, runtime } = chrome;
 
 /**
  * execute copy
@@ -13,14 +14,13 @@ import { MIME_HTML, MIME_PLAIN } from '../mjs/constant.js';
  * @param {object} opt - options
  * @returns {void}
  */
-export const execCopy = async (opt = {}) => {
-  const { formatTitle, mimeType, notify, text } = opt;
-  console.log(typeof navigator.clipboard);
-  if (typeof navigator.clipboard !== 'undefined' &&
-      (mimeType === MIME_HTML || mimeType === MIME_PLAIN)) {
-    await new Clip(text, mimeType).copy();
-    if (notify) {
-      await notifyOnCopy(formatTitle);
-    }
-  }
+export const execCopy = async opt => {
+  await offscreen.createDocument({
+    url: 'html/offscreen.html',
+    reasons: [offscreen.Reason.CLIPBOARD],
+    justification: 'Write to clipboard.'
+  });
+  await runtime.sendMessage({
+    [EXEC_COPY]: opt
+  });
 };
