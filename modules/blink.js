@@ -28,7 +28,7 @@ export const createManifest = async info => {
   });
   const manifest = JSON.parse(srcContent);
   const replaceItems = {
-    browser_action: {
+    action: {
       browser_style: true,
       default_icon: {
         16: 'img/icon-color-16.png',
@@ -37,6 +37,10 @@ export const createManifest = async info => {
       default_popup: 'html/popup.html',
       default_title: '__MSG_extensionName__'
     },
+    background: {
+      service_worker: 'mjs/background.js',
+      type: 'module'
+    },
     icons: {
       16: 'img/icon-black-16.png',
       32: 'img/icon-black-32.png',
@@ -44,11 +48,12 @@ export const createManifest = async info => {
       96: 'img/icon-color-96.png',
       128: 'img/icon-color-128.png'
     },
-    // TODO: refactoring when switching to MV3
     permissions: [
       'activeTab',
       'clipboardWrite',
       'contextMenus',
+      'offscreen',
+      'scripting',
       'storage',
       'tabs'
     ]
