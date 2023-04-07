@@ -401,7 +401,7 @@ describe('popup-main', () => {
       await func();
       const { calledOnce } = stubClose;
       stubClose.restore();
-      assert.isTrue(calledOnce, 'caled');
+      assert.isTrue(calledOnce, 'called');
     });
   });
 
