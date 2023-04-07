@@ -45,7 +45,8 @@
   "scripts": {
     "bundle": "npm-run-all -s bundle-*",
     "bundle-compat": "node index compat -ci",
-    "bundle-copy": "copyfiles --up=1 --verbose src/LICENSE src/_locales/**/*.json src/css/*.css src/html/*.html src/img/*.* src/lib/**/* src/mjs/*.js src/js/*.js --exclude=src/mjs/background.js --exclude=src/mjs/options.js --exclude=src/mjs/popup.js bundle",
+    "bundle-copy": "copyfiles --up=1 --verbose src/LICENSE src/_locales/**/*.json src/css/*.css src/html/*.html src/img/*.* src/lib/**/* src/mjs/*.js src/js/*.js --exclude=src/mjs/background.js --exclude=src/mjs/exec-copy.js --exclude=src/mjs/options.js --exclude=src/mjs/popup.js bundle",
+    "bundle-repl": "copyfiles --up=2 --verbose src/repl/*.js bundle/mjs",
     "include": "npm-run-all -s include-*",
     "include-browser": "copyfiles --up=3 --verbose node_modules/webext-schema/modules/browser.js src/mjs",
     "include-polyfill": "copyfiles -f --verbose node_modules/webextension-polyfill/LICENSE node_modules/webextension-polyfill/dist/browser-polyfill.min.js node_modules/webextension-polyfill/dist/browser-polyfill.min.js.map src/lib/mozilla && node index include --dir=mozilla -i",
