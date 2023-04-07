@@ -24,7 +24,7 @@ export const createPref = async (elm = {}) => {
   if (id) {
     let value;
     if (name === ICON_RADIO) {
-      const size = window.devicePixelRatio > 1 ? 32 : 16;
+      const size = window.devicePixelRatio > 1 ? '32' : '16';
       let color;
       switch (id) {
         case ICON_COLOR:
