@@ -28,6 +28,7 @@ export const ICON_BLACK = 'buttonIconBlack';
 export const ICON_COLOR = 'buttonIconColor';
 export const ICON_DARK = 'buttonIconDark';
 export const ICON_LIGHT = 'buttonIconLight';
+export const ICON_RADIO = 'buttonIconRadio';
 export const ICON_WHITE = 'buttonIconWhite';
 export const INCLUDE_TITLE_HTML_HYPER = 'includeTitleHTMLHyper';
 export const INCLUDE_TITLE_HTML_PLAIN = 'includeTitleHTMLPlain';

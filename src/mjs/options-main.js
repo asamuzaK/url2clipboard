@@ -7,7 +7,10 @@ import {
   getStorage, removePermission, requestPermission, setStorage
 } from './browser.js';
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
-import { NOTIFY_COPY } from './constant.js';
+import {
+  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
+  NOTIFY_COPY
+} from './constant.js';
 
 /**
  * create pref
@@ -16,15 +19,43 @@ import { NOTIFY_COPY } from './constant.js';
  * @returns {Promise.<object>} - pref data
  */
 export const createPref = async (elm = {}) => {
-  const { dataset, id } = elm;
-  const data = id && {
-    [id]: {
-      id,
-      checked: !!elm.checked,
-      value: elm.value || '',
-      subItemOf: dataset?.subItemOf || null
+  const { checked, dataset, id, name } = elm;
+  let data;
+  if (id) {
+    let value;
+    if (name === ICON_RADIO) {
+      const size = window.devicePixelRatio > 1 ? 32 : 16;
+      let color;
+      switch (id) {
+        case ICON_COLOR:
+          color = 'color';
+          break;
+        case ICON_DARK:
+          color = 'dark';
+          break;
+        case ICON_LIGHT:
+          color = 'light';
+          break;
+        case ICON_WHITE:
+          color = 'white';
+          break;
+        case ICON_BLACK:
+        default:
+          color = 'black';
+      }
+      value = `icon-${color}-${size}.png`;
+    } else {
+      value = elm.value || '';
     }
-  };
+    data = {
+      [id]: {
+        id,
+        value,
+        checked: !!checked,
+        subItemOf: dataset?.subItemOf || null
+      }
+    };
+  }
   return data || null;
 };
 

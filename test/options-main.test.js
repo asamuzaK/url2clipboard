@@ -10,7 +10,10 @@ import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import { NOTIFY_COPY } from '../src/mjs/constant.js';
+import {
+  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
+  NOTIFY_COPY
+} from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/options-main.js';
 
 describe('options-main', () => {
@@ -56,6 +59,166 @@ describe('options-main', () => {
           id: 'foo',
           checked: false,
           value: '',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      const res = await func({
+        id: ICON_BLACK,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_BLACK]: {
+          id: ICON_BLACK,
+          checked: false,
+          value: 'icon-black-16.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      window.devicePixelRatio = 2;
+      global.window.devicePixelRatio = 2;
+      const res = await func({
+        id: ICON_BLACK,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_BLACK]: {
+          id: ICON_BLACK,
+          checked: false,
+          value: 'icon-black-32.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      const res = await func({
+        id: ICON_COLOR,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_COLOR]: {
+          id: ICON_COLOR,
+          checked: false,
+          value: 'icon-color-16.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      window.devicePixelRatio = 2;
+      global.window.devicePixelRatio = 2;
+      const res = await func({
+        id: ICON_COLOR,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_COLOR]: {
+          id: ICON_COLOR,
+          checked: false,
+          value: 'icon-color-32.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      const res = await func({
+        id: ICON_DARK,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_DARK]: {
+          id: ICON_DARK,
+          checked: false,
+          value: 'icon-dark-16.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      window.devicePixelRatio = 2;
+      global.window.devicePixelRatio = 2;
+      const res = await func({
+        id: ICON_DARK,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_DARK]: {
+          id: ICON_DARK,
+          checked: false,
+          value: 'icon-dark-32.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      const res = await func({
+        id: ICON_LIGHT,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_LIGHT]: {
+          id: ICON_LIGHT,
+          checked: false,
+          value: 'icon-light-16.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      window.devicePixelRatio = 2;
+      global.window.devicePixelRatio = 2;
+      const res = await func({
+        id: ICON_LIGHT,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_LIGHT]: {
+          id: ICON_LIGHT,
+          checked: false,
+          value: 'icon-light-32.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      const res = await func({
+        id: ICON_WHITE,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_WHITE]: {
+          id: ICON_WHITE,
+          checked: false,
+          value: 'icon-white-16.png',
+          subItemOf: null
+        }
+      }, 'result');
+    });
+
+    it('should get object', async () => {
+      window.devicePixelRatio = 2;
+      global.window.devicePixelRatio = 2;
+      const res = await func({
+        id: ICON_WHITE,
+        name: ICON_RADIO
+      });
+      assert.deepEqual(res, {
+        [ICON_WHITE]: {
+          id: ICON_WHITE,
+          checked: false,
+          value: 'icon-white-32.png',
           subItemOf: null
         }
       }, 'result');
