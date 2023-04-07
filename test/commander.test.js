@@ -40,6 +40,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]
@@ -62,6 +63,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]
@@ -93,6 +95,7 @@ describe('create blink compatible files', () => {
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
+        path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'),
         path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js')
       ]

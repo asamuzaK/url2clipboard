@@ -110,6 +110,7 @@ export const createPolyfilledJsFile = async (file, info) => {
 export const createJsFiles = async info => {
   const files = [
     'background.js',
+    'offscreen.js',
     'options.js',
     'popup.js'
   ];
