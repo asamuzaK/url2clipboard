@@ -1,2 +1,1 @@
-export const icon: Map<any, any>;
-export function setIcon(iconId?: string): Promise<any>;
+export function setIcon(icon: string): Promise<any>;
