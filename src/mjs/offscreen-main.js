@@ -1,5 +1,5 @@
 /**
- * offscreen.js
+ * offscreen-main.js
  */
 
 /* shared */

@@ -16,9 +16,9 @@ const { offscreen, runtime } = chrome;
  */
 export const execCopy = async opt => {
   await offscreen.createDocument({
-    url: 'html/offscreen.html',
+    justification: 'Write to clipboard.',
     reasons: [offscreen.Reason.CLIPBOARD],
-    justification: 'Write to clipboard.'
+    url: 'html/offscreen.html'
   });
   await runtime.sendMessage({
     [EXEC_COPY]: opt
