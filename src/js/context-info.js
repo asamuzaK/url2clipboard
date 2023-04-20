@@ -13,7 +13,9 @@
     const sel = window.getSelection();
     const { anchorNode, focusNode, isCollapsed } = sel;
     let elm;
-    if (!isCollapsed) {
+    if (isCollapsed) {
+      elm = document.activeElement;
+    } else {
       if (anchorNode === focusNode) {
         if (anchorNode.nodeType === Node.ELEMENT_NODE) {
           elm = anchorNode;
@@ -24,26 +26,7 @@
         elm = sel.getRangeAt(0).commonAncestorContainer;
       }
     }
-    return elm || document.activeElement;
-  };
-
-  /**
-   * get anchor element
-   *
-   * @param {object} [node] - element
-   * @returns {object} - anchor element
-   */
-  const getAnchorElm = node => {
-    const root = document.documentElement;
-    let elm;
-    while (node && node.parentNode && node.parentNode !== root) {
-      if (node.localName === 'a') {
-        elm = node;
-        break;
-      }
-      node = node.parentNode;
-    }
-    return elm || null;
+    return elm;
   };
 
   /**
@@ -62,7 +45,7 @@
       url: null
     };
     if (node?.nodeType === Node.ELEMENT_NODE) {
-      const anchor = getAnchorElm(node);
+      const anchor = node.closest('a');
       const canonical = document.querySelector('link[rel=canonical][href]');
       if (anchor) {
         const { href, innerText, textContent, title } = anchor;
@@ -105,7 +88,6 @@
     module.exports = {
       createContextInfo,
       getActiveElm,
-      getAnchorElm,
       getContextInfo
     };
   }

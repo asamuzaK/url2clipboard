@@ -159,29 +159,6 @@ describe('context-info', () => {
     });
   });
 
-  describe('get anchor element', () => {
-    const func = cjs.getAnchorElm;
-
-    it('should get null', async () => {
-      const res = await func();
-      assert.isNull(res, 'result');
-    });
-
-    it('should get element', async () => {
-      const text = document.createTextNode('foo');
-      const a = document.createElement('a');
-      const span = document.createElement('span');
-      const p = document.createElement('p');
-      const body = document.querySelector('body');
-      span.appendChild(text);
-      a.appendChild(span);
-      p.appendChild(a);
-      body.appendChild(p);
-      const res = await func(text);
-      assert.deepEqual(res, a, 'result');
-    });
-  });
-
   describe('create context info', () => {
     const func = cjs.createContextInfo;
 
