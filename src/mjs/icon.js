@@ -11,7 +11,6 @@ const { action, runtime } = browser;
 /**
  * set icon
  * NOTE: only for Blink
- *
  * @param {string} icon - icon
  * @returns {Promise} - action.setIcon()
  */

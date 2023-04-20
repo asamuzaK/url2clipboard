@@ -4,7 +4,6 @@
 
 /**
  * edit content
- *
  * @param {string} [content] - content
  * @param {string} [msg] - prompt message
  * @returns {?string} - edited content

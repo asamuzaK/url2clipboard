@@ -9,7 +9,6 @@
 
   /**
    * is string
-   *
    * @param {*} o - object to check
    * @returns {boolean} - result
    */
@@ -17,7 +16,6 @@
 
   /**
    * get edited content
-   *
    * @returns {?string} - content
    */
   const getEditedContent = () => {

@@ -27,7 +27,6 @@ export const enabledFormats = new Set();
 
 /**
  * toggle enabled formats
- *
  * @param {string} id - format id
  * @param {boolean} [enabled] - format is enabled
  * @returns {void}
@@ -47,7 +46,6 @@ export const toggleEnabledFormats = (id, enabled) => {
 
 /**
  * set format data
- *
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
@@ -72,7 +70,6 @@ export const contextInfo = {
 
 /**
  * init context info
- *
  * @returns {Promise.<object>} - context info
  */
 export const initContextInfo = async () => {
@@ -92,7 +89,6 @@ export const tabInfo = {
 
 /**
  * set tab info
- *
  * @param {object} [tab] - tabs.Tab
  * @returns {Promise.<void>} - void
  */
@@ -110,7 +106,6 @@ export const setTabInfo = async tab => {
 
 /**
  * create copy data
- *
  * @param {object} [evt] - Event
  * @returns {?Promise} - sendMessage();
  */
@@ -150,7 +145,6 @@ export const createCopyData = async evt => {
 
 /**
  * close window
- *
  * @returns {void}
  */
 export const closeWindow = () => {
@@ -159,14 +153,12 @@ export const closeWindow = () => {
 
 /**
  * handle open options on click
- *
  * @returns {Promise} - runtime.openOptionsPage()
  */
 export const openOptionsOnClick = () => runtime.openOptionsPage();
 
 /**
  * handle menu on click
- *
  * @param {object} [evt] - Event
  * @returns {Promise} - Promise chain
  */
@@ -175,7 +167,6 @@ export const menuOnClick = evt =>
 
 /**
  * add listener to menu
- *
  * @returns {Promise.<void>} - void
  */
 export const addListenerToMenu = async () => {
@@ -192,7 +183,6 @@ export const addListenerToMenu = async () => {
 
 /**
  * toggle menu item
- *
  * @returns {Promise.<void>} - void
  */
 export const toggleMenuItem = async () => {
@@ -213,7 +203,6 @@ export const toggleMenuItem = async () => {
 
 /**
  * update menu
- *
  * @param {object} [data] - context data;
  * @returns {Promise.<void>} - void
  */
@@ -249,7 +238,6 @@ export const updateMenu = async data => {
 
 /**
  * prepare tab
- *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const prepareTab = async () => {
@@ -277,7 +265,6 @@ export const prepareTab = async () => {
 
 /**
  * handle message
- *
  * @param {object} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -300,7 +287,6 @@ export const handleMsg = async msg => {
 
 /**
  * set storage value
- *
  * @param {string} item - item
  * @param {object} obj - value object
  * @returns {void}
@@ -319,7 +305,6 @@ export const setStorageValue = (item, obj) => {
 
 /**
  * handle storage
- *
  * @param {object} data - data
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -335,7 +320,6 @@ export const handleStorage = async (data = {}) => {
 
 /**
  * startup
- *
  * @returns {Promise} - promise chain
  */
 export const startup = async () => {

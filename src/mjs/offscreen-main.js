@@ -11,7 +11,6 @@ const { runtime } = browser;
 
 /**
  * execute copy
- *
  * @param {object} opt - options
  * @returns {?Promise} - sendMessage()
  */
@@ -31,7 +30,6 @@ export const execCopy = async (opt = {}) => {
 
 /**
  * close window
- *
  * @returns {void}
  */
 export const closeWindow = () => {
@@ -40,7 +38,6 @@ export const closeWindow = () => {
 
 /**
  * handle message
- *
  * @param {object} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */

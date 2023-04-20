@@ -10,7 +10,6 @@ const { permissions, runtime, tabs, windows } = browser;
 
 /**
  * check if permission is granted
- *
  * @param {object} perm - permissions.Permission
  * @returns {Promise.<boolean>} - result
  */
@@ -22,7 +21,6 @@ export const isPermissionGranted = async perm => {
 /* bookmarks */
 /**
  * create bookmark
- *
  * @param {object} opt - bookmarks.CreateDetails
  * @returns {Promise.<object>} - bookmarks.BookmarkTreeNode
  */
@@ -40,7 +38,6 @@ export const createBookmark = async opt => {
 
 /**
  * get bookmark tree node
- *
  * @param {string|Array} [id] - bookmark ID or array of bookmark IDs
  * @returns {Promise.<?Array>} - array of bookmarks.BookmarkTreeNode
  */
@@ -65,7 +62,6 @@ export const getBookmarkTreeNode = async id => {
 /* browserSettings */
 /**
  * get closeTabsByDoubleClick user value
- *
  * @returns {Promise.<object>} - user value
  */
 export const getCloseTabsByDoubleClickValue = async () => {
@@ -82,7 +78,6 @@ export const getCloseTabsByDoubleClickValue = async () => {
 
 /**
  * set context menu on mouseup
- *
  * @returns {Promise.<boolean>} - result
  */
 export const setContextMenuOnMouseup = async () => {
@@ -106,7 +101,6 @@ export const setContextMenuOnMouseup = async () => {
 
 /**
  * clear context menu on mouseup
- *
  * @returns {Promise.<boolean>} - result
  */
 export const clearContextMenuOnMouseup = async () => {
@@ -123,7 +117,6 @@ export const clearContextMenuOnMouseup = async () => {
 
 /**
  * get new tab position value
- *
  * @returns {Promise.<object>} - result
  */
 export const getNewTabPositionValue = async () => {
@@ -141,7 +134,6 @@ export const getNewTabPositionValue = async () => {
 /* commands */
 /**
  * is command customizable
- *
  * @returns {Promise.<boolean>} - result
  */
 export const isCommandCustomizable = async () => {
@@ -159,7 +151,6 @@ export const isCommandCustomizable = async () => {
 
 /**
  * update command
- *
  * @param {string} id - command ID
  * @param {string} value - key value
  * @returns {Promise.<?void>} - commands.update() | commands.reset()
@@ -191,7 +182,6 @@ export const updateCommand = async (id, value = '') => {
 /* contextualIdentities */
 /**
  * get all contextual identities
- *
  * @returns {Promise.<?Array>} - array of contextualIdentities.ContextualIdentity
  */
 export const getAllContextualIdentities = async () => {
@@ -208,7 +198,6 @@ export const getAllContextualIdentities = async () => {
 
 /**
  * get contextual identities
- *
  * @param {string} cookieStoreId - cookie store ID
  * @returns {Promise.<object>} - contextualIdentities.ContextualIdentity
  */
@@ -230,7 +219,6 @@ export const getContextualId = async cookieStoreId => {
 /* management */
 /**
  * get enabled theme
- *
  * @returns {Promise.<?Array>} - array of management.ExtensionInfo
  */
 export const getEnabledTheme = async () => {
@@ -250,7 +238,6 @@ export const getEnabledTheme = async () => {
 
 /**
  * get extension info
- *
  * @param {string} id - extension ID
  * @returns {Promise.<object>} - management.extensionInfo
  */
@@ -271,7 +258,6 @@ export const getExtensionInfo = async id => {
 
 /**
  * get external extensions
- *
  * @returns {Promise.<?Array|boolean>} - array of management.extensionInfo
  */
 export const getExternalExtensions = async () => {
@@ -292,7 +278,6 @@ export const getExternalExtensions = async () => {
 /* notifications */
 /**
  * clear notification
- *
  * @param {string} id - notification ID
  * @returns {Promise.<?boolean>} - notifications.clear()
  */
@@ -313,7 +298,6 @@ export const clearNotification = async id => {
 
 /**
  * create notification
- *
  * @param {string} id - notification ID
  * @param {object} opt - options
  * @returns {Promise.<?string>} - notifications.create()
@@ -339,7 +323,6 @@ export const createNotification = async (id, opt) => {
 /* permissions */
 /**
  * remove permission
- *
  * @param {string|Array} perm - permission
  * @returns {Promise.<boolean>} - result
  */
@@ -362,7 +345,6 @@ export const removePermission = async perm => {
 
 /**
  * request permission
- *
  * @param {string|Array} perm - permission
  * @returns {Promise.<boolean>} - result
  */
@@ -386,7 +368,6 @@ export const requestPermission = async perm => {
 /* runtime */
 /**
  * get manifest icons
- *
  * @returns {object|string} - icons
  */
 export const getManifestIcons = () => {
@@ -396,7 +377,6 @@ export const getManifestIcons = () => {
 
 /**
  * get manifest version
- *
  * @returns {number} - version
  */
 export const getManifestVersion = () => {
@@ -406,7 +386,6 @@ export const getManifestVersion = () => {
 
 /**
  * get OS
- *
  * @returns {Promise.<string>} - OS
  */
 export const getOs = async () => {
@@ -416,7 +395,6 @@ export const getOs = async () => {
 
 /**
  * make a connection
- *
  * @param {number|string} [id] - tab ID / extension ID / host name
  * @param {object|boolean} [info] - connection info / connect to native app
  * @returns {Promise.<object>} - runtime.Port
@@ -449,7 +427,6 @@ export const makeConnection = async (id, info) => {
 
 /**
  * send message
- *
  * @param {number|string} id - tab ID / extension ID
  * @param {*} msg - message
  * @param {object} opt - options
@@ -475,7 +452,6 @@ export const sendMessage = async (id, msg, opt) => {
 /* scripting */
 /**
  * is scripting available
- *
  * @returns {Promise.<boolean>} - result
  */
 export const isScriptingAvailable = async () => {
@@ -492,7 +468,6 @@ export const isScriptingAvailable = async () => {
 
 /**
  * execute script to tab
- *
  * @param {object} opt - options
  * @returns {Promise.<?Array|boolean>} - array of InjectionResult object
  */
@@ -523,7 +498,6 @@ export const executeScriptToTab = async (opt = {}) => {
 /* search */
 /**
  * search with a search engine
- *
  * @param {string} query - search query
  * @param {object} opt - options
  * @returns {Promise.<void>} - void
@@ -545,7 +519,6 @@ export const searchWithSearchEngine = async (query, opt = {}) => {
 /* sessions */
 /**
  * get recently closed tab
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - tabs.Tab
  */
@@ -578,7 +551,6 @@ export const getRecentlyClosedTab = async windowId => {
 
 /**
  * get session window value
- *
  * @param {string} key - key
  * @param {number} [windowId] - window ID
  * @returns {Promise.<?string>} - value
@@ -603,7 +575,6 @@ export const getSessionWindowValue = async (key, windowId) => {
 
 /**
  * restore session
- *
  * @param {string} sessionId - session ID
  * @returns {Promise.<object>} - sessions.Session
  */
@@ -624,7 +595,6 @@ export const restoreSession = async sessionId => {
 
 /**
  * set session window value
- *
  * @param {string} key - key
  * @param {string|object} value - value
  * @param {number} [windowId] - window ID
@@ -649,7 +619,6 @@ export const setSessionWindowValue = async (key, value, windowId) => {
 /* storage */
 /**
  * clear storage
- *
  * @param {string} area - storage area
  * @returns {Promise.<void>} - void
  */
@@ -666,7 +635,6 @@ export const clearStorage = async (area = 'local') => {
 
 /**
  * get all storage
- *
  * @param {string} area - storage area
  * @returns {Promise.<object>} - stored data
  */
@@ -685,7 +653,6 @@ export const getAllStorage = async (area = 'local') => {
 
 /**
  * get storage
- *
  * @param {*} key - key
  * @param {string} area - storage area
  * @returns {Promise.<object>} - stored data
@@ -705,7 +672,6 @@ export const getStorage = async (key, area = 'local') => {
 
 /**
  * remove storage
- *
  * @param {*} key - key
  * @param {string} area - storage area
  * @returns {Promise.<void>} - void
@@ -723,7 +689,6 @@ export const removeStorage = async (key, area = 'local') => {
 
 /**
  * set storage
- *
  * @param {object} obj - object to store
  * @param {string} area - storage area
  * @returns {Promise.<void>} - void
@@ -742,7 +707,6 @@ export const setStorage = async (obj, area = 'local') => {
 /* tabs */
 /**
  * create tab
- *
  * @param {object} opt - options
  * @returns {Promise.<object>} - tabs.Tab
  */
@@ -753,7 +717,6 @@ export const createTab = async (opt = {}) => {
 
 /**
  * duplicate tab
- *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
  * @returns {Promise.<object>} - tabs.Tab
@@ -768,7 +731,6 @@ export const duplicateTab = async (tabId, opt) => {
 
 /**
  * query tabs
- *
  * @param {object} opt - options
  * @returns {Promise.<?Array>} - result
  */
@@ -779,7 +741,6 @@ export const queryTabs = async opt => {
 
 /**
  * execute content script to existing tab
- *
  * @param {number|object} tabId - tab ID or options
  * @param {object} opt - options
  * @returns {Promise.<?Array|boolean>} - result
@@ -804,7 +765,6 @@ export const execScriptToTab = async (tabId, opt = {}) => {
 
 /**
  * execute content script to existing tabs
- *
  * @param {object} opt - options
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -826,7 +786,6 @@ export const execScriptToTabs = async (opt = {}) => {
 
 /**
  * execute scripts to tab in order
- *
  * @param {number|Array} tabId - tabId or array of options
  * @param {Array} opts - array of options
  * @returns {Promise.<*>} - result of the last executed script
@@ -858,7 +817,6 @@ export const execScriptsToTabInOrder = async (tabId, opts = []) => {
 
 /**
  * get active tab
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - tabs.Tab
  */
@@ -876,7 +834,6 @@ export const getActiveTab = async windowId => {
 
 /**
  * get active tab ID
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<?number>} - tab ID
  */
@@ -894,7 +851,6 @@ export const getActiveTabId = async windowId => {
 
 /**
  * get all tabs in window
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<?Array>} - array of tabs.Tab
  */
@@ -911,7 +867,6 @@ export const getAllTabsInWindow = async windowId => {
 
 /**
  * get highlighted tab
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<?Array>} - array of tabs.Tab
  */
@@ -929,7 +884,6 @@ export const getHighlightedTab = async windowId => {
 
 /**
  * get tab
- *
  * @param {number} tabId - tab ID
  * @returns {Promise.<object>} - tabs.Tab
  */
@@ -943,7 +897,6 @@ export const getTab = async tabId => {
 
 /**
  * highlight tab
- *
  * @param {number|Array} index - tab index
  * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - windows.Window
@@ -965,7 +918,6 @@ export const highlightTab = async (index, windowId) => {
 
 /**
  * move tab
- *
  * @param {number|Array} tabId - tab ID
  * @param {object} [opt] - options
  * @returns {Promise.<?Array>} - array of tabs.Tab
@@ -983,7 +935,6 @@ export const moveTab = async (tabId, opt) => {
 
 /**
  * reload tab
- *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
  * @returns {Promise.<void>} - void
@@ -997,7 +948,6 @@ export const reloadTab = async (tabId, opt) => {
 
 /**
  * remove tab
- *
  * @param {number|Array} arg - tab ID or array of tab ID
  * @returns {Promise.<void>} - void
  */
@@ -1013,7 +963,6 @@ export const removeTab = async arg => {
 
 /**
  * update tab
- *
  * @param {number} tabId - tab ID
  * @param {object} opt - options
  * @returns {Promise.<object>} - tabs.Tab
@@ -1028,7 +977,6 @@ export const updateTab = async (tabId, opt) => {
 
 /**
  * warmup tab
- *
  * @param {number} tabId - tab ID
  * @returns {Promise.<void>} - void
  */
@@ -1043,7 +991,6 @@ export const warmupTab = async tabId => {
 
 /**
  * is tab
- *
  * @param {*} tabId - tab ID
  * @returns {Promise.<boolean>} - result
  */
@@ -1065,7 +1012,6 @@ export const isTab = async tabId => {
 /* theme */
 /**
  * get current theme
- *
  * @param {number} [windowId] - window ID
  * @returns {Promise.<object>} - theme.Theme
  */
@@ -1085,7 +1031,6 @@ export const getCurrentTheme = async windowId => {
 /* windows */
 /**
  * create new window
- *
  * @param {object} opt - options
  * @returns {Promise.<object>} - windows.Window
  */
@@ -1096,7 +1041,6 @@ export const createNewWindow = async opt => {
 
 /**
  * get all windows
- *
  * @param {boolean} populate - populate tabs
  * @returns {Promise.<Array>} - array of windows.Window
  */
@@ -1110,7 +1054,6 @@ export const getAllNormalWindows = async (populate = false) => {
 
 /**
  * get current window
- *
  * @param {object} opt - options
  * @returns {Promise.<object>} - windows.Window
  */
@@ -1121,7 +1064,6 @@ export const getCurrentWindow = async opt => {
 
 /**
  * get window
- *
  * @param {number} windowId - window ID
  * @param {object} opt - options
  * @returns {Promise.<object>} - windows.Window
@@ -1136,7 +1078,6 @@ export const getWindow = async (windowId, opt) => {
 
 /**
  * check whether incognito window exists
- *
  * @returns {Promise.<boolean>} - result
  */
 export const checkIncognitoWindowExists = async () => {

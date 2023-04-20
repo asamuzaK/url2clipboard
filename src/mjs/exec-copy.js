@@ -9,7 +9,6 @@ import { MIME_HTML, MIME_PLAIN } from './constant.js';
 
 /**
  * execute copy
- *
  * @param {object} opt - options
  * @returns {void}
  */

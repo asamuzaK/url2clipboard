@@ -6,7 +6,6 @@
 (() => {
   /**
    * get active element
-   *
    * @returns {object} - active element
    */
   const getActiveElm = () => {
@@ -31,7 +30,6 @@
 
   /**
    * create context info
-   *
    * @param {object} [node] - element
    * @returns {object} - context info
    */
@@ -73,7 +71,6 @@
 
   /**
    * get context info
-   *
    * @returns {object} - context info
    */
   const getContextInfo = () => {

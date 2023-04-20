@@ -14,7 +14,6 @@ import {
 
 /**
  * create pref
- *
  * @param {object} [elm] - element
  * @returns {Promise.<object>} - pref data
  */
@@ -61,7 +60,6 @@ export const createPref = async (elm = {}) => {
 
 /**
  * store pref
- *
  * @param {!object} evt - Event
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -94,7 +92,6 @@ export const storePref = async evt => {
 /* html */
 /**
  * handle input change
- *
  * @param {!object} evt - Event
  * @returns {Promise} - storePref()
  */
@@ -102,7 +99,6 @@ export const handleInputChange = evt => storePref(evt).catch(throwErr);
 
 /**
  * add event listener to input elements
- *
  * @returns {Promise.<void>} - void
  */
 export const addInputChangeListener = async () => {
@@ -114,7 +110,6 @@ export const addInputChangeListener = async () => {
 
 /**
  * set html input value
- *
  * @param {object} [data] - storage data
  * @returns {Promise.<void>} - void
  */
@@ -139,7 +134,6 @@ export const setHtmlInputValue = async (data = {}) => {
 
 /**
  * set html input values from storage
- *
  * @returns {Promise.<Array>} - results of each handler
  */
 export const setValuesFromStorage = async () => {

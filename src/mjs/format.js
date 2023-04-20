@@ -126,7 +126,6 @@ export const formats = new Map(Object.entries(formatData));
 
 /**
  * get formats
- *
  * @param {boolean} [inArray] - return in an array
  * @returns {object|Array} - formats
  */
@@ -135,7 +134,6 @@ export const getFormats = (inArray = false) =>
 
 /**
  * get formats keys
- *
  * @param {boolean} [inArray] - return in an array
  * @returns {object|Array} - formats
  */
@@ -144,7 +142,6 @@ export const getFormatsKeys = (inArray = false) =>
 
 /**
  * get format id
- *
  * @param {string} id - id
  * @returns {?string} - format id
  */
@@ -170,7 +167,6 @@ export const getFormatId = id => {
 
 /**
  * has format
- *
  * @param {string} id - id
  * @returns {boolean} - result
  */
@@ -184,7 +180,6 @@ export const hasFormat = id => {
 
 /**
  * get format
- *
  * @param {string} id - id
  * @returns {*|null} - format item
  */
@@ -202,7 +197,6 @@ export const getFormat = id => {
 
 /**
  * set format
- *
  * @param {string} id - id
  * @param {*} value - value
  * @returns {void}
@@ -219,7 +213,6 @@ export const setFormat = (id, value) => {
 
 /**
  * get format title
- *
  * @param {string} id - menu item ID
  * @returns {?string} - title
  */
@@ -241,7 +234,6 @@ export const enabledFormats = new Set();
 
 /**
  * toggle enabled formats
- *
  * @param {string} id - format id
  * @param {boolean} [enabled] - format is enabled
  * @returns {Promise.<object>} - enabledFormats
@@ -262,7 +254,6 @@ export const toggleEnabledFormats = async (id, enabled) => {
 
 /**
  * set format data
- *
  * @returns {Promise.<Array>} - result of each handler
  */
 export const setFormatData = async () => {
@@ -277,7 +268,6 @@ export const setFormatData = async () => {
 
 /**
  * create multiple tabs link text
- *
  * @param {Array} arr - array of link text
  * @param {object} [opt] - options
  * @param {string} [opt.mimeType] - mime type
@@ -302,7 +292,6 @@ export const createTabsLinkText = (arr, opt = {}) => {
 
 /**
  * create link text
- *
  * @param {object} [data] - copy data
  * @returns {string} - link text
  */

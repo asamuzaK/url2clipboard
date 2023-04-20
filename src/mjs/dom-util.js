@@ -9,7 +9,6 @@ import { MIME_HTML } from './constant.js';
 
 /**
  * get namespace of node from ancestor
- *
  * @param {object} node - element node
  * @returns {object} - namespace data
  */
@@ -43,7 +42,6 @@ export const getNodeNS = node => {
 
 /**
  * set namespaced attribute
- *
  * @param {object} elm - element to append attributes
  * @param {object} node - element node to get attributes from
  * @returns {void}
@@ -97,7 +95,6 @@ export const setAttributeNS = (elm, node = {}) => {
 
 /**
  * create namespaced element
- *
  * @param {object} node - element node to create element from
  * @returns {object} - namespaced element
  */
@@ -122,7 +119,6 @@ export const createElement = node => {
 
 /**
  * create document fragment from nodes array
- *
  * @param {Array} nodes - nodes array
  * @returns {object} - document fragment
  */
@@ -141,7 +137,6 @@ export const createFragment = nodes => {
 
 /**
  * append child nodes
- *
  * @param {object} elm - container element
  * @param {object} node - node containing child nodes to append
  * @returns {object} - element
@@ -175,8 +170,7 @@ export const appendChildNodes = (elm, node) => {
 
 /**
  *
- * serialize DOM string
- *
+ *serialize DOM string
  * @param {string} domstr - DOM string
  * @param {string} mime - mime type
  * @param {boolean} [reqElm] - require first element child

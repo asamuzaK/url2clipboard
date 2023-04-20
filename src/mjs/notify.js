@@ -12,7 +12,6 @@ const { i18n, runtime } = browser;
 
 /**
  * notify on copy
- *
  * @param {string} [label] - label
  * @returns {Promise} - createNotification()
  */

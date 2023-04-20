@@ -8,7 +8,6 @@ const TYPE_TO = -1;
 
 /**
  * log error
- *
  * @param {!object} e - Error
  * @returns {boolean} - false
  */
@@ -23,7 +22,6 @@ export const logErr = e => {
 
 /**
  * throw error
- *
  * @param {!object} e - Error
  * @throws
  */
@@ -34,7 +32,6 @@ export const throwErr = e => {
 
 /**
  * log warn
- *
  * @param {*} msg - message
  * @returns {boolean} - false
  */
@@ -47,7 +44,6 @@ export const logWarn = msg => {
 
 /**
  * log message
- *
  * @param {*} msg - message
  * @returns {object} - message
  */
@@ -60,7 +56,6 @@ export const logMsg = msg => {
 
 /**
  * get type
- *
  * @param {*} o - object to check
  * @returns {string} - type of object
  */
@@ -69,7 +64,6 @@ export const getType = o =>
 
 /**
  * is string
- *
  * @param {*} o - object to check
  * @returns {boolean} - result
  */
@@ -77,7 +71,6 @@ export const isString = o => typeof o === 'string' || o instanceof String;
 
 /**
  * is object, and not an empty object
- *
  * @param {*} o - object to check;
  * @returns {boolean} - result
  */
@@ -88,7 +81,6 @@ export const isObjectNotEmpty = o => {
 
 /**
  * sleep
- *
  * @param {number} msec - milisec
  * @param {boolean} doReject - reject instead of resolve
  * @returns {?Promise} - resolve / reject
@@ -109,7 +101,6 @@ export const sleep = (msec = 0, doReject = false) => {
 
 /**
  * escape all matching chars
- *
  * @param {string} str - argument
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -126,7 +117,6 @@ export const escapeMatchingChars = (str, re) => {
 
 /**
  * strip all matching chars
- *
  * @param {string} str - string
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -143,7 +133,6 @@ export const stripMatchingChars = (str, re) => {
 
 /**
  * convert matching character to numeric character reference
- *
  * @param {string} str - string
  * @param {RegExp} re - RegExp
  * @returns {?string} - string
@@ -160,7 +149,6 @@ export const convertNumCharRef = (str, re) => {
 
 /**
  * convert HTML specific character to character reference
- *
  * @param {string} str - string
  * @returns {?string} - string
  */
@@ -176,7 +164,6 @@ export const convertHtmlChar = str => {
 
 /**
  * convert LaTeX special char
- *
  * @param {string} str - string
  * @returns {?string} - string
  */
@@ -199,7 +186,6 @@ export const convertLaTeXChar = str => {
 
 /**
  * encode URL component part
- *
  * @param {string} part - component part
  * @returns {string} - encoded component part
  */
@@ -215,7 +201,6 @@ export const encodeUrlPart = part => {
 
 /**
  * encode special char in URL
- *
  * @param {string} str - URL string
  * @returns {string|undefined} - encoded URL
  */

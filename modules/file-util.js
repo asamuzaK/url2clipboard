@@ -13,7 +13,6 @@ const PERM_FILE = 0o644;
 
 /**
  * get stat
- *
  * @param {string} file - file path
  * @returns {object} - file stat
  */
@@ -22,7 +21,6 @@ export const getStat = file =>
 
 /**
  * the directory is a directory
- *
  * @param {string} dir - directory path
  * @returns {boolean} - result
  */
@@ -33,7 +31,6 @@ export const isDir = dir => {
 
 /**
  * the file is a file
- *
  * @param {string} file - file path
  * @returns {boolean} - result
  */
@@ -44,7 +41,6 @@ export const isFile = file => {
 
 /**
  * make directory
- *
  * @param {string} dir - directory path
  * @param {object} opt - options
  * @returns {Promise.<string>} - directory path
@@ -59,7 +55,6 @@ export const mkdir = async (dir, opt = { mode: PERM_DIR, recursive: true }) => {
 
 /**
  * remove files and directories
- *
  * @param {string} dir - directory path
  * @param {object} opt - options
  * @returns {Promise.<void>} - void
@@ -73,7 +68,6 @@ export const rm = async (dir, opt = { force: true, recursive: true }) => {
 
 /**
  * remove the directory and it's files synchronously
- *
  * @param {string} dir - directory path
  * @returns {void}
  */
@@ -89,7 +83,6 @@ export const removeDir = dir => {
 
 /**
  * read a file
- *
  * @param {string} file - file path
  * @param {object} [opt] - options
  * @param {string} [opt.encoding] - encoding
@@ -106,7 +99,6 @@ export const readFile = async (file, opt = { encoding: null, flag: 'r' }) => {
 
 /**
  * create a file
- *
  * @param {string} file - file path to create
  * @param {string} value - value to write
  * @returns {Promise.<string>} - file path

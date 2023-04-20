@@ -13,7 +13,6 @@ const DATA_I18N = 'data-i18n';
 
 /**
  * localize attribute value
- *
  * @param {object} [elm] - element
  * @returns {Promise.<void>} - void
  */
@@ -41,7 +40,6 @@ export const localizeAttr = async elm => {
 
 /**
  * localize html
- *
  * @returns {Promise.<void>} - void
  */
 export const localizeHtml = async () => {

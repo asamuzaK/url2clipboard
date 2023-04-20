@@ -44,7 +44,6 @@ export const userOpts = new Map();
 
 /**
  * set user options
- *
  * @param {object} [opt] - user option
  * @returns {Promise.<object>} - userOpts
  */
@@ -73,7 +72,6 @@ export const setUserOpts = async (opt = {}) => {
 
 /**
  * set user enabled formats
- *
  * @param {object} [opt] - user option
  * @returns {Promise.<object>} - enablrfFormats
  */
@@ -102,7 +100,6 @@ export const setUserEnabledFormats = async (opt = {}) => {
 
 /**
  * get format template
- *
  * @param {string} id - menu item ID
  * @returns {?string} - template
  */
@@ -146,7 +143,6 @@ export const getFormatTemplate = id => {
 
 /**
  * get all tabs info
- *
  * @param {string} menuItemId - menu item ID
  * @returns {Promise.<Array>} - tabs info
  */
@@ -174,7 +170,6 @@ export const getAllTabsInfo = async menuItemId => {
 
 /**
  * get other tabs info
- *
  * @param {string} menuItemId - menu item ID
  * @returns {Promise.<Array>} - tabs info
  */
@@ -207,7 +202,6 @@ export const getOtherTabsInfo = async menuItemId => {
 
 /**
  * get selected tabs info
- *
  * @param {string} menuItemId - menu item ID
  * @returns {Promise.<Array>} - tabs info
  */
@@ -235,7 +229,6 @@ export const getSelectedTabsInfo = async menuItemId => {
 
 /**
  * get context info
- *
  * @param {number} [tabId] - tab ID
  * @returns {Promise.<object>} - context info
  */
@@ -265,7 +258,6 @@ export const getContextInfo = async tabId => {
 
 /**
  * send context info
- *
  * @returns {?Promise} - sendMessage();
  */
 export const sendContextInfo = async () => {
@@ -283,7 +275,6 @@ export const sendContextInfo = async () => {
 
 /**
  * extract clicked data
- *
  * @param {object} [info] - clicked info
  * @param {object} [tab] - tabs.Tab
  * @returns {Promise.<Array>} - results of each handler
@@ -481,7 +472,6 @@ export const extractClickedData = async (info, tab) => {
 
 /**
  * handle active tab
- *
  * @param {object} [info] - active tab info
  * @returns {?Promise} - updateContextMenu()
  */
@@ -496,7 +486,6 @@ export const handleActiveTab = async (info = {}) => {
 
 /**
  * handle updated tab
- *
  * @param {number} tabId - tab ID
  * @param {object} [info] - info
  * @param {object} [tab] - tabs.Tab
@@ -517,7 +506,6 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
 
 /**
  * handle command
- *
  * @param {!string} cmd - command
  * @returns {?Promise} - extractClickedData()
  */
@@ -545,7 +533,6 @@ export const handleCmd = async cmd => {
 
 /**
  * handle message
- *
  * @param {object} [msg] - message
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -584,7 +571,6 @@ export const handleMsg = async msg => {
 
 /**
  * set storage value
- *
  * @param {string} item - item
  * @param {object} [obj] - value object
  * @param {boolean} [changed] - changed
@@ -651,7 +637,6 @@ export const setStorageValue = async (item, obj, changed = false) => {
 
 /**
  * handle storage
- *
  * @param {object} data - storage data
  * @param {string} area - storage area
  * @param {boolean} [changed] - storage changed
@@ -682,7 +667,6 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
 
 /**
  * startup
- *
  * @returns {Promise} - promise chain
  */
 export const startup = async () => {

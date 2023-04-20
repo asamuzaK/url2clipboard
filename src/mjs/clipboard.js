@@ -20,7 +20,6 @@ export class Clip {
 
   /**
    * constructor
-   *
    * @param {string} [content] - content
    * @param {string} [mime] - mime
    */
@@ -70,13 +69,11 @@ export class Clip {
 
   /**
    * copy to clipboard sync (for fallback)
-   *
    * @returns {void}
    */
   _copySync() {
     /**
      * set clipboard data
-     *
      * @param {object} evt - Event
      * @returns {void}
      */
@@ -105,7 +102,6 @@ export class Clip {
 
   /**
    * copy to clipboard
-   *
    * @returns {Promise.<void>} - void
    */
   async copy() {

@@ -9,7 +9,6 @@ import { Schema } from 'webext-schema';
 
 /**
  * create jsdom
- *
  * @returns {object} - jsdom instance
  */
 export const createJsdom = () => {
@@ -30,7 +29,6 @@ const { document } = window;
 
 /**
  * get channel
- *
  * @returns {string} - channel
  */
 const getChannel = () => {

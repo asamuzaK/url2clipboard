@@ -17,7 +17,6 @@ const INDENT = 2;
 
 /**
  * create blink specific manifest.json
- *
  * @param {boolean} info - console info
  * @returns {Promise.<string>} - file path
  */
@@ -73,7 +72,6 @@ export const createManifest = async info => {
 
 /**
  * create polyfilled *.js file
- *
  * @param {string} file - file path
  * @param {boolean} info - console info
  * @returns {Promise.<string>} - file path
@@ -103,7 +101,6 @@ export const createPolyfilledJsFile = async (file, info) => {
 
 /**
  * create blink specific *.js files
- *
  * @param {boolean} info - console info
  * @returns {Promise.<Array>} - results of each handler
  */
@@ -123,7 +120,6 @@ export const createJsFiles = async info => {
 
 /**
  * create blink specific files
- *
  * @param {object} cmdOpts - command options
  * @returns {Promise.<Array>} - results of each handler
  */

@@ -10,7 +10,6 @@ const { offscreen, runtime } = chrome;
 
 /**
  * execute copy
- *
  * @param {object} opt - options
  * @returns {void}
  */
