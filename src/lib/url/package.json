@@ -9,22 +9,22 @@
     "url": "https://github.com/asamuzaK/urlSanitizer.git"
   },
   "type": "module",
-  "version": "0.10.4",
+  "version": "0.10.6",
   "origins": [
     {
       "file": "LICENSE",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.4/LICENSE",
-      "cdn": "https://unpkg.com/url-sanitizer@0.10.4/LICENSE"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.6/LICENSE",
+      "cdn": "https://unpkg.com/url-sanitizer@0.10.6/LICENSE"
     },
     {
       "file": "url-sanitizer-wo-dompurify.min.js",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.4/dist/url-sanitizer-wo-dompurify.min.js",
-      "cdn": "https://unpkg.com/url-sanitizer@0.10.4/dist/url-sanitizer-wo-dompurify.min.js"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.6/dist/url-sanitizer-wo-dompurify.min.js",
+      "cdn": "https://unpkg.com/url-sanitizer@0.10.6/dist/url-sanitizer-wo-dompurify.min.js"
     },
     {
       "file": "url-sanitizer-wo-dompurify.min.js.map",
-      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.4/dist/url-sanitizer-wo-dompurify.min.js.map",
-      "cdn": "https://unpkg.com/url-sanitizer@0.10.4/dist/url-sanitizer-wo-dompurify.min.js.map"
+      "raw": "https://raw.githubusercontent.com/asamuzaK/urlSanitizer/v0.10.6/dist/url-sanitizer-wo-dompurify.min.js.map",
+      "cdn": "https://unpkg.com/url-sanitizer@0.10.6/dist/url-sanitizer-wo-dompurify.min.js.map"
     }
   ]
 }
