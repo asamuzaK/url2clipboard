@@ -3,13 +3,37 @@
 /**
  * popup.css
  */
+:root {
+  --scale-size: calc(1rem / 3);
+  --background-color: #fff;
+  --border-color: #15141a66;
+  --button-hover-bgcolor: rgb(207 207 216 / 66%);
+  --button-active-bgcolor: rgb(207 207 216);
+  --foreground-color: #15141a;
+
+  color-scheme: light;
+  font: caption;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background-color: rgb(43 42 51);
+    --border-color: transparent;
+    --button-hover-bgcolor: rgb(82 82 94);
+    --button-active-bgcolor: rgb(91 91 102);
+    --foreground-color: rgb(251 251 254);
+
+    color-scheme: dark;
+  }
+}
+
 body {
   margin: 0;
-  border: none;
+  border: 1px solid var(--border-color);
   padding: 0.5rem;
   min-width: 16rem;
-  background-color: #fff;
-  color: #000;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
 }
 
 main {
@@ -33,14 +57,6 @@ ul {
   list-style: none;
 }
 
-ul + ul {
-  border-top: 1px dotted #ccc;
-}
-
-ul + ul[hidden] {
-  display: none;
-}
-
 li {
   display: block;
   margin: 0;
@@ -59,7 +75,7 @@ button {
   appearance: none;
   display: block;
   margin: 0;
-  border: 1px solid transparent;
+  border-radius: var(--scale-size);
   padding: 0;
   line-height: 1.5;
   text-indent: 1rem;
@@ -73,16 +89,14 @@ button[disabled] {
 
 button:not([disabled]):hover,
 button:not([disabled]):focus {
-  border: 1px solid #ccc;
-  background-color: #eaeaea;
-  color: #000;
+  background-color: var(--button-hover-bgcolor);
+  color: var(--foreground-color);
 }
 
 button:not([disabled]):active,
 button:not([disabled]):focus:active {
-  border: 1px solid #ccc;
-  background-color: #d7d7d8;
-  color: #000;
+  background-color: var(--button-active-bgcolor);
+  color: var(--foreground-color);
 }
 
 [hidden] label,

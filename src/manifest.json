@@ -1,6 +1,5 @@
 {
   "action": {
-    "browser_style": true,
     "default_icon": "img/icon.svg#current",
     "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__"
@@ -81,7 +80,6 @@
     "notifications"
   ],
   "options_ui": {
-    "browser_style": true,
     "open_in_tab": true,
     "page": "html/options.html"
   },
@@ -94,5 +92,5 @@
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "10.0.2.1"
+  "version": "10.0.2.5"
 }
