@@ -2,16 +2,16 @@ export const enabledFormats: Set<any>;
 export function toggleEnabledFormats(id: string, enabled?: boolean): void;
 export function setFormatData(): Promise<any[]>;
 export namespace contextInfo {
-    const canonicalUrl: any;
-    const content: any;
-    const isLink: boolean;
-    const selectionText: any;
-    const title: any;
-    const url: any;
+    let canonicalUrl: any;
+    let content: any;
+    let isLink: boolean;
+    let selectionText: any;
+    let title: any;
+    let url: any;
 }
 export function initContextInfo(): Promise<object>;
 export namespace tabInfo {
-    const tab: any;
+    let tab: any;
 }
 export function setTabInfo(tab?: object): Promise<void>;
 export function createCopyData(evt?: object): Promise<any> | null;
