@@ -4,12 +4,11 @@
  * popup.css
  */
 :root {
-  --scale-size: calc(1rem / 3);
   --background-color: #fff;
-  --border-color: #15141a66;
-  --button-hover-bgcolor: rgb(207 207 216 / 66%);
   --button-active-bgcolor: rgb(207 207 216);
+  --button-hover-bgcolor: rgb(207 207 216 / 66%);
   --foreground-color: #15141a;
+  --scale-size: calc(1rem / 3);
 
   color-scheme: light;
   font: caption;
@@ -18,7 +17,6 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --background-color: rgb(43 42 51);
-    --border-color: transparent;
     --button-hover-bgcolor: rgb(82 82 94);
     --button-active-bgcolor: rgb(91 91 102);
     --foreground-color: rgb(251 251 254);
@@ -29,7 +27,7 @@
 
 body {
   margin: 0;
-  border: 1px solid var(--border-color);
+  border: none;
   padding: 0.5rem;
   min-width: 16rem;
   background-color: var(--background-color);
