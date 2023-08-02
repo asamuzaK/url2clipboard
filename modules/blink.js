@@ -60,6 +60,12 @@ export const createManifest = async info => {
   for (const [key, value] of items) {
     manifest[key] = value;
   }
+  const unsupportedKeys = [
+    'browser_specific_settings'
+  ];
+  for (const key of unsupportedKeys) {
+    delete manifest[key];
+  }
   const content = `${JSON.stringify(manifest, null, INDENT)}\n`;
   const filePath =
     await createFile(path.join(DIR_OUT, 'manifest.json'), content);
