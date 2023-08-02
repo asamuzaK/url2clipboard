@@ -73,7 +73,7 @@ export const setUserOpts = async (opt = {}) => {
 /**
  * set user enabled formats
  * @param {object} [opt] - user option
- * @returns {Promise.<object>} - enablrfFormats
+ * @returns {Promise.<object>} - enabledFormats
  */
 export const setUserEnabledFormats = async (opt = {}) => {
   let opts;
@@ -153,7 +153,7 @@ export const getAllTabsInfo = async menuItemId => {
   const tabsInfo = [];
   const template = getFormatTemplate(menuItemId);
   const arr = await getAllTabsInWindow(WINDOW_ID_CURRENT);
-  arr.forEach(tab => {
+  for (const tab of arr) {
     const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
@@ -164,7 +164,7 @@ export const getAllTabsInfo = async menuItemId => {
       url,
       content: formatId === BBCODE_URL ? url : title
     });
-  });
+  }
   return tabsInfo;
 };
 
@@ -185,7 +185,7 @@ export const getOtherTabsInfo = async menuItemId => {
     windowId: WINDOW_ID_CURRENT,
     windowType: 'normal'
   });
-  arr.forEach(tab => {
+  for (const tab of arr) {
     const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
@@ -196,7 +196,7 @@ export const getOtherTabsInfo = async menuItemId => {
       url,
       content: title
     });
-  });
+  }
   return tabsInfo;
 };
 
@@ -212,7 +212,7 @@ export const getSelectedTabsInfo = async menuItemId => {
   const tabsInfo = [];
   const template = getFormatTemplate(menuItemId);
   const arr = await getHighlightedTab(WINDOW_ID_CURRENT);
-  arr.forEach(tab => {
+  for (const tab of arr) {
     const { id, title, url } = tab;
     const formatId = getFormatId(menuItemId);
     tabsInfo.push({
@@ -223,7 +223,7 @@ export const getSelectedTabsInfo = async menuItemId => {
       url,
       content: title
     });
-  });
+  }
   return tabsInfo;
 };
 
