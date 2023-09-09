@@ -9,7 +9,6 @@ import {
   removeStorage, sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
-import { editContent } from './edit-content.js';
 import { execCopy } from './exec-copy.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
@@ -21,6 +20,7 @@ import {
   createContextMenu, removeContextMenu, updateContextMenu
 } from './menu.js';
 import { notifyOnCopy } from './notify.js';
+import { promptContent } from './prompt.js';
 import { sanitize as sanitizeURL } from './sanitize.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
@@ -29,11 +29,11 @@ import {
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN,
-  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, USER_INPUT, WEBEXT_ID
+  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
 } from './constant.js';
 
 /* api */
-const { i18n, runtime, tabs, windows } = browser;
+const { runtime, tabs, windows } = browser;
 
 /* constants */
 const { TAB_ID_NONE } = tabs;
@@ -424,25 +424,11 @@ export const extractClickedData = async (info, tab) => {
         }
         if (isString(content) && isString(url)) {
           if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {
-            const promptMsg = i18n.getMessage(USER_INPUT, formatTitle);
-            const arr = await executeScriptToTab({
-              args: [content, promptMsg],
-              func: editContent,
-              target: {
-                tabId
-              }
-            }).catch(logErr);
-            let editedContent;
-            if (Array.isArray(arr)) {
-              const [res] = arr;
-              if (isObjectNotEmpty(res)) {
-                if (Object.prototype.hasOwnProperty.call(res, 'error')) {
-                  throw res.error;
-                }
-                const { result } = res;
-                editedContent = result;
-              }
-            }
+            const editedContent = await promptContent({
+              content,
+              formatTitle,
+              tabId
+            });
             text = createLinkText({
               content: isString(editedContent) ? editedContent : content,
               formatId,

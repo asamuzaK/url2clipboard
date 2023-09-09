@@ -4,7 +4,7 @@
 
 /* shared */
 import { executeScriptToTab } from './browser.js';
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
+import { isObjectNotEmpty, logErr } from './common.js';
 import { editContent } from './edit-content.js';
 import { USER_INPUT, USER_INPUT_DEFAULT } from './constant.js';
 

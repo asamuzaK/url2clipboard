@@ -4,7 +4,6 @@
 /* eslint-disable import/order */
 
 /* api */
-import sinon from 'sinon';
 import { assert } from 'chai';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
