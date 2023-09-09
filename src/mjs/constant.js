@@ -59,6 +59,7 @@ export const TEXT_TEXT_URL = 'TextURL';
 export const TEXT_URL_ONLY = 'URLOnly';
 export const THEME_DARK = 'firefox-compact-dark@mozilla.org';
 export const THEME_LIGHT = 'firefox-compact-light@mozilla.org';
+export const URL_SANITIZE = 'sanitizeURL';
 export const USER_INPUT = 'userInput';
 export const USER_INPUT_DEFAULT = 'Edit content text of the link';
 export const WEBEXT_ID = 'url2clipboard@asamuzak.jp';

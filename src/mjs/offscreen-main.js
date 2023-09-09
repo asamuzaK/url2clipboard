@@ -3,8 +3,13 @@
  */
 
 /* shared */
+import '../lib/purify/purify.min.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { Clip } from './clipboard.js';
-import { EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY } from './constant.js';
+import { throwErr } from './common.js';
+import {
+  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, URL_SANITIZE
+} from './constant.js';
 
 /* api */
 const { runtime } = browser;
@@ -41,19 +46,24 @@ export const closeWindow = () => {
  * @param {object} msg - message
  * @returns {Promise.<Array>} - results of each handler
  */
-export const handleMsg = async msg => {
+export const handleMsg = msg => {
   const func = [];
   const items = msg && Object.entries(msg);
   if (items) {
     for (const item of items) {
       const [key, value] = item;
       switch (key) {
-        case EXEC_COPY:
+        case EXEC_COPY: {
           func.push(execCopy(value).then(closeWindow));
           break;
+        }
+        case URL_SANITIZE: {
+          const [url, opt] = value;
+          func.push(sanitizeURL(url, opt));
+        }
         default:
       }
     }
   }
-  return Promise.all(func);
+  return Promise.all(func).catch(throwErr);
 };
