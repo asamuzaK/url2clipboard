@@ -1,6 +1,6 @@
 declare var w: {
-    "__#2@#e": number;
-    "__#2@#t": Set<any>;
+    "__#3@#e": number;
+    "__#3@#t": Set<any>;
     replace(e: any): any;
     purify(e: any): string;
     sanitize(e: any, s: any): string;
@@ -8,7 +8,7 @@ declare var w: {
         [k: string]: any;
     };
     reset(): void;
-    "__#1@#e": Set<string>;
+    "__#2@#e": Set<string>;
     get(): string[];
     has(e: any): boolean;
     add(e: any): string[];
