@@ -60,6 +60,7 @@ export const handleMsg = msg => {
         case URL_SANITIZE: {
           const [url, opt] = value;
           func.push(sanitizeURL(url, opt));
+          break;
         }
         default:
       }
