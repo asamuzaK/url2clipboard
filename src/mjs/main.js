@@ -3,8 +3,6 @@
  */
 
 /* shared */
-import '../lib/purify/purify.min.js';
-import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import {
   executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage,
   getAllTabsInWindow, getHighlightedTab, getStorage, isTab, queryTabs,
@@ -23,6 +21,7 @@ import {
   createContextMenu, removeContextMenu, updateContextMenu
 } from './menu.js';
 import { notifyOnCopy } from './notify.js';
+import { sanitize as sanitizeURL } from './sanitize.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,

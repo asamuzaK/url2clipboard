@@ -10,7 +10,7 @@ import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import { EXEC_COPY, MIME_PLAIN } from '../src/mjs/constant.js';
+import { EXEC_COPY, MIME_PLAIN, URL_SANITIZE } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/offscreen-main.js';
 
 describe('offscreen-main', () => {
@@ -144,6 +144,19 @@ describe('offscreen-main', () => {
     it('should get array', async () => {
       const res = await func({ [EXEC_COPY]: {} });
       assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should get array', async () => {
+      const res = await func({
+        [URL_SANITIZE]: [
+          'data:,https://example.com/#<script>alert(1);</script>',
+          {
+            allow: ['data', 'file'],
+            remove: true
+          }
+        ]
+      });
+      assert.deepEqual(res, ['data:,https://example.com/'], 'result');
     });
   });
 });
