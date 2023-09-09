@@ -30,6 +30,7 @@ describe('main', () => {
     'Blob',
     'ClipboardItem',
     'DOMParser',
+    'DOMPurify',
     'HTMLUnknownElement',
     'Node',
     'XMLSerializer'
@@ -2050,6 +2051,36 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('foo https://example.com/').callCount, i + 1,
+      'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText
+        .withArgs('foo data:,https://example.com/').callCount;
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'data:,https://example.com/#<script>alert(1);</script>'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText
+        .withArgs('foo data:,https://example.com/').callCount, i + 1,
       'called');
       assert.deepEqual(res, [undefined], 'result');
     });

@@ -18,7 +18,7 @@ export const createJsdom = () => {
     url: 'https://localhost',
     beforeParse(window) {
       window.prompt = sinon.stub();
-      window.DOMPurify = domPurify;
+      window.DOMPurify = domPurify(window);
     }
   };
   return new JSDOM(domstr, opt);
@@ -56,7 +56,7 @@ global.window = window;
 global.document = document;
 global.browser = browser;
 
-const globalKeys = ['Node'];
+const globalKeys = ['DOMPurify', 'Node'];
 for (const key of globalKeys) {
   if (window[key] && !global[key]) {
     global[key] = window[key];

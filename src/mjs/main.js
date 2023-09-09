@@ -3,6 +3,7 @@
  */
 
 /* shared */
+import '../lib/purify/purify.min.js';
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import {
   executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage,
