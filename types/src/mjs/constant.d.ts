@@ -31,7 +31,6 @@ export const INCLUDE_TITLE_HTML_PLAIN: "includeTitleHTMLPlain";
 export const INCLUDE_TITLE_MARKDOWN: "includeTitleMarkdown";
 export const JIRA: "Jira";
 export const JS_CONTEXT_INFO: "/js/context-info.js";
-export const JS_EDIT_CONTENT: "/js/edit-content.js";
 export const LATEX: "LaTeX";
 export const LINK_DETAILS: "copyLinkDetails";
 export const LINK_MENU: "#copyLinkDetails button,#copyLinkContent,#copyLinkBBCodeURLContent";
