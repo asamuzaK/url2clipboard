@@ -10,7 +10,9 @@ import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import { EXEC_COPY, MIME_PLAIN, URL_SANITIZE } from '../src/mjs/constant.js';
+import {
+  EXEC_COPY, MIME_PLAIN, PROMPT, URL_SANITIZE
+} from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/offscreen-main.js';
 
 describe('offscreen-main', () => {
@@ -144,6 +146,24 @@ describe('offscreen-main', () => {
     it('should get array', async () => {
       const res = await func({ [EXEC_COPY]: {} });
       assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should get array containing null', async () => {
+      window.prompt.returns(null);
+      global.window.prompt.returns(null);
+      const res = await func({
+        [PROMPT]: ['foo', 'bar']
+      });
+      assert.deepEqual(res, [null], 'result');
+    });
+
+    it('should get array containing null', async () => {
+      window.prompt.returns('foo bar');
+      global.window.prompt.returns('foo bar');
+      const res = await func({
+        [PROMPT]: ['foo', 'bar']
+      });
+      assert.deepEqual(res, ['foo bar'], 'result');
     });
 
     it('should get array', async () => {

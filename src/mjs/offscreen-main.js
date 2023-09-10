@@ -7,8 +7,9 @@ import '../lib/purify/purify.min.js';
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { Clip } from './clipboard.js';
 import { throwErr } from './common.js';
+import { editContent } from './edit-content.js';
 import {
-  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, URL_SANITIZE
+  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, URL_SANITIZE
 } from './constant.js';
 
 /* api */
@@ -57,9 +58,12 @@ export const handleMsg = msg => {
           func.push(execCopy(value).then(closeWindow));
           break;
         }
+        case PROMPT: {
+          func.push(editContent(...value));
+          break;
+        }
         case URL_SANITIZE: {
-          const [url, opt] = value;
-          func.push(sanitizeURL(url, opt));
+          func.push(sanitizeURL(...value));
           break;
         }
         default:
