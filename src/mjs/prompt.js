@@ -6,7 +6,7 @@
 import { executeScriptToTab } from './browser.js';
 import { isObjectNotEmpty, logErr } from './common.js';
 import { editContent } from './edit-content.js';
-import { USER_INPUT, USER_INPUT_DEFAULT } from './constant.js';
+import { USER_INPUT } from './constant.js';
 
 /* api */
 const { i18n, tabs } = browser;
@@ -23,9 +23,8 @@ export const promptContent = async (opt = {}) => {
   const { content, formatTitle, tabId } = opt;
   let editedContent;
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-    const promptMsg = formatTitle
-      ? i18n.getMessage(USER_INPUT, formatTitle)
-      : USER_INPUT_DEFAULT;
+    const promptMsg = i18n.getMessage(USER_INPUT, formatTitle ?? '')
+      .replace(/\s+/g, ' ').trim();
     const arr = await executeScriptToTab({
       args: [content, promptMsg],
       func: editContent,
