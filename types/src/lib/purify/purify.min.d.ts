@@ -4,7 +4,7 @@ declare function _exports(e: any): {
     removed: any[];
     isSupported: boolean;
     sanitize(e: any, ...args: any[]): any;
-    setConfig(e: any): void;
+    setConfig(...args: any[]): void;
     clearConfig(): void;
     isValidAttribute(e: any, t: any, n: any): boolean;
     addHook(e: any, t: any): void;
@@ -17,7 +17,7 @@ declare namespace _exports {
     let removed: any[];
     let isSupported: boolean;
     function sanitize(e: any, ...args: any[]): any;
-    function setConfig(e: any): void;
+    function setConfig(...args: any[]): void;
     function clearConfig(): void;
     function isValidAttribute(e: any, t: any, n: any): boolean;
     function addHook(e: any, t: any): void;
