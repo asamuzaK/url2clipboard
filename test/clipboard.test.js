@@ -13,7 +13,7 @@ import { browser, createJsdom } from './mocha/setup.js';
 import * as mjs from '../src/mjs/clipboard.js';
 
 describe('clipboard', () => {
-  let window, document, navigator;
+  let window, document, navigator, hasGlobalNavigator;
   const globalKeys = [
     'Blob',
     'ClipboardItem',
@@ -34,7 +34,11 @@ describe('clipboard', () => {
     global.browser = browser;
     global.window = window;
     global.document = document;
-    global.navigator = navigator;
+    if (global.navigator) {
+      hasGlobalNavigator = true;
+    } else {
+      global.navigator = navigator;
+    }
     for (const key of globalKeys) {
       // Not implemented in jsdom
       if (!window[key]) {
@@ -96,7 +100,9 @@ describe('clipboard', () => {
     delete global.browser;
     delete global.window;
     delete global.document;
-    delete global.navigator;
+    if (!hasGlobalNavigator) {
+      delete global.navigator;
+    }
     for (const key of globalKeys) {
       delete global[key];
     }
