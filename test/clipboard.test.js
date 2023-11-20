@@ -425,12 +425,14 @@ describe('clipboard', () => {
         navigator.clipboard = {
           writeText: fakeWriteText
         };
-        const fakeExec = sinon.fake();
-        document.execCommand = fakeExec;
+        global.navigator.clipboard = {
+          writeText: fakeWriteText
+        };
         const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
         const { calledOnce: calledWriteText } = fakeWriteText;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         assert.isTrue(calledWriteText, 'called');
         assert.isUndefined(res, 'result');
       });
