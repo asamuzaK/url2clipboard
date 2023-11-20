@@ -422,10 +422,7 @@ describe('clipboard', () => {
 
       it('should call function', async () => {
         const fakeWriteText = sinon.fake();
-        navigator.clipboard = {
-          writeText: fakeWriteText
-        };
-        global.navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText
         };
         const clip = new Clip('foo', 'text/plain');
@@ -440,7 +437,7 @@ describe('clipboard', () => {
       it('should call function', async () => {
         const err = new Error('error');
         const fakeWriteText = sinon.fake.throws(err);
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText
         };
         const fakeExec = sinon.fake();
@@ -452,6 +449,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWriteText } = fakeWriteText;
         const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isTrue(calledWriteText, 'called');
         assert.isTrue(calledExec, 'called');
@@ -476,7 +474,7 @@ describe('clipboard', () => {
       it('should call function', async () => {
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -488,6 +486,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWrite } = fakeWrite;
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isTrue(calledWrite, 'called');
@@ -500,7 +499,7 @@ describe('clipboard', () => {
         const clip = new Clip('<p>foo</p>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -511,6 +510,7 @@ describe('clipboard', () => {
         const { called: calledWrite } = fakeWrite;
         const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isFalse(calledWrite, 'not called');
@@ -522,7 +522,7 @@ describe('clipboard', () => {
         const clip = new Clip('<script>foo</script>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -533,6 +533,7 @@ describe('clipboard', () => {
         const { called: calledWrite } = fakeWrite;
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isFalse(calledWrite, 'not called');
@@ -544,7 +545,7 @@ describe('clipboard', () => {
         const err = new Error('error');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake.throws(err);
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -558,6 +559,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWrite } = fakeWrite;
         const { calledOnce: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isTrue(calledWrite, 'called');
@@ -569,7 +571,7 @@ describe('clipboard', () => {
         const clip = new Clip('{"foo": "bar"}', 'application/json');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -580,6 +582,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWrite } = fakeWrite;
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isTrue(calledWrite, 'called');
@@ -591,7 +594,7 @@ describe('clipboard', () => {
         const clip = new Clip('<xml></xml>', 'text/xml');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -602,6 +605,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWrite } = fakeWrite;
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isTrue(calledWrite, 'called');
@@ -614,7 +618,7 @@ describe('clipboard', () => {
         const clip = new Clip(png.toString('binary'), 'image/png');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
-        navigator.clipboard = {
+        navigator.clipboard = global.navigator.clipboard = {
           writeText: fakeWriteText,
           write: fakeWrite
         };
@@ -625,6 +629,7 @@ describe('clipboard', () => {
         const { calledOnce: calledWrite } = fakeWrite;
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
+        delete global.navigator.clipboard;
         delete document.execCommand;
         assert.isFalse(calledWriteText, 'not called');
         assert.isTrue(calledWrite, 'called');
