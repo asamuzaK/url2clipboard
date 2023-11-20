@@ -444,8 +444,6 @@ describe('clipboard', () => {
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
         const clip = new Clip('foo', 'text/plain');
-        const fakeExec = sinon.fake();
-        document.execCommand = fakeExec;
         const res = await clip.copy().catch(e => {
           assert.isUndefined(e, 'not thrown');
         });
