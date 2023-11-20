@@ -18,31 +18,34 @@ import { formatData } from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/popup-main.js';
 
 describe('popup-main', () => {
-  let window, document, navigator;
+  let window, document, navigator, globalNavigatorExists;
   beforeEach(() => {
+    const stubWrite = sinon.stub();
+    const stubWriteText = sinon.stub();
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
-    if (document.execCommand) {
-      sinon.stub(document, 'execCommand');
-    } else {
-      document.execCommand = sinon.fake();
-    }
+    document.execCommand = sinon.stub();
     navigator = window && window.navigator;
-    if (navigator.clipboard) {
-      sinon.stub(navigator.clipboard, 'writeText');
-    } else {
-      navigator.clipboard = {
-        writeText: sinon.fake()
-      };
-    }
+    navigator.clipboard = {
+      write: stubWrite,
+      writeText: stubWriteText
+    };
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
     browser.permissions.contains.resolves(true);
     global.browser = browser;
     global.window = window;
     global.document = document;
-    global.navigator = navigator;
+    if (global.navigator) {
+      globalNavigatorExists = true;
+      global.navigator.clipboard = {
+        write: stubWrite,
+        writeText: stubWriteText
+      };
+    } else {
+      global.navigator = navigator;
+    }
   });
   afterEach(() => {
     window = null;
@@ -51,7 +54,12 @@ describe('popup-main', () => {
     delete global.browser;
     delete global.window;
     delete global.document;
-    delete global.navigator;
+    if (globalNavigatorExists) {
+      delete global.navigator.clipboard;
+      globalNavigatorExists = null;
+    } else {
+      delete global.navigator;
+    }
     browser._sandbox.reset();
   });
 
