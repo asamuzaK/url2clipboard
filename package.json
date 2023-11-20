@@ -16,7 +16,7 @@
     "commander": "^11.1.0",
     "dompurify": "^3.0.6",
     "url-sanitizer": "^0.10.14",
-    "webext-schema": "^5.2.5",
+    "webext-schema": "^5.2.6",
     "webextension-polyfill": "^0.10.0"
   },
   "devDependencies": {
@@ -38,7 +38,7 @@
     "sinon": "^17.0.1",
     "stylelint": "^15.11.0",
     "stylelint-config-standard": "^34.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.2"
   },
   "scripts": {
     "bundle": "npm-run-all -s bundle-*",
