@@ -956,6 +956,7 @@ describe('main', () => {
 
     it('should call function', async () => {
       delete navigator.clipboard.write;
+      delete global.navigator.clipboard.write;
       const i = document.execCommand.callCount;
       const menuItemId = HTML_HYPER;
       const info = {
