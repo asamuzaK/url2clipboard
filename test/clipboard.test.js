@@ -429,7 +429,7 @@ describe('clipboard', () => {
         document.execCommand = fakeExec;
         const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
-        const { calledOnce: calledWriteText } = stubWriteText;
+        const { calledOnce: calledWriteText } = fakeWriteText;
         delete navigator.clipboard;
         assert.isTrue(calledWriteText, 'called');
         assert.isUndefined(res, 'result');
