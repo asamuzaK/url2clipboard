@@ -403,13 +403,13 @@ describe('clipboard', () => {
       });
 
       it('should not call function', async () => {
-        const clip = new Clip('', 'text/plain');
         const fakeWriteText = sinon.fake();
         navigator.clipboard = {
           writeText: fakeWriteText
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
+        const clip = new Clip('', 'text/plain');
         const res = await clip.copy();
         const { called: calledWriteText } = fakeWriteText;
         const { called: calledExec } = fakeExec;
@@ -421,10 +421,12 @@ describe('clipboard', () => {
       });
 
       it('should call function', async () => {
-        const stubWriteText = sinon.stub();
+        const fakeWriteText = sinon.fake();
         navigator.clipboard = {
-          writeText: stubWriteText
+          writeText: fakeWriteText
         };
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
         const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
         const { calledOnce: calledWriteText } = stubWriteText;
@@ -439,6 +441,8 @@ describe('clipboard', () => {
         navigator.clipboard = {
           writeText: fakeWriteText
         };
+        const fakeExec = sinon.fake();
+        document.execCommand = fakeExec;
         const clip = new Clip('foo', 'text/plain');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
@@ -470,7 +474,6 @@ describe('clipboard', () => {
       });
 
       it('should call function', async () => {
-        const clip = new Clip('<p>foo</p>', 'text/html');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();
         navigator.clipboard = {
@@ -479,6 +482,7 @@ describe('clipboard', () => {
         };
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
+        const clip = new Clip('<p>foo</p>', 'text/html');
         const res = await clip.copy();
         const { called: calledWriteText } = fakeWriteText;
         const { calledOnce: calledWrite } = fakeWrite;
