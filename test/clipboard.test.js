@@ -421,13 +421,13 @@ describe('clipboard', () => {
       });
 
       it('should call function', async () => {
-        const fakeWriteText = sinon.fake();
+        const stubWriteText = sinon.stub();
         navigator.clipboard = {
-          writeText: fakeWriteText
+          writeText: stubWriteText
         };
         const clip = new Clip('foo', 'text/plain');
         const res = await clip.copy();
-        const { calledOnce: calledWriteText } = fakeWriteText;
+        const { calledOnce: calledWriteText } = stubWriteText;
         delete navigator.clipboard;
         assert.isTrue(calledWriteText, 'called');
         assert.isUndefined(res, 'result');
