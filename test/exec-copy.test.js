@@ -22,8 +22,10 @@ describe('exec-copy', () => {
     'Node',
     'XMLSerializer'
   ];
-  let window, document, navigator;
+  let window, document, navigator, globalNavigatorExists;
   beforeEach(() => {
+    const stubWrite = sinon.stub();
+    const stubWriteText = sinon.stub();
     const dom = createJsdom();
     window = dom && dom.window;
     document = window.document;
@@ -33,15 +35,10 @@ describe('exec-copy', () => {
       document.execCommand = sinon.fake();
     }
     navigator = window.navigator;
-    if (navigator.clipboard) {
-      sinon.stub(navigator.clipboard, 'write');
-      sinon.stub(navigator.clipboard, 'writeText');
-    } else {
-      navigator.clipboard = {
-        write: sinon.stub(),
-        writeText: sinon.stub()
-      };
-    }
+    navigator.clipboard = {
+      write: stubWrite,
+      writeText: stubWriteText
+    };
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
     browser.permissions.contains.resolves(true);
@@ -49,7 +46,15 @@ describe('exec-copy', () => {
     global.browser = browser;
     global.window = window;
     global.document = document;
-    global.navigator = navigator;
+    if (global.navigator) {
+      globalNavigatorExists = true;
+      global.navigator.clipboard = {
+        write: stubWrite,
+        writeText: stubWriteText
+      };
+    } else {
+      global.navigator = navigator;
+    }
     for (const key of globalKeys) {
       // Not implemented in jsdom
       if (!window[key]) {
@@ -111,7 +116,12 @@ describe('exec-copy', () => {
     delete global.browser;
     delete global.window;
     delete global.document;
-    delete global.navigator;
+    if (globalNavigatorExists) {
+      delete global.navigator.clipboard;
+      globalNavigatorExists = null;
+    } else {
+      delete global.navigator;
+    }
     for (const key of globalKeys) {
       delete global[key];
     }

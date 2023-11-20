@@ -13,7 +13,6 @@ import { browser, createJsdom } from './mocha/setup.js';
 import * as mjs from '../src/mjs/clipboard.js';
 
 describe('clipboard', () => {
-  let window, document, navigator;
   const globalKeys = [
     'Blob',
     'ClipboardItem',
@@ -22,7 +21,7 @@ describe('clipboard', () => {
     'Node',
     'XMLSerializer'
   ];
-
+  let window, document, navigator, globalNavigatorExists;
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
@@ -34,7 +33,11 @@ describe('clipboard', () => {
     global.browser = browser;
     global.window = window;
     global.document = document;
-    global.navigator = navigator;
+    if (global.navigator) {
+      globalNavigatorExists = true;
+    } else {
+      global.navigator = navigator;
+    }
     for (const key of globalKeys) {
       // Not implemented in jsdom
       if (!window[key]) {
@@ -96,7 +99,11 @@ describe('clipboard', () => {
     delete global.browser;
     delete global.window;
     delete global.document;
-    delete global.navigator;
+    if (globalNavigatorExists) {
+      globalNavigatorExists = null;
+    } else {
+      delete global.navigator;
+    }
     for (const key of globalKeys) {
       delete global[key];
     }
