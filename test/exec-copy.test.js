@@ -29,11 +29,7 @@ describe('exec-copy', () => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window.document;
-    if (document.execCommand) {
-      sinon.stub(document, 'execCommand');
-    } else {
-      document.execCommand = sinon.fake();
-    }
+    document.execCommand = sinon.stub();
     navigator = window.navigator;
     navigator.clipboard = {
       write: stubWrite,

@@ -26,6 +26,7 @@ describe('clipboard', () => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
+    document.execCommand = sinon.stub();
     navigator = window && window.navigator;
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());

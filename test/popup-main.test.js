@@ -25,11 +25,7 @@ describe('popup-main', () => {
     const dom = createJsdom();
     window = dom && dom.window;
     document = window && window.document;
-    if (document.execCommand) {
-      sinon.stub(document, 'execCommand');
-    } else {
-      document.execCommand = sinon.fake();
-    }
+    document.execCommand = sinon.stub();
     navigator = window && window.navigator;
     navigator.clipboard = {
       write: stubWrite,
