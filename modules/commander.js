@@ -221,21 +221,25 @@ export const parseCommand = args => {
   if (Array.isArray(args) && args.some(arg => reg.test(arg))) {
     commander.exitOverride();
     commander.version(process.env.npm_package_version, '-v, --version');
-    commander.command('clean')
-      .description('clean directory')
-      .option('-d, --dir <name>', 'specify directory')
-      .option('-i, --info', 'console info')
-      .action(cleanDirectory);
-    commander.command('compat')
-      .description('create blink compatible files')
-      .option('-c, --clean', 'clean directory')
-      .option('-i, --info', 'console info')
-      .action(createBlinkCompatFiles);
-    commander.command('include')
-      .description('include library packages')
-      .option('-d, --dir <name>', 'specify library directory')
-      .option('-i, --info', 'console info')
-      .action(includeLibraries);
+    if (args.includes('clean')) {
+      commander.command('clean')
+        .description('clean directory')
+        .option('-d, --dir <name>', 'specify directory')
+        .option('-i, --info', 'console info')
+        .action(cleanDirectory);
+    } else if (args.includes('compat')) {
+      commander.command('compat')
+        .description('create blink compatible files')
+        .option('-c, --clean', 'clean directory')
+        .option('-i, --info', 'console info')
+        .action(createBlinkCompatFiles);
+    } else if (args.includes('include')) {
+      commander.command('include')
+        .description('include library packages')
+        .option('-d, --dir <name>', 'specify library directory')
+        .option('-i, --info', 'console info')
+        .action(includeLibraries);
+    }
     commander.parse(args);
   }
 };
