@@ -657,7 +657,8 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
  */
 export const startup = async () => {
   await setFormatData();
-  return getAllStorage().then(handleStorage).then(createContextMenu);
+  return getAllStorage().then(handleStorage).then(removeContextMenu)
+    .then(createContextMenu);
 };
 
 // For test
