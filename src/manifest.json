@@ -1,12 +1,13 @@
 {
-  "action": {
+  "background": {
+    "persistent": false,
+    "scripts": ["mjs/background.js"],
+    "type": "module"
+  },
+  "browser_action": {
     "default_icon": "img/icon.svg#current",
     "default_popup": "html/popup.html",
     "default_title": "__MSG_extensionName__"
-  },
-  "background": {
-    "scripts": ["mjs/background.js"],
-    "type": "module"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -74,7 +75,7 @@
     "32": "img/icon.svg#current",
     "64": "img/icon.svg"
   },
-  "manifest_version": 3,
+  "manifest_version": 2,
   "name": "__MSG_extensionName__",
   "optional_permissions": [
     "notifications"
