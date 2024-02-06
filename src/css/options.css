@@ -24,6 +24,10 @@
   color-scheme: normal;
 }
 
+html, body, body * {
+  box-sizing: content-box;
+}
+
 body {
   padding: 1rem 1rem 0;
   background-color: var(--page-background-color);
