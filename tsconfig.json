@@ -6,7 +6,7 @@
     "declarationDir": "types",
     "emitDeclarationOnly": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "newLine": "LF",
     "removeComments": true,
     "resolveJsonModule": true,
