@@ -990,6 +990,44 @@ export const warmupTab = async tabId => {
 };
 
 /**
+ * capture visible tab
+ * @param {number} windowId - window ID
+ * @param {object} opt - options
+ * @returns {Promise.<?string>} - data URL
+ */
+export const captureVisibleTab = async (windowId, opt) => {
+  const info = await runtime.getBrowserInfo();
+  let isGranted;
+  if (info.vender === 'Mozilla') {
+    const browserVersion = parseFloat(info.version);
+    isGranted = (browserVersion >= 126 && await isPermissionGranted({
+      permissions: ['activeTab']
+    })) || await isPermissionGranted({
+      origins: ['<all_urls>']
+    });
+  } else {
+    isGranted = await isPermissionGranted({
+      permissions: ['activeTab']
+    }) || await isPermissionGranted({
+      origins: ['<all_urls>']
+    });
+  }
+  let url;
+  if (isGranted) {
+    if (!Number.isInteger(windowId)) {
+      windowId = windows.WINDOW_ID_CURRENT;
+    }
+    if (!opt) {
+      opt = {
+        format: 'png'
+      };
+    }
+    url = await tabs.captureVisibleTab(windowId, opt);
+  }
+  return url ?? null;
+};
+
+/**
  * is tab
  * @param {*} tabId - tab ID
  * @returns {Promise.<boolean>} - result
