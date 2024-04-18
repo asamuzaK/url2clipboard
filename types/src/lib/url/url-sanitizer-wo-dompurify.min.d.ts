@@ -1,4 +1,4 @@
-declare var ye: {
+declare var he: {
     "__#3@#e": number;
     "__#3@#t": Set<any>;
     replace(e: any): any;
@@ -15,18 +15,18 @@ declare var ye: {
     remove(e: any): boolean;
     verify(e: any): boolean;
 };
-declare function ue(t: any): Promise<boolean>;
-declare function ge(t: any): boolean;
-declare function fe(t: any): Promise<{
+declare function de(t: any): Promise<boolean>;
+declare function fe(t: any): boolean;
+declare function le(t: any): Promise<{
     [k: string]: any;
 }>;
-declare function he(t: any): {
+declare function me(t: any): {
     [k: string]: any;
 };
-declare function me(t: any, e?: {
+declare function ce(t: any, e?: {
     allow: any[];
     deny: any[];
     only: any[];
 }): Promise<string>;
-declare function de(t: any, e: any): string;
-export { ye as default, ue as isURI, ge as isURISync, fe as parseURL, he as parseURLSync, me as sanitizeURL, de as sanitizeURLSync };
+declare function pe(t: any, e: any): string;
+export { he as default, de as isURI, fe as isURISync, le as parseURL, me as parseURLSync, ce as sanitizeURL, pe as sanitizeURLSync };

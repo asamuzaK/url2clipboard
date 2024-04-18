@@ -17,7 +17,7 @@
     "dompurify": "^3.1.0",
     "url-sanitizer": "^2.0.0",
     "webext-schema": "^5.3.0",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.11.0"
   },
   "devDependencies": {
     "addons-linter": "^6.25.0",

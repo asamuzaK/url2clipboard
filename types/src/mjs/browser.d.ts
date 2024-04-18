@@ -50,6 +50,7 @@ export function reloadTab(tabId: number, opt: object): Promise<void>;
 export function removeTab(arg: number | any[]): Promise<void>;
 export function updateTab(tabId: number, opt: object): Promise<object>;
 export function warmupTab(tabId: number): Promise<void>;
+export function captureVisibleTab(windowId: number, opt: object): Promise<string | null>;
 export function isTab(tabId: any): Promise<boolean>;
 export function getCurrentTheme(windowId?: number): Promise<object>;
 export function createNewWindow(opt: object): Promise<object>;
