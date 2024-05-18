@@ -9,19 +9,19 @@
     "url": "git+https://github.com/mozilla/webextension-polyfill.git"
   },
   "type": "commonjs",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "origins": [
     {
       "file": "LICENSE",
-      "cdn": "https://unpkg.com/webextension-polyfill@0.11.0/LICENSE"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.12.0/LICENSE"
     },
     {
       "file": "browser-polyfill.min.js",
-      "cdn": "https://unpkg.com/webextension-polyfill@0.11.0/dist/browser-polyfill.min.js"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.12.0/dist/browser-polyfill.min.js"
     },
     {
       "file": "browser-polyfill.min.js.map",
-      "cdn": "https://unpkg.com/webextension-polyfill@0.11.0/dist/browser-polyfill.min.js.map"
+      "cdn": "https://unpkg.com/webextension-polyfill@0.12.0/dist/browser-polyfill.min.js.map"
     }
   ]
 }
