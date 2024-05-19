@@ -4,9 +4,8 @@
 
 /* shared */
 import {
-  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage,
-  getAllTabsInWindow, getHighlightedTab, getStorage, isTab, queryTabs,
-  removeStorage, sendMessage
+  executeScriptToTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
+  getHighlightedTab, getStorage, isTab, queryTabs, removeStorage, sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
 import { execCopy } from './exec-copy.js';
@@ -493,9 +492,10 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
 /**
  * handle command
  * @param {!string} cmd - command
+ * @param {object} tab - tabs.Tab
  * @returns {?Promise} - extractClickedData()
  */
-export const handleCmd = async cmd => {
+export const handleCmd = async (cmd, tab) => {
   if (!isString(cmd)) {
     throw new TypeError(`Expected String but got ${getType(cmd)}.`);
   }
@@ -506,13 +506,10 @@ export const handleCmd = async cmd => {
     await setUserEnabledFormats();
   }
   if (enabledFormats.has(format)) {
-    const tab = await getActiveTab();
-    if (tab) {
-      const info = {
-        menuItemId: format
-      };
-      func = extractClickedData(info, tab);
-    }
+    const info = {
+      menuItemId: format
+    };
+    func = extractClickedData(info, tab);
   }
   return func || null;
 };
