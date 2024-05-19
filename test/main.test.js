@@ -2216,46 +2216,16 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      const i = browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).resolves([]);
       mjs.enabledFormats.add(HTML_PLAIN);
-      const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
-      assert.strictEqual(browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).callCount, i + 1, 'called');
+      const res = await func(`${CMD_COPY}${HTML_HYPER}`);
       assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
-      const i = browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).resolves([{
-        id: browser.tabs.TAB_ID_NONE
-      }]);
       mjs.enabledFormats.add(HTML_PLAIN);
-      const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
-      assert.strictEqual(browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        active: true,
-        windowType: 'normal'
-      }).callCount, i + 1, 'called');
+      const res = await func(`${CMD_COPY}${HTML_PLAIN}`, {
+        id: browser.tabs.TAB_ID_NONE
+      });
       assert.deepEqual(res, [], 'result');
     });
   });

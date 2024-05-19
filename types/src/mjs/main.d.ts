@@ -10,7 +10,7 @@ export function sendContextInfo(): Promise<any> | null;
 export function extractClickedData(info?: object, tab?: object): Promise<any[]>;
 export function handleActiveTab(info?: object): Promise<any> | null;
 export function handleUpdatedTab(tabId: number, info?: object, tab?: object): Promise<any> | null;
-export function handleCmd(cmd: string): Promise<any> | null;
+export function handleCmd(cmd: string, tab: object): Promise<any> | null;
 export function handleMsg(msg?: object): Promise<any[]>;
 export function setStorageValue(item: string, obj?: object, changed?: boolean): Promise<any[]>;
 export function handleStorage(data: object, area?: string, changed?: boolean): Promise<any[]>;

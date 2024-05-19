@@ -15,8 +15,8 @@ const { commands, runtime, storage, tabs } = browser;
 const menus = browser.menus ?? browser.contextMenus;
 
 /* listeners */
-commands.onCommand.addListener(cmd =>
-  handleCmd(cmd).catch(throwErr)
+commands.onCommand.addListener((cmd, tab) =>
+  handleCmd(cmd, tab).catch(throwErr)
 );
 menus.onClicked.addListener((info, tab) =>
   extractClickedData(info, tab).catch(throwErr)
