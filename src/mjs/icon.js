@@ -18,9 +18,7 @@ export const setIcon = async icon => {
   let func;
   if (isString(icon) && /^icon-[a-z]+-(?:16|32).png$/.test(icon)) {
     const path = runtime.getURL(`img/${icon}`);
-    if (action) {
-      func = action.setIcon({ path });
-    }
+    func = action.setIcon({ path });
   }
   return func || null;
 };
