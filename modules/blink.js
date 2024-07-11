@@ -46,7 +46,6 @@ export const createManifest = async info => {
       96: 'img/icon-color-96.png',
       128: 'img/icon-color-128.png'
     },
-    manifest_version: 3,
     permissions: [
       'activeTab',
       'clipboardWrite',
@@ -62,7 +61,6 @@ export const createManifest = async info => {
     manifest[key] = value;
   }
   const unsupportedKeys = [
-    'browser_action',
     'browser_specific_settings'
   ];
   for (const key of unsupportedKeys) {
