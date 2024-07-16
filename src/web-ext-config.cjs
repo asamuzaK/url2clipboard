@@ -8,6 +8,6 @@ module.exports = {
     './mjs/offscreen-main.js',
     './repl',
     'package.json',
-    'web-ext-config.js'
+    'web-ext-config.cjs'
   ]
 };
