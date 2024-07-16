@@ -186,11 +186,11 @@ export const serializeDomString = (domstr, mime, reqElm = false) => {
   if (!/text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/.test(mime)) {
     throw new TypeError(`Unsupported MIME type ${mime}.`);
   }
-  const dom = new DOMParser().parseFromString(domstr, mime);
-  if (dom.querySelector('parsererror')) {
+  const doc = new DOMParser().parseFromString(domstr, mime);
+  if (doc.querySelector('parsererror')) {
     throw new Error('Error while parsing DOM string.');
   }
-  const { body, documentElement: root } = dom;
+  const { body, documentElement: root } = doc;
   let frag;
   try {
     if (mime === MIME_HTML) {
