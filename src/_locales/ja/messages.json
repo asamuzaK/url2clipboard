@@ -287,6 +287,9 @@
       }
     }
   },
+  "optionsContribute": {
+    "message": "寄付する:"
+  },
   "optionsEnableFormatDetail": {
     "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
     "placeholders": {
@@ -403,6 +406,9 @@
   },
   "optionsToolbarIcon": {
     "message": "ツールバーボタンアイコン"
+  },
+  "optionsWebsite": {
+    "message": "サポートサイト:"
   },
   "userInput": {
     "message": "$FORMAT$ リンクのテキストを編集してください",

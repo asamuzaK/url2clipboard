@@ -287,6 +287,9 @@
       }
     }
   },
+  "optionsContribute": {
+    "message": "捐助:"
+  },
   "optionsEnableFormatDetail": {
     "message": "在右键菜单中显示 $FORMAT$。",
     "placeholders": {
@@ -403,6 +406,9 @@
   },
   "optionsToolbarIcon": {
     "message": "工具栏图标"
+  },
+  "optionsWebsite": {
+    "message": "用户支持网站:"
   },
   "userInput": {
     "message": "编辑链接标题 $FORMAT$",

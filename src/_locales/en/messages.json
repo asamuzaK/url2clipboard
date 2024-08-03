@@ -287,6 +287,9 @@
       }
     }
   },
+  "optionsContribute": {
+    "message": "Contribute:"
+  },
   "optionsEnableFormatDetail": {
     "message": "Show $FORMAT$ menu item in the context menu.",
     "placeholders": {
@@ -403,6 +406,9 @@
   },
   "optionsToolbarIcon": {
     "message": "Toolbar Button Icon"
+  },
+  "optionsWebsite": {
+    "message": "Support site:"
   },
   "userInput": {
     "message": "Edit content text of the $FORMAT$ link",
