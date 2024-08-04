@@ -699,6 +699,30 @@ describe('format', () => {
 
     it('should get string', async () => {
       const data = {
+        content: ' foo [bar] baz ',
+        formatId: ORG_MODE,
+        template: formatData[ORG_MODE].template,
+        url: 'https://example.com/foo'
+      };
+      const res = await func(data);
+      assert.strictEqual(res,
+        '[[https://example.com/foo][foo [bar] baz]]',
+        'result');
+    });
+
+    it('should get string', async () => {
+      const data = {
+        content: '',
+        formatId: ORG_MODE,
+        template: formatData[ORG_MODE].template,
+        url: 'https://example.com/foo'
+      };
+      const res = await func(data);
+      assert.strictEqual(res, '[[https://example.com/foo]]', 'result');
+    });
+
+    it('should get string', async () => {
+      const data = {
         content: 'foo `bar` <baz>',
         formatId: REST,
         template: formatData[REST].template,

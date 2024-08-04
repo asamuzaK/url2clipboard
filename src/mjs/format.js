@@ -101,7 +101,7 @@ export const formatData = {
     id: ORG_MODE,
     enabled: true,
     menu: '&Org Mode',
-    template: '[[%url%][%content%]]'
+    template: '[[%url%]%content%]'
   },
   [TEXT_TEXT_URL]: {
     id: TEXT_TEXT_URL,
@@ -354,6 +354,12 @@ export const createLinkText = (data = {}) => {
       content =
         (content && convertHtmlChar(convertNumCharRef(content, /([()])/g))) ||
         '';
+      break;
+    case ORG_MODE:
+      content = content.trim();
+      if (content) {
+        content = `[${content}]`;
+      }
       break;
     default:
   }
