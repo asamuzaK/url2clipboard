@@ -44,6 +44,9 @@
     "commandCopyMediaWiki": {
       "description": "__MSG_commandCopyMediaWiki__"
     },
+    "commandCopyDocuWiki": {
+      "description": "__MSG_commandCopyDocuWiki__"
+    },
     "commandCopyJira": {
       "description": "__MSG_commandCopyJira__"
     },

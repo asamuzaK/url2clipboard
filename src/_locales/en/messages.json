@@ -20,6 +20,9 @@
   "commandCopyBBCodeURL": {
     "message": "Copy as BBCode (URL)"
   },
+  "commandCopyDocuWiki": {
+    "message": "Copy as DocuWiki"
+  },
   "commandCopyHTMLHyper": {
     "message": "Copy as HTML (text/html)"
   },
