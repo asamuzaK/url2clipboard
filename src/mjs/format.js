@@ -345,7 +345,6 @@ export const createLinkText = (data = {}) => {
         '';
       break;
     case MEDIAWIKI:
-    case DOCUWIKI:
       content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || '';
       break;
     case REST:

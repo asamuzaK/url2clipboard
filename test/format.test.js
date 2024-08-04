@@ -682,7 +682,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '[[https://example.com/foo|foo &#91;bar&#93; baz]]',
+        '[[https://example.com/foo|foo [bar] baz]]',
         'result');
     });
 
