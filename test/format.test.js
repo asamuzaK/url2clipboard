@@ -13,7 +13,7 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
+  DOCUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from '../src/mjs/constant.js';
@@ -22,8 +22,8 @@ import * as mjs from '../src/mjs/format.js';
 describe('format', () => {
   const itemKeys = [
     ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-    MARKDOWN, MEDIAWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL,
-    TEXT_URL_ONLY
+    MARKDOWN, MEDIAWIKI, DOCUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
+    TEXT_TEXT_URL, TEXT_URL_ONLY
   ];
   beforeEach(() => {
     browser._sandbox.reset();
@@ -671,6 +671,30 @@ describe('format', () => {
       assert.strictEqual(res,
         '[https://example.com/foo ]',
         'result');
+    });
+
+    it('should get string', async () => {
+      const data = {
+        content: 'foo [bar] baz',
+        formatId: DOCUWIKI,
+        template: formatData[DOCUWIKI].template,
+        url: 'https://example.com/foo'
+      };
+      const res = await func(data);
+      assert.strictEqual(res,
+        '[[https://example.com/foo|foo &#91;bar&#93; baz]]',
+        'result');
+    });
+
+    it('should get string', async () => {
+      const data = {
+        content: '',
+        formatId: DOCUWIKI,
+        template: formatData[DOCUWIKI].template,
+        url: 'https://example.com/foo'
+      };
+      const res = await func(data);
+      assert.strictEqual(res, '[[https://example.com/foo|]]', 'result');
     });
 
     it('should get string', async () => {

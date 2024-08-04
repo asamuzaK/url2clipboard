@@ -2527,7 +2527,7 @@ describe('main', () => {
       }, true);
       assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
-      assert.strictEqual(res[0].length, 91, 'result');
+      assert.strictEqual(res[0].length, 97, 'result');
     });
 
     it('should set variable', async () => {
@@ -2537,7 +2537,7 @@ describe('main', () => {
       }, true);
       assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
       assert.strictEqual(res.length, 1, 'result');
-      assert.strictEqual(res[0].length, 97, 'result');
+      assert.strictEqual(res[0].length, 103, 'result');
     });
 
     it('should set variable', async () => {
@@ -2846,7 +2846,7 @@ describe('main', () => {
       browser.storage.local.get.resolves({});
       const res = await func();
       assert.isArray(res, 'result');
-      assert.strictEqual(res.length, 97, 'result');
+      assert.strictEqual(res.length, 103, 'result');
     });
   });
 });

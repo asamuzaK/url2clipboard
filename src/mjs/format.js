@@ -12,7 +12,7 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
+  DOCUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
   ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
@@ -72,6 +72,12 @@ export const formatData = {
     enabled: true,
     menu: 'Media&Wiki',
     template: '[%url% %content%]'
+  },
+  [DOCUWIKI]: {
+    id: DOCUWIKI,
+    enabled: true,
+    menu: '&DocuWiki',
+    template: '[[%url%|%content%]]'
   },
   [JIRA]: {
     id: JIRA,
@@ -339,6 +345,7 @@ export const createLinkText = (data = {}) => {
         '';
       break;
     case MEDIAWIKI:
+    case DOCUWIKI:
       content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || '';
       break;
     case REST:
