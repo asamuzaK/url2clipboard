@@ -355,6 +355,12 @@ export const createLinkText = (data = {}) => {
         (content && convertHtmlChar(convertNumCharRef(content, /([()])/g))) ||
         '';
       break;
+    case ORG_MODE:
+      content = content.trim();
+      if (content) {
+        content = `[${content}]`;
+      }
+      break;
     default:
   }
   return template.replace(/%content%/g, content.trim())
