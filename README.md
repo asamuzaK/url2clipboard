@@ -7,7 +7,7 @@ EN | [JA](./README.ja.md) | [ZH](./README.zh.md)
 
 # Copy URL To Clipboard
 
-Extension for Gecko based browsers and Blink based browsers.
+WebExtensions for Gecko based browsers and Blink based browsers.
 Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Textile, AsciiDoc, MediaWiki, DokuWiki, Jira, reStructuredText, LaTeX, Org Mode, Text.
 
 * When copying the URL of the page, right-click anywhere on the page and open the context menu, then select the format to copy.

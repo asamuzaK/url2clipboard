@@ -1,6 +1,6 @@
 {
   "name": "url2clipboard",
-  "description": "Copy document URL / link URL to clipboard as HTML, Markdown, BBCode, Text, etc.",
+  "description": "Copy document URL / link URL to clipboard as HTML, Markdown, Plain Text, etc.",
   "author": "asamuzaK",
   "license": "MPL-2.0",
   "homepage": "https://github.com/asamuzaK/url2clipboard",
