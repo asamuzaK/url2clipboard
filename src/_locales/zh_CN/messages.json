@@ -20,8 +20,8 @@
   "commandCopyBBCodeURL": {
     "message": "复制链接为 BBCode (链接)"
   },
-  "commandCopyDocuWiki": {
-    "message": "复制链接为 DocuWiki"
+  "commandCopyDokuWiki": {
+    "message": "复制链接为 DokuWiki"
   },
   "commandCopyHTMLHyper": {
     "message": "复制链接为 HTML (text/html)"

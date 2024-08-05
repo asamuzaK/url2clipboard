@@ -12,7 +12,7 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  DOCUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
+  DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
   ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
@@ -73,10 +73,10 @@ export const formatData = {
     menu: 'Media&Wiki',
     template: '[%url% %content%]'
   },
-  [DOCUWIKI]: {
-    id: DOCUWIKI,
+  [DOKUWIKI]: {
+    id: DOKUWIKI,
     enabled: true,
-    menu: '&DocuWiki',
+    menu: '&DokuWiki',
     template: '[[%url%|%content%]]'
   },
   [JIRA]: {

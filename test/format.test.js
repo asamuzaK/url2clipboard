@@ -13,7 +13,7 @@ import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
   COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  DOCUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
+  DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
   MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from '../src/mjs/constant.js';
@@ -22,7 +22,7 @@ import * as mjs from '../src/mjs/format.js';
 describe('format', () => {
   const itemKeys = [
     ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-    MARKDOWN, MEDIAWIKI, DOCUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
+    MARKDOWN, MEDIAWIKI, DOKUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
     TEXT_TEXT_URL, TEXT_URL_ONLY
   ];
   beforeEach(() => {
@@ -676,8 +676,8 @@ describe('format', () => {
     it('should get string', async () => {
       const data = {
         content: 'foo [bar] baz',
-        formatId: DOCUWIKI,
-        template: formatData[DOCUWIKI].template,
+        formatId: DOKUWIKI,
+        template: formatData[DOKUWIKI].template,
         url: 'https://example.com/foo'
       };
       const res = await func(data);
@@ -689,8 +689,8 @@ describe('format', () => {
     it('should get string', async () => {
       const data = {
         content: '',
-        formatId: DOCUWIKI,
-        template: formatData[DOCUWIKI].template,
+        formatId: DOKUWIKI,
+        template: formatData[DOKUWIKI].template,
         url: 'https://example.com/foo'
       };
       const res = await func(data);

@@ -20,8 +20,8 @@
   "commandCopyBBCodeURL": {
     "message": "BBCode (URL) でコピー"
   },
-  "commandCopyDocuWiki": {
-    "message": "DocuWiki でコピー"
+  "commandCopyDokuWiki": {
+    "message": "DokuWiki でコピー"
   },
   "commandCopyHTMLHyper": {
     "message": "HTML (text/html) でコピー"
