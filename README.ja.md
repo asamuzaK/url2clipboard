@@ -8,6 +8,7 @@
 # URLをクリップボードにコピー
 
 GeckoベースのブラウザとBlinkベースのブラウザ用の拡張機能。
+
 ドキュメントのURLやリンクのURLを、HTML、Markdown、BBCode、Textile、AsciiDoc、MediaWiki、DokuWiki、Jira、reStructuredText、LaTeX、Org Mode、Text形式でクリップボードにコピーします。
 
 * ページのURLをコピーする場合、ページの任意の場所で右クリックしてコンテキストメニューを開き、コピーする形式を選択します。
