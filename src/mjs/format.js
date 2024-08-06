@@ -347,6 +347,12 @@ export const createLinkText = (data = {}) => {
     case MEDIAWIKI:
       content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g) || '';
       break;
+    case ORG_MODE:
+      content = content.trim();
+      if (content) {
+        content = `[${content}]`;
+      }
+      break;
     case REST:
       content = escapeMatchingChars(content, /([`<>])/g) || '';
       break;
@@ -354,12 +360,6 @@ export const createLinkText = (data = {}) => {
       content =
         (content && convertHtmlChar(convertNumCharRef(content, /([()])/g))) ||
         '';
-      break;
-    case ORG_MODE:
-      content = content.trim();
-      if (content) {
-        content = `[${content}]`;
-      }
       break;
     default:
   }
