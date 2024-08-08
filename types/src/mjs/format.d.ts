@@ -80,8 +80,8 @@ export namespace formatData {
         let template_7: string;
         export { template_7 as template };
     }
-    namespace Jira {
-        export { JIRA as id };
+    namespace DokuWiki {
+        export { DOKUWIKI as id };
         let enabled_8: boolean;
         export { enabled_8 as enabled };
         let menu_8: string;
@@ -89,8 +89,8 @@ export namespace formatData {
         let template_8: string;
         export { template_8 as template };
     }
-    namespace reStructuredText {
-        export { REST as id };
+    namespace Jira {
+        export { JIRA as id };
         let enabled_9: boolean;
         export { enabled_9 as enabled };
         let menu_9: string;
@@ -98,8 +98,8 @@ export namespace formatData {
         let template_9: string;
         export { template_9 as template };
     }
-    namespace LaTeX {
-        export { LATEX as id };
+    namespace reStructuredText {
+        export { REST as id };
         let enabled_10: boolean;
         export { enabled_10 as enabled };
         let menu_10: string;
@@ -107,8 +107,8 @@ export namespace formatData {
         let template_10: string;
         export { template_10 as template };
     }
-    namespace OrgMode {
-        export { ORG_MODE as id };
+    namespace LaTeX {
+        export { LATEX as id };
         let enabled_11: boolean;
         export { enabled_11 as enabled };
         let menu_11: string;
@@ -116,14 +116,23 @@ export namespace formatData {
         let template_11: string;
         export { template_11 as template };
     }
-    namespace TextURL {
-        export { TEXT_TEXT_URL as id };
+    namespace OrgMode {
+        export { ORG_MODE as id };
         let enabled_12: boolean;
         export { enabled_12 as enabled };
         let menu_12: string;
         export { menu_12 as menu };
         let template_12: string;
         export { template_12 as template };
+    }
+    namespace TextURL {
+        export { TEXT_TEXT_URL as id };
+        let enabled_13: boolean;
+        export { enabled_13 as enabled };
+        let menu_13: string;
+        export { menu_13 as menu };
+        let template_13: string;
+        export { template_13 as template };
         let templateAlt_3: string;
         export { templateAlt_3 as templateAlt };
         let title_4: string;
@@ -131,23 +140,23 @@ export namespace formatData {
     }
     namespace TextOnly {
         export { TEXT_TEXT_ONLY as id };
-        let enabled_13: boolean;
-        export { enabled_13 as enabled };
-        let menu_13: string;
-        export { menu_13 as menu };
-        let template_13: string;
-        export { template_13 as template };
-        let title_5: string;
-        export { title_5 as title };
-    }
-    namespace URLOnly {
-        export { TEXT_URL_ONLY as id };
         let enabled_14: boolean;
         export { enabled_14 as enabled };
         let menu_14: string;
         export { menu_14 as menu };
         let template_14: string;
         export { template_14 as template };
+        let title_5: string;
+        export { title_5 as title };
+    }
+    namespace URLOnly {
+        export { TEXT_URL_ONLY as id };
+        let enabled_15: boolean;
+        export { enabled_15 as enabled };
+        let menu_15: string;
+        export { menu_15 as menu };
+        let template_15: string;
+        export { template_15 as template };
         let title_6: string;
         export { title_6 as title };
     }
@@ -184,6 +193,11 @@ export const formats: Map<string, {
     menu: string;
     template: string;
     title: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
 } | {
     id: string;
     enabled: boolean;
@@ -262,6 +276,7 @@ import { BBCODE_URL } from './constant.js';
 import { TEXTILE } from './constant.js';
 import { ASCIIDOC } from './constant.js';
 import { MEDIAWIKI } from './constant.js';
+import { DOKUWIKI } from './constant.js';
 import { JIRA } from './constant.js';
 import { REST } from './constant.js';
 import { LATEX } from './constant.js';
