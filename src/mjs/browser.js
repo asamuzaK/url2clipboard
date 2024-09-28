@@ -905,6 +905,9 @@ export const highlightTab = async (index, windowId) => {
   if (!(Array.isArray(index) || Number.isInteger(index))) {
     throw new TypeError(`Expected Number or Array but got ${getType(index)}.`);
   }
+  if (Number.isInteger(index)) {
+    index = [index];
+  }
   if (!Number.isInteger(windowId)) {
     windowId = windows.WINDOW_ID_CURRENT;
   }

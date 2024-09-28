@@ -286,7 +286,7 @@ export const extractClickedData = async (info, tab) => {
     if (menuItemId === OPTIONS_OPEN) {
       func.push(runtime.openOptionsPage());
     } else if (isString(menuItemId) &&
-        Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
+               Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       if (!userOpts.size) {
         await setUserOpts();
       }

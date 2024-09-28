@@ -7,7 +7,7 @@
   },
   "extends": [
     "plugin:jsdoc/recommended",
-    "plugin:no-unsanitized/DOM",
+    "plugin:no-unsanitized/recommended-legacy",
     "plugin:regexp/recommended",
     "standard"
   ],
