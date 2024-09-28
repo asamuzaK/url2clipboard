@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-// eslint-disable-next-line import/order
+// eslint-disable-next-line import-x/order
 import * as mjs from '../src/mjs/clipboard.js';
 
 describe('clipboard', () => {
