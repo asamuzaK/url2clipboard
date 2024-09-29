@@ -11,7 +11,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "url2clipboard@asamuzak.jp",
-      "strict_min_version": "129.0"
+      "strict_min_version": "128.0"
     }
   },
   "commands": {
@@ -95,5 +95,5 @@
     "tabs"
   ],
   "short_name": "__MSG_extensionShortName__",
-  "version": "14.0.0"
+  "version": "14.0.1"
 }
