@@ -3,38 +3,36 @@ import jsdoc from 'eslint-plugin-jsdoc';
 import nounsanitized from 'eslint-plugin-no-unsanitized';
 import regexp from 'eslint-plugin-regexp';
 import unicorn from 'eslint-plugin-unicorn';
-import neostandard, { plugins as neostdplugins } from 'neostandard';
 import globals from 'globals';
+import neostandard, { plugins as neostdplugins } from 'neostandard';
 
 export default [
-  {
-    ignores: ['src/js', 'src/lib', 'src/web-ext-config.cjs', '**/bundle/']
-  },
-  jsdoc.configs['flat/recommended'],
-  nounsanitized.configs.recommended,
-  regexp.configs['flat/recommended'],
   ...neostandard({
     semi: true
   }),
+  jsdoc.configs['flat/recommended'],
+  nounsanitized.configs.recommended,
+  regexp.configs['flat/recommended'],
   {
+    ignores: ['bundle/', 'src/lib/', 'src/web-ext-config.cjs', '**/*.min.js']
+  },
+  {
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.webextensions
+      }
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: true
+    },
     plugins: {
       '@stylistic': neostdplugins['@stylistic'],
       'import-x': importX,
       nounsanitized,
       regexp,
       unicorn
-    },
-    linterOptions: {
-      reportUnusedDisableDirectives: true
-    },
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.webextensions
-      },
-      ecmaVersion: 'latest',
-      sourceType: 'module'
     },
     rules: {
       '@stylistic/space-before-function-paren': ['error', {
