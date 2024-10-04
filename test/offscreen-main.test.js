@@ -179,8 +179,7 @@ describe('offscreen-main', () => {
         [URL_SANITIZE]: [
           'data:,https://example.com/#<script>alert(1);</script>',
           {
-            allow: ['data', 'file'],
-            remove: true
+            allow: ['data', 'file']
           }
         ]
       });

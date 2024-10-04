@@ -50,7 +50,7 @@ describe('sanitize', () => {
   });
 
   describe('sanitize URL', () => {
-    const func = mjs.sanitize;
+    const func = mjs.sanitizeURL;
 
     it('should get null', async () => {
       const res = await func();
@@ -63,24 +63,19 @@ describe('sanitize', () => {
     });
 
     it('should get result', async () => {
-      const res = await func('https://example.com/"onclick="alert(1)"', {
-        remove: true
-      });
+      const res = await func('https://example.com/"onclick="alert(1)"');
       assert.strictEqual(res, 'https://example.com/', 'result');
     });
 
     it('should get result', async () => {
-      const res = await func('https://example.com/"onclick="alert(1)"', {
-        remove: true
-      });
+      const res = await func('https://example.com/"onclick="alert(1)"');
       assert.strictEqual(res, 'https://example.com/', 'result');
     });
 
     it('should get result', async () => {
       const res =
         await func('data:,https://example.com/#<script>alert(1);</script>', {
-          allow: ['data'],
-          remove: true
+          allow: ['data']
         });
       assert.strictEqual(res, 'data:,https://example.com/', 'result');
     });
