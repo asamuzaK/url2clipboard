@@ -4,16 +4,14 @@
 
 /* shared */
 import {
-  convertHtmlChar, convertLaTeXChar, convertNumCharRef,
-  encodeUrlSpecialChar, escapeMatchingChars, getType, isString,
-  stripMatchingChars
+  convertHtmlChar, convertLaTeXChar, convertNumCharRef, encodeUrlSpecialChar,
+  escapeMatchingChars, getType, isString, stripMatchingChars
 } from './common.js';
 import {
-  ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
-  COPY_LINK, COPY_PAGE, COPY_TAB,
-  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
-  ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  ASCIIDOC, BBCODE_TEXT, BBCODE_URL, COPY_LINK, COPY_PAGE, COPY_TAB,
+  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER,
+  HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST,
+  TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
 /* format data */
