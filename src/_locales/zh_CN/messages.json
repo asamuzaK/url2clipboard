@@ -293,6 +293,9 @@
   "optionsContribute": {
     "message": "捐助:"
   },
+  "optionsCreateTextFragments": {
+    "message": "直接链接到文本的特定部分"
+  },
   "optionsEnableFormatDetail": {
     "message": "在右键菜单中显示 $FORMAT$。",
     "placeholders": {

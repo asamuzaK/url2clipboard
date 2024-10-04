@@ -293,6 +293,9 @@
   "optionsContribute": {
     "message": "寄付する:"
   },
+  "optionsCreateTextFragments": {
+    "message": "テキストの特定部分に直接リンクする"
+  },
   "optionsEnableFormatDetail": {
     "message": "コンテキストメニューに $FORMAT$ のメニュー項目を表示します。",
     "placeholders": {
