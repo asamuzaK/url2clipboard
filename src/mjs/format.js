@@ -20,16 +20,16 @@ export const formatData = {
     id: HTML_PLAIN,
     enabled: true,
     menu: 'HTML (text/&plain)',
-    template: '<a href="%url%" title="%title%">%content%</a>',
-    templateAlt: '<a href="%url%">%content%</a>',
+    template: '<a href="%url%" title="%title%"%attr%>%content%</a>',
+    templateAlt: '<a href="%url%"%attr%>%content%</a>',
     title: 'HTML (text/plain)'
   },
   [HTML_HYPER]: {
     id: HTML_HYPER,
     enabled: true,
     menu: '&HTML (text/html)',
-    template: '<a href="%url%" title="%title%">%content%</a>',
-    templateAlt: '<a href="%url%">%content%</a>',
+    template: '<a href="%url%" title="%title%"%attr%>%content%</a>',
+    templateAlt: '<a href="%url%"%attr%>%content%</a>',
     title: 'HTML (text/html)'
   },
   [MARKDOWN]: {
@@ -310,6 +310,7 @@ export const createLinkText = (data = {}) => {
   let content = isString(contentText) ? contentText.replace(/\s+/g, ' ') : '';
   let linkTitle = title || '';
   let linkUrl = url || '';
+  let attr = '';
   switch (formatId) {
     case ASCIIDOC:
       content = escapeMatchingChars(content, /(\])/g) || '';
@@ -328,6 +329,9 @@ export const createLinkText = (data = {}) => {
       content = convertHtmlChar(content) || '';
       linkTitle = convertHtmlChar(linkTitle) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
+      if (linkUrl.includes('#:~:')) {
+        attr += ' rel="noopener"';
+      }
       break;
     case LATEX:
       content = convertLaTeXChar(content) || '';
@@ -362,6 +366,7 @@ export const createLinkText = (data = {}) => {
     default:
   }
   return template.replace(/%content%/g, content.trim())
+    .replace(/%url%/g, linkUrl.trim())
     .replace(/%title%/g, linkTitle.trim())
-    .replace(/%url%/g, linkUrl.trim());
+    .replace(/%attr%/g, attr);
 };
