@@ -3,7 +3,9 @@
  */
 
 /* shared */
-import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
+import {
+  sanitizeURL as sanitize
+} from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { isString } from '../mjs/common.js';
 import { URL_SANITIZE } from '../mjs/constant.js';
 
@@ -16,7 +18,7 @@ const { offscreen, runtime } = chrome;
  * @param {object} opt - options
  * @returns {?string} - sanitized URL
  */
-export const sanitize = async (url, opt) => {
+export const sanitizeURL = async (url, opt) => {
   let res;
   if (url && isString(url)) {
     const { protocol } = new URL(url);
@@ -34,7 +36,7 @@ export const sanitize = async (url, opt) => {
       });
       await offscreen.closeDocument();
     } else {
-      res = await sanitizeURL(url, opt);
+      res = await sanitize(url, opt);
     }
   }
   return res || null;

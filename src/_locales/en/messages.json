@@ -293,6 +293,9 @@
   "optionsContribute": {
     "message": "Contribute:"
   },
+  "optionsCreateTextFragments": {
+    "message": "Link directly to a specific portion of text"
+  },
   "optionsEnableFormatDetail": {
     "message": "Show $FORMAT$ menu item in the context menu.",
     "placeholders": {

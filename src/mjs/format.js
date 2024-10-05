@@ -4,16 +4,14 @@
 
 /* shared */
 import {
-  convertHtmlChar, convertLaTeXChar, convertNumCharRef,
-  encodeUrlSpecialChar, escapeMatchingChars, getType, isString,
-  stripMatchingChars
+  convertHtmlChar, convertLaTeXChar, convertNumCharRef, encodeUrlSpecialChar,
+  escapeMatchingChars, getType, isString, stripMatchingChars
 } from './common.js';
 import {
-  ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
-  COPY_LINK, COPY_PAGE, COPY_TAB,
-  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML,
-  ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  ASCIIDOC, BBCODE_TEXT, BBCODE_URL, COPY_LINK, COPY_PAGE, COPY_TAB,
+  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER,
+  HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST,
+  TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
 /* format data */
@@ -22,16 +20,16 @@ export const formatData = {
     id: HTML_PLAIN,
     enabled: true,
     menu: 'HTML (text/&plain)',
-    template: '<a href="%url%" title="%title%">%content%</a>',
-    templateAlt: '<a href="%url%">%content%</a>',
+    template: '<a href="%url%" title="%title%"%attr%>%content%</a>',
+    templateAlt: '<a href="%url%"%attr%>%content%</a>',
     title: 'HTML (text/plain)'
   },
   [HTML_HYPER]: {
     id: HTML_HYPER,
     enabled: true,
     menu: '&HTML (text/html)',
-    template: '<a href="%url%" title="%title%">%content%</a>',
-    templateAlt: '<a href="%url%">%content%</a>',
+    template: '<a href="%url%" title="%title%"%attr%>%content%</a>',
+    templateAlt: '<a href="%url%"%attr%>%content%</a>',
     title: 'HTML (text/html)'
   },
   [MARKDOWN]: {
@@ -312,6 +310,7 @@ export const createLinkText = (data = {}) => {
   let content = isString(contentText) ? contentText.replace(/\s+/g, ' ') : '';
   let linkTitle = title || '';
   let linkUrl = url || '';
+  let attr = '';
   switch (formatId) {
     case ASCIIDOC:
       content = escapeMatchingChars(content, /(\])/g) || '';
@@ -330,6 +329,9 @@ export const createLinkText = (data = {}) => {
       content = convertHtmlChar(content) || '';
       linkTitle = convertHtmlChar(linkTitle) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
+      if (linkUrl.includes('#:~:')) {
+        attr += ' rel="noopener"';
+      }
       break;
     case LATEX:
       content = convertLaTeXChar(content) || '';
@@ -364,6 +366,7 @@ export const createLinkText = (data = {}) => {
     default:
   }
   return template.replace(/%content%/g, content.trim())
+    .replace(/%url%/g, linkUrl.trim())
     .replace(/%title%/g, linkTitle.trim())
-    .replace(/%url%/g, linkUrl.trim());
+    .replace(/%attr%/g, attr);
 };

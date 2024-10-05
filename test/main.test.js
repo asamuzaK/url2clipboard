@@ -17,7 +17,8 @@ import {
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   JS_CONTEXT_INFO, MARKDOWN, NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL,
-  PROMPT, TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
+  PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES,
+  USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
 import { editContent } from '../src/mjs/edit-content.js';
 import {
@@ -301,28 +302,26 @@ describe('main', () => {
 
     it('should get value', () => {
       const res = func(`${COPY_PAGE}HTMLHyper`);
-      assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
+      assert.strictEqual(res, '<a href="%url%"%attr%>%content%</a>', 'result');
     });
 
     it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_HYPER, true);
       const res = func(`${COPY_PAGE}HTMLHyper`);
-      assert.strictEqual(
-        res, '<a href="%url%" title="%title%">%content%</a>', 'result'
-      );
+      assert.strictEqual(res,
+        '<a href="%url%" title="%title%"%attr%>%content%</a>', 'result');
     });
 
     it('should get value', () => {
       const res = func(`${COPY_PAGE}HTMLPlain`);
-      assert.strictEqual(res, '<a href="%url%">%content%</a>', 'result');
+      assert.strictEqual(res, '<a href="%url%"%attr%>%content%</a>', 'result');
     });
 
     it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_PLAIN, true);
       const res = func(`${COPY_PAGE}HTMLPlain`);
-      assert.strictEqual(
-        res, '<a href="%url%" title="%title%">%content%</a>', 'result'
-      );
+      assert.strictEqual(res,
+        '<a href="%url%" title="%title%"%attr%>%content%</a>', 'result');
     });
 
     it('should get value', () => {
@@ -1550,6 +1549,66 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
+      const i = navigator.clipboard.write.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLHyper`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_FRAG_HTML_HYPER, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLPlain`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -2633,6 +2692,54 @@ describe('main', () => {
         checked: false
       });
       assert.isFalse(mjs.userOpts.get(PROMPT), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_FRAG_HTML_HYPER, {
+        checked: true
+      });
+      assert.isTrue(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_FRAG_HTML_HYPER, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_FRAG_HTML_PLAIN, {
+        checked: true
+      });
+      assert.isTrue(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_FRAG_HTML_PLAIN, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_SEP_LINES, {
+        checked: true
+      });
+      assert.isTrue(mjs.userOpts.get(TEXT_SEP_LINES), 'value');
+      assert.deepEqual(res, [mjs.userOpts], 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(TEXT_SEP_LINES, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(TEXT_SEP_LINES), 'value');
       assert.deepEqual(res, [mjs.userOpts], 'result');
     });
 

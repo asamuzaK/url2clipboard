@@ -20,7 +20,7 @@ import {
 } from './menu.js';
 import { notifyOnCopy } from './notify.js';
 import { promptContent } from './prompt.js';
-import { sanitize as sanitizeURL } from './sanitize.js';
+import { sanitizeURL } from './sanitize.js';
 import {
   BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
   COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
@@ -28,7 +28,8 @@ import {
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
   INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
   JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN,
-  PREFER_CANONICAL, PROMPT, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+  PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN,
+  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -58,6 +59,8 @@ export const setUserOpts = async (opt = {}) => {
       NOTIFY_COPY,
       PREFER_CANONICAL,
       PROMPT,
+      TEXT_FRAG_HTML_HYPER,
+      TEXT_FRAG_HTML_PLAIN,
       TEXT_SEP_LINES
     ]);
   }
@@ -294,29 +297,11 @@ export const extractClickedData = async (info, tab) => {
         await setFormatData();
         await setUserEnabledFormats();
       }
-      const { hash: tabUrlHash } = new URL(tabUrl);
       const formatId = getFormatId(menuItemId);
       const formatTitle = getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
       const newLine =
         !!(formatId === TEXT_TEXT_URL && userOpts.get(TEXT_SEP_LINES));
-      const contextInfo = await getContextInfo(tabId);
-      let contextCanonicalUrl = null;
-      let contextContent = null;
-      let contextIsLink = false;
-      let contextSelectionText = null;
-      let contextTitle = null;
-      let contextUrl = null;
-      if (isObjectNotEmpty(contextInfo)) {
-        if (!tabUrlHash && userOpts.get(PREFER_CANONICAL)) {
-          contextCanonicalUrl = contextInfo.canonicalUrl;
-        }
-        contextContent = contextInfo.content;
-        contextIsLink = !!contextInfo.isLink;
-        contextSelectionText = contextInfo.selectionText;
-        contextTitle = contextInfo.title;
-        contextUrl = contextInfo.url;
-      }
       let text;
       if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
@@ -353,76 +338,87 @@ export const extractClickedData = async (info, tab) => {
         });
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = getFormatTemplate(formatId);
-        let content;
-        let title;
-        let url;
-        if (formatId === BBCODE_URL) {
-          content = tabUrl;
-          url = tabUrl;
-        } else {
-          content = tabTitle;
-          title = tabTitle;
-          url = tabUrl;
-        }
+        const content = formatId === BBCODE_URL ? tabUrl : tabTitle;
         text = createLinkText({
-          content, formatId, template, title, url
+          content,
+          formatId,
+          template,
+          title: tabTitle,
+          url: tabUrl
         });
       } else {
         const template = getFormatTemplate(formatId);
+        const contextInfo = await getContextInfo(tabId);
+        let canonicalUrl = null;
+        let contextContent = null;
+        let contextIsLink = false;
+        let contextSelectionText = null;
+        let contextTitle = null;
+        let contextUrl = null;
+        if (isObjectNotEmpty(contextInfo)) {
+          const { hash: tabUrlHash } = new URL(tabUrl);
+          if (!tabUrlHash && userOpts.get(PREFER_CANONICAL)) {
+            canonicalUrl = contextInfo.canonicalUrl;
+          }
+          contextContent = contextInfo.content;
+          contextIsLink = !!contextInfo.isLink;
+          contextSelectionText = contextInfo.selectionText;
+          contextTitle = contextInfo.title;
+          contextUrl = contextInfo.url;
+        }
         let content;
         let title;
         let url;
-        if (menuItemId.startsWith(COPY_LINK)) {
-          if (formatId === BBCODE_URL) {
-            content = linkUrl;
-            url = linkUrl;
+        if (menuItemId.startsWith(COPY_PAGE)) {
+          if (selectionText &&
+              ((formatId === HTML_HYPER &&
+                userOpts.get(TEXT_FRAG_HTML_HYPER)) ||
+               (formatId === HTML_PLAIN &&
+                userOpts.get(TEXT_FRAG_HTML_PLAIN)))) {
+            const textFrag = `#:~:text=${encodeURIComponent(selectionText)}`;
+            const { href: textFragUrl } = new URL(textFrag, tabUrl);
+            url = await sanitizeURL(textFragUrl, {
+              allow: ['data', 'file']
+            });
+            content = selectionText;
           } else {
+            url = await sanitizeURL(canonicalUrl || tabUrl, {
+              allow: ['data', 'file']
+            });
+            if (formatId === BBCODE_URL) {
+              content = url;
+            } else {
+              content = selectionText || tabTitle;
+            }
+          }
+          title = tabTitle;
+        } else {
+          if (menuItemId.startsWith(COPY_LINK)) {
             content = selectionText || linkText || contextContent;
             title = contextTitle;
             url = linkUrl;
-          }
-        } else if (menuItemId.startsWith(COPY_PAGE)) {
-          if (formatId === BBCODE_URL) {
-            content = contextCanonicalUrl || tabUrl;
-            url = contextCanonicalUrl || tabUrl;
-          } else {
-            content = selectionText || tabTitle;
-            title = tabTitle;
-            url = contextCanonicalUrl || tabUrl;
-          }
-        } else if (enabledFormats.has(formatId)) {
-          if (contextIsLink) {
-            if (formatId === BBCODE_URL) {
-              content = linkUrl || contextUrl;
-              url = linkUrl || contextUrl;
-            } else {
+          } else if (enabledFormats.has(formatId)) {
+            if (contextIsLink) {
               content = selectionText || contextSelectionText || contextContent;
               title = contextTitle;
               url = linkUrl || contextUrl;
+            } else {
+              content = selectionText || contextSelectionText || tabTitle;
+              title = tabTitle;
+              url = canonicalUrl || tabUrl;
             }
-          } else if (formatId === BBCODE_URL) {
-            content = contextCanonicalUrl || tabUrl;
-            url = contextCanonicalUrl || tabUrl;
-          } else {
-            content = selectionText || contextSelectionText || tabTitle;
-            title = tabTitle;
-            url = contextCanonicalUrl || tabUrl;
+          }
+          if (url) {
+            url = await sanitizeURL(url, {
+              allow: ['data', 'file']
+            });
+            if (formatId === BBCODE_URL) {
+              content = url;
+            }
           }
         }
-        if (formatId === BBCODE_URL && content) {
-          content = await sanitizeURL(content, {
-            allow: ['data', 'file'],
-            remove: true
-          });
-        }
-        if (url) {
-          url = await sanitizeURL(url, {
-            allow: ['data', 'file'],
-            remove: true
-          });
-        }
         if (isString(content) && isString(url)) {
-          if (userOpts.get(PROMPT) && formatId !== BBCODE_URL && !isEdited) {
+          if (formatId !== BBCODE_URL && !isEdited && userOpts.get(PROMPT)) {
             const editedContent = await promptContent({
               content,
               formatTitle,
@@ -588,6 +584,8 @@ export const setStorageValue = async (item, obj, changed = false) => {
       case NOTIFY_COPY:
       case PREFER_CANONICAL:
       case PROMPT:
+      case TEXT_FRAG_HTML_HYPER:
+      case TEXT_FRAG_HTML_PLAIN:
       case TEXT_SEP_LINES: {
         func.push(setUserOpts({
           [item]: {
