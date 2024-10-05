@@ -211,20 +211,24 @@ export const updateMenu = async data => {
   if (isObjectNotEmpty(data)) {
     const { contextInfo: info } = data;
     if (info) {
-      const { canonicalUrl, content, isLink, title, url } = info;
-      const elm = document.getElementById(LINK_DETAILS);
-      const nodes = document.querySelectorAll(LINK_MENU);
+      const { canonicalUrl, content, isLink, selectionText, title, url } = info;
       contextInfo.canonicalUrl = canonicalUrl;
       contextInfo.content = content;
       contextInfo.isLink = !!isLink;
+      contextInfo.selectionText = selectionText;
       contextInfo.title = title;
       contextInfo.url = url;
+      const elm = document.getElementById(LINK_DETAILS);
       if (isLink) {
         elm.removeAttribute(ATTR_HIDDEN);
         document.getElementById(CONTENT_LINK).value = content;
       } else {
         elm.setAttribute(ATTR_HIDDEN, ATTR_HIDDEN);
       }
+      if (selectionText) {
+        document.getElementById(CONTENT_PAGE).value = selectionText;
+      }
+      const nodes = document.querySelectorAll(LINK_MENU);
       for (const node of nodes) {
         if (isLink) {
           node.removeAttribute(ATTR_DISABLED);

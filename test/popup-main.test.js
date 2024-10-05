@@ -541,17 +541,27 @@ describe('popup-main', () => {
     const func = mjs.updateMenu;
     beforeEach(() => {
       const div = document.createElement('div');
-      const elm = document.createElement('button');
-      const elm2 = document.createElement('button');
-      const elm3 = document.createElement('input');
+      const div2 = document.createElement('div');
+      const button = document.createElement('button');
+      const button2 = document.createElement('button');
+      const button3 = document.createElement('button');
+      const button4 = document.createElement('button');
+      const input = document.createElement('input');
+      const input2 = document.createElement('input');
       const body = document.querySelector('body');
+      input.id = CONTENT_LINK;
       div.id = 'copyLinkDetails';
-      div.appendChild(elm);
-      div.appendChild(elm2);
       div.setAttribute('hidden', 'hidden');
-      elm3.id = CONTENT_LINK;
+      div.appendChild(input);
+      div.appendChild(button);
+      div.appendChild(button2);
       body.appendChild(div);
-      body.appendChild(elm3);
+      input2.id = CONTENT_PAGE;
+      div2.id = 'copyPageDetails';
+      div2.appendChild(input2);
+      div2.appendChild(button3);
+      div2.appendChild(button4);
+      body.appendChild(div2);
     });
 
     it('should not set attr', async () => {
@@ -578,7 +588,7 @@ describe('popup-main', () => {
 
     it('should set attr but not value', async () => {
       const elm = document.getElementById('copyLinkDetails');
-      const items = document.querySelectorAll('button');
+      const items = document.querySelectorAll('#copyLinkDetails button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
         contextInfo: {
@@ -599,7 +609,7 @@ describe('popup-main', () => {
 
     it('should set attr but not value', async () => {
       const elm = document.getElementById('copyLinkDetails');
-      const items = document.querySelectorAll('button');
+      const items = document.querySelectorAll('#copyLinkDetails button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
         contextInfo: {
@@ -620,7 +630,7 @@ describe('popup-main', () => {
 
     it('should set attr and value', async () => {
       const elm = document.getElementById('copyLinkDetails');
-      const items = document.querySelectorAll('button');
+      const items = document.querySelectorAll('#copyLinkDetails button');
       const contentLink = document.getElementById(CONTENT_LINK);
       const data = {
         contextInfo: {
@@ -640,6 +650,22 @@ describe('popup-main', () => {
         assert.isFalse(item.hasAttribute('disabled'), 'attr');
       }
       assert.strictEqual(contentLink.value, 'foo', 'value link');
+    });
+
+    it('should set value', async () => {
+      const contentPage = document.getElementById(CONTENT_PAGE);
+      const data = {
+        contextInfo: {
+          canonicalUrl: null,
+          content: '',
+          isLink: false,
+          selectionText: 'baz qux',
+          title: 'bar',
+          url: 'https://example.com'
+        }
+      };
+      await func(data);
+      assert.strictEqual(contentPage.value, 'baz qux', 'value pqge');
     });
   });
 
