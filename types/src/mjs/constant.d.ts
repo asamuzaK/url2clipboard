@@ -48,6 +48,8 @@ export const PREFER_CANONICAL: "preferCanonicalUrl";
 export const PROMPT: "promptContent";
 export const REST: "reStructuredText";
 export const TEXTILE: "Textile";
+export const TEXT_FRAG_HTML_HYPER: "createTextFragmentsHTMLHyper";
+export const TEXT_FRAG_HTML_PLAIN: "createTextFragmentsHTMLPlain";
 export const TEXT_SEP_LINES: "separateTextURL";
 export const TEXT_TEXT_ONLY: "TextOnly";
 export const TEXT_TEXT_URL: "TextURL";

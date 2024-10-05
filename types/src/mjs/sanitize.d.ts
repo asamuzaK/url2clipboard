@@ -1,1 +1,1 @@
-export function sanitize(url: string, opt: object): string | null;
+export { sanitizeURL } from "../lib/url/url-sanitizer-wo-dompurify.min.js";
