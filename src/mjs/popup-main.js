@@ -117,20 +117,21 @@ export const createCopyData = async evt => {
       const { id: menuItemId } = target;
       const { tab } = tabInfo;
       if (tab) {
-        const info = {
-          isEdited: true,
-          menuItemId
-        };
         const { isLink, selectionText, url } = contextInfo;
+        const info = {
+          menuItemId,
+          isEdited: true,
+          selectionText: selectionText || ''
+        };
         if (isLink) {
           info.linkUrl = url;
         }
         if (menuItemId.startsWith(COPY_LINK)) {
-          info.selectionText = document.getElementById(CONTENT_LINK).value;
+          info.editedText = document.getElementById(CONTENT_LINK).value;
         } else if (menuItemId.startsWith(COPY_PAGE)) {
-          info.selectionText = document.getElementById(CONTENT_PAGE).value;
+          info.editedText = document.getElementById(CONTENT_PAGE).value;
         } else {
-          info.selectionText = selectionText || '';
+          info.editedText = selectionText || '';
         }
         func = sendMessage(null, {
           [EXEC_COPY]: {
