@@ -258,6 +258,7 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: '',
             isEdited: true,
             menuItemId: 'foo',
             selectionText: ''
@@ -282,6 +283,7 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: 'foo bar',
             isEdited: true,
             menuItemId: 'foo',
             selectionText: 'foo bar'
@@ -305,6 +307,7 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: '',
             isEdited: true,
             menuItemId: `${COPY_PAGE}foo`,
             selectionText: ''
@@ -324,11 +327,13 @@ describe('popup-main', () => {
     });
 
     it('should call function', async () => {
-      document.getElementById(CONTENT_PAGE).value = 'foo bar';
+      document.getElementById(CONTENT_PAGE).value = 'baz qux';
+      mjs.contextInfo.selectionText = 'foo bar';
       mjs.tabInfo.tab = {};
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: 'baz qux',
             isEdited: true,
             menuItemId: `${COPY_PAGE}foo`,
             selectionText: 'foo bar'
@@ -354,6 +359,7 @@ describe('popup-main', () => {
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: '',
             isEdited: true,
             menuItemId: `${COPY_LINK}foo`,
             linkUrl: 'https://example.com/',
@@ -374,13 +380,15 @@ describe('popup-main', () => {
     });
 
     it('should call function', async () => {
-      document.getElementById(CONTENT_LINK).value = 'foo bar';
+      document.getElementById(CONTENT_LINK).value = 'baz qux';
       mjs.contextInfo.isLink = true;
+      mjs.contextInfo.selectionText = 'foo bar';
       mjs.contextInfo.url = 'https://example.com/';
       mjs.tabInfo.tab = {};
       browser.runtime.sendMessage.withArgs({
         [EXEC_COPY]: {
           info: {
+            editedText: 'baz qux',
             isEdited: true,
             menuItemId: `${COPY_LINK}foo`,
             linkUrl: 'https://example.com/',

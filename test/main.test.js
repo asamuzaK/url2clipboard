@@ -1406,6 +1406,37 @@ describe('main', () => {
 
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_LINK}TextURL`;
+      const info = {
+        menuItemId,
+        editedText: 'bar',
+        isEdited: true,
+        linkUrl: 'https://example.com/foo',
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: true,
+          canonicalUrl: 'https://www.example.com',
+          content: 'bar',
+          selectionText: 'foo bar baz',
+          title: 'baz',
+          url: 'https://example.com/foo'
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}${BBCODE_URL}`;
       const info = {
         menuItemId,
@@ -1610,6 +1641,70 @@ describe('main', () => {
 
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLPlain`;
+      const info = {
+        menuItemId,
+        editedText: 'qux quux',
+        isEdited: true,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: 'bar baz',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLPlain`;
+      const info = {
+        menuItemId,
+        editedText: 'qux quux',
+        isEdited: true,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: 'bar baz',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, false);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId,
@@ -1670,6 +1765,36 @@ describe('main', () => {
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'bar',
+          selectionText: '',
+          title: 'baz',
+          url: 'https://example.com/foo'
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = 'TextURL';
+      const info = {
+        menuItemId,
+        editedText: 'qux',
+        isEdited: true
       };
       const tab = {
         id: 1,
@@ -1809,6 +1934,7 @@ describe('main', () => {
       const menuItemId = 'TextURL';
       const info = {
         menuItemId,
+        editedText: 'bar',
         isEdited: true
       };
       const tab = {

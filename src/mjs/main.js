@@ -284,7 +284,9 @@ export const sendContextInfo = async () => {
 export const extractClickedData = async (info, tab) => {
   const func = [];
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
-    const { isEdited, linkText, linkUrl, menuItemId, selectionText } = info;
+    const {
+      editedText, isEdited, linkText, linkUrl, menuItemId, selectionText
+    } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (menuItemId === OPTIONS_OPEN) {
       func.push(runtime.openOptionsPage());
@@ -380,13 +382,19 @@ export const extractClickedData = async (info, tab) => {
             url = await sanitizeURL(textFragUrl, {
               allow: ['data', 'file']
             });
-            content = selectionText;
+            if (isEdited) {
+              content = editedText;
+            } else {
+              content = selectionText;
+            }
           } else {
             url = await sanitizeURL(canonicalUrl || tabUrl, {
               allow: ['data', 'file']
             });
             if (formatId === BBCODE_URL) {
               content = url;
+            } else if (isEdited) {
+              content = editedText;
             } else {
               content = selectionText || tabTitle;
             }
@@ -394,16 +402,29 @@ export const extractClickedData = async (info, tab) => {
           title = tabTitle;
         } else {
           if (menuItemId.startsWith(COPY_LINK)) {
-            content = selectionText || linkText || contextContent;
+            if (isEdited) {
+              content = editedText;
+            } else {
+              content = selectionText || linkText || contextContent;
+            }
             title = contextTitle;
             url = linkUrl;
           } else if (enabledFormats.has(formatId)) {
             if (contextIsLink) {
-              content = selectionText || contextSelectionText || contextContent;
+              if (isEdited) {
+                content = editedText;
+              } else {
+                content =
+                  selectionText || contextSelectionText || contextContent;
+              }
               title = contextTitle;
               url = linkUrl || contextUrl;
             } else {
-              content = selectionText || contextSelectionText || tabTitle;
+              if (isEdited) {
+                content = editedText;
+              } else {
+                content = selectionText || contextSelectionText || tabTitle;
+              }
               title = tabTitle;
               url = canonicalUrl || tabUrl;
             }
