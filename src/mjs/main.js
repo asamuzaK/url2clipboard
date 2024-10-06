@@ -262,7 +262,7 @@ export const getContextInfo = async tabId => {
 
 /**
  * send context info
- * @returns {?Promise} - sendMessage();
+ * @returns {Promise} - sendMessage();
  */
 export const sendContextInfo = async () => {
   const contextInfo = await getContextInfo();
@@ -281,17 +281,17 @@ export const sendContextInfo = async () => {
  * extract clicked data
  * @param {object} [info] - clicked info
  * @param {object} [tab] - tabs.Tab
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {Promise} - runtime.openOptionsPage(), execCopy()
  */
 export const extractClickedData = async (info, tab) => {
-  const func = [];
+  let func;
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
     const {
       editedText, isEdited, linkText, linkUrl, menuItemId, selectionText
     } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (menuItemId === OPTIONS_OPEN) {
-      func.push(runtime.openOptionsPage());
+      func = runtime.openOptionsPage();
     } else if (isString(menuItemId) &&
                Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
       if (!userOpts.size) {
@@ -462,22 +462,22 @@ export const extractClickedData = async (info, tab) => {
         }
       }
       if (isString(text)) {
-        func.push(execCopy({
+        func = execCopy({
           formatTitle,
           mimeType,
           text,
           notify: userOpts.get(NOTIFY_COPY)
-        }));
+        });
       }
     }
   }
-  return Promise.all(func);
+  return func || null;
 };
 
 /**
  * handle active tab
  * @param {object} [info] - active tab info
- * @returns {?Promise} - updateContextMenu()
+ * @returns {Promise} - updateContextMenu()
  */
 export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
@@ -493,7 +493,7 @@ export const handleActiveTab = async (info = {}) => {
  * @param {number} tabId - tab ID
  * @param {object} [info] - info
  * @param {object} [tab] - tabs.Tab
- * @returns {?Promise} - handleActiveTab()
+ * @returns {Promise} - handleActiveTab()
  */
 export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
   if (!Number.isInteger(tabId)) {
@@ -512,7 +512,7 @@ export const handleUpdatedTab = async (tabId, info = {}, tab = {}) => {
  * handle command
  * @param {!string} cmd - command
  * @param {object} tab - tabs.Tab
- * @returns {?Promise} - extractClickedData()
+ * @returns {Promise} - extractClickedData()
  */
 export const handleCmd = async (cmd, tab) => {
   if (!isString(cmd)) {
@@ -576,18 +576,18 @@ export const handleMsg = async msg => {
  * @param {string} item - item
  * @param {object} [obj] - value object
  * @param {boolean} [changed] - changed
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {Promise} - promise or promise chain
  */
 export const setStorageValue = async (item, obj, changed = false) => {
   if (!isString(item)) {
     throw new TypeError(`Expected String but got ${getType(item)}.`);
   }
-  const func = [];
+  let func;
   if (isObjectNotEmpty(obj)) {
     const { checked, value } = obj;
     switch (item) {
       case ICON_AUTO:
-        func.push(removeStorage(item));
+        func = removeStorage(item);
         break;
       case ICON_BLACK:
       case ICON_COLOR:
@@ -595,9 +595,9 @@ export const setStorageValue = async (item, obj, changed = false) => {
       case ICON_LIGHT:
       case ICON_WHITE: {
         if (runtime.id === WEBEXT_ID || value.startsWith('#')) {
-          func.push(removeStorage(item));
+          func = removeStorage(item);
         } else if (checked) {
-          func.push(setIcon(value));
+          func = setIcon(value);
         }
         break;
       }
@@ -610,33 +610,33 @@ export const setStorageValue = async (item, obj, changed = false) => {
       case TEXT_FRAG_HTML_HYPER:
       case TEXT_FRAG_HTML_PLAIN:
       case TEXT_SEP_LINES: {
-        func.push(setUserOpts({
+        func = setUserOpts({
           [item]: {
             checked
           }
-        }));
+        });
         break;
       }
       default: {
         if (hasFormat(item)) {
           if (changed) {
-            func.push(setUserEnabledFormats({
+            func = setUserEnabledFormats({
               [item]: {
                 checked
               }
-            }).then(removeContextMenu).then(createContextMenu));
+            }).then(removeContextMenu).then(createContextMenu);
           } else {
-            func.push(setUserEnabledFormats({
+            func = setUserEnabledFormats({
               [item]: {
                 checked
               }
-            }));
+            });
           }
         }
       }
     }
   }
-  return Promise.all(func);
+  return func || null;
 };
 
 /**

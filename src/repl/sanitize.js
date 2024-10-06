@@ -16,7 +16,7 @@ const { offscreen, runtime } = chrome;
  * sanitize URL
  * @param {string} url - URL
  * @param {object} opt - options
- * @returns {?string} - sanitized URL
+ * @returns {Promise.<?string>} - sanitized URL
  */
 export const sanitizeURL = async (url, opt) => {
   let res;

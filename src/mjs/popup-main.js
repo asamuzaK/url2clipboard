@@ -107,7 +107,7 @@ export const setTabInfo = async tab => {
 /**
  * create copy data
  * @param {object} [evt] - Event
- * @returns {?Promise} - sendMessage();
+ * @returns {Promise} - sendMessage();
  */
 export const createCopyData = async evt => {
   let func;
@@ -243,10 +243,10 @@ export const updateMenu = async data => {
 
 /**
  * prepare tab
- * @returns {Promise.<Array>} - results of each handler
+ * @returns {Promise} - sendMessage()
  */
 export const prepareTab = async () => {
-  const func = [];
+  let func;
   const tab = await getActiveTab();
   const { id } = tab;
   await updateMenu({
@@ -261,11 +261,11 @@ export const prepareTab = async () => {
   });
   await setTabInfo(tab);
   if (Number.isInteger(id) && id !== TAB_ID_NONE) {
-    func.push(sendMessage(null, {
+    func = sendMessage(null, {
       [CONTEXT_INFO_GET]: true
-    }));
+    });
   }
-  return Promise.all(func);
+  return func || null;
 };
 
 /**

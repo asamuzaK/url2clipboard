@@ -11,7 +11,7 @@ const { offscreen, runtime } = chrome;
 /**
  * execute copy
  * @param {object} opt - options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const execCopy = async opt => {
   await offscreen.createDocument({

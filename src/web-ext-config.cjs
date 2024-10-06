@@ -4,7 +4,6 @@ module.exports = {
     './img/*.png',
     './js/package.json',
     './lib/mozilla',
-    './mjs/package.json',
     './mjs/offscreen.js',
     './mjs/offscreen-main.js',
     './repl',

@@ -696,7 +696,7 @@ describe('popup-main', () => {
       body.appendChild(elm2);
     });
 
-    it('should get empty array', async () => {
+    it('should get null', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
       browser.tabs.query.resolves([{
@@ -705,7 +705,7 @@ describe('popup-main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.deepEqual(res, [], 'result');
+      assert.isNull(res, 'result');
     });
 
     it('should call function', async () => {
@@ -717,7 +717,7 @@ describe('popup-main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.deepEqual(res, [{}], 'result');
+      assert.deepEqual(res, {}, 'result');
     });
   });
 

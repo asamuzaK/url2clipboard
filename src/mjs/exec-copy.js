@@ -10,7 +10,7 @@ import { MIME_HTML, MIME_PLAIN } from './constant.js';
 /**
  * execute copy
  * @param {object} opt - options
- * @returns {void}
+ * @returns {Promise.<void>} - void
  */
 export const execCopy = async (opt = {}) => {
   const { formatTitle, mimeType, notify, text } = opt;

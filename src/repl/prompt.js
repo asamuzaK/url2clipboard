@@ -14,7 +14,7 @@ const { TAB_ID_NONE } = tabs;
 /**
  * prompt content
  * @param {object} opt - options
- * @returns {?string} - edited content
+ * @returns {Promise.<?string>} - edited content
  */
 export const promptContent = async (opt = {}) => {
   const { content, formatTitle, tabId } = opt;
