@@ -14,14 +14,14 @@ export namespace tabInfo {
     let tab: any;
 }
 export function setTabInfo(tab?: object): Promise<void>;
-export function createCopyData(evt?: object): Promise<any> | null;
+export function createCopyData(evt?: object): Promise<any>;
 export function closeWindow(): void;
 export function openOptionsOnClick(): Promise<any>;
 export function menuOnClick(evt?: object): Promise<any>;
 export function addListenerToMenu(): Promise<void>;
 export function toggleMenuItem(): Promise<void>;
 export function updateMenu(data?: object): Promise<void>;
-export function prepareTab(): Promise<any[]>;
+export function prepareTab(): Promise<any>;
 export function handleMsg(msg: object): Promise<any[]>;
 export function setStorageValue(item: string, obj: object): void;
 export function handleStorage(data?: object): Promise<any[]>;

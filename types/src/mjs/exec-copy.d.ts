@@ -1,1 +1,1 @@
-export function execCopy(opt?: object): void;
+export function execCopy(opt?: object): Promise<void>;
