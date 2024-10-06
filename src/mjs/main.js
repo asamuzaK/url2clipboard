@@ -7,7 +7,7 @@ import {
   executeScriptToTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
   getHighlightedTab, getStorage, isTab, queryTabs, removeStorage, sendMessage
 } from './browser.js';
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
+import { getType, isObjectNotEmpty, isString } from './common.js';
 import { execCopy } from './exec-copy.js';
 import {
   createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
@@ -243,7 +243,9 @@ export const getContextInfo = async tabId => {
     target: {
       tabId
     }
-  }).catch(logErr);
+  }).catch(e => {
+    // fall through
+  });
   let info;
   if (Array.isArray(arr)) {
     const [res] = arr;

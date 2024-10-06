@@ -571,7 +571,7 @@ describe('main', () => {
       assert.isNull(res, 'result');
     });
 
-    it('should log error', async () => {
+    it('should not log error', async () => {
       const stubErr = sinon.stub(console, 'error');
       browser.scripting.executeScript.rejects(new Error('error'));
       browser.tabs.query.resolves([{
@@ -580,7 +580,7 @@ describe('main', () => {
       const res = await func();
       const { called: errCalled } = stubErr;
       stubErr.restore();
-      assert.isTrue(errCalled, 'error called');
+      assert.isFalse(errCalled, 'error called');
       assert.isNull(res, 'result');
     });
 
