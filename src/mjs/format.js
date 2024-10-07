@@ -329,7 +329,7 @@ export const createLinkText = (data = {}) => {
       content = convertHtmlChar(content) || '';
       linkTitle = convertHtmlChar(linkTitle) || '';
       linkUrl = encodeUrlSpecialChar(linkUrl);
-      if (linkUrl.includes('#:~:')) {
+      if (/#[^\f\n\r\t\x20]*:~:/.test(linkUrl)) {
         attr += ' rel="noopener"';
       }
       break;

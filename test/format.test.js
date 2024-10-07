@@ -564,6 +564,36 @@ describe('format', () => {
 
     it('should get string', async () => {
       const data = {
+        content: 'baz qux',
+        formatId: HTML_HYPER,
+        template: formatData[HTML_HYPER].templateAlt,
+        url: 'https://example.com/foo#bar:~:text=baz%20qux'
+      };
+      const res = await func(data);
+      assert.strictEqual(
+        res,
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener">baz qux</a>',
+        'result'
+      );
+    });
+
+    it('should get string', async () => {
+      const data = {
+        content: 'baz qux',
+        formatId: HTML_HYPER,
+        template: formatData[HTML_HYPER].templateAlt,
+        url: 'https://example.com/foo#bar baz:~:text=baz%20qux'
+      };
+      const res = await func(data);
+      assert.strictEqual(
+        res,
+        '<a href="https://example.com/foo#bar%20baz:~:text=baz%20qux" rel="noopener">baz qux</a>',
+        'result'
+      );
+    });
+
+    it('should get string', async () => {
+      const data = {
         content: 'foo "bar" baz',
         formatId: HTML_PLAIN,
         template: formatData[HTML_PLAIN].template,
