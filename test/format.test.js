@@ -444,16 +444,16 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo bar');
       const data = {
         content: 'foo [bar] baz',
         formatId: ASCIIDOC,
         template: formatData[ASCIIDOC].template,
-        url: 'https://example.com/foo bar'
+        url
       };
       const res = await func(data);
       assert.strictEqual(res,
-        'link:https://example.com/foo%20bar[foo [bar\\] baz]',
-        'result');
+        'link:https://example.com/foo%20bar[foo [bar\\] baz]', 'result');
     });
 
     it('should get string', async () => {
@@ -463,16 +463,16 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(res, 'link:https://example.com/foo[]',
-        'result');
+      assert.strictEqual(res, 'link:https://example.com/foo[]', 'result');
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo bar');
       const data = {
         content: 'foo [bar] baz',
         formatId: BBCODE_TEXT,
         template: formatData[BBCODE_TEXT].template,
-        url: 'https://example.com/foo bar'
+        url
       };
       const res = await func(data);
       assert.strictEqual(res,
@@ -481,11 +481,12 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo bar');
       const data = {
         content: '',
         formatId: BBCODE_TEXT,
         template: formatData[BBCODE_TEXT].template,
-        url: 'https://example.com/foo bar'
+        url
       };
       const res = await func(data);
       assert.strictEqual(res, '[url=https://example.com/foo%20bar][/url]',
@@ -493,11 +494,12 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo bar');
       const data = {
-        content: 'https://example.com/foo bar',
+        content: url,
         formatId: BBCODE_URL,
         template: formatData[BBCODE_URL].template,
-        url: 'https://example.com/foo bar'
+        url
       };
       const res = await func(data);
       assert.strictEqual(res, '[url]https://example.com/foo%20bar[/url]',
@@ -505,12 +507,13 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo?key=1&key2=2');
       const data = {
         content: 'foo "bar" baz',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].template,
         title: 'foo&bar',
-        url: 'https://example.com/foo?key=1&key2=2'
+        url
       };
       const res = await func(data);
       assert.strictEqual(
@@ -521,11 +524,12 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo?key=1&key2=2');
       const data = {
         content: 'foo "bar" baz',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
-        url: 'https://example.com/foo?key=1&amp;key2=2'
+        url
       };
       const res = await func(data);
       assert.strictEqual(
@@ -578,11 +582,13 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } =
+        new URL('https://example.com/foo#bar baz:~:text=baz%20qux');
       const data = {
         content: 'baz qux',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
-        url: 'https://example.com/foo#bar baz:~:text=baz%20qux'
+        url
       };
       const res = await func(data);
       assert.strictEqual(
@@ -593,12 +599,13 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo?key=1&key2=2');
       const data = {
         content: 'foo "bar" baz',
         formatId: HTML_PLAIN,
         template: formatData[HTML_PLAIN].template,
         title: 'foo&bar',
-        url: 'https://example.com/foo?key=1&key2=2'
+        url
       };
       const res = await func(data);
       assert.strictEqual(
@@ -609,11 +616,12 @@ describe('format', () => {
     });
 
     it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo?key=1&amp;key2=2');
       const data = {
         content: 'foo "bar" baz',
         formatId: HTML_PLAIN,
         template: formatData[HTML_PLAIN].templateAlt,
-        url: 'https://example.com/foo?key=1&amp;key2=2'
+        url
       };
       const res = await func(data);
       assert.strictEqual(
