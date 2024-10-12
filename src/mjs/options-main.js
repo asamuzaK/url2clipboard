@@ -94,7 +94,7 @@ export const storePref = async evt => {
 /**
  * handle save
  * @param {!object} evt - Event
- * @returns {?Promise} - promise chain
+ * @returns {?Promise} - storePref() promise chain
  */
 export const handleSave = evt => {
   const { target: evtTarget } = evt;
@@ -127,7 +127,7 @@ export const addButtonClickListener = async () => {
 /**
  * handle input change
  * @param {!object} evt - Event
- * @returns {Promise} - storePref()
+ * @returns {Promise} - storePref() promise chain
  */
 export const handleInputChange = evt => storePref(evt).catch(throwErr);
 
