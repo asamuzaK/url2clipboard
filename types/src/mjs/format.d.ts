@@ -267,7 +267,7 @@ export function createTabsLinkText(arr: any[], opt?: {
     mimeType?: string;
     newLine?: boolean;
 }): string;
-export function createLinkText(data?: object): string;
+export function createLinkText(data?: object): Promise<string>;
 import { HTML_PLAIN } from './constant.js';
 import { HTML_HYPER } from './constant.js';
 import { MARKDOWN } from './constant.js';
