@@ -625,6 +625,10 @@ export const setStorageValue = async (item, obj, changed = false) => {
         }
         break;
       }
+      case ATTR_HTML_HYPER:
+      case ATTR_HTML_PLAIN:
+      case INCLUDE_ATTR_HTML_HYPER:
+      case INCLUDE_ATTR_HTML_PLAIN:
       case INCLUDE_TITLE_HTML_HYPER:
       case INCLUDE_TITLE_HTML_PLAIN:
       case INCLUDE_TITLE_MARKDOWN:
@@ -636,7 +640,8 @@ export const setStorageValue = async (item, obj, changed = false) => {
       case TEXT_SEP_LINES: {
         func = setUserOpts({
           [item]: {
-            checked
+            checked,
+            value
           }
         });
         break;

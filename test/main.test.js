@@ -3034,6 +3034,70 @@ describe('main', () => {
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
+    it('should set variable', async () => {
+      const res = await func(ATTR_HTML_HYPER, {
+        value: 'foo'
+      });
+      assert.strictEqual(mjs.userOpts.get(ATTR_HTML_HYPER), 'foo', 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(ATTR_HTML_HYPER, {
+        value: ''
+      });
+      assert.strictEqual(mjs.userOpts.get(ATTR_HTML_HYPER), '', 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(ATTR_HTML_PLAIN, {
+        value: 'foo'
+      });
+      assert.strictEqual(mjs.userOpts.get(ATTR_HTML_PLAIN), 'foo', 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(ATTR_HTML_PLAIN, {
+        value: ''
+      });
+      assert.strictEqual(mjs.userOpts.get(ATTR_HTML_PLAIN), '', 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(INCLUDE_ATTR_HTML_HYPER, {
+        checked: true
+      });
+      assert.isTrue(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(INCLUDE_ATTR_HTML_HYPER, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
+        checked: true
+      });
+      assert.isTrue(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
+    it('should set variable', async () => {
+      const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
+        checked: false
+      });
+      assert.isFalse(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
+      assert.deepEqual(res, mjs.userOpts, 'result');
+    });
+
     it('should call function', async () => {
       browser.runtime.id = WEBEXT_ID;
       const i = browser.storage.local.remove.callCount;
