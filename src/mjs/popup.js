@@ -15,4 +15,6 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 
 /* startup */
-document.addEventListener('DOMContentLoaded', () => startup().catch(throwErr));
+Promise.all([
+  startup()
+]).catch(throwErr);
