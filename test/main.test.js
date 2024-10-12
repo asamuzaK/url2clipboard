@@ -11,14 +11,14 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, BBCODE_URL, CMD_COPY, CONTEXT_INFO,
+  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
-  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  JS_CONTEXT_INFO, MARKDOWN, NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL,
-  PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES,
-  USER_INPUT_DEFAULT, WEBEXT_ID
+  INCLUDE_ATTR_HTML_HYPER, INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER,
+  INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN,
+  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER,
+  TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
 import { editContent } from '../src/mjs/edit-content.js';
 import {
@@ -189,6 +189,35 @@ describe('main', () => {
       assert.isTrue(res.get(INCLUDE_TITLE_HTML_HYPER), 'value');
       assert.isTrue(res.has(PROMPT), 'key');
       assert.isFalse(res.get(PROMPT), 'value');
+    });
+
+    it('should call function', async () => {
+      browser.storage.local.get.resolves({
+        [INCLUDE_ATTR_HTML_HYPER]: {
+          checked: true
+        },
+        [ATTR_HTML_HYPER]: {
+          value: 'class="foo bar" target="_blank"'
+        },
+        [INCLUDE_ATTR_HTML_PLAIN]: {
+          checked: false
+        },
+        [ATTR_HTML_PLAIN]: {
+          value: ''
+        }
+      });
+      const res = await func();
+      assert.deepEqual(res, mjs.userOpts, 'result');
+      assert.strictEqual(res.size, 4, 'size');
+      assert.isTrue(res.has(INCLUDE_ATTR_HTML_HYPER), 'key');
+      assert.isTrue(res.get(INCLUDE_ATTR_HTML_HYPER), 'value');
+      assert.isTrue(res.has(ATTR_HTML_HYPER), 'key');
+      assert.strictEqual(res.get(ATTR_HTML_HYPER),
+        'class="foo bar" target="_blank"', 'value');
+      assert.isTrue(res.has(INCLUDE_ATTR_HTML_PLAIN), 'key');
+      assert.isFalse(res.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
+      assert.isTrue(res.has(ATTR_HTML_PLAIN), 'key');
+      assert.strictEqual(res.get(ATTR_HTML_PLAIN), '', 'value');
     });
   });
 
@@ -1609,6 +1638,67 @@ describe('main', () => {
     });
 
     it('should call function', async () => {
+      const i = navigator.clipboard.write.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLHyper`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(ATTR_HTML_HYPER, 'class="foo"');
+      mjs.userOpts.set(INCLUDE_ATTR_HTML_HYPER, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
+        'called');
+      assert.isUndefined(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.write.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLHyper`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(INCLUDE_ATTR_HTML_HYPER, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
+        'called');
+      assert.isUndefined(res, 'result');
+    });
+
+    it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}HTMLPlain`;
       const info = {
@@ -1632,6 +1722,67 @@ describe('main', () => {
       }]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.isUndefined(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLPlain`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(ATTR_HTML_PLAIN, 'class="foo"');
+      mjs.userOpts.set(INCLUDE_ATTR_HTML_PLAIN, true);
+      const res = await func(info, tab);
+      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
+        'called');
+      assert.isUndefined(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = navigator.clipboard.writeText.callCount;
+      const menuItemId = `${COPY_PAGE}HTMLPlain`;
+      const info = {
+        menuItemId,
+        selectionText: 'bar baz'
+      };
+      const tab = {
+        id: 1,
+        title: 'foo',
+        url: 'https://example.com/'
+      };
+      browser.scripting.executeScript.withArgs(optInfo).resolves([{
+        result: {
+          isLink: false,
+          canonicalUrl: 'https://www.example.com',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        }
+      }]);
+      mjs.enabledFormats.add(menuItemId);
+      mjs.userOpts.set(INCLUDE_ATTR_HTML_PLAIN, true);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');

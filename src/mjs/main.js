@@ -22,14 +22,15 @@ import { notifyOnCopy } from './notify.js';
 import { promptContent } from './prompt.js';
 import { sanitizeURL } from './sanitize.js';
 import {
-  BBCODE_URL, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, BBCODE_URL, CMD_COPY, CONTEXT_INFO,
+  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
   ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
-  INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN,
-  JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN,
-  PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN,
-  TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+  INCLUDE_ATTR_HTML_HYPER, INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER,
+  INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN,
+  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT,
+  TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, TEXT_TEXT_URL,
+  WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -53,6 +54,10 @@ export const setUserOpts = async (opt = {}) => {
     opts = opt;
   } else {
     opts = await getStorage([
+      ATTR_HTML_HYPER,
+      ATTR_HTML_PLAIN,
+      INCLUDE_ATTR_HTML_HYPER,
+      INCLUDE_ATTR_HTML_PLAIN,
       INCLUDE_TITLE_HTML_HYPER,
       INCLUDE_TITLE_HTML_PLAIN,
       INCLUDE_TITLE_MARKDOWN,
@@ -66,8 +71,12 @@ export const setUserOpts = async (opt = {}) => {
   }
   const items = Object.entries(opts);
   for (const [key, value] of items) {
-    const { checked } = value;
-    userOpts.set(key, !!checked);
+    const { checked, value: itemValue } = value;
+    if (key === ATTR_HTML_HYPER || key === ATTR_HTML_PLAIN) {
+      userOpts.set(key, itemValue || '');
+    } else {
+      userOpts.set(key, !!checked);
+    }
   }
   return userOpts;
 };
@@ -306,11 +315,22 @@ export const extractClickedData = async (info, tab) => {
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
       const newLine =
         !!(formatId === TEXT_TEXT_URL && userOpts.get(TEXT_SEP_LINES));
+      let attr = '';
+      if (formatId === HTML_HYPER) {
+        if (userOpts.get(INCLUDE_ATTR_HTML_HYPER)) {
+          attr = userOpts.get(ATTR_HTML_HYPER) || '';
+        }
+      } else if (formatId === HTML_PLAIN) {
+        if (userOpts.get(INCLUDE_ATTR_HTML_PLAIN)) {
+          attr = userOpts.get(ATTR_HTML_PLAIN) || '';
+        }
+      }
       let text;
       if (menuItemId.startsWith(COPY_TABS_ALL)) {
         const allTabs = await getAllTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of allTabs) {
+          tabData.attr = attr;
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
@@ -322,6 +342,7 @@ export const extractClickedData = async (info, tab) => {
         const otherTabs = await getOtherTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of otherTabs) {
+          tabData.attr = attr;
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
@@ -333,6 +354,7 @@ export const extractClickedData = async (info, tab) => {
         const selectedTabs = await getSelectedTabsInfo(menuItemId);
         const arr = [];
         for (const tabData of selectedTabs) {
+          tabData.attr = attr;
           arr.push(createLinkText(tabData));
         }
         const tmplArr = await Promise.all(arr);
@@ -344,6 +366,7 @@ export const extractClickedData = async (info, tab) => {
         const template = getFormatTemplate(formatId);
         const content = formatId === BBCODE_URL ? tabUrl : tabTitle;
         text = await createLinkText({
+          attr,
           content,
           formatId,
           template,
@@ -448,6 +471,7 @@ export const extractClickedData = async (info, tab) => {
               tabId
             });
             text = await createLinkText({
+              attr,
               content: isString(editedContent) ? editedContent : content,
               formatId,
               template,
@@ -456,7 +480,7 @@ export const extractClickedData = async (info, tab) => {
             });
           } else {
             text = await createLinkText({
-              content, formatId, template, title, url
+              attr, content, formatId, template, title, url
             });
           }
         }
