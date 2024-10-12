@@ -5,7 +5,10 @@
     "default_title": "__MSG_extensionName__"
   },
   "background": {
-    "scripts": ["mjs/background.js"],
+    "scripts": [
+      "lib/purify/purify.min.js",
+      "mjs/background.js"
+    ],
     "type": "module"
   },
   "browser_specific_settings": {
