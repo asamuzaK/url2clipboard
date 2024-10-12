@@ -7,6 +7,7 @@ import {
   convertHtmlChar, convertLaTeXChar, convertNumCharRef, encodeUrlSpecialChar,
   escapeMatchingChars, getType, isString, stripMatchingChars
 } from './common.js';
+import { sanitizeAttributes } from './sanitize.js';
 import {
   ASCIIDOC, BBCODE_TEXT, BBCODE_URL, COPY_LINK, COPY_PAGE, COPY_TAB,
   COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER,
@@ -297,20 +298,22 @@ export const createTabsLinkText = (arr, opt = {}) => {
 /**
  * create link text
  * @param {object} [data] - copy data
- * @returns {string} - link text
+ * @returns {Promise.<string>} - link text
  */
-export const createLinkText = (data = {}) => {
-  let { content = '', formatId, template, title = '', url = '' } = data;
+export const createLinkText = async (data = {}) => {
+  let {
+    attr = '', content = '', formatId, template, title = '', url = ''
+  } = data;
   if (!isString(formatId)) {
     throw new TypeError(`Expected String but got ${getType(formatId)}.`);
   }
   if (!isString(template)) {
     throw new TypeError(`Expected String but got ${getType(template)}.`);
   }
+  attr = attr.trim();
   content = content.replace(/\s+/g, ' ').trim();
   title = title.trim();
   url = url.trim();
-  let attr = '';
   switch (formatId) {
     case ASCIIDOC:
       if (content) {
@@ -335,6 +338,10 @@ export const createLinkText = (data = {}) => {
       }
       if (/#.*:~:/.test(url)) {
         attr += ' rel="noopener"';
+      }
+      if (attr) {
+        const sanitizedAttr = await sanitizeAttributes(attr);
+        attr = sanitizedAttr ? ` ${sanitizedAttr}` : '';
       }
       break;
     case LATEX:

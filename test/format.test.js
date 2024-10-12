@@ -425,14 +425,20 @@ describe('format', () => {
   describe('create link text', () => {
     const { createLinkText: func, formatData } = mjs;
 
-    it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+    it('should throw', async () => {
+      await func().catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      });
     });
 
     it('should throw', async () => {
-      assert.throws(() => func({
+      await func({
         formatId: 'foo'
-      }), 'Expected String but got Undefined.');
+      }).catch(e => {
+        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e.message, 'Expected String but got Undefined.');
+      });
     });
 
     it('should get string', async () => {
@@ -509,6 +515,7 @@ describe('format', () => {
     it('should get string', async () => {
       const { href: url } = new URL('https://example.com/foo?key=1&key2=2');
       const data = {
+        attr: 'onclick="alert(1)"',
         content: 'foo "bar" baz',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].template,
@@ -526,6 +533,7 @@ describe('format', () => {
     it('should get string', async () => {
       const { href: url } = new URL('https://example.com/foo?key=1&key2=2');
       const data = {
+        attr: 'class="qux" target="_blank"',
         content: 'foo "bar" baz',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
@@ -534,7 +542,7 @@ describe('format', () => {
       const res = await func(data);
       assert.strictEqual(
         res,
-        '<a href="https://example.com/foo?key=1&amp;key2=2">foo &quot;bar&quot; baz</a>',
+        '<a href="https://example.com/foo?key=1&amp;key2=2" target="_blank" class="qux">foo &quot;bar&quot; baz</a>',
         'result'
       );
     });
@@ -553,6 +561,7 @@ describe('format', () => {
 
     it('should get string', async () => {
       const data = {
+        attr: 'class="qux"',
         content: 'bar baz',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
@@ -561,13 +570,14 @@ describe('format', () => {
       const res = await func(data);
       assert.strictEqual(
         res,
-        '<a href="https://example.com/foo#:~:text=bar%20baz" rel="noopener">bar baz</a>',
+        '<a href="https://example.com/foo#:~:text=bar%20baz" rel="noopener" class="qux">bar baz</a>',
         'result'
       );
     });
 
     it('should get string', async () => {
       const data = {
+        attr: 'class="quux"',
         content: 'baz qux',
         formatId: HTML_HYPER,
         template: formatData[HTML_HYPER].templateAlt,
@@ -576,7 +586,7 @@ describe('format', () => {
       const res = await func(data);
       assert.strictEqual(
         res,
-        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener">baz qux</a>',
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener" class="quux">baz qux</a>',
         'result'
       );
     });

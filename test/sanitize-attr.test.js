@@ -1,5 +1,5 @@
 /**
- * sanitize.test.js
+ * sanitize-attr.test.js
  */
 /* eslint-disable import-x/order */
 
@@ -10,9 +10,9 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import DOMPurify from '../src/lib/purify/purify.min.js';
-import * as mjs from '../src/mjs/sanitize.js';
+import * as mjs from '../src/mjs/sanitize-attr.js';
 
-describe('sanitize', () => {
+describe('sanitize attr', () => {
   const globalKeys = [
     'Blob',
     'ClipboardItem',
@@ -76,47 +76,6 @@ describe('sanitize', () => {
         'class="foo" onclick="alert(1)" target="_blank" title="foo bar"';
       const res = await func(attr);
       assert.strictEqual(res, 'target="_blank" class="foo"', 'result');
-    });
-  });
-
-  describe('sanitize URL', () => {
-    const func = mjs.sanitizeURL;
-
-    it('should get null', async () => {
-      const res = await func();
-      assert.isNull(res, 'result');
-    });
-
-    it('should get null', async () => {
-      const res = await func('foo');
-      assert.isNull(res, 'result');
-    });
-
-    it('should get result', async () => {
-      const res = await func('https://example.com/"onclick="alert(1)"');
-      assert.strictEqual(res, 'https://example.com/', 'result');
-    });
-
-    it('should get result', async () => {
-      const res = await func('https://example.com/"onclick="alert(1)"');
-      assert.strictEqual(res, 'https://example.com/', 'result');
-    });
-
-    it('should get result', async () => {
-      const res =
-        await func('data:,https://example.com/#<script>alert(1);</script>', {
-          allow: ['data']
-        });
-      assert.strictEqual(res, 'data:,https://example.com/', 'result');
-    });
-
-    it('should get result', async () => {
-      const res =
-        await func('data:text/html,%3Cdiv%20onclick%3D%22window.alert()%22%3Efoo%3C%2Fdiv%3E', {
-          allow: ['data']
-        });
-      assert.strictEqual(res, 'data:text/html,%3Cdiv%3Efoo%3C/div%3E',
-        'result');
     });
   });
 });

@@ -343,7 +343,7 @@ export const extractClickedData = async (info, tab) => {
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = getFormatTemplate(formatId);
         const content = formatId === BBCODE_URL ? tabUrl : tabTitle;
-        text = createLinkText({
+        text = await createLinkText({
           content,
           formatId,
           template,
@@ -447,7 +447,7 @@ export const extractClickedData = async (info, tab) => {
               formatTitle,
               tabId
             });
-            text = createLinkText({
+            text = await createLinkText({
               content: isString(editedContent) ? editedContent : content,
               formatId,
               template,
@@ -455,7 +455,7 @@ export const extractClickedData = async (info, tab) => {
               url
             });
           } else {
-            text = createLinkText({
+            text = await createLinkText({
               content, formatId, template, title, url
             });
           }

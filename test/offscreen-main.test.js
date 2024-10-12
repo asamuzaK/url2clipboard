@@ -10,8 +10,9 @@ import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
+import DOMPurify from '../src/lib/purify/purify.min.js';
 import {
-  EXEC_COPY, MIME_PLAIN, PROMPT, URL_SANITIZE
+  EXEC_COPY, MIME_PLAIN, PROMPT, SANITIZE_ATTR, SANITIZE_URL
 } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/offscreen-main.js';
 
@@ -22,6 +23,7 @@ describe('offscreen-main', () => {
     const stubWriteText = sinon.stub();
     const dom = createJsdom();
     window = dom && dom.window;
+    window.DOMPurify = DOMPurify;
     document = window && window.document;
     document.execCommand = sinon.stub();
     navigator = window && window.navigator;
@@ -165,7 +167,7 @@ describe('offscreen-main', () => {
       assert.deepEqual(res, [null], 'result');
     });
 
-    it('should get array containing null', async () => {
+    it('should get array', async () => {
       window.prompt.returns('foo bar');
       global.window.prompt.returns('foo bar');
       const res = await func({
@@ -176,7 +178,14 @@ describe('offscreen-main', () => {
 
     it('should get array', async () => {
       const res = await func({
-        [URL_SANITIZE]: [
+        [SANITIZE_ATTR]: 'class="foo" onclick="alert(1)" target="_blank"'
+      });
+      assert.deepEqual(res, ['target="_blank" class="foo"'], 'result');
+    });
+
+    it('should get array', async () => {
+      const res = await func({
+        [SANITIZE_URL]: [
           'data:,https://example.com/#<script>alert(1);</script>',
           {
             allow: ['data', 'file']
