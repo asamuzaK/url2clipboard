@@ -27,7 +27,7 @@
     "copyfiles": "^2.4.1",
     "eslint": "^9.12.0",
     "eslint-plugin-import-x": "^4.3.1",
-    "eslint-plugin-jsdoc": "^50.3.1",
+    "eslint-plugin-jsdoc": "^50.3.2",
     "eslint-plugin-no-unsanitized": "^4.1.2",
     "eslint-plugin-regexp": "^2.6.0",
     "eslint-plugin-unicorn": "^56.0.0",
@@ -38,7 +38,7 @@
     "neostandard": "^0.11.6",
     "npm-run-all": "^4.1.5",
     "sinon": "^19.0.2",
-    "stylelint": "^16.9.0",
+    "stylelint": "^16.10.0",
     "stylelint-config-standard": "^36.0.1",
     "typescript": "^5.6.3"
   },
