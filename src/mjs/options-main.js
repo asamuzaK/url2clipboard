@@ -94,7 +94,7 @@ export const storePref = async evt => {
 /**
  * handle save
  * @param {!object} evt - Event
- * @returns {Promise} - storePref()
+ * @returns {?Promise} - promise chain
  */
 export const handleSave = evt => {
   const { target: evtTarget } = evt;
