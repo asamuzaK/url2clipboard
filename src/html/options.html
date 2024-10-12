@@ -85,6 +85,17 @@
                 </label>
               </span>
               <span class="sub-item browser-style">
+                <input type="checkbox" id="includeAttrHTMLPlain"
+                       data-sub-item-of="HTMLPlain" />
+                <label for="includeAttrHTMLPlain" class="label"
+                       data-i18n="optionsIncludeAttr">
+                  Extra attributes
+                </label>
+                <input type="text" id="attributesHTMLPlain"
+                       data-sub-item-of="HTMLPlain"
+                       placeholder="class=&quot;foo bar&quot; target=&quot;_blank&quot;" />
+              </span>
+              <span class="sub-item browser-style">
                 <input type="checkbox" id="createTextFragmentsHTMLPlain"
                        data-sub-item-of="HTMLPlain" />
                 <label for="createTextFragmentsHTMLPlain" class="label"
@@ -100,6 +111,9 @@
               <div>
                 <p data-i18n="optionsEnableFormatDetail,HTML (text/plain)">
                   Show HTML (text/plain) menu item in the context menu.
+                </p>
+                <p data-i18n="optionExtraAttributesDetail">
+                  `onxxx` attributes will be ignored.
                 </p>
               </div>
             </details>
@@ -121,6 +135,17 @@
                 </label>
               </span>
               <span class="sub-item browser-style">
+                <input type="checkbox" id="includeAttrHTMLHyper"
+                       data-sub-item-of="HTMLHyper" />
+                <label for="includeAttrHTMLHyper" class="label"
+                       data-i18n="optionsIncludeAttr">
+                  Extra attributes
+                </label>
+                <input type="text" id="attributesHTMLHyper"
+                       data-sub-item-of="HTMLHyper"
+                       placeholder="class=&quot;foo bar&quot; target=&quot;_blank&quot;" />
+              </span>
+              <span class="sub-item browser-style">
                 <input type="checkbox" id="createTextFragmentsHTMLHyper"
                        data-sub-item-of="HTMLHyper" />
                 <label for="createTextFragmentsHTMLHyper" class="label"
@@ -136,6 +161,9 @@
               <div>
                 <p data-i18n="optionsEnableFormatDetail,HTML (text/html)">
                   Show HTML (text/html) menu item in the context menu.
+                </p>
+                <p data-i18n="optionExtraAttributesDetail">
+                  `onxxx` attributes will be ignored.
                 </p>
               </div>
             </details>

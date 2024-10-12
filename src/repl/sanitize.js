@@ -4,13 +4,34 @@
 
 /* shared */
 import {
-  sanitizeURL as sanitize
+  sanitizeURL as sanitizeUrl
 } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { isString } from '../mjs/common.js';
-import { URL_SANITIZE } from '../mjs/constant.js';
+import { SANITIZE_ATTR, SANITIZE_URL } from '../mjs/constant.js';
 
 /* api */
 const { offscreen, runtime } = chrome;
+
+/**
+ * sanitize attributes
+ * @param {string} attr - attributes
+ * @returns {Promise.<string>} - sanitized attributes
+ */
+export const sanitizeAttributes = async attr => {
+  let res;
+  if (attr && isString(attr)) {
+    await offscreen.createDocument({
+      justification: 'Sanitize attributes',
+      reasons: [offscreen.Reason.DOM_PARSER],
+      url: 'html/offscreen.html'
+    });
+    [res] = await runtime.sendMessage({
+      [SANITIZE_ATTR]: attr
+    });
+    await offscreen.closeDocument();
+  }
+  return res || '';
+};
 
 /**
  * sanitize URL
@@ -29,14 +50,14 @@ export const sanitizeURL = async (url, opt) => {
         url: 'html/offscreen.html'
       });
       [res] = await runtime.sendMessage({
-        [URL_SANITIZE]: [
+        [SANITIZE_URL]: [
           url,
           opt
         ]
       });
       await offscreen.closeDocument();
     } else {
-      res = await sanitize(url, opt);
+      res = await sanitizeUrl(url, opt);
     }
   }
   return res || null;

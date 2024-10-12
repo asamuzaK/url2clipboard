@@ -3,13 +3,14 @@
  */
 
 /* shared */
-import '../lib/purify/purify.min.js';
 import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { Clip } from './clipboard.js';
 import { throwErr } from './common.js';
 import { editContent } from './edit-content.js';
+import { sanitizeAttributes } from './sanitize-attr.js';
 import {
-  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, URL_SANITIZE
+  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, SANITIZE_ATTR,
+  SANITIZE_URL
 } from './constant.js';
 
 /* api */
@@ -62,7 +63,11 @@ export const handleMsg = msg => {
           func.push(editContent(...value));
           break;
         }
-        case URL_SANITIZE: {
+        case SANITIZE_ATTR: {
+          func.push(sanitizeAttributes(value));
+          break;
+        }
+        case SANITIZE_URL: {
           func.push(sanitizeURL(...value));
           break;
         }

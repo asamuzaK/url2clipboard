@@ -305,8 +305,11 @@
       }
     }
   },
-  "optionsHtmlOutputLabel": {
-    "message": "粘贴为:"
+  "optionsExtraAttributes": {
+    "message": "附加属性"
+  },
+  "optionsExtraAttributesDetail": {
+    "message": "`onxxx` 属性将被忽略。"
   },
   "optionsIconBlack": {
     "message": ""

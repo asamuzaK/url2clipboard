@@ -3,6 +3,8 @@
  */
 
 export const ASCIIDOC = 'AsciiDoc';
+export const ATTR_HTML_HYPER = 'attributesHTMLHyper';
+export const ATTR_HTML_PLAIN = 'attributesHTMLPlain';
 export const BBCODE_TEXT = 'BBCodeText';
 export const BBCODE_URL = 'BBCodeURL';
 export const CMD_COPY = 'commandCopy';
@@ -31,6 +33,8 @@ export const ICON_DARK = 'buttonIconDark';
 export const ICON_LIGHT = 'buttonIconLight';
 export const ICON_RADIO = 'buttonIconRadio';
 export const ICON_WHITE = 'buttonIconWhite';
+export const INCLUDE_ATTR_HTML_HYPER = 'includeAttrHTMLHyper';
+export const INCLUDE_ATTR_HTML_PLAIN = 'includeAttrHTMLPlain';
 export const INCLUDE_TITLE_HTML_HYPER = 'includeTitleHTMLHyper';
 export const INCLUDE_TITLE_HTML_PLAIN = 'includeTitleHTMLPlain';
 export const INCLUDE_TITLE_MARKDOWN = 'includeTitleMarkdown';
@@ -52,6 +56,8 @@ export const OPTIONS_ICON_TOOLBAR = 'toolbarIcon';
 export const PREFER_CANONICAL = 'preferCanonicalUrl';
 export const PROMPT = 'promptContent';
 export const REST = 'reStructuredText';
+export const SANITIZE_ATTR = 'sanitizeAttributes';
+export const SANITIZE_URL = 'sanitizeURL';
 export const TEXTILE = 'Textile';
 export const TEXT_FRAG_HTML_HYPER = 'createTextFragmentsHTMLHyper';
 export const TEXT_FRAG_HTML_PLAIN = 'createTextFragmentsHTMLPlain';
@@ -61,7 +67,6 @@ export const TEXT_TEXT_URL = 'TextURL';
 export const TEXT_URL_ONLY = 'URLOnly';
 export const THEME_DARK = 'firefox-compact-dark@mozilla.org';
 export const THEME_LIGHT = 'firefox-compact-light@mozilla.org';
-export const URL_SANITIZE = 'sanitizeURL';
 export const USER_INPUT = 'userInput';
 export const USER_INPUT_DEFAULT = 'Edit content text of the link';
 export const WEBEXT_ID = 'url2clipboard@asamuzak.jp';
