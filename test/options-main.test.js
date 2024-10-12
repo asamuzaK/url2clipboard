@@ -11,6 +11,7 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, ATTR_SAVE_HTML_HYPER, ATTR_SAVE_HTML_PLAIN,
   ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
   NOTIFY_COPY
 } from '../src/mjs/constant.js';
@@ -336,6 +337,129 @@ describe('options-main', () => {
   });
 
   describe('handle input change', () => {
+    const func = mjs.handleSave;
+
+    it('should not call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      const evt = {
+        target: {
+          id: 'foo',
+          type: 'button'
+        }
+      };
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      const evt = {
+        target: {
+          id: ATTR_SAVE_HTML_HYPER,
+          type: 'button'
+        }
+      };
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      elm.type = 'button';
+      elm.id = ATTR_SAVE_HTML_HYPER;
+      body.appendChild(elm);
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      const evt = {
+        target: {
+          id: ATTR_SAVE_HTML_HYPER,
+          type: 'button'
+        }
+      };
+      const input = document.createElement('input');
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      input.id = ATTR_HTML_HYPER;
+      input.value = 'foo';
+      elm.type = 'button';
+      elm.id = ATTR_SAVE_HTML_HYPER;
+      body.appendChild(input);
+      body.appendChild(elm);
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+
+    it('should not call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      const evt = {
+        target: {
+          id: ATTR_SAVE_HTML_PLAIN,
+          type: 'button'
+        }
+      };
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      elm.type = 'button';
+      elm.id = ATTR_SAVE_HTML_PLAIN;
+      body.appendChild(elm);
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
+      assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.storage.local.set.callCount;
+      const evt = {
+        target: {
+          id: ATTR_SAVE_HTML_PLAIN,
+          type: 'button'
+        }
+      };
+      const input = document.createElement('input');
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      input.id = ATTR_HTML_PLAIN;
+      input.value = 'foo';
+      elm.type = 'button';
+      elm.id = ATTR_SAVE_HTML_PLAIN;
+      body.appendChild(input);
+      body.appendChild(elm);
+      const res = await func(evt);
+      assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
+      assert.deepEqual(res, [undefined], 'result');
+    });
+  });
+
+  describe('add event listener to button elements', () => {
+    const func = mjs.addButtonClickListener;
+
+    it('should set listener', async () => {
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      const spy = sinon.spy(elm, 'addEventListener');
+      elm.type = 'button';
+      body.appendChild(elm);
+      await func();
+      assert.isTrue(spy.calledOnce, 'called');
+      elm.addEventListener.restore();
+    });
+
+    it('should not set listener', async () => {
+      const elm = document.createElement('button');
+      const body = document.querySelector('body');
+      const spy = sinon.spy(elm, 'addEventListener');
+      elm.type = 'submit';
+      body.appendChild(elm);
+      await func();
+      assert.isFalse(spy.called, 'called');
+      elm.addEventListener.restore();
+    });
+  });
+
+  describe('handle input change', () => {
     const func = mjs.handleInputChange;
 
     it('should call function', async () => {
@@ -360,9 +484,21 @@ describe('options-main', () => {
       const elm = document.createElement('input');
       const body = document.querySelector('body');
       const spy = sinon.spy(elm, 'addEventListener');
+      elm.type = 'checkbox';
       body.appendChild(elm);
       await func();
       assert.isTrue(spy.calledOnce, 'called');
+      elm.addEventListener.restore();
+    });
+
+    it('should not set listener', async () => {
+      const elm = document.createElement('input');
+      const body = document.querySelector('body');
+      const spy = sinon.spy(elm, 'addEventListener');
+      elm.type = 'text';
+      body.appendChild(elm);
+      await func();
+      assert.isFalse(spy.called, 'not called');
       elm.addEventListener.restore();
     });
   });
