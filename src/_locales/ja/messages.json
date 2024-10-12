@@ -305,8 +305,11 @@
       }
     }
   },
-  "optionsHtmlOutputLabel": {
-    "message": "貼り付け形式："
+  "optionsExtraAttributes": {
+    "message": "属性を追加する"
+  },
+  "optionsExtraAttributesDetail": {
+    "message": "`onxxx` 属性は無視されます。"
   },
   "optionsIconBlack": {
     "message": ""

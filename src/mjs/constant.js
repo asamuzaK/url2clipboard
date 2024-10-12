@@ -3,6 +3,8 @@
  */
 
 export const ASCIIDOC = 'AsciiDoc';
+export const ATTR_HTML_HYPER = 'attributesHTMLHyper';
+export const ATTR_HTML_PLAIN = 'attributesHTMLPlain';
 export const BBCODE_TEXT = 'BBCodeText';
 export const BBCODE_URL = 'BBCodeURL';
 export const CMD_COPY = 'commandCopy';
@@ -31,6 +33,8 @@ export const ICON_DARK = 'buttonIconDark';
 export const ICON_LIGHT = 'buttonIconLight';
 export const ICON_RADIO = 'buttonIconRadio';
 export const ICON_WHITE = 'buttonIconWhite';
+export const INCLUDE_ATTR_HTML_HYPER = 'includeAttrHTMLHyper';
+export const INCLUDE_ATTR_HTML_PLAIN = 'includeAttrHTMLPlain';
 export const INCLUDE_TITLE_HTML_HYPER = 'includeTitleHTMLHyper';
 export const INCLUDE_TITLE_HTML_PLAIN = 'includeTitleHTMLPlain';
 export const INCLUDE_TITLE_MARKDOWN = 'includeTitleMarkdown';

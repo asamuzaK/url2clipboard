@@ -305,8 +305,11 @@
       }
     }
   },
-  "optionsHtmlOutputLabel": {
-    "message": "Paste as:"
+  "optionsExtraAttributes": {
+    "message": "Extra attributes"
+  },
+  "optionsExtraAttributesDetail": {
+    "message": "`onxxx` attributes will be ignored."
   },
   "optionsIconBlack": {
     "message": ""
