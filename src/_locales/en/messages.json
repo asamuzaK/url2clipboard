@@ -290,6 +290,9 @@
       }
     }
   },
+  "optionsAttributesDetail": {
+    "message": "`onxxx` attributes will be ignored."
+  },
   "optionsContribute": {
     "message": "Contribute:"
   },
@@ -304,12 +307,6 @@
         "example": "Markdown"
       }
     }
-  },
-  "optionsExtraAttributes": {
-    "message": "Extra attributes"
-  },
-  "optionsExtraAttributesDetail": {
-    "message": "`onxxx` attributes will be ignored."
   },
   "optionsIconBlack": {
     "message": ""
@@ -374,6 +371,9 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "White Icon"
   },
+  "optionsIncludeAttr": {
+    "message": "Extra attributes"
+  },
   "optionsIncludeTitle": {
     "message": "Add title attribute"
   },
@@ -397,6 +397,9 @@
   },
   "optionsPromptContentDetail": {
     "message": "If enabled, prompt window will appear when copying and you can edit content text of the link. Note that in privileged URLs, the prompt window may not appear so that you may not be able to edit."
+  },
+  "optionsSave": {
+    "message": "Save"
   },
   "optionsSeparateTextURL": {
     "message": "Copy text and URL on separate lines"

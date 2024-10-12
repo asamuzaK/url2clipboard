@@ -290,6 +290,9 @@
       }
     }
   },
+  "optionsAttributesDetail": {
+    "message": "`onxxx` 属性将被忽略。"
+  },
   "optionsContribute": {
     "message": "捐助:"
   },
@@ -304,12 +307,6 @@
         "example": "Markdown"
       }
     }
-  },
-  "optionsExtraAttributes": {
-    "message": "附加属性"
-  },
-  "optionsExtraAttributesDetail": {
-    "message": "`onxxx` 属性将被忽略。"
   },
   "optionsIconBlack": {
     "message": ""
@@ -374,6 +371,9 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "白色图标"
   },
+  "optionsIncludeAttr": {
+    "message": "附加属性"
+  },
   "optionsIncludeTitle": {
     "message": "附加标题属性"
   },
@@ -397,6 +397,9 @@
   },
   "optionsPromptContentDetail": {
     "message": "从右键菜单复制链接时提示修改链接信息。请注意，在特权 URL 中，提示窗口可能不会出现，因此您可能无法进行编辑。"
+  },
+  "optionsSave": {
+    "message": "保存"
   },
   "optionsSeparateTextURL": {
     "message": "分行复制文本和链接"

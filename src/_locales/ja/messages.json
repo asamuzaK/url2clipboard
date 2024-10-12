@@ -290,6 +290,9 @@
       }
     }
   },
+  "optionsAttributesDetail": {
+    "message": "`onxxx` 属性は無視されます。"
+  },
   "optionsContribute": {
     "message": "寄付する:"
   },
@@ -304,12 +307,6 @@
         "example": "Markdown"
       }
     }
-  },
-  "optionsExtraAttributes": {
-    "message": "属性を追加する"
-  },
-  "optionsExtraAttributesDetail": {
-    "message": "`onxxx` 属性は無視されます。"
   },
   "optionsIconBlack": {
     "message": ""
@@ -374,6 +371,9 @@
   "optionsIconWhiteLabel_ariaLabel": {
     "message": "ホワイトアイコン"
   },
+  "optionsIncludeAttr": {
+    "message": "属性を追加する"
+  },
   "optionsIncludeTitle": {
     "message": "タイトル属性を付け加える"
   },
@@ -397,6 +397,9 @@
   },
   "optionsPromptContentDetail": {
     "message": "有効化すると、コピー時にプロンプ​​トウィンドウが表示されて、リンクのコンテンツテキストを編集できます。特権的なURLではプロンプトウィンドウが表示されないため、編集できない場合があります。"
+  },
+  "optionsSave": {
+    "message": "保存"
   },
   "optionsSeparateTextURL": {
     "message": "テキストとURLを別々の行にコピーする"

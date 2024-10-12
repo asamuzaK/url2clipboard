@@ -8,6 +8,7 @@ import {
 } from './browser.js';
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, ATTR_SAVE_HTML_HYPER, ATTR_SAVE_HTML_PLAIN,
   ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
   NOTIFY_COPY
 } from './constant.js';
@@ -91,6 +92,39 @@ export const storePref = async evt => {
 
 /* html */
 /**
+ * handle save
+ * @param {!object} evt - Event
+ * @returns {Promise} - storePref()
+ */
+export const handleSave = evt => {
+  const { target: evtTarget } = evt;
+  let func;
+  if (evtTarget.id === ATTR_SAVE_HTML_HYPER) {
+    const target = document.getElementById(ATTR_HTML_HYPER);
+    if (target) {
+      func = storePref({ target }).catch(throwErr);
+    }
+  } else if (evtTarget.id === ATTR_SAVE_HTML_PLAIN) {
+    const target = document.getElementById(ATTR_HTML_PLAIN);
+    if (target) {
+      func = storePref({ target }).catch(throwErr);
+    }
+  }
+  return func || null;
+};
+
+/**
+ * add event listener to button elements
+ * @returns {Promise.<void>} - void
+ */
+export const addButtonClickListener = async () => {
+  const nodes = document.querySelectorAll('button[type=button]');
+  for (const node of nodes) {
+    node.addEventListener('click', handleSave);
+  }
+};
+
+/**
  * handle input change
  * @param {!object} evt - Event
  * @returns {Promise} - storePref()
@@ -104,7 +138,10 @@ export const handleInputChange = evt => storePref(evt).catch(throwErr);
 export const addInputChangeListener = async () => {
   const nodes = document.querySelectorAll('input');
   for (const node of nodes) {
-    node.addEventListener('change', handleInputChange);
+    const { type } = node;
+    if (type !== 'text') {
+      node.addEventListener('change', handleInputChange);
+    }
   }
 };
 

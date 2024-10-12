@@ -5,6 +5,8 @@
 export const ASCIIDOC = 'AsciiDoc';
 export const ATTR_HTML_HYPER = 'attributesHTMLHyper';
 export const ATTR_HTML_PLAIN = 'attributesHTMLPlain';
+export const ATTR_SAVE_HTML_HYPER = 'saveAttributesHTMLHyper';
+export const ATTR_SAVE_HTML_PLAIN = 'saveAttributesHTMLPlain';
 export const BBCODE_TEXT = 'BBCodeText';
 export const BBCODE_URL = 'BBCodeURL';
 export const CMD_COPY = 'commandCopy';

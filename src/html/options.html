@@ -18,7 +18,7 @@
             Toolbar Button Icon
           </legend>
           <div>
-            <p class="browser-style" aria-details="iconDetail">
+            <p aria-details="iconDetail">
               <input type="radio" id="buttonIconColor" name="buttonIconRadio"
                      value="icon-color-16.png" />
               <label for="buttonIconColor" data-i18n="optionsIconColorLabel"
@@ -70,13 +70,13 @@
           </legend>
           <div>
             <p aria-details="enableHTMLPlainDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="HTMLPlain" checked="checked" />
                 <label for="HTMLPlain" class="checkboxLabel">
                   HTML (text/plain)
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="includeTitleHTMLPlain"
                        data-sub-item-of="HTMLPlain" />
                 <label for="includeTitleHTMLPlain" class="label"
@@ -84,7 +84,7 @@
                   Add title attribute
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="includeAttrHTMLPlain"
                        data-sub-item-of="HTMLPlain" />
                 <label for="includeAttrHTMLPlain" class="label"
@@ -94,8 +94,12 @@
                 <input type="text" id="attributesHTMLPlain"
                        data-sub-item-of="HTMLPlain"
                        placeholder="class=&quot;foo bar&quot; target=&quot;_blank&quot;" />
+                <button id="saveAttributesHTMLPlain" type="button"
+                        data-i18n="optionsSave">
+                  Save
+                </button>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="createTextFragmentsHTMLPlain"
                        data-sub-item-of="HTMLPlain" />
                 <label for="createTextFragmentsHTMLPlain" class="label"
@@ -112,7 +116,7 @@
                 <p data-i18n="optionsEnableFormatDetail,HTML (text/plain)">
                   Show HTML (text/plain) menu item in the context menu.
                 </p>
-                <p data-i18n="optionExtraAttributesDetail">
+                <p data-i18n="optionsAttributesDetail">
                   `onxxx` attributes will be ignored.
                 </p>
               </div>
@@ -120,13 +124,13 @@
           </div>
           <div>
             <p aria-details="enableHTMLHyperDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="HTMLHyper" checked="checked" />
                 <label for="HTMLHyper" class="checkboxLabel">
                   HTML (text/html)
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="includeTitleHTMLHyper"
                        data-sub-item-of="HTMLHyper" />
                 <label for="includeTitleHTMLHyper" class="label"
@@ -134,7 +138,7 @@
                   Add title attribute
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="includeAttrHTMLHyper"
                        data-sub-item-of="HTMLHyper" />
                 <label for="includeAttrHTMLHyper" class="label"
@@ -144,8 +148,12 @@
                 <input type="text" id="attributesHTMLHyper"
                        data-sub-item-of="HTMLHyper"
                        placeholder="class=&quot;foo bar&quot; target=&quot;_blank&quot;" />
+                <button id="saveAttributesHTMLHyper" type="button"
+                        data-i18n="optionsSave">
+                  Save
+                </button>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="createTextFragmentsHTMLHyper"
                        data-sub-item-of="HTMLHyper" />
                 <label for="createTextFragmentsHTMLHyper" class="label"
@@ -162,7 +170,7 @@
                 <p data-i18n="optionsEnableFormatDetail,HTML (text/html)">
                   Show HTML (text/html) menu item in the context menu.
                 </p>
-                <p data-i18n="optionExtraAttributesDetail">
+                <p data-i18n="optionsAttributesDetail">
                   `onxxx` attributes will be ignored.
                 </p>
               </div>
@@ -170,13 +178,13 @@
           </div>
           <div>
             <p aria-details="enableMarkdownDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="Markdown" checked="checked" />
                 <label for="Markdown" class="checkboxLabel">
                   Markdown
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="includeTitleMarkdown"
                        data-sub-item-of="Markdown"/>
                 <label for="includeTitleMarkdown" class="label"
@@ -195,7 +203,7 @@
           </div>
           <div>
             <p aria-details="enableBBCodeTextDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="BBCodeText" checked="checked" />
                 <label for="BBCodeText" class="checkboxLabel">
                   BBCode (Text)
@@ -212,7 +220,7 @@
           </div>
           <div>
             <p aria-details="enableBBCodeURLDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="BBCodeURL" checked="checked" />
                 <label for="BBCodeURL" class="checkboxLabel">
                   BBCode (URL)
@@ -229,7 +237,7 @@
           </div>
           <div>
             <p aria-details="enableTextileDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="Textile" checked="checked" />
                 <label for="Textile" class="checkboxLabel">
                   Textile
@@ -246,7 +254,7 @@
           </div>
           <div>
             <p aria-details="enableAsciiDocDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="AsciiDoc" checked="checked" />
                 <label for="AsciiDoc" class="checkboxLabel">
                   AsciiDoc
@@ -263,7 +271,7 @@
           </div>
           <div>
             <p aria-details="enableMediaWikiDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="MediaWiki" checked="checked" />
                 <label for="MediaWiki" class="checkboxLabel">
                   MediaWiki
@@ -280,7 +288,7 @@
           </div>
           <div>
             <p aria-details="enableDokuWikiDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="DokuWiki" checked="checked" />
                 <label for="DokuWiki" class="checkboxLabel">
                   DokuWiki
@@ -297,7 +305,7 @@
           </div>
           <div>
             <p aria-details="enableJiraDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="Jira" checked="checked" />
                 <label for="Jira" class="checkboxLabel">
                   Jira
@@ -314,7 +322,7 @@
           </div>
           <div>
             <p aria-details="enableReStructuredTextDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="reStructuredText"
                        checked="checked" />
                 <label for="reStructuredText" class="checkboxLabel">
@@ -332,7 +340,7 @@
           </div>
           <div>
             <p aria-details="enableLaTeXDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="LaTeX" checked="checked" />
                 <label for="LaTeX" class="checkboxLabel">
                   LaTeX
@@ -349,7 +357,7 @@
           </div>
           <div>
             <p aria-details="enableOrgModeDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="OrgMode" checked="checked" />
                 <label for="OrgMode" class="checkboxLabel">
                   Org Mode
@@ -366,13 +374,13 @@
           </div>
           <div>
             <p aria-details="enableTextURLDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="TextURL" checked="checked" />
                 <label for="TextURL" class="checkboxLabel">
                   Text &amp; URL
                 </label>
               </span>
-              <span class="sub-item browser-style">
+              <span class="sub-item">
                 <input type="checkbox" id="separateTextURL"
                        data-sub-item-of="TextURL" />
                 <label for="separateTextURL" class="label"
@@ -391,7 +399,7 @@
           </div>
           <div>
             <p aria-details="enableTextOnlyDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="TextOnly" checked="checked" />
                 <label for="TextOnly" class="checkboxLabel">
                   Text
@@ -408,7 +416,7 @@
           </div>
           <div>
             <p aria-details="enableURLOnlyDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="URLOnly" checked="checked" />
                 <label for="URLOnly" class="checkboxLabel">
                   URL
@@ -435,7 +443,7 @@
           </legend>
           <div>
             <p aria-details="promptContentDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="promptContent" />
                 <label for="promptContent" class="checkboxLabel"
                        data-i18n="optionsPromptContent">
@@ -453,7 +461,7 @@
           </div>
           <div>
             <p aria-details="notifyOnCopyDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="notifyOnCopy" />
                 <label for="notifyOnCopy" class="checkboxLabel"
                        data-i18n="optionsNotifyOnCopy">
@@ -472,7 +480,7 @@
           </div>
           <div>
             <p aria-details="preferCanonicalUrlDetail">
-              <span class="browser-style">
+              <span>
                 <input type="checkbox" id="preferCanonicalUrl" />
                 <label for="preferCanonicalUrl" class="checkboxLabel"
                        data-i18n="optionsPreferCanonicalUrl">
