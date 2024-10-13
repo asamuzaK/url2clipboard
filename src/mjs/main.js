@@ -552,6 +552,7 @@ export const handleCmd = async (cmd, tab) => {
     const info = {
       menuItemId: format
     };
+    // FIXME: remove when ESR 115.x reaches EOL
     if (!tab) {
       tab = await getActiveTab();
     }
