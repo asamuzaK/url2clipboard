@@ -4,7 +4,7 @@
 
 /* shared */
 import {
-  executeScriptToTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
+  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
   getHighlightedTab, getStorage, isTab, queryTabs, removeStorage, sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
@@ -552,6 +552,9 @@ export const handleCmd = async (cmd, tab) => {
     const info = {
       menuItemId: format
     };
+    if (!tab) {
+      tab = await getActiveTab();
+    }
     func = extractClickedData(info, tab);
   }
   return func || null;

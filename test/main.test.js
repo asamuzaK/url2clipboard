@@ -2551,9 +2551,25 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      mjs.enabledFormats.add(HTML_PLAIN);
-      const res = await func(`${CMD_COPY}${HTML_HYPER}`);
+      browser.tabs.query.resolves([{
+        id: 1,
+        title: 'Example Domain',
+        url: 'https://example.com'
+      }]);
+      mjs.enabledFormats.add(HTML_HYPER);
+      const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
       assert.isNull(res, 'result');
+    });
+
+    it('should call function', async () => {
+      browser.tabs.query.resolves([{
+        id: 1,
+        title: 'Example Domain',
+        url: 'https://example.com'
+      }]);
+      mjs.enabledFormats.add(HTML_PLAIN);
+      const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
+      assert.isUndefined(res, 'result');
     });
 
     it('should call function', async () => {
@@ -2561,7 +2577,7 @@ describe('main', () => {
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`, {
         id: 1,
         title: 'Example Domain',
-        url: 'https://example.com',
+        url: 'https://example.com'
       });
       assert.isUndefined(res, 'result');
     });
