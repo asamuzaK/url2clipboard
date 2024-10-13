@@ -372,10 +372,10 @@
     "message": "ホワイトアイコン"
   },
   "optionsIncludeAttr": {
-    "message": "属性を追加する"
+    "message": "他の属性を追加する"
   },
   "optionsIncludeTitle": {
-    "message": "タイトル属性を付け加える"
+    "message": "タイトル属性を追加する"
   },
   "optionsLabel": {
     "message": "設定"

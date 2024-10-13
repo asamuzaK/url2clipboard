@@ -372,10 +372,10 @@
     "message": "白色图标"
   },
   "optionsIncludeAttr": {
-    "message": "附加属性"
+    "message": "添加其他属性"
   },
   "optionsIncludeTitle": {
-    "message": "附加标题属性"
+    "message": "添加标题属性"
   },
   "optionsLabel": {
     "message": "设置"
