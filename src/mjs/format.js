@@ -337,7 +337,20 @@ export const createLinkText = async (data = {}) => {
         url = encodeUrlSpecialChar(url);
       }
       if (/#.*:~:/.test(url)) {
-        attr += ' rel="noopener"';
+        if (/rel="?[\sa-z-]+"?/i.test(attr)) {
+          let rel;
+          let value;
+          if (/rel=[a-z-]+/i.test(attr)) {
+            [rel, value] = attr.match(/rel=([a-z-]+)/i);
+          } else {
+            [rel, value] = attr.match(/rel="([\sa-z-]+)"/i);
+          }
+          if (!value.includes('noopener')) {
+            attr = attr.replace(rel, `rel="noopener ${value}"`);
+          }
+        } else {
+          attr += ' rel="noopener"';
+        }
       }
       if (attr) {
         const sanitizedAttr = await sanitizeAttributes(attr);
