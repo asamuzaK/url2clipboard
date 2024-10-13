@@ -173,7 +173,7 @@ label + input[type="radio"] {
 
 input[type="text"],
 input[type="url"] {
-  min-width: 15rem;
+  min-width: 12rem;
   max-width: calc(100% - 1rem);
 }
 
@@ -227,7 +227,11 @@ pre > code {
 }
 
 .sub-item > .label {
-  min-width: 13.5rem;
+  min-width: 12rem;
+}
+
+.related {
+  display: inline-block;
 }
 
 .status {
