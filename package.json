@@ -15,7 +15,7 @@
   "dependencies": {
     "commander": "^12.1.0",
     "dompurify": "^3.1.7",
-    "url-sanitizer": "^2.0.2",
+    "url-sanitizer": "^2.0.3",
     "webext-schema": "^5.4.3",
     "webextension-polyfill": "^0.12.0"
   },
