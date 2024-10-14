@@ -16,7 +16,10 @@ DOMPurify.addHook('afterSanitizeAttributes', node => {
  */
 export const sanitizeAttributes = (attr = '') => {
   const html = DOMPurify.sanitize(`<a ${attr}></a>`, {
-    ADD_ATTR: ['target']
+    ADD_ATTR: ['target'],
+    ALLOWED_TAGS: ['a'],
+    KEEP_CONTENT: false
   });
-  return html.replace('<a', '').replace('></a>', '').trim();
+  [attr] = html.replace('<a', '').replace('></a>', '').split('<a');
+  return attr.trim();
 };

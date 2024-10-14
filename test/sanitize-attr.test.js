@@ -77,5 +77,35 @@ describe('sanitize attr', () => {
       const res = await func(attr);
       assert.strictEqual(res, 'target="_blank" class="foo"', 'result');
     });
+
+    it('should get result', async () => {
+      const attr = 'class="foo"><script>alert(1)</script';
+      const res = await func(attr);
+      assert.strictEqual(res, 'class="foo"', 'result');
+    });
+
+    it('should get result', async () => {
+      const attr = 'class="foo"><span class="bar">';
+      const res = await func(attr);
+      assert.strictEqual(res, 'class="foo"', 'result');
+    });
+
+    it('should get result', async () => {
+      const attr = 'class="foo"<span class="bar">';
+      const res = await func(attr);
+      assert.strictEqual(res, 'class="foo"', 'result');
+    });
+
+    it('should get result', async () => {
+      const attr = 'class="foo"><a href="#">nested anchor</a';
+      const res = await func(attr);
+      assert.strictEqual(res, 'class="foo"', 'result');
+    });
+
+    it('should get result', async () => {
+      const attr = 'class="foo"></a><a href="#">next sibling anchor</a';
+      const res = await func(attr);
+      assert.strictEqual(res, 'class="foo"', 'result');
+    });
   });
 });
