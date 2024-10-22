@@ -17,6 +17,9 @@
   "commandCopyBBCode": {
     "message": "复制链接为 BBCode"
   },
+  "commandCopyCSV": {
+    "message": "复制链接为 CSV"
+  },
   "commandCopyDokuWiki": {
     "message": "复制链接为 DokuWiki"
   },

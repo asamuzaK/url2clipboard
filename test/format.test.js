@@ -11,15 +11,15 @@ import { browser } from './mocha/setup.js';
 /* test */
 import {
   ASCIIDOC, BBCODE, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA,
-  LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
-  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, CSV, DOKUWIKI, HTML_HYPER, HTML_PLAIN,
+  JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, ORG_MODE, REST,
+  TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/format.js';
 
 describe('format', () => {
   const itemKeys = [
-    ASCIIDOC, BBCODE, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN,
+    ASCIIDOC, BBCODE, CSV, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN,
     MEDIAWIKI, DOKUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
     TEXT_TEXT_URL, TEXT_URL_ONLY
   ];
@@ -494,6 +494,34 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res, '[url=https://example.com/foo%20bar][/url]',
+        'result');
+    });
+
+    it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo');
+      const data = {
+        content: 'foo',
+        formatId: CSV,
+        template: formatData[CSV].template,
+        url
+      };
+      const res = await func(data);
+      assert.strictEqual(res,
+        'foo,https://example.com/foo',
+        'result');
+    });
+
+    it('should get string', async () => {
+      const { href: url } = new URL('https://example.com/foo');
+      const data = {
+        content: 'foo"bar,baz qux',
+        formatId: CSV,
+        template: formatData[CSV].template,
+        url
+      };
+      const res = await func(data);
+      assert.strictEqual(res,
+        '"foo""bar,baz qux",https://example.com/foo',
         'result');
     });
 

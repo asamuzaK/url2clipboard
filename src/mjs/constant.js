@@ -19,6 +19,7 @@ export const COPY_TAB = 'copyTabURL';
 export const COPY_TABS_ALL = 'copyAllTabsURL';
 export const COPY_TABS_OTHER = 'copyOtherTabsURL';
 export const COPY_TABS_SELECTED = 'copyTabsURL';
+export const CSV = 'CSV';
 export const DOKUWIKI = 'DokuWiki';
 export const EXEC_COPY = 'executeCopy';
 export const EXT_LOCALE = 'extensionLocale';
