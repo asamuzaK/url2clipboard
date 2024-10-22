@@ -10,7 +10,7 @@ import {
 import { sanitizeAttributes } from './sanitize.js';
 import {
   ASCIIDOC, BBCODE, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER, HTML_PLAIN,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, CSV, DOKUWIKI, HTML_HYPER, HTML_PLAIN,
   JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
@@ -94,6 +94,13 @@ export const formatData = {
     enabled: true,
     menu: '&Org Mode',
     template: '[[%url%]%content%]'
+  },
+  [CSV]: {
+    id: CSV,
+    enabled: true,
+    menu: '&CSV',
+    template: '%content%,%url%',
+    title: 'CSV'
   },
   [TEXT_TEXT_URL]: {
     id: TEXT_TEXT_URL,
@@ -318,6 +325,11 @@ export const createLinkText = async (data = {}) => {
         content = stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/gi);
       }
       break;
+    case CSV:
+      if (content && /[\s\x22,]/.test(content)) {
+        content = `"${content.replace(/\x22/g, '""')}"`;
+      }
+      break;
     case HTML_HYPER:
     case HTML_PLAIN:
       if (content) {
@@ -360,12 +372,12 @@ export const createLinkText = async (data = {}) => {
         content = escapeMatchingChars(convertHtmlChar(content), /([[\]])/g);
       }
       if (title) {
-        title = escapeMatchingChars(convertHtmlChar(title), /(")/g);
+        title = escapeMatchingChars(convertHtmlChar(title), /(\x22)/g);
       }
       break;
     case MEDIAWIKI:
       if (content) {
-        content = convertNumCharRef(content, /([[\]'~<>{}=*#;:\-|])/g);
+        content = convertNumCharRef(content, /([[\]\x27~<>{}=*#;:\-|])/g);
       }
       break;
     case ORG_MODE:

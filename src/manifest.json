@@ -59,6 +59,9 @@
     "commandCopyOrgMode": {
       "description": "__MSG_commandCopyOrgMode__"
     },
+    "commandCopyCSV": {
+      "description": "__MSG_commandCopyCSV__"
+    },
     "commandCopyTextURL": {
       "description": "__MSG_commandCopyTextURL__"
     },

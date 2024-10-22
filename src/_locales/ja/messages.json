@@ -17,6 +17,9 @@
   "commandCopyBBCode": {
     "message": "BBCode でコピー"
   },
+  "commandCopyCSV": {
+    "message": "CSV でコピー"
+  },
   "commandCopyDokuWiki": {
     "message": "DokuWiki でコピー"
   },
