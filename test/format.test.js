@@ -10,19 +10,17 @@ import { browser } from './mocha/setup.js';
 
 /* test */
 import {
-  ASCIIDOC, BBCODE_TEXT, BBCODE_URL,
-  COPY_LINK, COPY_PAGE, COPY_TAB,
-  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED,
-  DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI,
-  MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
+  ASCIIDOC, BBCODE, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER, HTML_PLAIN, JIRA,
+  LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, MIME_PLAIN, ORG_MODE, REST, TEXTILE,
   TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/format.js';
 
 describe('format', () => {
   const itemKeys = [
-    ASCIIDOC, BBCODE_TEXT, BBCODE_URL, HTML_HYPER, HTML_PLAIN, JIRA, LATEX,
-    MARKDOWN, MEDIAWIKI, DOKUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
+    ASCIIDOC, BBCODE, HTML_HYPER, HTML_PLAIN, JIRA, LATEX, MARKDOWN,
+    MEDIAWIKI, DOKUWIKI, ORG_MODE, REST, TEXTILE, TEXT_TEXT_ONLY,
     TEXT_TEXT_URL, TEXT_URL_ONLY
   ];
   beforeEach(() => {
@@ -283,8 +281,8 @@ describe('format', () => {
     });
 
     it('should get value', async () => {
-      const res = await func(`${COPY_PAGE}BBCodeText`);
-      assert.strictEqual(res, 'BBCode (Text)', 'result');
+      const res = await func(`${COPY_PAGE}BBCode`);
+      assert.strictEqual(res, 'BBCode', 'result');
     });
 
     it('should get value', async () => {
@@ -476,8 +474,8 @@ describe('format', () => {
       const { href: url } = new URL('https://example.com/foo bar');
       const data = {
         content: 'foo [bar] baz',
-        formatId: BBCODE_TEXT,
-        template: formatData[BBCODE_TEXT].template,
+        formatId: BBCODE,
+        template: formatData[BBCODE].template,
         url
       };
       const res = await func(data);
@@ -490,25 +488,12 @@ describe('format', () => {
       const { href: url } = new URL('https://example.com/foo bar');
       const data = {
         content: '',
-        formatId: BBCODE_TEXT,
-        template: formatData[BBCODE_TEXT].template,
+        formatId: BBCODE,
+        template: formatData[BBCODE].template,
         url
       };
       const res = await func(data);
       assert.strictEqual(res, '[url=https://example.com/foo%20bar][/url]',
-        'result');
-    });
-
-    it('should get string', async () => {
-      const { href: url } = new URL('https://example.com/foo bar');
-      const data = {
-        content: url,
-        formatId: BBCODE_URL,
-        template: formatData[BBCODE_URL].template,
-        url
-      };
-      const res = await func(data);
-      assert.strictEqual(res, '[url]https://example.com/foo%20bar[/url]',
         'result');
     });
 

@@ -32,11 +32,8 @@
     "commandCopyMarkdown": {
       "description": "__MSG_commandCopyMarkdown__"
     },
-    "commandCopyBBCodeText": {
-      "description": "__MSG_commandCopyBBCodeText__"
-    },
-    "commandCopyBBCodeURL": {
-      "description": "__MSG_commandCopyBBCodeURL__"
+    "commandCopyBBCode": {
+      "description": "__MSG_commandCopyBBCode__"
     },
     "commandCopyTextile": {
       "description": "__MSG_commandCopyTextile__"

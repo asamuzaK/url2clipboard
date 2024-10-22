@@ -22,15 +22,14 @@ import { notifyOnCopy } from './notify.js';
 import { promptContent } from './prompt.js';
 import { sanitizeURL } from './sanitize.js';
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, BBCODE_URL, CMD_COPY, CONTEXT_INFO,
-  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
-  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
-  INCLUDE_ATTR_HTML_HYPER, INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER,
-  INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN,
-  MIME_HTML, MIME_PLAIN, NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT,
-  TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, TEXT_TEXT_URL,
-  WEBEXT_ID
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
+  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN, ICON_AUTO, ICON_BLACK,
+  ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE, INCLUDE_ATTR_HTML_HYPER,
+  INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN,
+  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER,
+  TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -173,7 +172,7 @@ export const getAllTabsInfo = async menuItemId => {
       template,
       title,
       url,
-      content: formatId === BBCODE_URL ? url : title
+      content: title
     });
   }
   return tabsInfo;
@@ -364,7 +363,7 @@ export const extractClickedData = async (info, tab) => {
         });
       } else if (menuItemId.startsWith(COPY_TAB)) {
         const template = getFormatTemplate(formatId);
-        const content = formatId === BBCODE_URL ? tabUrl : tabTitle;
+        const content = tabTitle;
         text = await createLinkText({
           attr,
           content,
@@ -416,9 +415,7 @@ export const extractClickedData = async (info, tab) => {
             url = await sanitizeURL(canonicalUrl || tabUrl, {
               allow: ['data', 'file']
             });
-            if (formatId === BBCODE_URL) {
-              content = url;
-            } else if (isEdited) {
+            if (isEdited) {
               content = editedText;
             } else {
               content = selectionText || tabTitle;
@@ -458,13 +455,10 @@ export const extractClickedData = async (info, tab) => {
             url = await sanitizeURL(url, {
               allow: ['data', 'file']
             });
-            if (formatId === BBCODE_URL) {
-              content = url;
-            }
           }
         }
         if (isString(content) && isString(url)) {
-          if (formatId !== BBCODE_URL && !isEdited && userOpts.get(PROMPT)) {
+          if (!isEdited && userOpts.get(PROMPT)) {
             const editedContent = await promptContent({
               content,
               formatTitle,

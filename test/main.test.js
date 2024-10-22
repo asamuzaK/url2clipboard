@@ -11,14 +11,14 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, BBCODE_URL, CMD_COPY, CONTEXT_INFO,
-  CONTEXT_INFO_GET, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN,
-  ICON_AUTO, ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE,
-  INCLUDE_ATTR_HTML_HYPER, INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER,
-  INCLUDE_TITLE_HTML_PLAIN, INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN,
-  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER,
-  TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
+  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
+  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
+  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN, ICON_AUTO, ICON_BLACK,
+  ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE, INCLUDE_ATTR_HTML_HYPER,
+  INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN, NOTIFY_COPY, OPTIONS_OPEN,
+  PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN,
+  TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
 } from '../src/mjs/constant.js';
 import { editContent } from '../src/mjs/edit-content.js';
 import {
@@ -309,7 +309,7 @@ describe('main', () => {
     });
 
     it('should get value', () => {
-      const res = func(`${COPY_PAGE}BBCodeText`);
+      const res = func(`${COPY_PAGE}BBCode`);
       assert.strictEqual(res, '[url=%url%]%content%[/url]', 'result');
     });
 
@@ -409,46 +409,6 @@ describe('main', () => {
           formatId: 'TextURL',
           id: 2,
           template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
-    });
-
-    it('should get result', async () => {
-      const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
-      await setFormatData();
-      const res = await func(`${COPY_TABS_ALL}${BBCODE_URL}`);
-      assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'https://example.com',
-          formatId: BBCODE_URL,
-          id: 1,
-          template: '[url]%content%[/url]',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'https://www.example.com',
-          formatId: BBCODE_URL,
-          id: 2,
-          template: '[url]%content%[/url]',
           title: 'bar',
           url: 'https://www.example.com'
         }
@@ -1323,27 +1283,6 @@ describe('main', () => {
 
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = `${COPY_TAB}${BBCODE_URL}`;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_LINK}TextURL`;
       const info = {
         menuItemId,
@@ -1465,35 +1404,6 @@ describe('main', () => {
 
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = `${COPY_LINK}${BBCODE_URL}`;
-      const info = {
-        menuItemId,
-        linkUrl: 'https://example.com/foo'
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
       const menuItemId = `${COPY_PAGE}TextURL`;
       const info = {
         menuItemId,
@@ -1544,34 +1454,6 @@ describe('main', () => {
       }]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PREFER_CANONICAL, true);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = `${COPY_PAGE}${BBCODE_URL}`;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
@@ -1970,116 +1852,6 @@ describe('main', () => {
 
     it('should call function', async () => {
       const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = BBCODE_URL;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: null,
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = BBCODE_URL;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
-      const menuItemId = BBCODE_URL;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      mjs.userOpts.set(PREFER_CANONICAL, true);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
-      const j = browser.scripting.executeScript.callCount;
-      const menuItemId = BBCODE_URL;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      mjs.userOpts.set(PREFER_CANONICAL, true);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
-        'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText.callCount;
       const j = browser.scripting.executeScript.callCount;
       const menuItemId = 'TextURL';
       const info = {
@@ -2334,36 +2106,6 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
-    });
-
-    it('should call function', async () => {
-      const i = navigator.clipboard.writeText
-        .withArgs('[url]https://example.com/[/url]').callCount;
-      const menuItemId = BBCODE_URL;
-      const info = {
-        menuItemId
-      };
-      const tab = {
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/"onclick="alert(1)"'
-      };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
-        }
-      }]);
-      mjs.enabledFormats.add(menuItemId);
-      const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText
-        .withArgs('[url]https://example.com/[/url]').callCount, i + 1,
-      'called');
       assert.isUndefined(res, 'result');
     });
 
@@ -2893,7 +2635,7 @@ describe('main', () => {
       }, true);
       assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
       assert.isTrue(Array.isArray(res), 'result');
-      assert.strictEqual(res.length, 97, 'result');
+      assert.strictEqual(res.length, 91, 'result');
     });
 
     it('should set variable', async () => {
@@ -2903,7 +2645,7 @@ describe('main', () => {
       }, true);
       assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
       assert.isTrue(Array.isArray(res), 'result');
-      assert.strictEqual(res.length, 103, 'result');
+      assert.strictEqual(res.length, 97, 'result');
     });
 
     it('should set variable', async () => {
@@ -3325,7 +3067,7 @@ describe('main', () => {
       browser.storage.local.get.resolves({});
       const res = await func();
       assert.isArray(res, 'result');
-      assert.strictEqual(res.length, 103, 'result');
+      assert.strictEqual(res.length, 97, 'result');
     });
   });
 });

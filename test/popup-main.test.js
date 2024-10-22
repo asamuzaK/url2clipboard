@@ -11,7 +11,7 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  BBCODE_URL, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
+  ASCIIDOC, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
   EXEC_COPY, OPTIONS_OPEN
 } from '../src/mjs/constant.js';
 import { formatData } from '../src/mjs/format.js';
@@ -501,7 +501,7 @@ describe('popup-main', () => {
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
-      elm.id = BBCODE_URL;
+      elm.id = ASCIIDOC;
       p.appendChild(elm);
       body.appendChild(p);
       await func();
@@ -512,7 +512,7 @@ describe('popup-main', () => {
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
-      elm.id = `${COPY_LINK}${BBCODE_URL}`;
+      elm.id = `${COPY_LINK}${ASCIIDOC}`;
       p.appendChild(elm);
       body.appendChild(p);
       await func();
@@ -523,8 +523,8 @@ describe('popup-main', () => {
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
-      elm.id = `${COPY_LINK}${BBCODE_URL}`;
-      mjs.enabledFormats.add(BBCODE_URL);
+      elm.id = `${COPY_LINK}${ASCIIDOC}`;
+      mjs.enabledFormats.add(ASCIIDOC);
       p.appendChild(elm);
       body.appendChild(p);
       await func();
@@ -535,8 +535,8 @@ describe('popup-main', () => {
       const elm = document.createElement('button');
       const p = document.createElement('p');
       const body = document.querySelector('body');
-      elm.id = `${COPY_LINK}${BBCODE_URL}`;
-      mjs.enabledFormats.add(BBCODE_URL);
+      elm.id = `${COPY_LINK}${ASCIIDOC}`;
+      mjs.enabledFormats.add(ASCIIDOC);
       p.appendChild(elm);
       p.setAttribute('hidden', 'hidden');
       body.appendChild(p);
