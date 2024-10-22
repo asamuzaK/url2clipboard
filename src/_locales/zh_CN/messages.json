@@ -14,11 +14,8 @@
   "commandCopyAsciiDoc": {
     "message": "复制链接为 AsciiDoc"
   },
-  "commandCopyBBCodeText": {
-    "message": "复制链接为 BBCode (文本)"
-  },
-  "commandCopyBBCodeURL": {
-    "message": "复制链接为 BBCode (链接)"
+  "commandCopyBBCode": {
+    "message": "复制链接为 BBCode"
   },
   "commandCopyDokuWiki": {
     "message": "复制链接为 DokuWiki"

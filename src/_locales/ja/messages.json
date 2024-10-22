@@ -14,11 +14,8 @@
   "commandCopyAsciiDoc": {
     "message": "AsciiDoc でコピー"
   },
-  "commandCopyBBCodeText": {
-    "message": "BBCode (Text) でコピー"
-  },
-  "commandCopyBBCodeURL": {
-    "message": "BBCode (URL) でコピー"
+  "commandCopyBBCode": {
+    "message": "BBCode でコピー"
   },
   "commandCopyDokuWiki": {
     "message": "DokuWiki でコピー"

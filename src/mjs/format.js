@@ -9,10 +9,10 @@ import {
 } from './common.js';
 import { sanitizeAttributes } from './sanitize.js';
 import {
-  ASCIIDOC, BBCODE_TEXT, BBCODE_URL, COPY_LINK, COPY_PAGE, COPY_TAB,
-  COPY_TABS_ALL, COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER,
-  HTML_PLAIN, JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST,
-  TEXTILE, TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  ASCIIDOC, BBCODE, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
+  COPY_TABS_OTHER, COPY_TABS_SELECTED, DOKUWIKI, HTML_HYPER, HTML_PLAIN,
+  JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST, TEXTILE,
+  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
 } from './constant.js';
 
 /* format data */
@@ -40,19 +40,12 @@ export const formatData = {
     template: '[%content%](%url% "%title%")',
     templateAlt: '[%content%](%url%)'
   },
-  [BBCODE_TEXT]: {
-    id: BBCODE_TEXT,
+  [BBCODE]: {
+    id: BBCODE,
     enabled: true,
-    menu: '&BBCode (Text)',
+    menu: '&BBCode',
     template: '[url=%url%]%content%[/url]',
-    title: 'BBCode (Text)'
-  },
-  [BBCODE_URL]: {
-    id: BBCODE_URL,
-    enabled: true,
-    menu: 'BB&Code (URL)',
-    template: '[url]%content%[/url]',
-    title: 'BBCode (URL)'
+    title: 'BBCode'
   },
   [TEXTILE]: {
     id: TEXTILE,
@@ -320,7 +313,7 @@ export const createLinkText = async (data = {}) => {
         content = escapeMatchingChars(content, /(\])/g);
       }
       break;
-    case BBCODE_TEXT:
+    case BBCODE:
       if (content) {
         content = stripMatchingChars(content, /\[(?:url(?:=.*)?|\/url)\]/gi);
       }
