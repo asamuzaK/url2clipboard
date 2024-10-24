@@ -12,5 +12,9 @@
     "resolveJsonModule": true,
     "target": "esnext"
   },
-  "include": ["index.js", "src/mjs/*", "src/js/*"]
+  "include": [
+    "index.js",
+    "src/mjs/*",
+    "src/js/*"
+  ]
 }
