@@ -31,8 +31,8 @@ export namespace formatData {
         let templateAlt_2: string;
         export { templateAlt_2 as templateAlt };
     }
-    namespace BBCodeText {
-        export { BBCODE_TEXT as id };
+    namespace BBCode {
+        export { BBCODE as id };
         let enabled_3: boolean;
         export { enabled_3 as enabled };
         let menu_3: string;
@@ -42,19 +42,17 @@ export namespace formatData {
         let title_2: string;
         export { title_2 as title };
     }
-    namespace BBCodeURL {
-        export { BBCODE_URL as id };
+    namespace Textile {
+        export { TEXTILE as id };
         let enabled_4: boolean;
         export { enabled_4 as enabled };
         let menu_4: string;
         export { menu_4 as menu };
         let template_4: string;
         export { template_4 as template };
-        let title_3: string;
-        export { title_3 as title };
     }
-    namespace Textile {
-        export { TEXTILE as id };
+    namespace AsciiDoc {
+        export { ASCIIDOC as id };
         let enabled_5: boolean;
         export { enabled_5 as enabled };
         let menu_5: string;
@@ -62,8 +60,8 @@ export namespace formatData {
         let template_5: string;
         export { template_5 as template };
     }
-    namespace AsciiDoc {
-        export { ASCIIDOC as id };
+    namespace MediaWiki {
+        export { MEDIAWIKI as id };
         let enabled_6: boolean;
         export { enabled_6 as enabled };
         let menu_6: string;
@@ -71,8 +69,8 @@ export namespace formatData {
         let template_6: string;
         export { template_6 as template };
     }
-    namespace MediaWiki {
-        export { MEDIAWIKI as id };
+    namespace DokuWiki {
+        export { DOKUWIKI as id };
         let enabled_7: boolean;
         export { enabled_7 as enabled };
         let menu_7: string;
@@ -80,8 +78,8 @@ export namespace formatData {
         let template_7: string;
         export { template_7 as template };
     }
-    namespace DokuWiki {
-        export { DOKUWIKI as id };
+    namespace Jira {
+        export { JIRA as id };
         let enabled_8: boolean;
         export { enabled_8 as enabled };
         let menu_8: string;
@@ -89,8 +87,8 @@ export namespace formatData {
         let template_8: string;
         export { template_8 as template };
     }
-    namespace Jira {
-        export { JIRA as id };
+    namespace reStructuredText {
+        export { REST as id };
         let enabled_9: boolean;
         export { enabled_9 as enabled };
         let menu_9: string;
@@ -98,8 +96,8 @@ export namespace formatData {
         let template_9: string;
         export { template_9 as template };
     }
-    namespace reStructuredText {
-        export { REST as id };
+    namespace LaTeX {
+        export { LATEX as id };
         let enabled_10: boolean;
         export { enabled_10 as enabled };
         let menu_10: string;
@@ -107,8 +105,8 @@ export namespace formatData {
         let template_10: string;
         export { template_10 as template };
     }
-    namespace LaTeX {
-        export { LATEX as id };
+    namespace OrgMode {
+        export { ORG_MODE as id };
         let enabled_11: boolean;
         export { enabled_11 as enabled };
         let menu_11: string;
@@ -116,14 +114,16 @@ export namespace formatData {
         let template_11: string;
         export { template_11 as template };
     }
-    namespace OrgMode {
-        export { ORG_MODE as id };
+    namespace CSV {
+        export { CSV as id };
         let enabled_12: boolean;
         export { enabled_12 as enabled };
         let menu_12: string;
         export { menu_12 as menu };
         let template_12: string;
         export { template_12 as template };
+        let title_3: string;
+        export { title_3 as title };
     }
     namespace TextURL {
         export { TEXT_TEXT_URL as id };
@@ -192,47 +192,47 @@ export const formats: Map<string, {
     enabled: boolean;
     menu: string;
     template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
+} | {
+    id: string;
+    enabled: boolean;
+    menu: string;
+    template: string;
     title: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
-} | {
-    id: string;
-    enabled: boolean;
-    menu: string;
-    template: string;
 } | {
     id: string;
     enabled: boolean;
@@ -271,8 +271,7 @@ export function createLinkText(data?: object): Promise<string>;
 import { HTML_PLAIN } from './constant.js';
 import { HTML_HYPER } from './constant.js';
 import { MARKDOWN } from './constant.js';
-import { BBCODE_TEXT } from './constant.js';
-import { BBCODE_URL } from './constant.js';
+import { BBCODE } from './constant.js';
 import { TEXTILE } from './constant.js';
 import { ASCIIDOC } from './constant.js';
 import { MEDIAWIKI } from './constant.js';
@@ -281,6 +280,7 @@ import { JIRA } from './constant.js';
 import { REST } from './constant.js';
 import { LATEX } from './constant.js';
 import { ORG_MODE } from './constant.js';
+import { CSV as CSV_1 } from './constant.js';
 import { TEXT_TEXT_URL } from './constant.js';
 import { TEXT_TEXT_ONLY } from './constant.js';
 import { TEXT_URL_ONLY } from './constant.js';
