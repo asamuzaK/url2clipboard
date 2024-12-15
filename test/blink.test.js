@@ -9,7 +9,7 @@ import { describe, it } from 'mocha';
 /* test */
 import {
   createBlinkFiles, createJsFiles, createManifest, createPolyfilledJsFile
-} from '../modules/blink.js';
+} from '../scripts/blink.js';
 
 /* constants */
 const DIR_CWD = process.cwd();

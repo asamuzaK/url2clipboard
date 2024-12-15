@@ -6,7 +6,7 @@ import { describe, it } from 'mocha';
 /* test */
 import {
   getType, isString, logErr, logMsg, logWarn, throwErr
-} from '../modules/common.js';
+} from '../scripts/common.js';
 
 describe('getType', () => {
   it('should get Undefined', () => {

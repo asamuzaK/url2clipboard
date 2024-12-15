@@ -10,7 +10,7 @@ import { describe, it } from 'mocha';
 import {
   cleanDirectory, commander, createBlinkCompatFiles, extractLibraries,
   includeLibraries, parseCommand, saveLibraryPackage
-} from '../modules/commander.js';
+} from '../scripts/commander.js';
 
 /* constants */
 const DIR_CWD = process.cwd();
