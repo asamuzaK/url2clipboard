@@ -1,10 +1,10 @@
 /* api */
+import { strict as assert } from 'node:assert';
 import path from 'node:path';
 import process from 'node:process';
 import { promises as fsPromise } from 'node:fs';
-import sinon from 'sinon';
-import { assert } from 'chai';
 import { describe, it } from 'mocha';
+import sinon from 'sinon';
 
 /* test */
 import {
@@ -23,8 +23,8 @@ describe('create manifest file', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(res, path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       'result');
   });
@@ -37,8 +37,8 @@ describe('create manifest file', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(res, path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       'result');
   });
@@ -47,7 +47,7 @@ describe('create manifest file', () => {
 describe('create polyfilled *.js file', () => {
   it('should throw', async () => {
     await createPolyfilledJsFile().catch(e => {
-      assert.instanceOf(e, TypeError, 'error');
+      assert.strictEqual(e instanceof TypeError, true, 'error');
       assert.strictEqual(e.message, 'Expected String but got Undefined.',
         'message');
     });
@@ -57,7 +57,7 @@ describe('create polyfilled *.js file', () => {
     await createPolyfilledJsFile('foo.js').catch(e => {
       const msg =
         `${path.resolve(DIR_CWD, 'src', 'mjs', 'foo.js')} is not a file.`;
-      assert.instanceOf(e, Error, 'error');
+      assert.strictEqual(e instanceof Error, true, 'error');
       assert.strictEqual(e.message, msg, 'message');
     });
   });
@@ -70,8 +70,8 @@ describe('create polyfilled *.js file', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'), 'result');
   });
@@ -84,8 +84,8 @@ describe('create polyfilled *.js file', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'), 'result');
   });
@@ -98,8 +98,8 @@ describe('create polyfilled *.js file', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'), 'result');
   });
@@ -112,8 +112,8 @@ describe('create polyfilled *.js file', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'), 'result');
   });
@@ -126,8 +126,8 @@ describe('create polyfilled *.js file', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'), 'result');
   });
@@ -140,8 +140,8 @@ describe('create polyfilled *.js file', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'options.js'), 'result');
   });
@@ -154,8 +154,8 @@ describe('create polyfilled *.js file', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js'), 'result');
   });
@@ -168,8 +168,8 @@ describe('create polyfilled *.js file', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(res,
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'popup.js'), 'result');
   });
@@ -184,8 +184,8 @@ describe('create blink specific *.js files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
@@ -202,8 +202,8 @@ describe('create blink specific *.js files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'background.js'),
       path.resolve(DIR_CWD, 'bundle', 'mjs', 'offscreen.js'),
@@ -222,8 +222,8 @@ describe('create blink compatible files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
@@ -245,8 +245,8 @@ describe('create blink compatible files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
@@ -275,10 +275,10 @@ describe('create blink compatible files', () => {
     stubRm.restore();
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(mkdirCalled, 'called');
-    assert.isTrue(rmCalled, 'called');
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(mkdirCalled, true, 'called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [

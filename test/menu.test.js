@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
 
@@ -25,10 +25,6 @@ describe('menu', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('remove context menu', () => {
     const func = mjs.removeContextMenu;
 
@@ -36,7 +32,7 @@ describe('menu', () => {
       const i = browser.menus.removeAll.callCount;
       const res = await func();
       assert.strictEqual(browser.menus.removeAll.callCount, i + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -121,7 +117,7 @@ describe('menu', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e instanceof TypeError, true, 'error');
         assert.strictEqual(e.message, 'Expected String but got Undefined.',
           'message');
       });
@@ -129,7 +125,7 @@ describe('menu', () => {
 
     it('should throw', async () => {
       await func('foo').catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e instanceof TypeError, true, 'error');
         assert.strictEqual(e.message, 'Expected String but got Undefined.',
           'message');
       });
@@ -137,7 +133,7 @@ describe('menu', () => {
 
     it('should throw', async () => {
       await func('foo', 'bar').catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e instanceof TypeError, true, 'error');
         assert.strictEqual(e.message, 'Expected String but got Undefined.',
           'message');
       });
@@ -153,7 +149,7 @@ describe('menu', () => {
       });
       assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -167,7 +163,7 @@ describe('menu', () => {
       });
       assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -180,7 +176,7 @@ describe('menu', () => {
       });
       assert.strictEqual(browser.menus.create.callCount, i + 1, 'called');
       assert.strictEqual(browser.i18n.getMessage.callCount, k + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -343,17 +339,17 @@ describe('menu', () => {
 
     it('should get null', async () => {
       const res = await func({}, {});
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func({ contexts: [] }, {});
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func({ contexts: ['tab'] }, {});
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -375,7 +371,7 @@ describe('menu', () => {
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
       assert.strictEqual(browser.menus.refresh.callCount, j, 'not called');
       assert.strictEqual(browser.tabs.query.callCount, k, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -396,7 +392,7 @@ describe('menu', () => {
       assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
       assert.strictEqual(browser.tabs.query.callCount, k + 2, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 });

@@ -3,9 +3,9 @@
  */
 
 /* api */
-import sinon from 'sinon';
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
+import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
@@ -110,16 +110,12 @@ describe('clipboard', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('Clip', () => {
     const { Clip } = mjs;
 
     it('should create an instance', () => {
       const clip = new Clip();
-      assert.instanceOf(clip, Clip);
+      assert.strictEqual(clip instanceof Clip, true);
     });
 
     describe('getter / setter', () => {
@@ -139,7 +135,7 @@ describe('clipboard', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.content = 1;
-        }, 'Expected String but got Number.');
+        }, TypeError, 'Expected String but got Number.');
       });
 
       it('should set value', () => {
@@ -162,21 +158,21 @@ describe('clipboard', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.mime = 1;
-        }, 'Expected String but got Number.');
+        }, TypeError, 'Expected String but got Number.');
       });
 
       it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.mime = 'image/jpg';
-        }, 'Mime type of image/jpg is not supported.');
+        }, Error, 'Mime type of image/jpg is not supported.');
       });
 
       it('should throw', () => {
         const clip = new Clip();
         assert.throws(() => {
           clip.mime = ' image/jpg ';
-        }, 'Mime type of image/jpg is not supported.');
+        }, Error, 'Mime type of image/jpg is not supported.');
       });
 
       it('should set value', () => {
@@ -226,10 +222,10 @@ describe('clipboard', () => {
         document.execCommand = fakeExec;
         const clip = new Clip('foo', 'text/plain');
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, 'called');
-        assert.isTrue(stubPropagate.calledOnce, 'called');
-        assert.isTrue(stubPreventDefault.calledOnce, 'called');
-        assert.isTrue(stubSetData.calledOnce, 'called');
+        assert.strictEqual(stubRemove.calledOnce, true, 'called');
+        assert.strictEqual(stubPropagate.calledOnce, true, 'called');
+        assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
+        assert.strictEqual(stubSetData.calledOnce, true, 'called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
@@ -258,14 +254,13 @@ describe('clipboard', () => {
           new Clip('<a href="https://example.com">foo bar</a>', 'text/html');
         const i = stubSetData.withArgs('text/plain', 'foo bar').callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, 'called');
-        assert.isTrue(stubPropagate.calledOnce, 'called');
-        assert.isTrue(stubPreventDefault.calledOnce, 'called');
-        assert.isTrue(stubSetData.calledTwice, 'called');
+        assert.strictEqual(stubRemove.calledOnce, true, 'called');
+        assert.strictEqual(stubPropagate.calledOnce, true, 'called');
+        assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
+        assert.strictEqual(stubSetData.callCount, 2, 'called');
         assert.strictEqual(
           stubSetData.withArgs('text/plain', 'foo bar').callCount, i + 1,
-          'called'
-        );
+          'called');
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
@@ -293,9 +288,9 @@ describe('clipboard', () => {
         const clip = new Clip('<script>alert(1);</script>', 'text/html');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, 'called');
-        assert.isTrue(stubPropagate.calledOnce, 'called');
-        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubRemove.calledOnce, true, 'called');
+        assert.strictEqual(stubPropagate.calledOnce, true, 'called');
+        assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
         assert.strictEqual(stubSetData.callCount, i, 'not called');
         stubAdd.restore();
         stubRemove.restore();
@@ -350,9 +345,9 @@ describe('clipboard', () => {
         const clip = new Clip('<xml></xml>', 'text/xml');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, 'called');
-        assert.isTrue(stubPropagate.calledOnce, 'called');
-        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubRemove.calledOnce, true, 'called');
+        assert.strictEqual(stubPropagate.calledOnce, true, 'called');
+        assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
         assert.strictEqual(stubSetData.callCount, i + 1, 'called');
         stubAdd.restore();
         stubRemove.restore();
@@ -382,9 +377,9 @@ describe('clipboard', () => {
         const clip = new Clip(png.toString('binary'), 'image/png');
         const i = stubSetData.callCount;
         await clip._copySync();
-        assert.isTrue(stubRemove.calledOnce, 'called');
-        assert.isTrue(stubPropagate.calledOnce, 'called');
-        assert.isTrue(stubPreventDefault.calledOnce, 'called');
+        assert.strictEqual(stubRemove.calledOnce, true, 'called');
+        assert.strictEqual(stubPropagate.calledOnce, true, 'called');
+        assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
         assert.strictEqual(stubSetData.callCount, i + 1, 'called');
         stubAdd.restore();
         stubRemove.restore();
@@ -396,7 +391,7 @@ describe('clipboard', () => {
       it('should throw', async () => {
         const clip = new Clip('foo', 'image/jpg');
         await clip.copy().catch(e => {
-          assert.instanceOf(e, Error);
+          assert.strictEqual(e instanceof Error, true);
           assert.strictEqual(e.message,
             'Mime type of image/jpg is not supported.');
         });
@@ -415,9 +410,9 @@ describe('clipboard', () => {
         const { called: calledExec } = fakeExec;
         delete navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -430,8 +425,8 @@ describe('clipboard', () => {
         const { calledOnce: calledWriteText } = fakeWriteText;
         delete navigator.clipboard;
         delete global.navigator.clipboard;
-        assert.isTrue(calledWriteText, 'called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, true, 'called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -451,9 +446,9 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isTrue(calledWriteText, 'called');
-        assert.isTrue(calledExec, 'called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, true, 'called');
+        assert.strictEqual(calledExec, true, 'called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -466,9 +461,9 @@ describe('clipboard', () => {
         const { calledOnce: calledExec } = fakeExec;
         stubAdd.restore();
         delete document.execCommand;
-        assert.isTrue(calledAdd, 'called');
-        assert.isTrue(calledExec, 'called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledAdd, true, 'called');
+        assert.strictEqual(calledExec, true, 'called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -488,10 +483,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isTrue(calledWrite, 'called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, true, 'called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -512,10 +507,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isFalse(calledWrite, 'not called');
-        assert.isTrue(calledExec, 'called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, false, 'not called');
+        assert.strictEqual(calledExec, true, 'called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should not call function', async () => {
@@ -535,10 +530,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isFalse(calledWrite, 'not called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, false, 'not called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -561,10 +556,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isTrue(calledWrite, 'called');
-        assert.isTrue(calledExec, 'called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, true, 'called');
+        assert.strictEqual(calledExec, true, 'called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -584,10 +579,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isTrue(calledWrite, 'called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, true, 'called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -607,10 +602,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isTrue(calledWrite, 'called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, true, 'called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
 
       it('should call function', async () => {
@@ -631,10 +626,10 @@ describe('clipboard', () => {
         delete navigator.clipboard;
         delete global.navigator.clipboard;
         delete document.execCommand;
-        assert.isFalse(calledWriteText, 'not called');
-        assert.isTrue(calledWrite, 'called');
-        assert.isFalse(calledExec, 'not called');
-        assert.isUndefined(res, 'result');
+        assert.strictEqual(calledWriteText, false, 'not called');
+        assert.strictEqual(calledWrite, true, 'called');
+        assert.strictEqual(calledExec, false, 'not called');
+        assert.strictEqual(res, undefined, 'result');
       });
     });
   });

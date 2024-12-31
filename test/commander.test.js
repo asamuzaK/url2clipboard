@@ -1,10 +1,10 @@
 /* api */
+import { strict as assert } from 'node:assert';
 import fs, { promises as fsPromise } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
-import sinon from 'sinon';
-import { assert } from 'chai';
 import { describe, it } from 'mocha';
+import sinon from 'sinon';
 
 /* test */
 import {
@@ -20,7 +20,7 @@ describe('create blink compatible files', () => {
     const stubWrite =
       sinon.stub(fsPromise, 'writeFile').rejects(new Error('error'));
     await createBlinkCompatFiles().catch(e => {
-      assert.instanceOf(e, Error, 'error');
+      assert.strictEqual(e instanceof Error, true, 'error');
       assert.strictEqual(e.message, 'error', 'message');
     });
     stubWrite.restore();
@@ -34,8 +34,8 @@ describe('create blink compatible files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
@@ -57,8 +57,8 @@ describe('create blink compatible files', () => {
     const { called: infoCalled } = stubInfo;
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
@@ -87,10 +87,10 @@ describe('create blink compatible files', () => {
     stubRm.restore();
     stubWrite.restore();
     stubInfo.restore();
-    assert.isTrue(mkdirCalled, 'called');
-    assert.isTrue(rmCalled, 'called');
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(mkdirCalled, true, 'called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.deepEqual(res, [
       path.resolve(DIR_CWD, 'bundle', 'manifest.json'),
       [
@@ -106,14 +106,14 @@ describe('create blink compatible files', () => {
 describe('save library package info', () => {
   it('should throw', async () => {
     await saveLibraryPackage().catch(e => {
-      assert.instanceOf(e, TypeError);
+      assert.strictEqual(e instanceof TypeError, true);
       assert.strictEqual(e.message, 'Expected Array but got Undefined.');
     });
   });
 
   it('should throw', async () => {
     await saveLibraryPackage([]).catch(e => {
-      assert.instanceOf(e, Error);
+      assert.strictEqual(e instanceof Error, true);
     });
   });
 
@@ -121,7 +121,7 @@ describe('save library package info', () => {
     await saveLibraryPackage([
       'foo'
     ]).catch(e => {
-      assert.instanceOf(e, Error);
+      assert.strictEqual(e instanceof Error, true);
     });
   });
 
@@ -132,7 +132,7 @@ describe('save library package info', () => {
         name: 'foo'
       }
     ]).catch(e => {
-      assert.instanceOf(e, Error);
+      assert.strictEqual(e instanceof Error, true);
     });
   });
 
@@ -158,7 +158,7 @@ describe('save library package info', () => {
       const filePath = path.resolve(
         DIR_CWD, 'node_modules', 'webextension-polyfill', 'foo.txt'
       );
-      assert.instanceOf(e, Error);
+      assert.strictEqual(e instanceof Error, true);
       assert.strictEqual(e.message, `${filePath} is not a file.`);
     });
   });
@@ -183,7 +183,7 @@ describe('save library package info', () => {
       }
     ]).catch(e => {
       const filePath = path.resolve(DIR_CWD, 'src', 'lib', 'mozilla', 'foo');
-      assert.instanceOf(e, Error);
+      assert.strictEqual(e instanceof Error, true);
       assert.strictEqual(e.message, `${filePath} is not a file.`);
     });
   });
@@ -227,8 +227,8 @@ describe('save library package info', () => {
     stubInfo.restore();
     stubWrite.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(setCallCount, i + 6, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -272,8 +272,8 @@ describe('save library package info', () => {
     stubWrite.restore();
     stubInfo.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(setCallCount, i + 6, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -317,8 +317,8 @@ describe('save library package info', () => {
     stubInfo.restore();
     stubWrite.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -362,8 +362,8 @@ describe('save library package info', () => {
     stubWrite.restore();
     stubInfo.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -408,8 +408,8 @@ describe('save library package info', () => {
     stubInfo.restore();
     stubWrite.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
     assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -454,8 +454,8 @@ describe('save library package info', () => {
     stubWrite.restore();
     stubInfo.restore();
     spyMap.restore();
-    assert.isTrue(writeCalled, 'called');
-    assert.isTrue(infoCalled, 'called');
+    assert.strictEqual(writeCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'called');
     assert.strictEqual(setCallCount, i + 9, 'called');
     assert.strictEqual(res, filePath, 'result');
   });
@@ -571,7 +571,7 @@ describe('include libraries', () => {
     stubWrite.restore();
     assert.strictEqual(traceCallCount, i + 1, 'trace');
     assert.strictEqual(writeCallCount, j, 'write');
-    assert.isUndefined(res, 'result');
+    assert.strictEqual(res, undefined, 'result');
   });
 });
 
@@ -582,7 +582,7 @@ describe('clean directory', () => {
     cleanDirectory({ dir });
     const { called: rmCalled } = stubRm;
     stubRm.restore();
-    assert.isFalse(rmCalled, 'not called');
+    assert.strictEqual(rmCalled, false, 'not called');
   });
 
   it('should call funtion', () => {
@@ -594,8 +594,8 @@ describe('clean directory', () => {
     const { called: infoCalled } = stubInfo;
     stubRm.restore();
     stubInfo.restore();
-    assert.isTrue(rmCalled, 'called');
-    assert.isFalse(infoCalled, 'not called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(infoCalled, false, 'not called');
   });
 
   it('should call funtion', () => {
@@ -607,8 +607,8 @@ describe('clean directory', () => {
     const { calledOnce: infoCalled } = stubInfo;
     stubRm.restore();
     stubInfo.restore();
-    assert.isTrue(rmCalled, 'called');
-    assert.isTrue(infoCalled, 'not called');
+    assert.strictEqual(rmCalled, true, 'called');
+    assert.strictEqual(infoCalled, true, 'not called');
   });
 });
 

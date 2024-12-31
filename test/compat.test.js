@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
@@ -34,10 +34,6 @@ describe('compat', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('show toolbar icon options', () => {
     const func = mjs.showToolbarIconOptions;
     beforeEach(() => {
@@ -54,7 +50,7 @@ describe('compat', () => {
       elm.id = 'foo';
       body.appendChild(elm);
       await func();
-      assert.isTrue(elm.hidden, 'result');
+      assert.strictEqual(elm.hidden, true, 'result');
     });
 
     it('should not show options', async () => {
@@ -65,7 +61,7 @@ describe('compat', () => {
       elm.id = OPTIONS_ICON_TOOLBAR;
       body.appendChild(elm);
       await func();
-      assert.isTrue(elm.hidden, 'result');
+      assert.strictEqual(elm.hidden, true, 'result');
     });
 
     it('should show options', async () => {
@@ -75,7 +71,7 @@ describe('compat', () => {
       elm.id = OPTIONS_ICON_TOOLBAR;
       body.appendChild(elm);
       await func();
-      assert.isFalse(elm.hidden, 'result');
+      assert.strictEqual(elm.hidden, false, 'result');
     });
   });
 });

@@ -4,9 +4,9 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import sinon from 'sinon';
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
+import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
@@ -122,10 +122,6 @@ describe('exec-copy', () => {
       delete global[key];
     }
     browser._sandbox.reset();
-  });
-
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
   });
 
   describe('execute copy', () => {

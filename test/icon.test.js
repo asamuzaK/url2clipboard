@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
 
@@ -33,7 +33,7 @@ describe('icon', () => {
       browser.action.setIcon.callsFake((...args) => args);
       const res = await func();
       assert.strictEqual(browser.action.setIcon.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {

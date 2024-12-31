@@ -3,9 +3,9 @@
  */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { browser, createJsdom } from './mocha/setup.js';
+import { createJsdom } from './mocha/setup.js';
 
 /* test */
 // eslint-disable-next-line import-x/order
@@ -34,10 +34,6 @@ describe('context-info', () => {
     for (const key of globalKeys) {
       delete global[key];
     }
-  });
-
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
   });
 
   describe('get active element', () => {

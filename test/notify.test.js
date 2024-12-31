@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
@@ -24,10 +24,6 @@ describe('notify', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('notify on copy', () => {
     const func = mjs.notifyOnCopy;
 
@@ -42,7 +38,7 @@ describe('notify', () => {
         type: 'basic'
       }).resolves(true);
       const res = await func();
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should call function', async () => {
@@ -57,7 +53,7 @@ describe('notify', () => {
         type: 'basic'
       }).resolves(true);
       const res = await func('foo');
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should call function', async () => {
@@ -74,7 +70,7 @@ describe('notify', () => {
       }).resolves(true);
       const res = await func();
       delete global.window;
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should call function', async () => {
@@ -92,7 +88,7 @@ describe('notify', () => {
       }).resolves(true);
       const res = await func('foo');
       delete global.window;
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 });

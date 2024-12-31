@@ -4,9 +4,9 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import sinon from 'sinon';
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
+import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
@@ -138,12 +138,8 @@ describe('main', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   it('should get DOMPurify', () => {
-    assert.isFunction(window.DOMPurify, 'DOMPurify');
+    assert.strictEqual(typeof window.DOMPurify, 'function', 'DOMPurify');
   });
 
   describe('set user options', () => {
@@ -163,8 +159,8 @@ describe('main', () => {
       });
       assert.deepEqual(res, mjs.userOpts, 'result');
       assert.strictEqual(res.size, 1, 'size');
-      assert.isTrue(res.has('foo'), 'key');
-      assert.isTrue(res.get('foo'), 'value');
+      assert.strictEqual(res.has('foo'), true, 'key');
+      assert.strictEqual(res.get('foo'), true, 'value');
     });
 
     it('should call function', async () => {
@@ -185,10 +181,10 @@ describe('main', () => {
       const res = await func();
       assert.deepEqual(res, mjs.userOpts, 'result');
       assert.strictEqual(res.size, 2, 'size');
-      assert.isTrue(res.has(INCLUDE_TITLE_HTML_HYPER), 'key');
-      assert.isTrue(res.get(INCLUDE_TITLE_HTML_HYPER), 'value');
-      assert.isTrue(res.has(PROMPT), 'key');
-      assert.isFalse(res.get(PROMPT), 'value');
+      assert.strictEqual(res.has(INCLUDE_TITLE_HTML_HYPER), true, 'key');
+      assert.strictEqual(res.get(INCLUDE_TITLE_HTML_HYPER), true, 'value');
+      assert.strictEqual(res.has(PROMPT), true, 'key');
+      assert.strictEqual(res.get(PROMPT), false, 'value');
     });
 
     it('should call function', async () => {
@@ -209,14 +205,14 @@ describe('main', () => {
       const res = await func();
       assert.deepEqual(res, mjs.userOpts, 'result');
       assert.strictEqual(res.size, 4, 'size');
-      assert.isTrue(res.has(INCLUDE_ATTR_HTML_HYPER), 'key');
-      assert.isTrue(res.get(INCLUDE_ATTR_HTML_HYPER), 'value');
-      assert.isTrue(res.has(ATTR_HTML_HYPER), 'key');
+      assert.strictEqual(res.has(INCLUDE_ATTR_HTML_HYPER), true, 'key');
+      assert.strictEqual(res.get(INCLUDE_ATTR_HTML_HYPER), true, 'value');
+      assert.strictEqual(res.has(ATTR_HTML_HYPER), true, 'key');
       assert.strictEqual(res.get(ATTR_HTML_HYPER),
         'class="foo bar" target="_blank"', 'value');
-      assert.isTrue(res.has(INCLUDE_ATTR_HTML_PLAIN), 'key');
-      assert.isFalse(res.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
-      assert.isTrue(res.has(ATTR_HTML_PLAIN), 'key');
+      assert.strictEqual(res.has(INCLUDE_ATTR_HTML_PLAIN), true, 'key');
+      assert.strictEqual(res.get(INCLUDE_ATTR_HTML_PLAIN), false, 'value');
+      assert.strictEqual(res.has(ATTR_HTML_PLAIN), true, 'key');
       assert.strictEqual(res.get(ATTR_HTML_PLAIN), '', 'value');
     });
   });
@@ -260,7 +256,7 @@ describe('main', () => {
       });
       assert.deepEqual(res, mjs.enabledFormats, 'result');
       assert.strictEqual(res.size, 1, 'size');
-      assert.isTrue(res.has(HTML_PLAIN), 'key');
+      assert.strictEqual(res.has(HTML_PLAIN), true, 'key');
     });
 
     it('should call function', async () => {
@@ -284,9 +280,9 @@ describe('main', () => {
       const res = await func();
       assert.deepEqual(res, mjs.enabledFormats, 'result');
       assert.strictEqual(res.size, 2, 'size');
-      assert.isTrue(res.has(HTML_PLAIN), 'key');
-      assert.isFalse(res.has(HTML_HYPER), 'key');
-      assert.isTrue(res.has(MARKDOWN), 'key');
+      assert.strictEqual(res.has(HTML_PLAIN), true, 'key');
+      assert.strictEqual(res.has(HTML_HYPER), false, 'key');
+      assert.strictEqual(res.has(MARKDOWN), true, 'key');
     });
   });
 
@@ -300,12 +296,13 @@ describe('main', () => {
     });
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should get null', () => {
       const res = func('foo');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get value', () => {
@@ -530,7 +527,7 @@ describe('main', () => {
         id: 1
       }]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -539,7 +536,7 @@ describe('main', () => {
         id: 1
       }]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -548,7 +545,7 @@ describe('main', () => {
         id: 1
       }]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -557,7 +554,7 @@ describe('main', () => {
         id: 1
       }]);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not log error', async () => {
@@ -569,8 +566,8 @@ describe('main', () => {
       const res = await func();
       const { called: errCalled } = stubErr;
       stubErr.restore();
-      assert.isFalse(errCalled, 'error called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(errCalled, false, 'error called');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
@@ -581,7 +578,7 @@ describe('main', () => {
         id: 1
       }]);
       await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
 
@@ -593,7 +590,7 @@ describe('main', () => {
         id: 1
       }]);
       await func().catch(e => {
-        assert.isNull(e, 'error');
+        assert.strictEqual(e, null, 'error');
       });
     });
 
@@ -605,7 +602,7 @@ describe('main', () => {
         id: 1
       }]);
       await func().catch(e => {
-        assert.isFalse(e, 'error');
+        assert.strictEqual(e, false, 'error');
       });
     });
 
@@ -638,7 +635,7 @@ describe('main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -651,7 +648,7 @@ describe('main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -664,7 +661,7 @@ describe('main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -677,7 +674,7 @@ describe('main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
@@ -705,7 +702,7 @@ describe('main', () => {
         id: 1
       }]);
       await func().catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
   });
@@ -746,7 +743,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -757,7 +754,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -774,7 +771,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -791,7 +788,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -808,7 +805,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -823,8 +820,9 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
-      assert.isTrue(browser.runtime.openOptionsPage.calledOnce, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(browser.runtime.openOptionsPage.calledOnce, true,
+        'called');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should throw if tab does not contain tab url', async () => {
@@ -835,7 +833,7 @@ describe('main', () => {
         id: 1
       };
       await func(info, tab).catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
 
@@ -848,7 +846,7 @@ describe('main', () => {
         url: 'bar'
       };
       await func(info, tab).catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
 
@@ -862,7 +860,7 @@ describe('main', () => {
         url: 'https://example.com/'
       };
       await func(info, tab).catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e instanceof TypeError, true, 'error');
         assert.strictEqual(e.message, 'Expected String but got Null',
           'message');
       });
@@ -882,7 +880,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -910,7 +908,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -938,7 +936,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -967,7 +965,7 @@ describe('main', () => {
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(document.execCommand.callCount, i + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -996,7 +994,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1025,7 +1023,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1046,7 +1044,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1082,7 +1080,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1119,7 +1117,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1151,7 +1149,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1184,7 +1182,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1220,7 +1218,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1257,7 +1255,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1278,7 +1276,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1309,7 +1307,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1339,7 +1337,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1368,7 +1366,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1399,7 +1397,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1428,7 +1426,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1457,7 +1455,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1486,7 +1484,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1516,7 +1514,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1547,7 +1545,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1577,7 +1575,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1607,7 +1605,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1638,7 +1636,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1668,7 +1666,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1700,7 +1698,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1732,7 +1730,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1761,7 +1759,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1789,7 +1787,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1817,7 +1815,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1847,7 +1845,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -1874,7 +1872,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should log error', async () => {
@@ -1900,12 +1898,12 @@ describe('main', () => {
       const res = await func(info, tab);
       const { called: errCalled } = stubErr;
       stubErr.restore();
-      assert.isTrue(errCalled, 'called error');
+      assert.strictEqual(errCalled, true, 'called error');
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should throw', async () => {
@@ -1927,7 +1925,7 @@ describe('main', () => {
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
 
@@ -1950,7 +1948,7 @@ describe('main', () => {
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
-        assert.isNull(e, 'error');
+        assert.strictEqual(e, null, 'error');
       });
     });
 
@@ -1973,7 +1971,7 @@ describe('main', () => {
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
-        assert.isFalse(e, 'error');
+        assert.strictEqual(e, false, 'error');
       });
     });
 
@@ -2000,7 +1998,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2028,7 +2026,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2056,7 +2054,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2084,7 +2082,7 @@ describe('main', () => {
         'called');
       assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2106,7 +2104,7 @@ describe('main', () => {
       const res = await func(info, tab);
       assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2136,7 +2134,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('foo https://example.com/').callCount, i + 1,
       'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2166,7 +2164,7 @@ describe('main', () => {
       assert.strictEqual(navigator.clipboard.writeText
         .withArgs('foo data:,https://example.com/').callCount, i + 1,
       'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -2181,12 +2179,12 @@ describe('main', () => {
 
     it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func(browser.tabs.TAB_ID_NONE);
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2236,7 +2234,7 @@ describe('main', () => {
 
     it('should get null', async () => {
       const res = await func(1);
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -2245,7 +2243,7 @@ describe('main', () => {
       }, {
         active: true
       });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -2254,7 +2252,7 @@ describe('main', () => {
       }, {
         active: false
       });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2281,7 +2279,7 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.instanceOf(e, TypeError, 'error');
+        assert.strictEqual(e instanceof TypeError, true, 'error');
         assert.strictEqual(e.message, 'Expected String but got Undefined.',
           'message');
       });
@@ -2289,7 +2287,7 @@ describe('main', () => {
 
     it('should get null', async () => {
       const res = await func('foo');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -2300,7 +2298,7 @@ describe('main', () => {
       }]);
       mjs.enabledFormats.add(HTML_HYPER);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2311,7 +2309,7 @@ describe('main', () => {
       }]);
       mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2321,7 +2319,7 @@ describe('main', () => {
         title: 'Example Domain',
         url: 'https://example.com'
       });
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -2593,21 +2591,21 @@ describe('main', () => {
 
     it('should get null', async () => {
       const res = await func('foo');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func('foo', {
         checked: true
       });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func('foo', {
         checked: true
       }, true);
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should set variable', async () => {
@@ -2615,7 +2613,7 @@ describe('main', () => {
       const res = await func('TextURL', {
         checked: false
       });
-      assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
+      assert.strictEqual(mjs.enabledFormats.has('TextURL'), false, 'value');
       assert.deepEqual(res, mjs.enabledFormats, 'result');
     });
 
@@ -2624,7 +2622,7 @@ describe('main', () => {
       const res = await func('TextURL', {
         checked: true
       });
-      assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
+      assert.strictEqual(mjs.enabledFormats.has('TextURL'), true, 'value');
       assert.deepEqual(res, mjs.enabledFormats, 'result');
     });
 
@@ -2633,8 +2631,8 @@ describe('main', () => {
       const res = await func('TextURL', {
         checked: false
       }, true);
-      assert.isFalse(mjs.enabledFormats.has('TextURL'), 'value');
-      assert.isTrue(Array.isArray(res), 'result');
+      assert.strictEqual(mjs.enabledFormats.has('TextURL'), false, 'value');
+      assert.strictEqual(Array.isArray(res), true, 'result');
       assert.strictEqual(res.length, 97, 'result');
     });
 
@@ -2643,8 +2641,8 @@ describe('main', () => {
       const res = await func('TextURL', {
         checked: true
       }, true);
-      assert.isTrue(mjs.enabledFormats.has('TextURL'), 'value');
-      assert.isTrue(Array.isArray(res), 'result');
+      assert.strictEqual(mjs.enabledFormats.has('TextURL'), true, 'value');
+      assert.strictEqual(Array.isArray(res), true, 'result');
       assert.strictEqual(res.length, 103, 'result');
     });
 
@@ -2652,7 +2650,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), true,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2660,7 +2659,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2668,7 +2668,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), true,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2676,7 +2677,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2684,7 +2686,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), true,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2692,7 +2695,8 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2700,7 +2704,7 @@ describe('main', () => {
       const res = await func(NOTIFY_COPY, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(NOTIFY_COPY), 'value');
+      assert.strictEqual(mjs.userOpts.get(NOTIFY_COPY), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2708,7 +2712,7 @@ describe('main', () => {
       const res = await func(NOTIFY_COPY, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(NOTIFY_COPY), 'value');
+      assert.strictEqual(mjs.userOpts.get(NOTIFY_COPY), false, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2716,7 +2720,7 @@ describe('main', () => {
       const res = await func(PREFER_CANONICAL, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.strictEqual(mjs.userOpts.get(PREFER_CANONICAL), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2724,7 +2728,7 @@ describe('main', () => {
       const res = await func(PREFER_CANONICAL, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(PREFER_CANONICAL), 'value');
+      assert.strictEqual(mjs.userOpts.get(PREFER_CANONICAL), false, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2732,7 +2736,7 @@ describe('main', () => {
       const res = await func(PROMPT, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(PROMPT), 'value');
+      assert.strictEqual(mjs.userOpts.get(PROMPT), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2740,7 +2744,7 @@ describe('main', () => {
       const res = await func(PROMPT, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(PROMPT), 'value');
+      assert.strictEqual(mjs.userOpts.get(PROMPT), false, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2748,7 +2752,7 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_HYPER, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2756,7 +2760,8 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_HYPER, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2764,7 +2769,7 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_PLAIN, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2772,7 +2777,8 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_PLAIN, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2780,7 +2786,7 @@ describe('main', () => {
       const res = await func(TEXT_SEP_LINES, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(TEXT_SEP_LINES), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_SEP_LINES), true, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2788,7 +2794,7 @@ describe('main', () => {
       const res = await func(TEXT_SEP_LINES, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(TEXT_SEP_LINES), 'value');
+      assert.strictEqual(mjs.userOpts.get(TEXT_SEP_LINES), false, 'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2828,7 +2834,8 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_HYPER, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), true,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2836,7 +2843,8 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_HYPER, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2844,7 +2852,8 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
         checked: true
       });
-      assert.isTrue(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), true,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2852,7 +2861,8 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
         checked: false
       });
-      assert.isFalse(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), 'value');
+      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), false,
+        'value');
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2907,7 +2917,7 @@ describe('main', () => {
       assert.strictEqual(browser.storage.local.remove.callCount, i,
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -2922,7 +2932,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2937,7 +2947,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2952,7 +2962,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j + 1,
         'called');
-      assert.isUndefined(res, [null], 'result');
+      assert.strictEqual(res, undefined, [null], 'result');
     });
 
     it('should call function', async () => {
@@ -2967,7 +2977,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -2982,7 +2992,7 @@ describe('main', () => {
         'not called');
       assert.strictEqual(browser.action.setIcon.callCount, j + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -3066,7 +3076,7 @@ describe('main', () => {
     it('should get array', async () => {
       browser.storage.local.get.resolves({});
       const res = await func();
-      assert.isArray(res, 'result');
+      assert.strictEqual(Array.isArray(res), true, 'result');
       assert.strictEqual(res.length, 103, 'result');
     });
   });

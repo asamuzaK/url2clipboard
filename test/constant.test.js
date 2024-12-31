@@ -3,7 +3,7 @@
  */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { describe, it } from 'mocha';
 
 /* test */
@@ -13,8 +13,8 @@ describe('constants', () => {
   const items = Object.entries(mjs);
   for (const [key, value] of items) {
     it('should get string', () => {
-      assert.isString(key);
-      assert.isString(value);
+      assert.strictEqual(typeof key, 'string');
+      assert.strictEqual(typeof value, 'string');
     });
   }
 });
