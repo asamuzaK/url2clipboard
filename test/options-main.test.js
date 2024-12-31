@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
@@ -39,16 +39,12 @@ describe('options-main', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('create pref', () => {
     const func = mjs.createPref;
 
     it('should get null if argument not given', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get object', async () => {
@@ -349,7 +345,7 @@ describe('options-main', () => {
       };
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should not call function', async () => {
@@ -367,7 +363,7 @@ describe('options-main', () => {
       body.appendChild(elm);
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -407,7 +403,7 @@ describe('options-main', () => {
       body.appendChild(elm);
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i, 'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -443,7 +439,7 @@ describe('options-main', () => {
       elm.type = 'button';
       body.appendChild(elm);
       await func();
-      assert.isTrue(spy.calledOnce, 'called');
+      assert.strictEqual(spy.calledOnce, true, 'called');
       elm.addEventListener.restore();
     });
 
@@ -454,7 +450,7 @@ describe('options-main', () => {
       elm.type = 'submit';
       body.appendChild(elm);
       await func();
-      assert.isFalse(spy.called, 'called');
+      assert.strictEqual(spy.called, false, 'called');
       elm.addEventListener.restore();
     });
   });
@@ -487,7 +483,7 @@ describe('options-main', () => {
       elm.type = 'checkbox';
       body.appendChild(elm);
       await func();
-      assert.isTrue(spy.calledOnce, 'called');
+      assert.strictEqual(spy.calledOnce, true, 'called');
       elm.addEventListener.restore();
     });
 
@@ -498,7 +494,7 @@ describe('options-main', () => {
       elm.type = 'text';
       body.appendChild(elm);
       await func();
-      assert.isFalse(spy.called, 'not called');
+      assert.strictEqual(spy.called, false, 'not called');
       elm.addEventListener.restore();
     });
   });

@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
@@ -61,10 +61,6 @@ describe('offscreen-main', () => {
       delete global.navigator;
     }
     browser._sandbox.reset();
-  });
-
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
   });
 
   describe('execute copy', () => {
@@ -136,7 +132,7 @@ describe('offscreen-main', () => {
       await func();
       const { calledOnce } = stubClose;
       stubClose.restore();
-      assert.isTrue(calledOnce, 'called');
+      assert.strictEqual(calledOnce, true, 'called');
     });
   });
 

@@ -3,9 +3,9 @@
  */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
-import { browser, createJsdom } from './mocha/setup.js';
+import { createJsdom } from './mocha/setup.js';
 
 /* test */
 // eslint-disable-next-line import-x/order
@@ -36,10 +36,6 @@ describe('edit-content', () => {
     }
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('edit content', () => {
     const func = mjs.editContent;
 
@@ -47,14 +43,14 @@ describe('edit-content', () => {
       window.prompt.returns(null);
       global.window.prompt.returns(null);
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       window.prompt.returns(null);
       global.window.prompt.returns(null);
       const res = await func('foo', 'Edit content');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get empty string', async () => {

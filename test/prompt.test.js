@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
@@ -55,7 +55,7 @@ describe('prompt', () => {
 
     it('should get null', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
@@ -63,7 +63,7 @@ describe('prompt', () => {
         content: 'foo',
         tabId: browser.tabs.TAB_ID_NONE
       });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should throw', async () => {
@@ -77,7 +77,7 @@ describe('prompt', () => {
         content: 'foo',
         tabId: 1
       }).catch(e => {
-        assert.instanceOf(e, Error, 'error');
+        assert.strictEqual(e instanceof Error, true, 'error');
         assert.strictEqual(e.message, 'error', 'message');
       });
       assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
@@ -85,7 +85,7 @@ describe('prompt', () => {
       assert.strictEqual(browser.i18n.getMessage.callCount, j + 1,
         'i18n not called');
       // should not reach
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {

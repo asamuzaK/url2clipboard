@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser } from './mocha/setup.js';
 
@@ -34,22 +34,19 @@ describe('format', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('keys', () => {
     const items = Object.entries(mjs.formatData);
 
     it('should get equal length', () => {
-      assert.isTrue(items.length === itemKeys.length, 'length');
+      assert.strictEqual(items.length, itemKeys.length, 'length');
     });
 
     it('should get string and object', () => {
       for (const [key, value] of items) {
-        assert.isTrue(itemKeys.includes(key), 'item');
-        assert.isString(key, 'key');
-        assert.isObject(value, 'value');
+        assert.strictEqual(itemKeys.includes(key), true, 'item');
+        assert.strictEqual(typeof key, 'string', 'key');
+        assert.strictEqual(typeof value, 'object', 'value');
+        assert.notDeepEqual(value, null, 'value');
       }
     });
   });
@@ -61,8 +58,9 @@ describe('format', () => {
       const items = formats.entries();
       assert.strictEqual(formats.size, itemKeys.length, 'size');
       for (const [key, value] of items) {
-        assert.isTrue(itemKeys.includes(key), 'key');
-        assert.isObject(value, 'value');
+        assert.strictEqual(itemKeys.includes(key), true, 'key');
+        assert.strictEqual(typeof value, 'object', 'value');
+        assert.notDeepEqual(value, null, 'value');
       }
     });
   });
@@ -77,17 +75,19 @@ describe('format', () => {
       const items = data.entries();
       assert.strictEqual(data.size, formats.size, 'size');
       for (const [key, value] of items) {
-        assert.isTrue(itemKeys.includes(key), 'key');
-        assert.isObject(value, 'value');
+        assert.strictEqual(itemKeys.includes(key), true, 'key');
+        assert.strictEqual(typeof value, 'object', 'value');
+        assert.notDeepEqual(value, null, 'value');
       }
     });
 
     it('should get entries', async () => {
       const res = await func(true);
-      assert.isTrue(Array.isArray(res), 'result');
+      assert.strictEqual(Array.isArray(res), true, 'result');
       for (const [key, value] of res) {
-        assert.isTrue(itemKeys.includes(key), 'key');
-        assert.isObject(value, 'value');
+        assert.strictEqual(itemKeys.includes(key), true, 'key');
+        assert.strictEqual(typeof value, 'object', 'value');
+        assert.notDeepEqual(value, null, 'value');
       }
     });
   });
@@ -102,15 +102,15 @@ describe('format', () => {
       const items = data.keys();
       assert.strictEqual(data.size, formats.size, 'size');
       for (const key of items) {
-        assert.isTrue(itemKeys.includes(key), 'key');
+        assert.strictEqual(itemKeys.includes(key), true, 'key');
       }
     });
 
     it('should get keys', async () => {
       const res = await func(true);
-      assert.isTrue(Array.isArray(res), 'result');
+      assert.strictEqual(Array.isArray(res), true, 'result');
       for (const key of res) {
-        assert.isTrue(itemKeys.includes(key), 'key');
+        assert.strictEqual(itemKeys.includes(key), true, 'key');
       }
     });
   });
@@ -119,17 +119,18 @@ describe('format', () => {
     const func = mjs.getFormatId;
 
     it('should throw', async () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should get null', async () => {
       const res = func('');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = func(COPY_LINK);
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
@@ -172,22 +173,23 @@ describe('format', () => {
     const func = mjs.hasFormat;
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should get result', async () => {
       const res = await func('foo');
-      assert.isFalse(res, 'result');
+      assert.strictEqual(res, false, 'result');
     });
 
     it('should get result', async () => {
       const res = await func(TEXT_TEXT_URL);
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
 
     it('should get result', async () => {
       const res = await func(`${COPY_PAGE}${TEXT_TEXT_URL}`);
-      assert.isTrue(res, 'result');
+      assert.strictEqual(res, true, 'result');
     });
   });
 
@@ -195,27 +197,30 @@ describe('format', () => {
     const func = mjs.getFormat;
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should get null', async () => {
       const res = await func('');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func('foo');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
       const res = await func(TEXT_TEXT_URL);
-      assert.isObject(res, 'result');
+      assert.strictEqual(typeof res, 'object', 'result');
+      assert.notDeepEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
       const res = await func(`${COPY_PAGE}${TEXT_TEXT_URL}`);
-      assert.isObject(res, 'result');
+      assert.strictEqual(typeof res, 'object', 'result');
+      assert.notDeepEqual(res, null, 'result');
     });
   });
 
@@ -233,12 +238,13 @@ describe('format', () => {
     });
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should not set key/value', async () => {
       await func('foo');
-      assert.isFalse(formats.has('foo'), 'result');
+      assert.strictEqual(formats.has('foo'), false, 'result');
     });
 
     it('should set key/value', async () => {
@@ -248,7 +254,7 @@ describe('format', () => {
       await func(TEXT_TEXT_URL, {
         foo: 'baz'
       });
-      assert.isTrue(formats.has(TEXT_TEXT_URL), 'key');
+      assert.strictEqual(formats.has(TEXT_TEXT_URL), true, 'key');
       assert.deepEqual(formats.get(TEXT_TEXT_URL), {
         foo: 'baz'
       }, 'value');
@@ -261,7 +267,7 @@ describe('format', () => {
       await func(`${COPY_PAGE}${TEXT_TEXT_URL}`, {
         foo: 'baz'
       });
-      assert.isTrue(formats.has(TEXT_TEXT_URL), 'key');
+      assert.strictEqual(formats.has(TEXT_TEXT_URL), true, 'key');
       assert.deepEqual(formats.get(TEXT_TEXT_URL), {
         foo: 'baz'
       }, 'value');
@@ -272,12 +278,13 @@ describe('format', () => {
     const func = mjs.getFormatTitle;
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should get null', async () => {
       const res = await func('foo');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get value', async () => {
@@ -317,42 +324,42 @@ describe('format', () => {
     it('should not add', async () => {
       const { enabledFormats } = mjs;
       const res = await func('foo');
-      assert.isFalse(enabledFormats.has('foo'), 'result');
+      assert.strictEqual(enabledFormats.has('foo'), false, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
 
     it('should not add', async () => {
       const { enabledFormats } = mjs;
       const res = await func(`${COPY_PAGE}TextURL`, false);
-      assert.isFalse(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), false, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
 
     it('should add', async () => {
       const { enabledFormats } = mjs;
       const res = await func(`${COPY_TAB}TextURL`, true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
 
     it('should add', async () => {
       const { enabledFormats } = mjs;
       const res = await func(`${COPY_PAGE}TextURL`, true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
 
     it('should add', async () => {
       const { enabledFormats } = mjs;
       const res = await func(`${COPY_LINK}TextURL`, true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
 
     it('should add', async () => {
       const { enabledFormats } = mjs;
       const res = await func(`${COPY_TABS_ALL}TextURL`, true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'result');
       assert.deepEqual(res, enabledFormats, 'result');
     });
   });
@@ -381,7 +388,8 @@ describe('format', () => {
     const func = mjs.createTabsLinkText;
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected Array but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected Array but got Undefined.');
     });
 
     it('should get string', async () => {
@@ -425,7 +433,7 @@ describe('format', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e instanceof TypeError, true);
         assert.strictEqual(e.message, 'Expected String but got Undefined.');
       });
     });
@@ -434,7 +442,7 @@ describe('format', () => {
       await func({
         formatId: 'foo'
       }).catch(e => {
-        assert.instanceOf(e, TypeError);
+        assert.strictEqual(e instanceof TypeError, true);
         assert.strictEqual(e.message, 'Expected String but got Undefined.');
       });
     });
@@ -581,11 +589,9 @@ describe('format', () => {
         url: 'https://example.com/foo#:~:text=bar%20baz'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#:~:text=bar%20baz" rel="noopener" class="qux">bar baz</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -597,11 +603,9 @@ describe('format', () => {
         url: 'https://example.com/foo#bar:~:text=baz%20qux'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener" class="quux">baz qux</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -613,11 +617,9 @@ describe('format', () => {
         url: 'https://example.com/foo#bar:~:text=baz%20qux'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener nofollow" class="quux">baz qux</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -629,11 +631,9 @@ describe('format', () => {
         url: 'https://example.com/foo#bar:~:text=baz%20qux'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener nofollow" class="quux">baz qux</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -645,11 +645,9 @@ describe('format', () => {
         url: 'https://example.com/foo#bar:~:text=baz%20qux'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="nofollow noopener" class="quux">baz qux</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -662,11 +660,9 @@ describe('format', () => {
         url
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#bar%20baz:~:text=baz%20qux" rel="noopener">baz qux</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -679,11 +675,9 @@ describe('format', () => {
         url
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo?key=1&amp;key2=2" title="foo&amp;bar">foo &quot;bar&quot; baz</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -695,11 +689,9 @@ describe('format', () => {
         url
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo?key=1&amp;key2=2">foo &quot;bar&quot; baz</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -710,11 +702,9 @@ describe('format', () => {
         url: 'https://example.com/foo#:~:text=bar%20baz'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '<a href="https://example.com/foo#:~:text=bar%20baz" rel="noopener">bar baz</a>',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -726,11 +716,9 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '\\href{https://example.com/foo}{\\textbackslash{}backslash}',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -754,11 +742,9 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '[foo &quot;bar&quot; \\[baz\\]](https://example.com/foo "foo&amp;&quot;bar&quot;")',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -769,11 +755,9 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(
-        res,
+      assert.strictEqual(res,
         '[foo &quot;bar&quot; \\[baz\\]](https://example.com/foo)',
-        'result'
-      );
+        'result');
     });
 
     it('should get string', async () => {
@@ -795,8 +779,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '[https://example.com/foo foo &#91;bar&#93; baz]',
-        'result');
+        '[https://example.com/foo foo &#91;bar&#93; baz]', 'result');
     });
 
     it('should get string', async () => {
@@ -807,9 +790,7 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(res,
-        '[https://example.com/foo ]',
-        'result');
+      assert.strictEqual(res, '[https://example.com/foo ]', 'result');
     });
 
     it('should get string', async () => {
@@ -820,8 +801,7 @@ describe('format', () => {
         url: 'https://example.com/foo'
       };
       const res = await func(data);
-      assert.strictEqual(res,
-        '[[https://example.com/foo|foo [bar] baz]]',
+      assert.strictEqual(res, '[[https://example.com/foo|foo [bar] baz]]',
         'result');
     });
 

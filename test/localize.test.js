@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
@@ -32,10 +32,6 @@ describe('localize', () => {
     delete global.window;
     delete global.document;
     browser._sandbox.reset();
-  });
-
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
   });
 
   describe('localize attribute value', () => {
@@ -131,7 +127,7 @@ describe('localize', () => {
       browser.i18n.getMessage.withArgs(EXT_LOCALE).returns('');
       await func();
       const root = document.documentElement;
-      assert.isNull(root.getAttribute('lang'), 'lang');
+      assert.strictEqual(root.getAttribute('lang'), null, 'lang');
     });
 
     it('should set value', async () => {

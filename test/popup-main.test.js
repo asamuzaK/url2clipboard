@@ -4,7 +4,7 @@
 /* eslint-disable import-x/order */
 
 /* api */
-import { assert } from 'chai';
+import { strict as assert } from 'node:assert';
 import { afterEach, beforeEach, describe, it } from 'mocha';
 import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
@@ -63,10 +63,6 @@ describe('popup-main', () => {
     browser._sandbox.reset();
   });
 
-  it('should get browser object', () => {
-    assert.isObject(browser, 'browser');
-  });
-
   describe('toggle enabled formats', () => {
     const func = mjs.toggleEnabledFormats;
     beforeEach(() => {
@@ -79,25 +75,26 @@ describe('popup-main', () => {
     });
 
     it('should throw', () => {
-      assert.throws(() => func(), 'Expected String but got Undefined.');
+      assert.throws(() => func(), TypeError,
+        'Expected String but got Undefined.');
     });
 
     it('should not add', () => {
       const { enabledFormats } = mjs;
       func('foo');
-      assert.isFalse(enabledFormats.has('foo'), 'result');
+      assert.strictEqual(enabledFormats.has('foo'), false, 'result');
     });
 
     it('should not add', () => {
       const { enabledFormats } = mjs;
       func('TextURL', false);
-      assert.isFalse(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), false, 'result');
     });
 
     it('should add', () => {
       const { enabledFormats } = mjs;
       func('TextURL', true);
-      assert.isTrue(enabledFormats.has('TextURL'), 'result');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'result');
     });
   });
 
@@ -134,12 +131,12 @@ describe('popup-main', () => {
       contextInfo.url = 'https://example.com';
       const res = await func();
       assert.deepEqual(res, contextInfo, 'result');
-      assert.isNull(res.canonicalUrl, 'content');
-      assert.isNull(res.content, 'content');
-      assert.isFalse(res.isLink, 'isLink');
-      assert.isNull(res.selectionText, 'selectionText');
-      assert.isNull(res.title, 'title');
-      assert.isNull(res.url, 'url');
+      assert.strictEqual(res.canonicalUrl, null, 'content');
+      assert.strictEqual(res.content, null, 'content');
+      assert.strictEqual(res.isLink, false, 'isLink');
+      assert.strictEqual(res.selectionText, null, 'selectionText');
+      assert.strictEqual(res.title, null, 'title');
+      assert.strictEqual(res.url, null, 'url');
     });
   });
 
@@ -165,7 +162,7 @@ describe('popup-main', () => {
       const contentPage = document.getElementById(CONTENT_PAGE);
       await func();
       assert.strictEqual(contentPage.value, '', 'page value');
-      assert.isNull(tabInfo.tab, 'tab');
+      assert.deepEqual(tabInfo.tab, null, 'tab');
     });
 
     it('should set value', async () => {
@@ -178,7 +175,7 @@ describe('popup-main', () => {
       };
       await func(arg);
       assert.strictEqual(contentPage.value, 'bar', 'page value');
-      assert.isObject(tabInfo.tab, 'tab');
+      assert.strictEqual(typeof tabInfo.tab, 'object', 'tab');
       assert.strictEqual(tabInfo.tab.id, 'foo', 'id');
       assert.strictEqual(tabInfo.tab.title, 'bar', 'title');
       assert.strictEqual(tabInfo.tab.url, 'https://example.com', 'url');
@@ -195,7 +192,7 @@ describe('popup-main', () => {
       contextInfo.selectionText = 'foo bar';
       await func(arg);
       assert.strictEqual(contentPage.value, 'foo bar', 'page value');
-      assert.isObject(tabInfo.tab, 'tab');
+      assert.strictEqual(typeof tabInfo.tab, 'object', 'tab');
       assert.strictEqual(tabInfo.tab.id, 'foo', 'id');
       assert.strictEqual(tabInfo.tab.title, 'bar', 'title');
       assert.strictEqual(tabInfo.tab.url, 'https://example.com/#baz', 'url');
@@ -230,17 +227,17 @@ describe('popup-main', () => {
 
     it('should get null if no argument given', async () => {
       const res = await func();
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null if given argument is empty object', async () => {
       const res = await func({});
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       const res = await func({ target: {} });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should get null if tabInfo.tab not found', async () => {
@@ -250,7 +247,7 @@ describe('popup-main', () => {
           id: 'foo'
         }
       });
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -274,7 +271,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -299,7 +296,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -323,7 +320,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -349,7 +346,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -376,7 +373,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
@@ -405,7 +402,7 @@ describe('popup-main', () => {
       });
       assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
         'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -417,7 +414,7 @@ describe('popup-main', () => {
       await func();
       const { calledOnce } = stubClose;
       stubClose.restore();
-      assert.isTrue(calledOnce, 'called');
+      assert.strictEqual(calledOnce, true, 'called');
     });
   });
 
@@ -445,8 +442,8 @@ describe('popup-main', () => {
       const res = await func(evt);
       const { calledOnce } = stubClose;
       stubClose.restore();
-      assert.isTrue(calledOnce, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(calledOnce, true, 'called');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 
@@ -459,7 +456,7 @@ describe('popup-main', () => {
       const spy = sinon.spy(elm, 'addEventListener');
       body.appendChild(elm);
       await func();
-      assert.isTrue(spy.calledOnce, 'result');
+      assert.strictEqual(spy.calledOnce, true, 'result');
       elm.addEventListener.restore();
     });
 
@@ -470,7 +467,7 @@ describe('popup-main', () => {
       elm.id = OPTIONS_OPEN;
       body.appendChild(elm);
       await func();
-      assert.isTrue(spy.calledOnce, 'result');
+      assert.strictEqual(spy.calledOnce, true, 'result');
       elm.addEventListener.restore();
     });
   });
@@ -494,7 +491,7 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
+      assert.strictEqual(p.hasAttribute('hidden'), false, 'result');
     });
 
     it('should add attribute', async () => {
@@ -505,7 +502,7 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isTrue(p.hasAttribute('hidden'), 'result');
+      assert.strictEqual(p.hasAttribute('hidden'), true, 'result');
     });
 
     it('should add attribute', async () => {
@@ -516,7 +513,7 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isTrue(p.hasAttribute('hidden'), 'result');
+      assert.strictEqual(p.hasAttribute('hidden'), true, 'result');
     });
 
     it('should not add attribute', async () => {
@@ -528,7 +525,7 @@ describe('popup-main', () => {
       p.appendChild(elm);
       body.appendChild(p);
       await func();
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
+      assert.strictEqual(p.hasAttribute('hidden'), false, 'result');
     });
 
     it('should remove attribute', async () => {
@@ -541,7 +538,7 @@ describe('popup-main', () => {
       p.setAttribute('hidden', 'hidden');
       body.appendChild(p);
       await func();
-      assert.isFalse(p.hasAttribute('hidden'), 'result');
+      assert.strictEqual(p.hasAttribute('hidden'), false, 'result');
     });
   });
 
@@ -576,9 +573,9 @@ describe('popup-main', () => {
       const elm = document.getElementById('copyLinkDetails');
       const items = document.querySelectorAll('button');
       await func();
-      assert.isTrue(elm.hidden, 'hidden');
+      assert.strictEqual(elm.hidden, true, 'hidden');
       for (const item of items) {
-        assert.isFalse(item.hasAttribute('disabled'), 'attr');
+        assert.strictEqual(item.hasAttribute('disabled'), false, 'attr');
       }
     });
 
@@ -588,9 +585,9 @@ describe('popup-main', () => {
       await func({
         foo: {}
       });
-      assert.isTrue(elm.hidden, 'hidden');
+      assert.strictEqual(elm.hidden, true, 'hidden');
       for (const item of items) {
-        assert.isFalse(item.hasAttribute('disabled'), 'attr');
+        assert.strictEqual(item.hasAttribute('disabled'), false, 'attr');
       }
     });
 
@@ -608,7 +605,7 @@ describe('popup-main', () => {
         }
       };
       await func(data);
-      assert.isTrue(elm.hidden, 'hidden');
+      assert.strictEqual(elm.hidden, true, 'hidden');
       for (const item of items) {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
@@ -629,7 +626,7 @@ describe('popup-main', () => {
         }
       };
       await func(data);
-      assert.isTrue(elm.hidden, 'hidden');
+      assert.strictEqual(elm.hidden, true, 'hidden');
       for (const item of items) {
         assert.strictEqual(item.getAttribute('disabled'), 'disabled', 'attr');
       }
@@ -653,9 +650,9 @@ describe('popup-main', () => {
         item.setAttribute('disabled', 'disabled');
       }
       await func(data);
-      assert.isFalse(elm.hidden, 'hidden');
+      assert.strictEqual(elm.hidden, false, 'hidden');
       for (const item of items) {
-        assert.isFalse(item.hasAttribute('disabled'), 'attr');
+        assert.strictEqual(item.hasAttribute('disabled'), false, 'attr');
       }
       assert.strictEqual(contentLink.value, 'foo', 'value link');
     });
@@ -705,7 +702,7 @@ describe('popup-main', () => {
       const res = await func();
       assert.strictEqual(browser.runtime.sendMessage.callCount, i,
         'not called');
-      assert.isNull(res, 'result');
+      assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
@@ -751,10 +748,10 @@ describe('popup-main', () => {
       enabledFormats.clear();
     });
 
-    it('should get null', () => {
+    it('should not set', () => {
       const { enabledFormats } = mjs;
       func('foo');
-      assert.isFalse(enabledFormats.has('foo'));
+      assert.strictEqual(enabledFormats.has('foo'), false);
     });
 
     it('should set variable', () => {
@@ -762,7 +759,7 @@ describe('popup-main', () => {
       func('TextURL', {
         checked: true
       });
-      assert.isTrue(enabledFormats.has('TextURL'), 'variable');
+      assert.strictEqual(enabledFormats.has('TextURL'), true, 'variable');
     });
 
     it('should set variable', () => {
@@ -771,7 +768,7 @@ describe('popup-main', () => {
       func('TextURL', {
         checked: false
       });
-      assert.isFalse(enabledFormats.has('TextURL'), 'variable');
+      assert.strictEqual(enabledFormats.has('TextURL'), false, 'variable');
     });
   });
 
@@ -831,7 +828,7 @@ describe('popup-main', () => {
         'called');
       assert.strictEqual(browser.storage.local.get.callCount, j + 1, 'called');
       assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
-      assert.isUndefined(res, 'result');
+      assert.strictEqual(res, undefined, 'result');
     });
   });
 });
