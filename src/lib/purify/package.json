@@ -9,22 +9,22 @@
     "url": "git://github.com/cure53/DOMPurify.git"
   },
   "type": "commonjs",
-  "version": "3.2.3",
+  "version": "3.2.4",
   "origins": [
     {
       "file": "LICENSE",
-      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.3/LICENSE",
-      "cdn": "https://unpkg.com/dompurify@3.2.3/LICENSE"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.4/LICENSE",
+      "cdn": "https://unpkg.com/dompurify@3.2.4/LICENSE"
     },
     {
       "file": "purify.min.js",
-      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.3/dist/purify.min.js",
-      "cdn": "https://unpkg.com/dompurify@3.2.3/dist/purify.min.js"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.4/dist/purify.min.js",
+      "cdn": "https://unpkg.com/dompurify@3.2.4/dist/purify.min.js"
     },
     {
       "file": "purify.min.js.map",
-      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.3/dist/purify.min.js.map",
-      "cdn": "https://unpkg.com/dompurify@3.2.3/dist/purify.min.js.map"
+      "raw": "https://raw.githubusercontent.com/cure53/DOMPurify/3.2.4/dist/purify.min.js.map",
+      "cdn": "https://unpkg.com/dompurify@3.2.4/dist/purify.min.js.map"
     }
   ]
 }
