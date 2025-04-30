@@ -1,4 +1,3 @@
-import importX from 'eslint-plugin-import-x';
 import jsdoc from 'eslint-plugin-jsdoc';
 import nounsanitized from 'eslint-plugin-no-unsanitized';
 import regexp from 'eslint-plugin-regexp';
@@ -29,7 +28,6 @@ export default [
     },
     plugins: {
       '@stylistic': neostdplugins['@stylistic'],
-      'import-x': importX,
       nounsanitized,
       regexp,
       unicorn
