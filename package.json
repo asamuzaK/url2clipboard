@@ -40,6 +40,9 @@
     "stylelint-config-standard": "^38.0.0",
     "typescript": "^5.8.3"
   },
+  "overrides": {
+    "express": "^4.21.2"
+  },
   "scripts": {
     "bundle": "npm-run-all -s bundle:*",
     "bundle:compat": "node index compat -ci",
