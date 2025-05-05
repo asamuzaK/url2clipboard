@@ -2,6 +2,8 @@
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
 name: build
+permissions:
+  contents: read
 
 on:
   push:
@@ -24,4 +26,4 @@ jobs:
           check-latest: true
       - run: npm ci
       - run: npm run lint
-      - run: npm run test_all
+      - run: npm run testall
