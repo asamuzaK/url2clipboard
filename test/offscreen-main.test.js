@@ -176,7 +176,7 @@ describe('offscreen-main', () => {
       const res = await func({
         [SANITIZE_ATTR]: 'class="foo" onclick="alert(1)" target="_blank"'
       });
-      assert.deepEqual(res, ['target="_blank" class="foo"'], 'result');
+      assert.deepEqual(res, ['class="foo" target="_blank"'], 'result');
     });
 
     it('should get array', async () => {

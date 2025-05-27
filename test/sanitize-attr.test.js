@@ -75,7 +75,7 @@ describe('sanitize attr', () => {
       const attr =
         'class="foo" onclick="alert(1)" target="_blank" title="foo bar"';
       const res = await func(attr);
-      assert.strictEqual(res, 'target="_blank" class="foo"', 'result');
+      assert.strictEqual(res, 'class="foo" target="_blank"', 'result');
     });
 
     it('should get result', async () => {

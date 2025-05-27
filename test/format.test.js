@@ -563,7 +563,7 @@ describe('format', () => {
       const res = await func(data);
       assert.strictEqual(
         res,
-        '<a href="https://example.com/foo?key=1&amp;key2=2" target="_blank" class="qux">foo &quot;bar&quot; baz</a>',
+        '<a href="https://example.com/foo?key=1&amp;key2=2" class="qux" target="_blank">foo &quot;bar&quot; baz</a>',
         'result'
       );
     });
@@ -590,7 +590,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '<a href="https://example.com/foo#:~:text=bar%20baz" rel="noopener" class="qux">bar baz</a>',
+        '<a href="https://example.com/foo#:~:text=bar%20baz" class="qux" rel="noopener">bar baz</a>',
         'result');
     });
 
@@ -604,7 +604,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener" class="quux">baz qux</a>',
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" class="quux" rel="noopener">baz qux</a>',
         'result');
     });
 
@@ -618,7 +618,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener nofollow" class="quux">baz qux</a>',
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" class="quux" rel="noopener nofollow">baz qux</a>',
         'result');
     });
 
@@ -632,7 +632,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="noopener nofollow" class="quux">baz qux</a>',
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" class="quux" rel="noopener nofollow">baz qux</a>',
         'result');
     });
 
@@ -646,7 +646,7 @@ describe('format', () => {
       };
       const res = await func(data);
       assert.strictEqual(res,
-        '<a href="https://example.com/foo#bar:~:text=baz%20qux" rel="nofollow noopener" class="quux">baz qux</a>',
+        '<a href="https://example.com/foo#bar:~:text=baz%20qux" class="quux" rel="nofollow noopener">baz qux</a>',
         'result');
     });
 
