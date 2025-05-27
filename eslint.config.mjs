@@ -51,6 +51,7 @@ export default [
         functions: true,
         variables: true
       }],
+      'prefer-object-has-own': 'error',
       'unicorn/prefer-node-protocol': 'error'
     }
   }

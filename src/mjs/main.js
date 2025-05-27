@@ -258,7 +258,7 @@ export const getContextInfo = async tabId => {
   if (Array.isArray(arr)) {
     const [res] = arr;
     if (isObjectNotEmpty(res)) {
-      if (Object.prototype.hasOwnProperty.call(res, 'error')) {
+      if (Object.hasOwn(res, 'error')) {
         throw res.error;
       }
       const { result } = res;

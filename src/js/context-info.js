@@ -81,7 +81,7 @@
 
   /* export for tests */
   if (typeof module !== 'undefined' &&
-      Object.prototype.hasOwnProperty.call(module, 'exports')) {
+      Object.hasOwn(module, 'exports')) {
     module.exports = {
       createContextInfo,
       getActiveElm,
