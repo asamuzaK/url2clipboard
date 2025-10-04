@@ -186,7 +186,7 @@ export const hasFormat = id => {
 /**
  * get format
  * @param {string} id - id
- * @returns {*|null} - format item
+ * @returns {object} - format item, or null
  */
 export const getFormat = id => {
   if (!isString(id)) {
@@ -203,7 +203,7 @@ export const getFormat = id => {
 /**
  * set format
  * @param {string} id - id
- * @param {*} value - value
+ * @param {string|boolean} value - value
  * @returns {void}
  */
 export const setFormat = (id, value) => {
