@@ -428,7 +428,7 @@ export const makeConnection = async (id, info) => {
 /**
  * send message
  * @param {number|string} id - tab ID / extension ID
- * @param {*} msg - message
+ * @param {string|Array|object} msg - message
  * @param {object} opt - options
  * @returns {Promise.<object>} - tabs.sendMessage() | runtime.sendMessage()
  */
@@ -679,7 +679,7 @@ export const getAllStorage = async (area = 'local') => {
 
 /**
  * get storage
- * @param {*} key - key
+ * @param {string|Array|object} key - key
  * @param {string} area - storage area
  * @returns {Promise.<object>} - stored data
  */
@@ -698,7 +698,7 @@ export const getStorage = async (key, area = 'local') => {
 
 /**
  * remove storage
- * @param {*} key - key
+ * @param {string|Array|object} key - key
  * @param {string} area - storage area
  * @returns {Promise.<void>} - void
  */
@@ -814,7 +814,7 @@ export const execScriptToTabs = async (opt = {}) => {
  * execute scripts to tab in order
  * @param {number|Array} tabId - tabId or array of options
  * @param {Array} opts - array of options
- * @returns {Promise.<*>} - result of the last executed script
+ * @returns {Promise.<?Array|boolean>} - result of the last executed script
  */
 export const execScriptsToTabInOrder = async (tabId, opts = []) => {
   const func = [];
@@ -1058,7 +1058,7 @@ export const captureVisibleTab = async (windowId, opt) => {
 
 /**
  * is tab
- * @param {*} tabId - tab ID
+ * @param {number} tabId - tab ID
  * @returns {Promise.<boolean>} - result
  */
 export const isTab = async tabId => {
