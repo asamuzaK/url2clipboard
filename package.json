@@ -14,7 +14,7 @@
   "type": "module",
   "dependencies": {
     "dompurify": "^3.2.7",
-    "url-sanitizer": "^2.0.9",
+    "url-sanitizer": "^2.0.10",
     "webext-schema": "^6.0.0",
     "webextension-polyfill": "^0.12.0"
   },
