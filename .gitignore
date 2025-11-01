@@ -1,0 +1,8 @@
+build.cmd
+bundle/
+coverage/
+dest/**/*.zip
+dist/**/*.zip
+xpi/*.zip
+images/
+node_modules/
