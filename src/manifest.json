@@ -14,6 +14,9 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "url2clipboard@asamuzak.jp",
+      "data_collection_permissions": {
+        "required": ["none"]
+      },
       "strict_min_version": "115.0"
     }
   },
