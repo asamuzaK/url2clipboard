@@ -43,7 +43,7 @@
   "scripts": {
     "bundle": "npm-run-all -s bundle:*",
     "bundle:compat": "node index compat -ci",
-    "bundle:copy": "copyfiles src/LICENSE src/_locales/**/*.json src/css/*.css src/html/*.html src/img/*.* src/lib/**/* src/mjs/*.js src/js/*.js --up=1 --verbose --exclude=src/mjs/background.js --exclude=src/mjs/exec-copy.js --exclude=src/mjs/offscreen.js --exclude=src/mjs/options.js --exclude=src/mjs/popup.js --exclude=src/mjs/prompt.js --exclude=src/mjs/sanitize.js bundle",
+    "bundle:copy": "copyfiles src/LICENSE src/_locales/**/*.json src/css/*.css src/html/*.html src/img/*.* src/lib/**/* src/mjs/*.js src/js/*.js bundle --up=1 --verbose --exclude=src/mjs/background.js --exclude=src/mjs/exec-copy.js --exclude=src/mjs/offscreen.js --exclude=src/mjs/options.js --exclude=src/mjs/popup.js --exclude=src/mjs/prompt.js --exclude=src/mjs/sanitize.js",
     "bundle:repl": "copyfiles src/repl/*.js bundle/mjs --up=2 --verbose",
     "include": "npm-run-all -s include:*",
     "include:browser": "copyfiles node_modules/webext-schema/modules/browser.js src/mjs --up=3 --verbose",
