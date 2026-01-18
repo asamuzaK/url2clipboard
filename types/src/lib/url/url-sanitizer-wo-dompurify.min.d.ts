@@ -1,6 +1,6 @@
 declare var he: {
-    "__#3@#e": number;
-    "__#3@#t": Set<any>;
+    "__#private@#e": number;
+    "__#private@#t": Set<any>;
     replace(e: any): string | String;
     purify(e: any): string;
     sanitize(e: any, s: any): string;
@@ -8,7 +8,7 @@ declare var he: {
         [k: string]: string | String;
     };
     reset(): void;
-    "__#2@#e": Set<string>;
+    "__#private@#e": Set<string>;
     get(): string[];
     has(e: any): boolean;
     add(e: any): string[];
