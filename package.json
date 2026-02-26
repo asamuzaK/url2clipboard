@@ -40,6 +40,11 @@
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.9.3"
   },
+  "overrides": {
+    "c8": {
+      "yargs": "^18.0.0"
+    }
+  },
   "scripts": {
     "bundle": "npm-run-all -s bundle:*",
     "bundle:compat": "node index compat -ci",
