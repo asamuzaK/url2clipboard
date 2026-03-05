@@ -1,7 +1,6 @@
 /**
  * options-main.test.js
  */
-/* eslint-disable import-x/order */
 
 /* api */
 import { strict as assert } from 'node:assert';

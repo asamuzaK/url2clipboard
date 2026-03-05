@@ -9,7 +9,6 @@ import sinon from 'sinon';
 import { createJsdom } from './mocha/setup.js';
 
 /* test */
-// eslint-disable-next-line import-x/order
 import * as mjs from '../src/mjs/common.js';
 
 describe('common', () => {
