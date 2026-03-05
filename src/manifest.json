@@ -17,7 +17,7 @@
       "data_collection_permissions": {
         "required": ["none"]
       },
-      "strict_min_version": "115.0"
+      "strict_min_version": "140.0"
     }
   },
   "commands": {
