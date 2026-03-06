@@ -14,12 +14,12 @@
   "type": "module",
   "dependencies": {
     "dompurify": "^3.3.2",
-    "url-sanitizer": "^2.0.10",
+    "url-sanitizer": "^2.0.11",
     "webext-schema": "^7.0.0",
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
-    "@types/node": "^25.3.3",
+    "@types/node": "^25.3.5",
     "addons-linter": "^9.9.1",
     "c8": "^11.0.0",
     "commander": "^14.0.3",
@@ -29,7 +29,7 @@
     "eslint-plugin-regexp": "^3.0.0",
     "eslint-plugin-unicorn": "^63.0.0",
     "globals": "^17.4.0",
-    "html-validate": "^10.11.0",
+    "html-validate": "^10.11.1",
     "jsdom": "^28.1.0",
     "mocha": "^11.7.5",
     "native-copyfiles": "^2.0.1",
@@ -69,5 +69,5 @@
     "testall": "npm-run-all -s test:*",
     "tsc": "node index clean --dir=types -i && npx tsc"
   },
-  "version": "14.3.3"
+  "version": "15.0.0"
 }
