@@ -273,11 +273,6 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}]);
       mjs.enabledFormats.clear();
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
@@ -291,16 +286,11 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
-      assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
-      assert.strictEqual(browser.tabs.query.callCount, j + 2, 'called');
-      assert.strictEqual(res.length, 5, 'result');
+      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
+      assert.strictEqual(res.length, 1, 'result');
     });
 
     it('should call function', async () => {
@@ -310,16 +300,11 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
-      assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
-      assert.strictEqual(browser.tabs.query.callCount, j + 2, 'called');
-      assert.strictEqual(res.length, 5, 'result');
+      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
+      assert.strictEqual(res.length, 1, 'result');
     });
   });
 
@@ -360,11 +345,6 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}]);
       mjs.enabledFormats.clear();
       const res = await func({ contexts: ['tab'] }, { id: 1 });
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
@@ -382,15 +362,26 @@ describe('menu', () => {
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
+      const res = await func({ contexts: ['tab'] }, { id: 1 });
+      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
+      assert.strictEqual(res, undefined, 'result');
+    });
+
+    it('should call function', async () => {
+      const i = browser.menus.update.callCount;
+      const j = browser.menus.refresh.callCount;
+      const k = browser.tabs.query.callCount;
+      browser.menus.refresh.resolves(undefined);
       browser.tabs.query.withArgs({
-        highlighted: true,
         windowId: browser.windows.WINDOW_ID_CURRENT,
         windowType: 'normal'
-      }).resolves([{}, {}]);
+      }).resolves([{}]);
       const res = await func({ contexts: ['tab'] }, { id: 1 });
-      assert.strictEqual(browser.menus.update.callCount, i + 5, 'called');
+      assert.strictEqual(browser.menus.update.callCount, i + 4, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
-      assert.strictEqual(browser.tabs.query.callCount, k + 2, 'called');
+      assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
   });
