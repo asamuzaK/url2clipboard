@@ -3,7 +3,7 @@
  */
 
 /* shared */
-import { getAllTabsInWindow, getHighlightedTab } from './browser.js';
+import { getAllTabsInWindow } from './browser.js';
 import { getType, isString } from './common.js';
 import { enabledFormats, getFormat, getFormats } from './format.js';
 import {
@@ -183,25 +183,13 @@ export const updateContextMenu = async (tabId, enabled = false) => {
   if (enabledFormats.size) {
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
-    const highlightedTabs = await getHighlightedTab(WINDOW_ID_CURRENT);
-    const isHighlighted = highlightedTabs.length > 1;
     for (const item of items) {
       const { contexts, id: itemId } = menuItems[item];
       if (itemId === COPY_LINK) {
         func.push(menus.update(itemId, { enabled }));
-      } else if (contexts.includes('tab') && runtime.id === WEBEXT_ID) {
-        let visible;
-        if (itemId === COPY_TABS_ALL) {
-          visible = highlightedTabs.length !== allTabs.length &&
-                    allTabs.length > 1;
-        } else if (itemId === COPY_TABS_OTHER) {
-          visible = highlightedTabs.length !== allTabs.length;
-        } else if (itemId === COPY_TABS_SELECTED) {
-          visible = isHighlighted;
-        } else {
-          visible = !isHighlighted;
-        }
-        func.push(menus.update(itemId, { visible }));
+      } else if (runtime.id === WEBEXT_ID && allTabs.length === 1 &&
+        itemId !== COPY_TAB && contexts.includes('tab')) {
+        func.push(menus.update(itemId, { visible: false }));
       }
     }
   }

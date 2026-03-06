@@ -196,10 +196,10 @@
     }
   },
   "copyTabsURL": {
-    "message": "Copy Tabs URLs"
+    "message": "Copy Selected Tabs URLs"
   },
   "copyTabsURL_key": {
-    "message": "Copy Tab&s URLs",
+    "message": "Copy &Selected Tabs URLs",
     "placeholders": {
       "key": {
         "content": "$1",
@@ -208,7 +208,7 @@
     }
   },
   "copyTabsURL_format": {
-    "message": "Copy Tabs URLs as $FORMAT$",
+    "message": "Copy Selected Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
@@ -217,7 +217,7 @@
     }
   },
   "copyTabsURL_format_key": {
-    "message": "Copy Tab&s URLs as $FORMAT$",
+    "message": "Copy &Selected Tabs URLs as $FORMAT$",
     "placeholders": {
       "format": {
         "content": "$1",
