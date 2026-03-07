@@ -69,5 +69,5 @@
     "testall": "npm-run-all -s test:*",
     "tsc": "node index clean --dir=types -i && npx tsc"
   },
-  "version": "15.1.0"
+  "version": "15.1.1"
 }
