@@ -171,25 +171,18 @@ export const createContextMenu = async () => {
 
 /**
  * update context menu
- * @param {number} tabId - tab ID
- * @param {boolean} [enabled] - enabled
  * @returns {Promise.<Array>} - results of each handler
  */
-export const updateContextMenu = async (tabId, enabled = false) => {
-  if (!Number.isInteger(tabId)) {
-    throw new TypeError(`Expected Number but got ${getType(tabId)}.`);
-  }
+export const updateContextMenu = async () => {
   const func = [];
-  if (enabledFormats.size) {
+  if (enabledFormats.size && runtime.id === WEBEXT_ID) {
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
+    const visible = allTabs.length > 1;
     for (const item of items) {
       const { contexts, id: itemId } = menuItems[item];
-      if (itemId === COPY_LINK) {
-        func.push(menus.update(itemId, { enabled }));
-      } else if (runtime.id === WEBEXT_ID && allTabs.length === 1 &&
-        itemId !== COPY_TAB && contexts.includes('tab')) {
-        func.push(menus.update(itemId, { visible: false }));
+      if (itemId !== COPY_TAB && contexts.includes('tab')) {
+        func.push(menus.update(itemId, { visible }));
       }
     }
   }
@@ -199,16 +192,14 @@ export const updateContextMenu = async (tabId, enabled = false) => {
 /**
  * handle menus on shown
  * @param {object} info - menu info
- * @param {object} tab - tabs.Tab
  * @returns {?Promise} - menus.reflesh()
  */
-export const handleMenusOnShown = async (info, tab) => {
+export const handleMenusOnShown = async (info) => {
   const { contexts } = info;
-  const { id: tabId } = tab;
   let func;
   if (Array.isArray(contexts) && contexts.includes('tab') &&
-      Number.isInteger(tabId) && typeof menus.refresh === 'function') {
-    const arr = await updateContextMenu(tabId);
+      typeof menus.refresh === 'function') {
+    const arr = await updateContextMenu();
     if (Array.isArray(arr) && arr.length) {
       func = menus.refresh();
     }

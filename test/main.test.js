@@ -2215,9 +2215,9 @@ describe('main', () => {
         tabId: 1
       });
       assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
-      assert.strictEqual(browser.menus.update.callCount, j + 1, 'called');
-      assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
-      assert.deepEqual(res, [undefined], 'result');
+      assert.strictEqual(browser.menus.update.callCount, j, 'not called');
+      assert.strictEqual(browser.tabs.query.callCount, k, 'not called');
+      assert.deepEqual(res, [], 'result');
     });
   });
 
