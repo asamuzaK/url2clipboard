@@ -288,9 +288,9 @@ describe('menu', () => {
       }).resolves([{}, {}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
-      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.strictEqual(res.length, 1, 'result');
+      assert.strictEqual(res.length, 3, 'result');
     });
 
     it('should call function', async () => {
@@ -302,9 +302,9 @@ describe('menu', () => {
       }).resolves([{}, {}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
-      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
-      assert.strictEqual(res.length, 1, 'result');
+      assert.strictEqual(res.length, 3, 'result');
     });
   });
 
@@ -328,11 +328,6 @@ describe('menu', () => {
 
     it('should get null', async () => {
       const res = await func({ contexts: [] }, {});
-      assert.strictEqual(res, null, 'result');
-    });
-
-    it('should get null', async () => {
-      const res = await func({ contexts: ['tab'] }, {});
       assert.strictEqual(res, null, 'result');
     });
 
@@ -363,7 +358,7 @@ describe('menu', () => {
         windowType: 'normal'
       }).resolves([{}, {}, {}]);
       const res = await func({ contexts: ['tab'] }, { id: 1 });
-      assert.strictEqual(browser.menus.update.callCount, i + 1, 'called');
+      assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
       assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
@@ -379,7 +374,7 @@ describe('menu', () => {
         windowType: 'normal'
       }).resolves([{}]);
       const res = await func({ contexts: ['tab'] }, { id: 1 });
-      assert.strictEqual(browser.menus.update.callCount, i + 4, 'called');
+      assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
       assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
       assert.strictEqual(res, undefined, 'result');

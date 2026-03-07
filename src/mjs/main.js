@@ -4,8 +4,9 @@
 
 /* shared */
 import {
-  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
-  getHighlightedTab, getStorage, isTab, queryTabs, removeStorage, sendMessage
+  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage,
+  getAllTabsInWindow, getHighlightedTab, getStorage, isTab, queryTabs,
+  removeStorage, sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import { execCopy } from './exec-copy.js';
@@ -501,7 +502,7 @@ export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
   let func;
   if (Number.isInteger(tabId) && await isTab(tabId)) {
-    func = updateContextMenu(tabId, true);
+    func = updateContextMenu();
   }
   return func || null;
 };
