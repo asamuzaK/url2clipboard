@@ -13,7 +13,7 @@
   },
   "type": "module",
   "dependencies": {
-    "dompurify": "^3.3.3",
+    "dompurify": "^3.4.0",
     "url-sanitizer": "^2.0.11",
     "webext-schema": "^7.0.0",
     "webextension-polyfill": "^0.12.0"
