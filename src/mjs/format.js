@@ -301,17 +301,19 @@ export const createTabsLinkText = (arr, opt = {}) => {
  * @returns {Promise.<string>} - link text
  */
 export const createLinkText = async (data = {}) => {
-  let { attr, content, formatId, template, title, url } = data;
+  let {
+    attr = '', content = '', formatId, template, title = '', url = ''
+  } = data;
   if (!isString(formatId)) {
     throw new TypeError(`Expected String but got ${getType(formatId)}.`);
   }
   if (!isString(template)) {
     throw new TypeError(`Expected String but got ${getType(template)}.`);
   }
-  attr = attr ? attr.trim() : '';
-  content = content ? content.replace(/\s+/g, ' ').trim() : '';
-  title = title ? title.trim() : '';
-  url = url ? url.trim() : '';
+  attr = attr.trim();
+  content = content.replace(/\s+/g, ' ').trim();
+  title = title.trim();
+  url = url.trim();
   switch (formatId) {
     case ASCIIDOC:
       if (content) {
