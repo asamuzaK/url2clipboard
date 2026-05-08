@@ -331,6 +331,11 @@ describe('menu', () => {
       assert.strictEqual(res, null, 'result');
     });
 
+    it('should get null', async () => {
+      const res = await func({ contexts: ['tab'] }, {});
+      assert.strictEqual(res, null, 'result');
+    });
+
     it('should not call function', async () => {
       const i = browser.menus.update.callCount;
       const j = browser.menus.refresh.callCount;
