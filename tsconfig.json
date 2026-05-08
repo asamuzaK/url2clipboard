@@ -13,8 +13,6 @@
     "target": "esnext"
   },
   "include": [
-    "index.js",
-    "src/mjs/*",
-    "src/js/*"
+    "index.js"
   ]
 }

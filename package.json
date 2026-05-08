@@ -14,12 +14,12 @@
   "type": "module",
   "dependencies": {
     "dompurify": "^3.4.2",
-    "url-sanitizer": "^2.0.11",
+    "url-sanitizer": "^2.0.13",
     "webext-schema": "^7.0.0",
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0",
+    "@types/node": "^25.6.2",
     "addons-linter": "^10.4.0",
     "c8": "^11.0.0",
     "commander": "^14.0.3",
@@ -30,13 +30,13 @@
     "eslint-plugin-regexp": "^3.1.0",
     "eslint-plugin-unicorn": "^64.0.0",
     "globals": "^17.6.0",
-    "html-validate": "^10.13.1",
+    "html-validate": "^10.15.0",
     "jsdom": "^29.1.1",
     "mocha": "^11.7.5",
     "neostandard": "^0.13.0",
     "npm-run-all2": "^8.0.4",
-    "sinon": "^21.1.2",
-    "stylelint": "^17.9.1",
+    "sinon": "^22.0.0",
+    "stylelint": "^17.11.0",
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^6.0.3"
   },
