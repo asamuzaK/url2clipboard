@@ -171,18 +171,23 @@ export const createContextMenu = async () => {
 
 /**
  * update context menu
+ * @param {boolean} [enabled] - enabled
  * @returns {Promise.<Array>} - results of each handler
  */
-export const updateContextMenu = async () => {
+export const updateContextMenu = async (enabled = false) => {
   const func = [];
-  if (enabledFormats.size && runtime.id === WEBEXT_ID) {
+  if (enabledFormats.size) {
     const items = Object.keys(menuItems);
     const allTabs = await getAllTabsInWindow(WINDOW_ID_CURRENT);
-    const visible = allTabs.length > 1;
     for (const item of items) {
       const { contexts, id: itemId } = menuItems[item];
-      if (itemId !== COPY_TAB && contexts.includes('tab')) {
-        func.push(menus.update(itemId, { visible }));
+      if (runtime.id === WEBEXT_ID) {
+        if (itemId !== COPY_TAB && contexts.includes('tab')) {
+          const visible = allTabs.length > 1;
+          func.push(menus.update(itemId, { visible }));
+        }
+      } else if (itemId === COPY_LINK) {
+        func.push(menus.update(itemId, { enabled }));
       }
     }
   }
@@ -192,13 +197,15 @@ export const updateContextMenu = async () => {
 /**
  * handle menus on shown
  * @param {object} info - menu info
+ * @param {object} tab - tabs.Tab
  * @returns {?Promise} - menus.reflesh()
  */
-export const handleMenusOnShown = async (info) => {
+export const handleMenusOnShown = async (info, tab) => {
   const { contexts } = info;
+  const { id: tabId } = tab;
   let func;
   if (Array.isArray(contexts) && contexts.includes('tab') &&
-      typeof menus.refresh === 'function') {
+      Number.isInteger(tabId) && typeof menus.refresh === 'function') {
     const arr = await updateContextMenu();
     if (Array.isArray(arr) && arr.length) {
       func = menus.refresh();
