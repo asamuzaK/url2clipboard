@@ -19,6 +19,7 @@
     "webextension-polyfill": "^0.12.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/node": "^25.6.2",
     "addons-linter": "^10.4.0",
     "c8": "^11.0.0",
@@ -70,7 +71,8 @@
     "test:central": "c8 mocha --require=test/mocha/setup.js --channel=central --exit test/*.test.js",
     "test:esr": "c8 mocha --require=test/mocha/setup.js --channel=esr --exit test/*.test.js",
     "test:release": "c8 mocha --require=test/mocha/setup.js --channel=release --exit test/*.test.js",
-    "testall": "npm-run-all -s test:*",
+    "test_all": "npm-run-all -s test:*",
+    "test_e2e": "playwright test",
     "tsc": "node index clean --dir=types -i && npx tsc"
   },
   "version": "15.1.1"
