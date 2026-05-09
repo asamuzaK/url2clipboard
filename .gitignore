@@ -3,6 +3,8 @@ bundle/
 coverage/
 dest/**/*.zip
 dist/**/*.zip
-xpi/*.zip
 images/
 node_modules/
+playwright-report/
+test-results/
+xpi/*.zip
