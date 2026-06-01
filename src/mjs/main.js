@@ -404,7 +404,8 @@ export const extractClickedData = async (info, tab) => {
             const textFrag = `#:~:text=${encodeURIComponent(selectionText)}`;
             const { href: textFragUrl } = new URL(textFrag, tabUrl);
             url = await sanitizeURL(textFragUrl, {
-              allow: ['data', 'file']
+              allow: ['data', 'file'],
+              revokeObjectURL: true
             });
             if (isEdited) {
               content = editedText;
@@ -413,7 +414,8 @@ export const extractClickedData = async (info, tab) => {
             }
           } else {
             url = await sanitizeURL(canonicalUrl || tabUrl, {
-              allow: ['data', 'file']
+              allow: ['data', 'file'],
+              revokeObjectURL: true
             });
             if (isEdited) {
               content = editedText;
@@ -453,7 +455,8 @@ export const extractClickedData = async (info, tab) => {
           }
           if (url) {
             url = await sanitizeURL(url, {
-              allow: ['data', 'file']
+              allow: ['data', 'file'],
+              revokeObjectURL: true
             });
           }
         }
