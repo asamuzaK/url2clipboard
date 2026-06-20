@@ -72,5 +72,5 @@
     "test:e2e": "playwright test",
     "tsc": "node index clean --dir=types -i && npx tsc"
   },
-  "version": "15.1.1"
+  "version": "15.1.3"
 }
