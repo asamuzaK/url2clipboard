@@ -2,11 +2,47 @@
  * browser.js
  */
 
-/* shared */
-import { getType, isObjectNotEmpty, isString, logErr } from './common.js';
-
 /* api */
 const { permissions, runtime, tabs, windows } = browser;
+
+/* constants & utils */
+const TYPE_FROM = 8;
+const TYPE_TO = -1;
+
+/**
+ * log error
+ * @param {!object} e - Error
+ * @returns {boolean} - false
+ */
+const logErr = e => {
+  console.error(e);
+  return false;
+};
+
+/**
+ * get type
+ * @param {object} o - object to check
+ * @returns {string} - type of object
+ */
+const getType = o =>
+  Object.prototype.toString.call(o).slice(TYPE_FROM, TYPE_TO);
+
+/**
+ * is object, and not an empty object
+ * @param {object} o - object to check;
+ * @returns {boolean} - result
+ */
+const isObjectNotEmpty = o => {
+  const items = /Object/i.test(getType(o)) && Object.keys(o);
+  return !!(items?.length);
+};
+
+/**
+ * is string
+ * @param {object} o - object to check
+ * @returns {boolean} - result
+ */
+const isString = o => typeof o === 'string' || o instanceof String;
 
 /**
  * check if permission is granted
