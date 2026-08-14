@@ -1,11 +1,11 @@
-export function getStat(file: string): object;
-export function isDir(dir: string): boolean;
-export function isFile(file: string): boolean;
-export function mkdir(dir: string, opt?: object): Promise<string>;
-export function rm(dir: string, opt?: object): Promise<void>;
-export function removeDir(dir: string): void;
-export function readFile(file: string, opt?: {
-    encoding?: string | undefined;
-    flag?: string | undefined;
-}): Promise<string | Buffer>;
-export function createFile(file: string, value: string): Promise<string>;
+export declare const getStat: (file: string) => object;
+export declare const isDir: (dir: string) => boolean;
+export declare const isFile: (file: string) => boolean;
+export declare const mkdir: (dir: string, opt?: object) => Promise<string>;
+export declare const rm: (dir: string, opt?: object) => Promise<void>;
+export declare const removeDir: (dir: string) => void;
+export declare const readFile: (file: string, opt?: {
+    encoding?: string;
+    flag?: string;
+}) => Promise<string | Buffer>;
+export declare const createFile: (file: string, value: string) => Promise<string>;
