@@ -4,12 +4,7 @@ We take security vulnerabilities seriously. Thank you for improving the security
 
 ## Supported Versions
 
-The following versions of this project are currently supported with security updates:
-
-| Version | Supported          |
-| ------- | ------------------ |
-| 15.x.x   | :white_check_mark: |
-| < 15.0.0 | :x:                |
+We currently provide security updates **only for the latest major release**.
 
 ## Reporting a Vulnerability
 
