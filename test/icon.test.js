@@ -27,7 +27,8 @@ describe('icon', () => {
 
     it('should not call function', async () => {
       const i = browser.action.setIcon.callCount;
-      browser.runtime.getURL.withArgs('img/icon-color-16.png')
+      browser.runtime.getURL
+        .withArgs('img/icon-color-16.png')
         .returns('foo/img/icon-color-16.png');
       browser.action.setIcon.callsFake((...args) => args);
       const res = await func();
@@ -37,16 +38,21 @@ describe('icon', () => {
 
     it('should call function', async () => {
       const i = browser.action.setIcon.callCount;
-      browser.runtime.getURL.withArgs('img/icon-color-16.png')
+      browser.runtime.getURL
+        .withArgs('img/icon-color-16.png')
         .returns('foo/img/icon-color-16.png');
       browser.action.setIcon.callsFake((...args) => args);
       const res = await func('icon-color-16.png');
       assert.strictEqual(browser.action.setIcon.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          path: 'foo/img/icon-color-16.png'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            path: 'foo/img/icon-color-16.png'
+          }
+        ],
+        'result'
+      );
     });
   });
 });

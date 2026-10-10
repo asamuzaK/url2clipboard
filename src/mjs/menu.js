@@ -7,8 +7,14 @@ import { getAllTabsInWindow } from './browser.js';
 import { getType, isString } from './common.js';
 import { enabledFormats, getFormat, getFormats } from './format.js';
 import {
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, OPTIONS_OPEN, WEBEXT_ID
+  COPY_LINK,
+  COPY_PAGE,
+  COPY_TAB,
+  COPY_TABS_ALL,
+  COPY_TABS_OTHER,
+  COPY_TABS_SELECTED,
+  OPTIONS_OPEN,
+  WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -111,13 +117,10 @@ export const createSingleMenuItem = async (key, itemId, itemKey, itemData) => {
     throw new TypeError(`Expected String but got ${getType(itemKey)}.`);
   }
   const { id: keyId, title: keyTitle } = getFormat(key);
-  const formatTitle = i18n.getMessage(
-    `${itemId}_format_key`,
-    [
-      keyTitle || keyId,
-      (runtime.id === WEBEXT_ID && itemKey) || ` ${itemKey}`
-    ]
-  );
+  const formatTitle = i18n.getMessage(`${itemId}_format_key`, [
+    keyTitle || keyId,
+    (runtime.id === WEBEXT_ID && itemKey) || ` ${itemKey}`
+  ]);
   return createMenuItem(`${itemId}${key}`, formatTitle, itemData);
 };
 
@@ -204,8 +207,12 @@ export const handleMenusOnShown = async (info, tab) => {
   const { contexts } = info;
   const { id: tabId } = tab;
   let func;
-  if (Array.isArray(contexts) && contexts.includes('tab') &&
-      Number.isInteger(tabId) && typeof menus.refresh === 'function') {
+  if (
+    Array.isArray(contexts) &&
+    contexts.includes('tab') &&
+    Number.isInteger(tabId) &&
+    typeof menus.refresh === 'function'
+  ) {
     const arr = await updateContextMenu();
     if (Array.isArray(arr) && arr.length) {
       func = menus.refresh();

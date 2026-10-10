@@ -11,7 +11,11 @@ import { browser, createJsdom } from './mocha/setup.js';
 /* test */
 import DOMPurify from '../src/lib/purify/purify.min.js';
 import {
-  EXEC_COPY, MIME_PLAIN, PROMPT, SANITIZE_ATTR, SANITIZE_URL
+  EXEC_COPY,
+  MIME_PLAIN,
+  PROMPT,
+  SANITIZE_ATTR,
+  SANITIZE_URL
 } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/offscreen-main.js';
 
@@ -78,10 +82,16 @@ describe('offscreen-main', () => {
         text: 'foo https://example.com'
       };
       await func(opt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j,
+        'not called'
+      );
     });
 
     it('should call function', async () => {
@@ -97,10 +107,16 @@ describe('offscreen-main', () => {
         text: 'foo https://example.com'
       };
       await func(opt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j,
+        'not called'
+      );
     });
 
     it('should call function', async () => {
@@ -116,10 +132,16 @@ describe('offscreen-main', () => {
         text: 'foo https://example.com'
       };
       await func(opt);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j + 1,
+        'called'
+      );
     });
   });
 

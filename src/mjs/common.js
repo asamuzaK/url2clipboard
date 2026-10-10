@@ -76,7 +76,7 @@ export const isString = o => typeof o === 'string' || o instanceof String;
  */
 export const isObjectNotEmpty = o => {
   const items = /Object/i.test(getType(o)) && Object.keys(o);
-  return !!(items?.length);
+  return !!items?.length;
 };
 
 /**
@@ -158,7 +158,9 @@ export const convertHtmlChar = str => {
   }
   const htmlChar = str
     .replace(/&(?!(?:[\dA-Za-z]+|#(?:\d+|x[\dA-Fa-f]+));)/g, '&amp;')
-    .replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
   return htmlChar || null;
 };
 
@@ -172,7 +174,8 @@ export const convertLaTeXChar = str => {
     throw new TypeError(`Expected String but got ${getType(str)}.`);
   }
   const spChar = escapeMatchingChars(
-    str.replace(/\\/g, '\\textbackslash[]')
+    str
+      .replace(/\\/g, '\\textbackslash[]')
       .replace(/\^/g, '\\textasciicircum[]')
       .replace(/~/g, '\\textasciitilde[]'),
     /([%$#&_{}])/g
@@ -193,7 +196,8 @@ export const encodeUrlPart = part => {
   if (!isString(part)) {
     throw new TypeError(`Expected String but got ${getType(part)}.`);
   }
-  const urlPart = part.replace(/&(?!amp)/g, '&amp;')
+  const urlPart = part
+    .replace(/&(?!amp)/g, '&amp;')
     .replace(/([\s<>[\]'^`{|}])/g, (m, c) => encodeURIComponent(c))
     .replace(/(')/g, (m, c) => escape(c));
   return urlPart || '';
@@ -210,9 +214,7 @@ export const encodeUrlSpecialChar = str => {
   }
   let encUrl;
   const url = new URL(str);
-  const {
-    hash: frag, origin, pathname: path, protocol, search: query
-  } = url;
+  const { hash: frag, origin, pathname: path, protocol, search: query } = url;
   if (protocol === 'about:') {
     encUrl = url.href;
   } else {

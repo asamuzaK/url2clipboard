@@ -5,8 +5,13 @@
 /* shared */
 import { throwErr } from './common.js';
 import {
-  extractClickedData, handleActiveTab, handleCmd, handleMsg, handleStorage,
-  handleUpdatedTab, startup
+  extractClickedData,
+  handleActiveTab,
+  handleCmd,
+  handleMsg,
+  handleStorage,
+  handleUpdatedTab,
+  startup
 } from './main.js';
 import { handleMenusOnShown } from './menu.js';
 
@@ -32,9 +37,7 @@ runtime.onMessage.addListener((msg, sender) =>
   handleMsg(msg, sender).catch(throwErr)
 );
 runtime.onStartup.addListener(() => startup().catch(throwErr));
-tabs.onActivated.addListener(info =>
-  handleActiveTab(info).catch(throwErr)
-);
+tabs.onActivated.addListener(info => handleActiveTab(info).catch(throwErr));
 tabs.onUpdated.addListener((tabId, info, tab) =>
   handleUpdatedTab(tabId, info, tab).catch(throwErr)
 );

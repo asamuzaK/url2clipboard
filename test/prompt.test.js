@@ -68,9 +68,11 @@ describe('prompt', () => {
     it('should throw', async () => {
       const i = browser.scripting.executeScript.callCount;
       const j = browser.i18n.getMessage.callCount;
-      browser.scripting.executeScript.resolves([{
-        error: new Error('error')
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          error: new Error('error')
+        }
+      ]);
       browser.i18n.getMessage.withArgs(USER_INPUT, '').returns('baz  qux');
       const res = await func({
         content: 'foo',
@@ -79,10 +81,16 @@ describe('prompt', () => {
         assert.strictEqual(e instanceof Error, true, 'error');
         assert.strictEqual(e.message, 'error', 'message');
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, j + 1,
-        'i18n not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.i18n.getMessage.callCount,
+        j + 1,
+        'i18n not called'
+      );
       // should not reach
       assert.strictEqual(res, undefined, 'result');
     });
@@ -90,38 +98,55 @@ describe('prompt', () => {
     it('should call function', async () => {
       const i = browser.scripting.executeScript.callCount;
       const j = browser.i18n.getMessage.callCount;
-      browser.scripting.executeScript.resolves([{
-        result: 'foo bar'
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          result: 'foo bar'
+        }
+      ]);
       browser.i18n.getMessage.withArgs(USER_INPUT, '').returns('baz  qux');
       const res = await func({
         content: 'foo',
         tabId: 1
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, j + 1,
-        'i18n called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.i18n.getMessage.callCount,
+        j + 1,
+        'i18n called'
+      );
       assert.strictEqual(res, 'foo bar', 'result');
     });
 
     it('should call function', async () => {
       const i = browser.scripting.executeScript.callCount;
       const j = browser.i18n.getMessage.callCount;
-      browser.scripting.executeScript.resolves([{
-        result: 'foo bar'
-      }]);
-      browser.i18n.getMessage.withArgs(USER_INPUT, 'Markdown')
+      browser.scripting.executeScript.resolves([
+        {
+          result: 'foo bar'
+        }
+      ]);
+      browser.i18n.getMessage
+        .withArgs(USER_INPUT, 'Markdown')
         .returns('baz Markdown qux');
       const res = await func({
         content: 'foo',
         formatTitle: 'Markdown',
         tabId: 1
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.i18n.getMessage.callCount, j + 1,
-        'i18n called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.i18n.getMessage.callCount,
+        j + 1,
+        'i18n called'
+      );
       assert.strictEqual(res, 'foo bar', 'result');
     });
   });

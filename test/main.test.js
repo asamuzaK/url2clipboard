@@ -10,18 +10,49 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN, ICON_AUTO, ICON_BLACK,
-  ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE, INCLUDE_ATTR_HTML_HYPER,
-  INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN, NOTIFY_COPY, OPTIONS_OPEN,
-  PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER, TEXT_FRAG_HTML_PLAIN,
-  TEXT_SEP_LINES, USER_INPUT_DEFAULT, WEBEXT_ID
+  ATTR_HTML_HYPER,
+  ATTR_HTML_PLAIN,
+  CMD_COPY,
+  CONTEXT_INFO,
+  CONTEXT_INFO_GET,
+  COPY_LINK,
+  COPY_PAGE,
+  COPY_TAB,
+  COPY_TABS_ALL,
+  COPY_TABS_OTHER,
+  COPY_TABS_SELECTED,
+  EXEC_COPY,
+  HTML_HYPER,
+  HTML_PLAIN,
+  ICON_AUTO,
+  ICON_BLACK,
+  ICON_COLOR,
+  ICON_DARK,
+  ICON_LIGHT,
+  ICON_WHITE,
+  INCLUDE_ATTR_HTML_HYPER,
+  INCLUDE_ATTR_HTML_PLAIN,
+  INCLUDE_TITLE_HTML_HYPER,
+  INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN,
+  JS_CONTEXT_INFO,
+  MARKDOWN,
+  NOTIFY_COPY,
+  OPTIONS_OPEN,
+  PREFER_CANONICAL,
+  PROMPT,
+  TEXT_FRAG_HTML_HYPER,
+  TEXT_FRAG_HTML_PLAIN,
+  TEXT_SEP_LINES,
+  USER_INPUT_DEFAULT,
+  WEBEXT_ID
 } from '../src/mjs/constant.js';
 import { editContent } from '../src/mjs/edit-content.js';
 import {
-  getFormat, getFormatsKeys, setFormat, setFormatData
+  getFormat,
+  getFormatsKeys,
+  setFormat,
+  setFormatData
 } from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/main.js';
 
@@ -207,8 +238,11 @@ describe('main', () => {
       assert.strictEqual(res.has(INCLUDE_ATTR_HTML_HYPER), true, 'key');
       assert.strictEqual(res.get(INCLUDE_ATTR_HTML_HYPER), true, 'value');
       assert.strictEqual(res.has(ATTR_HTML_HYPER), true, 'key');
-      assert.strictEqual(res.get(ATTR_HTML_HYPER),
-        'class="foo bar" target="_blank"', 'value');
+      assert.strictEqual(
+        res.get(ATTR_HTML_HYPER),
+        'class="foo bar" target="_blank"',
+        'value'
+      );
       assert.strictEqual(res.has(INCLUDE_ATTR_HTML_PLAIN), true, 'key');
       assert.strictEqual(res.get(INCLUDE_ATTR_HTML_PLAIN), false, 'value');
       assert.strictEqual(res.has(ATTR_HTML_PLAIN), true, 'key');
@@ -295,8 +329,11 @@ describe('main', () => {
     });
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should get null', () => {
@@ -333,8 +370,11 @@ describe('main', () => {
     it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_HYPER, true);
       const res = func(`${COPY_PAGE}HTMLHyper`);
-      assert.strictEqual(res,
-        '<a href="%url%" title="%title%"%attr%>%content%</a>', 'result');
+      assert.strictEqual(
+        res,
+        '<a href="%url%" title="%title%"%attr%>%content%</a>',
+        'result'
+      );
     });
 
     it('should get value', () => {
@@ -345,8 +385,11 @@ describe('main', () => {
     it('should get value', () => {
       mjs.userOpts.set(INCLUDE_TITLE_HTML_PLAIN, true);
       const res = func(`${COPY_PAGE}HTMLPlain`);
-      assert.strictEqual(res,
-        '<a href="%url%" title="%title%"%attr%>%content%</a>', 'result');
+      assert.strictEqual(
+        res,
+        '<a href="%url%" title="%title%"%attr%>%content%</a>',
+        'result'
+      );
     });
 
     it('should get value', () => {
@@ -366,49 +409,58 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'throw'
+        );
       });
     });
 
     it('should get result', async () => {
       const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([
+          {
+            id: 1,
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            id: 2,
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ]);
       await setFormatData();
       const res = await func(`${COPY_TABS_ALL}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'foo',
-          formatId: 'TextURL',
-          id: 1,
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'bar',
-          formatId: 'TextURL',
-          id: 2,
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            content: 'foo',
+            formatId: 'TextURL',
+            id: 1,
+            template: '%content% %url%',
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            content: 'bar',
+            formatId: 'TextURL',
+            id: 2,
+            template: '%content% %url%',
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ],
+        'result'
+      );
     });
   });
 
@@ -417,51 +469,60 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'throw'
+        );
       });
     });
 
     it('should get result', async () => {
       const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        active: false,
-        highlighted: false,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
+      browser.tabs.query
+        .withArgs({
+          active: false,
+          highlighted: false,
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([
+          {
+            id: 1,
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            id: 2,
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ]);
       await setFormatData();
       const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'foo',
-          formatId: 'TextURL',
-          id: 1,
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'bar',
-          formatId: 'TextURL',
-          id: 2,
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            content: 'foo',
+            formatId: 'TextURL',
+            id: 1,
+            template: '%content% %url%',
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            content: 'bar',
+            formatId: 'TextURL',
+            id: 2,
+            template: '%content% %url%',
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ],
+        'result'
+      );
     });
   });
 
@@ -470,50 +531,59 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'throw'
+        );
       });
     });
 
     it('should get result', async () => {
       const i = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([
-        {
-          id: 1,
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          id: 2,
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ]);
+      browser.tabs.query
+        .withArgs({
+          highlighted: true,
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([
+          {
+            id: 1,
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            id: 2,
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ]);
       await setFormatData();
       const res = await func(`${COPY_PAGE}TextURL`);
       assert.strictEqual(browser.tabs.query.callCount, i + 1, 'called');
-      assert.deepEqual(res, [
-        {
-          content: 'foo',
-          formatId: 'TextURL',
-          id: 1,
-          template: '%content% %url%',
-          title: 'foo',
-          url: 'https://example.com'
-        },
-        {
-          content: 'bar',
-          formatId: 'TextURL',
-          id: 2,
-          template: '%content% %url%',
-          title: 'bar',
-          url: 'https://www.example.com'
-        }
-      ], 'result');
+      assert.deepEqual(
+        res,
+        [
+          {
+            content: 'foo',
+            formatId: 'TextURL',
+            id: 1,
+            template: '%content% %url%',
+            title: 'foo',
+            url: 'https://example.com'
+          },
+          {
+            content: 'bar',
+            formatId: 'TextURL',
+            id: 2,
+            template: '%content% %url%',
+            title: 'bar',
+            url: 'https://www.example.com'
+          }
+        ],
+        'result'
+      );
     });
   });
 
@@ -522,36 +592,44 @@ describe('main', () => {
 
     it('should get null', async () => {
       browser.scripting.executeScript.resolves(null);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
       assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.scripting.executeScript.resolves([]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
       assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.scripting.executeScript.resolves([undefined]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
       assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
       browser.scripting.executeScript.resolves([{}]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
       assert.strictEqual(res, null, 'result');
     });
@@ -559,9 +637,11 @@ describe('main', () => {
     it('should not log error', async () => {
       const stubErr = sinon.stub(console, 'error');
       browser.scripting.executeScript.rejects(new Error('error'));
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
       const { called: errCalled } = stubErr;
       stubErr.restore();
@@ -570,54 +650,74 @@ describe('main', () => {
     });
 
     it('should throw', async () => {
-      browser.scripting.executeScript.resolves([{
-        error: new Error('error')
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          error: new Error('error')
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       await func().catch(e => {
         assert.strictEqual(e instanceof Error, true, 'error');
       });
     });
 
     it('should throw', async () => {
-      browser.scripting.executeScript.resolves([{
-        error: null
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          error: null
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       await func().catch(e => {
         assert.strictEqual(e, null, 'error');
       });
     });
 
     it('should throw', async () => {
-      browser.scripting.executeScript.resolves([{
-        error: false
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          error: false
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       await func().catch(e => {
         assert.strictEqual(e, false, 'error');
       });
     });
 
     it('should get result', async () => {
-      browser.scripting.executeScript.resolves([{
-        result: {
-          foo: 'bar'
+      browser.scripting.executeScript.resolves([
+        {
+          result: {
+            foo: 'bar'
+          }
         }
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.deepEqual(res, {
-        foo: 'bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          foo: 'bar'
+        },
+        'result'
+      );
     });
   });
 
@@ -628,12 +728,17 @@ describe('main', () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
       browser.scripting.executeScript.resolves(null);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -641,12 +746,17 @@ describe('main', () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
       browser.scripting.executeScript.resolves([]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -654,12 +764,17 @@ describe('main', () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
       browser.scripting.executeScript.resolves(['foo']);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -667,39 +782,55 @@ describe('main', () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
       browser.scripting.executeScript.resolves([{}]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
     it('should get result', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.scripting.executeScript.resolves([{
-        result: {
-          foo: 'bar'
+      browser.scripting.executeScript.resolves([
+        {
+          result: {
+            foo: 'bar'
+          }
         }
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, {}, 'result');
     });
 
     it('should throw', async () => {
-      browser.scripting.executeScript.resolves([{
-        error: new Error('error')
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.scripting.executeScript.resolves([
+        {
+          error: new Error('error')
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       await func().catch(e => {
         assert.strictEqual(e instanceof Error, true, 'error');
       });
@@ -738,10 +869,16 @@ describe('main', () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.runtime.openOptionsPage.callCount;
       const res = await func();
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        j,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -749,10 +886,16 @@ describe('main', () => {
       const i = navigator.clipboard.writeText.callCount;
       const j = browser.runtime.openOptionsPage.callCount;
       const res = await func({}, {});
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        j,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -766,10 +909,16 @@ describe('main', () => {
         id: null
       };
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        j,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -783,10 +932,16 @@ describe('main', () => {
         id: null
       };
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        j,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -800,10 +955,16 @@ describe('main', () => {
         id: browser.tabs.TAB_ID_NONE
       };
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        j,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -817,10 +978,16 @@ describe('main', () => {
         id: 1
       };
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
-      assert.strictEqual(browser.runtime.openOptionsPage.calledOnce, true,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.calledOnce,
+        true,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -860,8 +1027,11 @@ describe('main', () => {
       };
       await func(info, tab).catch(e => {
         assert.strictEqual(e instanceof TypeError, true, 'error');
-        assert.strictEqual(e.message, 'Expected String but got Null',
-          'message');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Null',
+          'message'
+        );
       });
     });
 
@@ -877,8 +1047,11 @@ describe('main', () => {
       };
       mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -893,20 +1066,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: null,
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -921,20 +1099,21 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: null,
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
-        'called');
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -951,16 +1130,18 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: null,
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
       assert.strictEqual(document.execCommand.callCount, i + 1, 'called');
@@ -978,21 +1159,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1007,21 +1193,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/#foo'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1036,13 +1227,18 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1058,26 +1254,35 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      }, {
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com/'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1094,27 +1299,36 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      }, {
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com/'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_SEP_LINES, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1131,22 +1345,30 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1163,23 +1385,31 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_SEP_LINES, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1196,26 +1426,35 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      }, {
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com/'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1232,27 +1471,36 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'foo',
-        url: 'https://example.com/'
-      }, {
-        id: 2,
-        title: 'bar',
-        url: 'https://example.com/bar'
-      }, {
-        id: 3,
-        title: 'baz',
-        url: 'https://example.com/baz'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'foo',
+          url: 'https://example.com/'
+        },
+        {
+          id: 2,
+          title: 'bar',
+          url: 'https://example.com/bar'
+        },
+        {
+          id: 3,
+          title: 'baz',
+          url: 'https://example.com/baz'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_SEP_LINES, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.tabs.query.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
@@ -1268,13 +1516,18 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1292,20 +1545,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1322,20 +1580,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: '',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: '',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1351,20 +1614,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1375,27 +1643,32 @@ describe('main', () => {
         menuItemId,
         editedText: 'bar',
         isEdited: true,
-        linkUrl: 'https://example.com/foo',
+        linkUrl: 'https://example.com/foo'
       };
       const tab = {
         id: 1,
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: 'https://www.example.com',
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: 'https://www.example.com',
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1411,20 +1684,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1439,21 +1717,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1468,21 +1751,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PREFER_CANONICAL, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1498,21 +1786,22 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_FRAG_HTML_HYPER, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
-        'called');
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1528,22 +1817,23 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(ATTR_HTML_HYPER, 'class="foo"');
       mjs.userOpts.set(INCLUDE_ATTR_HTML_HYPER, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
-        'called');
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1559,21 +1849,22 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(INCLUDE_ATTR_HTML_HYPER, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.write.callCount, i + 1,
-        'called');
+      assert.strictEqual(navigator.clipboard.write.callCount, i + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1589,21 +1880,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1619,22 +1915,27 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(ATTR_HTML_PLAIN, 'class="foo"');
       mjs.userOpts.set(INCLUDE_ATTR_HTML_PLAIN, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1650,21 +1951,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(INCLUDE_ATTR_HTML_PLAIN, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1682,21 +1988,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: 'bar baz',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: 'bar baz',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1714,21 +2025,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: 'https://www.example.com',
-          content: null,
-          selectionText: 'bar baz',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: 'https://www.example.com',
+            content: null,
+            selectionText: 'bar baz',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(TEXT_FRAG_HTML_PLAIN, false);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1744,20 +2060,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: null,
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: null,
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1772,20 +2093,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: null,
-          content: 'bar',
-          selectionText: 'foo bar baz',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: null,
+            content: 'bar',
+            selectionText: 'foo bar baz',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1800,20 +2126,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: null,
-          content: 'bar',
-          selectionText: '',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: null,
+            content: 'bar',
+            selectionText: '',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1830,20 +2161,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: true,
-          canonicalUrl: null,
-          content: 'bar',
-          selectionText: '',
-          title: 'baz',
-          url: 'https://example.com/foo'
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: true,
+            canonicalUrl: null,
+            content: 'bar',
+            selectionText: '',
+            title: 'baz',
+            url: 'https://example.com/foo'
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1861,16 +2197,24 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1887,21 +2231,30 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).rejects(
-        new Error('error'));
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript
+        .withArgs(optEdit)
+        .rejects(new Error('error'));
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
       const { called: errCalled } = stubErr;
       stubErr.restore();
       assert.strictEqual(errCalled, true, 'called error');
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 2,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -1915,12 +2268,16 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        error: new Error('error')
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          error: new Error('error')
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
@@ -1938,12 +2295,16 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        error: null
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          error: null
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
@@ -1961,12 +2322,16 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        error: false
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          error: false
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       await func(info, tab).catch(e => {
@@ -1986,17 +2351,25 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
       browser.scripting.executeScript.withArgs(optEdit).resolves([undefined]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 2,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2012,19 +2385,29 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        result: null
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          result: null
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 2,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2040,19 +2423,29 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        result: ''
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          result: ''
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 2,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2068,19 +2461,29 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
-      browser.scripting.executeScript.withArgs(optEdit).resolves([{
-        result: 'foo bar'
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
+      browser.scripting.executeScript.withArgs(optEdit).resolves([
+        {
+          result: 'foo bar'
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(PROMPT, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.scripting.executeScript.callCount, j + 2,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        j + 2,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2095,20 +2498,26 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {}
-      }]);
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {}
+        }
+      ]);
       mjs.enabledFormats.add(menuItemId);
       mjs.userOpts.set(NOTIFY_COPY, true);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
-      const i = navigator.clipboard.writeText
-        .withArgs('foo https://example.com/').callCount;
+      const i = navigator.clipboard.writeText.withArgs(
+        'foo https://example.com/'
+      ).callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -2118,27 +2527,33 @@ describe('main', () => {
         title: 'foo',
         url: 'https://example.com/"onclick="alert(1)"'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: null,
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText
-        .withArgs('foo https://example.com/').callCount, i + 1,
-      'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.withArgs('foo https://example.com/')
+          .callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
-      const i = navigator.clipboard.writeText
-        .withArgs('foo data:,https://example.com/').callCount;
+      const i = navigator.clipboard.writeText.withArgs(
+        'foo data:,https://example.com/'
+      ).callCount;
       const menuItemId = 'TextURL';
       const info = {
         menuItemId
@@ -2148,21 +2563,26 @@ describe('main', () => {
         title: 'foo',
         url: 'data:,https://example.com/#<script>alert(1);</script>'
       };
-      browser.scripting.executeScript.withArgs(optInfo).resolves([{
-        result: {
-          isLink: false,
-          canonicalUrl: null,
-          content: null,
-          selectionText: '',
-          title: null,
-          url: null
+      browser.scripting.executeScript.withArgs(optInfo).resolves([
+        {
+          result: {
+            isLink: false,
+            canonicalUrl: null,
+            content: null,
+            selectionText: '',
+            title: null,
+            url: null
+          }
         }
-      }]);
+      ]);
       mjs.enabledFormats.add(menuItemId);
       const res = await func(info, tab);
-      assert.strictEqual(navigator.clipboard.writeText
-        .withArgs('foo data:,https://example.com/').callCount, i + 1,
-      'called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.withArgs('foo data:,https://example.com/')
+          .callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
   });
@@ -2201,15 +2621,19 @@ describe('main', () => {
       const j = browser.menus.update.callCount;
       const k = browser.tabs.query.callCount;
       browser.tabs.get.withArgs(1).resolves({});
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
-      browser.tabs.query.withArgs({
-        highlighted: true,
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          highlighted: true,
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}]);
       mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func({
         tabId: 1
@@ -2226,8 +2650,11 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected Number but got Undefined.',
+          'throw'
+        );
       });
     });
 
@@ -2237,31 +2664,43 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      const res = await func(1, {
-        status: 'loading'
-      }, {
-        active: true
-      });
+      const res = await func(
+        1,
+        {
+          status: 'loading'
+        },
+        {
+          active: true
+        }
+      );
       assert.strictEqual(res, null, 'result');
     });
 
     it('should get null', async () => {
-      const res = await func(1, {
-        status: 'complete'
-      }, {
-        active: false
-      });
+      const res = await func(
+        1,
+        {
+          status: 'complete'
+        },
+        {
+          active: false
+        }
+      );
       assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
       const i = browser.tabs.get.callCount;
       browser.tabs.get.withArgs(1).resolves({});
-      const res = await func(1, {
-        status: 'complete'
-      }, {
-        active: true
-      });
+      const res = await func(
+        1,
+        {
+          status: 'complete'
+        },
+        {
+          active: true
+        }
+      );
       assert.strictEqual(browser.tabs.get.callCount, i + 1, 'called');
       assert.deepEqual(res, [], 'result');
     });
@@ -2279,8 +2718,11 @@ describe('main', () => {
     it('should throw', async () => {
       await func().catch(e => {
         assert.strictEqual(e instanceof TypeError, true, 'error');
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'message');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'message'
+        );
       });
     });
 
@@ -2290,22 +2732,26 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'Example Domain',
-        url: 'https://example.com'
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'Example Domain',
+          url: 'https://example.com'
+        }
+      ]);
       mjs.enabledFormats.add(HTML_HYPER);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
       assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
-      browser.tabs.query.resolves([{
-        id: 1,
-        title: 'Example Domain',
-        url: 'https://example.com'
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1,
+          title: 'Example Domain',
+          url: 'https://example.com'
+        }
+      ]);
       mjs.enabledFormats.add(HTML_PLAIN);
       const res = await func(`${CMD_COPY}${HTML_PLAIN}`);
       assert.strictEqual(res, undefined, 'result');
@@ -2348,38 +2794,56 @@ describe('main', () => {
     it('should call function', async () => {
       const i = browser.scripting.executeScript.callCount;
       const j = browser.runtime.sendMessage.callCount;
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func({
         [CONTEXT_INFO_GET]: true
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j,
-        'not called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j,
+        'not called'
+      );
       assert.deepEqual(res, [null], 'result');
     });
 
     it('should call function', async () => {
       const i = browser.scripting.executeScript.callCount;
       const j = browser.runtime.sendMessage.callCount;
-      browser.scripting.executeScript.resolves([{
-        result: {
-          foo: 'bar'
+      browser.scripting.executeScript.resolves([
+        {
+          result: {
+            foo: 'bar'
+          }
         }
-      }]);
+      ]);
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func({
         [CONTEXT_INFO_GET]: true
       });
-      assert.strictEqual(browser.scripting.executeScript.callCount, i + 1,
-        'called');
-      assert.strictEqual(browser.runtime.sendMessage.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.scripting.executeScript.callCount,
+        i + 1,
+        'called'
+      );
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        j + 1,
+        'called'
+      );
       assert.deepEqual(res, [{}], 'result');
     });
 
@@ -2389,7 +2853,7 @@ describe('main', () => {
       const res = await func({
         [EXEC_COPY]: {
           info: {
-            menuItemId,
+            menuItemId
           },
           tab: {
             id: 1,
@@ -2419,22 +2883,25 @@ describe('main', () => {
     it('should get empty array', async () => {
       const i = browser.tabs.get.callCount;
       browser.tabs.get.withArgs(1).resolves({});
-      const res = await func({
-        load: {
-          contextInfo: {
-            isLink: false,
-            content: 'foo',
-            title: 'bar',
-            selectionText: 'baz',
-            url: 'https:www.example.com'
+      const res = await func(
+        {
+          load: {
+            contextInfo: {
+              isLink: false,
+              content: 'foo',
+              title: 'bar',
+              selectionText: 'baz',
+              url: 'https:www.example.com'
+            }
+          }
+        },
+        {
+          id: 'qux',
+          tab: {
+            id: 1
           }
         }
-      }, {
-        id: 'qux',
-        tab: {
-          id: 1
-        }
-      });
+      );
       assert.strictEqual(browser.tabs.get.callCount, i, 'not called');
       assert.deepEqual(res, [], 'result');
     });
@@ -2481,8 +2948,11 @@ describe('main', () => {
           url: 'https://example.com/#baz'
         }
       });
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, [], 'result');
     });
 
@@ -2491,8 +2961,11 @@ describe('main', () => {
       const res = await func({
         editedContent: {}
       });
-      assert.strictEqual(navigator.clipboard.writeText.callCount, i,
-        'not called');
+      assert.strictEqual(
+        navigator.clipboard.writeText.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, [], 'result');
     });
 
@@ -2505,8 +2978,11 @@ describe('main', () => {
       const res = await func({
         [NOTIFY_COPY]: true
       });
-      assert.strictEqual(browser.notifications.create.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.notifications.create.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [true], 'result');
     });
 
@@ -2519,8 +2995,11 @@ describe('main', () => {
       const res = await func({
         [NOTIFY_COPY]: 'foo'
       });
-      assert.strictEqual(browser.notifications.create.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.notifications.create.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, [true], 'result');
     });
 
@@ -2532,8 +3011,11 @@ describe('main', () => {
       const res = await func({
         [NOTIFY_COPY]: false
       });
-      assert.strictEqual(browser.notifications.create.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.notifications.create.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, [], 'result');
     });
 
@@ -2545,8 +3027,11 @@ describe('main', () => {
       const res = await func({
         [NOTIFY_COPY]: true
       });
-      assert.strictEqual(browser.notifications.create.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.notifications.create.callCount,
+        i,
+        'not called'
+      );
       assert.deepEqual(res, [], 'result');
     });
 
@@ -2583,8 +3068,11 @@ describe('main', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'throw'
+        );
       });
     });
 
@@ -2601,9 +3089,13 @@ describe('main', () => {
     });
 
     it('should get null', async () => {
-      const res = await func('foo', {
-        checked: true
-      }, true);
+      const res = await func(
+        'foo',
+        {
+          checked: true
+        },
+        true
+      );
       assert.strictEqual(res, null, 'result');
     });
 
@@ -2627,9 +3119,13 @@ describe('main', () => {
 
     it('should set variable', async () => {
       await setFormatData();
-      const res = await func('TextURL', {
-        checked: false
-      }, true);
+      const res = await func(
+        'TextURL',
+        {
+          checked: false
+        },
+        true
+      );
       assert.strictEqual(mjs.enabledFormats.has('TextURL'), false, 'value');
       assert.strictEqual(Array.isArray(res), true, 'result');
       assert.strictEqual(res.length, 97, 'result');
@@ -2637,9 +3133,13 @@ describe('main', () => {
 
     it('should set variable', async () => {
       await setFormatData();
-      const res = await func('TextURL', {
-        checked: true
-      }, true);
+      const res = await func(
+        'TextURL',
+        {
+          checked: true
+        },
+        true
+      );
       assert.strictEqual(mjs.enabledFormats.has('TextURL'), true, 'value');
       assert.strictEqual(Array.isArray(res), true, 'result');
       assert.strictEqual(res.length, 103, 'result');
@@ -2649,8 +3149,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: true
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), true,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER),
+        true,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2658,8 +3161,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_HYPER, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_HTML_HYPER),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2667,8 +3173,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: true
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), true,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN),
+        true,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2676,8 +3185,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_HTML_PLAIN, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_HTML_PLAIN),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2685,8 +3197,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: true
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), true,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN),
+        true,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2694,8 +3209,11 @@ describe('main', () => {
       const res = await func(INCLUDE_TITLE_MARKDOWN, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_TITLE_MARKDOWN),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2759,8 +3277,11 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_HYPER, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_HYPER), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(TEXT_FRAG_HTML_HYPER),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2776,8 +3297,11 @@ describe('main', () => {
       const res = await func(TEXT_FRAG_HTML_PLAIN, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(TEXT_FRAG_HTML_PLAIN),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2833,8 +3357,11 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_HYPER, {
         checked: true
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), true,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER),
+        true,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2842,8 +3369,11 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_HYPER, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_ATTR_HTML_HYPER),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2851,8 +3381,11 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
         checked: true
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), true,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN),
+        true,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2860,8 +3393,11 @@ describe('main', () => {
       const res = await func(INCLUDE_ATTR_HTML_PLAIN, {
         checked: false
       });
-      assert.strictEqual(mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN), false,
-        'value');
+      assert.strictEqual(
+        mjs.userOpts.get(INCLUDE_ATTR_HTML_PLAIN),
+        false,
+        'value'
+      );
       assert.deepEqual(res, mjs.userOpts, 'result');
     });
 
@@ -2873,8 +3409,11 @@ describe('main', () => {
         checked: true,
         value: '#foo'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.action.setIcon.callCount, j, 'not called');
       assert.deepEqual(res, undefined, 'result');
     });
@@ -2887,8 +3426,11 @@ describe('main', () => {
         checked: true,
         value: '#foo'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.action.setIcon.callCount, j, 'not called');
       assert.deepEqual(res, undefined, 'result');
     });
@@ -2900,8 +3442,11 @@ describe('main', () => {
         checked: true,
         value: '#foo'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.action.setIcon.callCount, j, 'not called');
       assert.deepEqual(res, undefined, 'result');
     });
@@ -2913,8 +3458,11 @@ describe('main', () => {
         checked: false,
         value: 'icon-black-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(browser.action.setIcon.callCount, j, 'not called');
       assert.strictEqual(res, null, 'result');
     });
@@ -2927,10 +3475,12 @@ describe('main', () => {
         checked: true,
         value: 'icon-black-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.action.setIcon.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(browser.action.setIcon.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2942,10 +3492,12 @@ describe('main', () => {
         checked: true,
         value: 'icon-color-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.action.setIcon.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(browser.action.setIcon.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2957,10 +3509,12 @@ describe('main', () => {
         checked: true,
         value: 'icon-dark-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.action.setIcon.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(browser.action.setIcon.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, [null], 'result');
     });
 
@@ -2972,10 +3526,12 @@ describe('main', () => {
         checked: true,
         value: 'icon-light-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.action.setIcon.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(browser.action.setIcon.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -2987,10 +3543,12 @@ describe('main', () => {
         checked: true,
         value: 'icon-white-32.png'
       });
-      assert.strictEqual(browser.storage.local.remove.callCount, i,
-        'not called');
-      assert.strictEqual(browser.action.setIcon.callCount, j + 1,
-        'called');
+      assert.strictEqual(
+        browser.storage.local.remove.callCount,
+        i,
+        'not called'
+      );
+      assert.strictEqual(browser.action.setIcon.callCount, j + 1, 'called');
       assert.strictEqual(res, undefined, 'result');
     });
   });
@@ -3012,11 +3570,14 @@ describe('main', () => {
     });
 
     it('should not set variables', async () => {
-      const res = await func({
-        foo: {
-          checked: true
-        }
-      }, 'bar');
+      const res = await func(
+        {
+          foo: {
+            checked: true
+          }
+        },
+        'bar'
+      );
       assert.deepEqual(res, [], 'result');
     });
 
@@ -3030,33 +3591,43 @@ describe('main', () => {
     });
 
     it('should set variables', async () => {
-      const res = await func({
-        foo: {
-          checked: true
-        }
-      }, 'local');
+      const res = await func(
+        {
+          foo: {
+            checked: true
+          }
+        },
+        'local'
+      );
       assert.deepEqual(res, [null], 'result');
     });
 
     it('should set variables', async () => {
-      const res = await func({
-        foo: {
-          newValue: {
-            checked: true
+      const res = await func(
+        {
+          foo: {
+            newValue: {
+              checked: true
+            }
           }
-        }
-      }, 'local');
+        },
+        'local'
+      );
       assert.deepEqual(res, [null], 'result');
     });
 
     it('should set variables', async () => {
-      const res = await func({
-        foo: {
-          newValue: {
-            checked: true
+      const res = await func(
+        {
+          foo: {
+            newValue: {
+              checked: true
+            }
           }
-        }
-      }, 'local', true);
+        },
+        'local',
+        true
+      );
       assert.deepEqual(res, [null], 'result');
     });
   });

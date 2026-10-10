@@ -159,14 +159,18 @@ describe('context-info', () => {
 
     it('should get result', async () => {
       const res = await func();
-      assert.deepEqual(res, {
-        isLink: false,
-        canonicalUrl: null,
-        content: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -179,14 +183,18 @@ describe('context-info', () => {
       head.appendChild(canonical);
       body.appendChild(p);
       const res = await func(p);
-      assert.deepEqual(res, {
-        isLink: false,
-        canonicalUrl: 'https://example.com/',
-        content: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          canonicalUrl: 'https://example.com/',
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -194,14 +202,18 @@ describe('context-info', () => {
       const body = document.querySelector('body');
       body.appendChild(a);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: false,
-        canonicalUrl: null,
-        content: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -212,14 +224,18 @@ describe('context-info', () => {
       a.href = 'https://example.com';
       body.appendChild(a);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: 'foo bar',
-        selectionText: '',
-        title: '',
-        url: 'https://example.com/'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'foo bar',
+          selectionText: '',
+          title: '',
+          url: 'https://example.com/'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -231,14 +247,18 @@ describe('context-info', () => {
       a.title = 'baz qux';
       body.appendChild(a);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: 'foo bar',
-        selectionText: '',
-        title: 'baz qux',
-        url: 'https://www.example.com/bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'foo bar',
+          selectionText: '',
+          title: 'baz qux',
+          url: 'https://www.example.com/bar'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -250,14 +270,18 @@ describe('context-info', () => {
       a.title = 'baz qux';
       body.appendChild(a);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: 'foo bar',
-        selectionText: '',
-        title: 'baz qux',
-        url: 'https://www.example.com/bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'foo bar',
+          selectionText: '',
+          title: 'baz qux',
+          url: 'https://www.example.com/bar'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -269,14 +293,18 @@ describe('context-info', () => {
       a.title = 'baz qux';
       body.appendChild(a);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: 'foo bar',
-        selectionText: '',
-        title: 'baz qux',
-        url: 'https://www.example.com/bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'foo bar',
+          selectionText: '',
+          title: 'baz qux',
+          url: 'https://www.example.com/bar'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -287,14 +315,18 @@ describe('context-info', () => {
       svg.appendChild(a);
       body.appendChild(svg);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: '',
-        selectionText: '',
-        title: undefined,
-        url: 'foo.svg#bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: '',
+          selectionText: '',
+          title: undefined,
+          url: 'foo.svg#bar'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -312,14 +344,18 @@ describe('context-info', () => {
       svg.appendChild(a);
       body.appendChild(svg);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: 'https://example.com/',
-        content: '',
-        selectionText: '',
-        title: undefined,
-        url: 'foo.svg#bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: 'https://example.com/',
+          content: '',
+          selectionText: '',
+          title: undefined,
+          url: 'foo.svg#bar'
+        },
+        'result'
+      );
     });
   });
 
@@ -337,14 +373,18 @@ describe('context-info', () => {
       p.appendChild(a);
       body.appendChild(p);
       const res = await func(text);
-      assert.deepEqual(res, {
-        isLink: false,
-        canonicalUrl: null,
-        content: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -358,14 +398,18 @@ describe('context-info', () => {
       p.appendChild(a);
       body.appendChild(p);
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: false,
-        content: null,
-        canonicalUrl: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          content: null,
+          canonicalUrl: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -380,14 +424,18 @@ describe('context-info', () => {
       body.appendChild(p);
       a.focus();
       const res = await func(a);
-      assert.deepEqual(res, {
-        isLink: true,
-        canonicalUrl: null,
-        content: 'foo bar',
-        selectionText: '',
-        title: 'baz qux',
-        url: 'https://www.example.com/bar'
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: true,
+          canonicalUrl: null,
+          content: 'foo bar',
+          selectionText: '',
+          title: 'baz qux',
+          url: 'https://www.example.com/bar'
+        },
+        'result'
+      );
     });
 
     it('should get result', async () => {
@@ -401,14 +449,18 @@ describe('context-info', () => {
       p.appendChild(a);
       body.appendChild(p);
       const res = await func(p);
-      assert.deepEqual(res, {
-        isLink: false,
-        canonicalUrl: null,
-        content: null,
-        selectionText: '',
-        title: null,
-        url: null
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          isLink: false,
+          canonicalUrl: null,
+          content: null,
+          selectionText: '',
+          title: null,
+          url: null
+        },
+        'result'
+      );
     });
   });
 });

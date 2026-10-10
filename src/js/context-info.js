@@ -61,8 +61,10 @@
       }
       if (canonical) {
         const { origin: docOrigin } = new URL(document.URL);
-        const { href: canonicalHref } =
-          new URL(canonical.getAttribute('href'), docOrigin);
+        const { href: canonicalHref } = new URL(
+          canonical.getAttribute('href'),
+          docOrigin
+        );
         contextInfo.canonicalUrl = canonicalHref;
       }
     }
@@ -80,8 +82,7 @@
   };
 
   /* export for tests */
-  if (typeof module !== 'undefined' &&
-      Object.hasOwn(module, 'exports')) {
+  if (typeof module !== 'undefined' && Object.hasOwn(module, 'exports')) {
     module.exports = {
       createContextInfo,
       getActiveElm,

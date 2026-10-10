@@ -9,7 +9,12 @@ import { throwErr } from './common.js';
 import { editContent } from './edit-content.js';
 import { sanitizeAttributes } from './sanitize-attr.js';
 import {
-  EXEC_COPY, MIME_HTML, MIME_PLAIN, NOTIFY_COPY, PROMPT, SANITIZE_ATTR,
+  EXEC_COPY,
+  MIME_HTML,
+  MIME_PLAIN,
+  NOTIFY_COPY,
+  PROMPT,
+  SANITIZE_ATTR,
   SANITIZE_URL
 } from './constant.js';
 

@@ -102,20 +102,27 @@ describe('sanitize', () => {
     });
 
     it('should get result', async () => {
-      const res =
-        await func('data:,https://example.com/#<script>alert(1);</script>', {
+      const res = await func(
+        'data:,https://example.com/#<script>alert(1);</script>',
+        {
           allow: ['data']
-        });
+        }
+      );
       assert.strictEqual(res, 'data:,https://example.com/', 'result');
     });
 
     it('should get result', async () => {
-      const res =
-        await func('data:text/html,%3Cdiv%20onclick%3D%22window.alert()%22%3Efoo%3C%2Fdiv%3E', {
+      const res = await func(
+        'data:text/html,%3Cdiv%20onclick%3D%22window.alert()%22%3Efoo%3C%2Fdiv%3E',
+        {
           allow: ['data']
-        });
-      assert.strictEqual(res, 'data:text/html,%3Cdiv%3Efoo%3C/div%3E',
-        'result');
+        }
+      );
+      assert.strictEqual(
+        res,
+        'data:text/html,%3Cdiv%3Efoo%3C/div%3E',
+        'result'
+      );
     });
   });
 });

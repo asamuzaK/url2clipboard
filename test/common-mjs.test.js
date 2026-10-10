@@ -249,13 +249,19 @@ describe('common', () => {
     const func = mjs.escapeMatchingChars;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo', 1), TypeError,
-        'Expected RegExp but got Number.');
+      assert.throws(
+        () => func('foo', 1),
+        TypeError,
+        'Expected RegExp but got Number.'
+      );
     });
 
     it('should get null', () => {
@@ -277,13 +283,19 @@ describe('common', () => {
     const func = mjs.stripMatchingChars;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo', 1), TypeError,
-        'Expected RegExp but got Number.');
+      assert.throws(
+        () => func('foo', 1),
+        TypeError,
+        'Expected RegExp but got Number.'
+      );
     });
 
     it('should get null', () => {
@@ -305,13 +317,19 @@ describe('common', () => {
     const func = mjs.convertNumCharRef;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo', 1), TypeError,
-        'Expected RegExp but got Number.');
+      assert.throws(
+        () => func('foo', 1),
+        TypeError,
+        'Expected RegExp but got Number.'
+      );
     });
 
     it('should get null', () => {
@@ -333,8 +351,11 @@ describe('common', () => {
     const func = mjs.convertHtmlChar;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should get null', () => {
@@ -352,8 +373,11 @@ describe('common', () => {
     const func = mjs.convertLaTeXChar;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should get null', () => {
@@ -386,8 +410,11 @@ describe('common', () => {
     const func = mjs.encodeUrlPart;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should get empty string', () => {
@@ -405,8 +432,11 @@ describe('common', () => {
     const func = mjs.encodeUrlSpecialChar;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
@@ -428,16 +458,15 @@ describe('common', () => {
 
     it('should get string', () => {
       const res = func("https://example.com/foo bar?baz&qux#quux'corge");
-      assert.strictEqual(res,
+      assert.strictEqual(
+        res,
         'https://example.com/foo%20bar?baz&amp;qux#quux%27corge'
       );
     });
 
     it('should get string', () => {
       const res = func("file:///foo bar?baz&qux#quux'corge");
-      assert.strictEqual(res,
-        'file:///foo%20bar?baz&amp;qux#quux%27corge'
-      );
+      assert.strictEqual(res, 'file:///foo%20bar?baz&amp;qux#quux%27corge');
     });
   });
 });

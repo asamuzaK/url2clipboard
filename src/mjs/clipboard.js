@@ -116,8 +116,10 @@ export class Clip {
         } catch (e) {
           this._copySync();
         }
-      } else if (typeof clipboard.write === 'function' &&
-                 typeof ClipboardItem === 'function') {
+      } else if (
+        typeof clipboard.write === 'function' &&
+        typeof ClipboardItem === 'function'
+      ) {
         const data = [];
         if (REG_DOM_PARSE.test(this.#mime)) {
           const domstr = serializeDomString(this.#content, this.#mime);
@@ -128,10 +130,12 @@ export class Clip {
               const text = new Blob([doc.body.textContent], {
                 type: MIME_PLAIN
               });
-              data.push(new ClipboardItem({
-                [this.#mime]: blob,
-                [MIME_PLAIN]: text
-              }));
+              data.push(
+                new ClipboardItem({
+                  [this.#mime]: blob,
+                  [MIME_PLAIN]: text
+                })
+              );
             } else {
               data.push(new ClipboardItem({ [this.#mime]: blob }));
             }

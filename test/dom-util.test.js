@@ -50,8 +50,11 @@ describe('serialize-dom', () => {
       const res = func(p);
       assert.deepEqual(res.node, p, 'node');
       assert.strictEqual(res.localName, 'p', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -61,8 +64,11 @@ describe('serialize-dom', () => {
       const res = func(p);
       assert.deepEqual(res.node, p, 'node');
       assert.strictEqual(res.localName, 'p', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -74,8 +80,11 @@ describe('serialize-dom', () => {
       const res = func(text);
       assert.deepEqual(res.node, p, 'node');
       assert.strictEqual(res.localName, 'p', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', async () => {
@@ -85,8 +94,11 @@ describe('serialize-dom', () => {
       const res = await func(svg);
       assert.deepEqual(res.node, svg, 'node');
       assert.strictEqual(res.localName, 'svg', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/2000/svg',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/2000/svg',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -98,27 +110,38 @@ describe('serialize-dom', () => {
       const res = func(text);
       assert.deepEqual(res.node, svg, 'node');
       assert.strictEqual(res.localName, 'svg', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/2000/svg',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/2000/svg',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      const fo =
-        document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+      const fo = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'foreignObject'
+      );
       const p = document.createElement('p');
       const text = document.createTextNode('foo');
       const body = document.querySelector('body');
-      fo.setAttributeNS('http://www.w3.org/2000/svg', 'requiredExtensions',
-        'http://www.w3.org/1999/xhtml');
+      fo.setAttributeNS(
+        'http://www.w3.org/2000/svg',
+        'requiredExtensions',
+        'http://www.w3.org/1999/xhtml'
+      );
       p.appendChild(text);
       fo.appendChild(p);
       svg.appendChild(body);
       const res = func(text);
       assert.deepEqual(res.node, p, 'node');
       assert.strictEqual(res.localName, 'p', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -130,19 +153,27 @@ describe('serialize-dom', () => {
         'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
         'vbox'
       );
-      const div = document.createElementNS('http://www.w3.org/1999/xhtml',
-        'html:div');
+      const div = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
       const text = document.createTextNode('foo');
-      page.setAttributeNS('http://www.w3.org/2000/xmlns',
-        'html', 'http://www.w3.org/1999/xhtml');
+      page.setAttributeNS(
+        'http://www.w3.org/2000/xmlns',
+        'html',
+        'http://www.w3.org/1999/xhtml'
+      );
       div.appendChild(text);
       vbox.appendChild(div);
       page.appendChild(vbox);
       const res = func(text);
       assert.deepEqual(res.node, div, 'node');
       assert.strictEqual(res.localName, 'div', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -156,16 +187,22 @@ describe('serialize-dom', () => {
       );
       const div = document.createElement('html:div');
       const text = document.createTextNode('foo');
-      page.setAttributeNS('http://www.w3.org/2000/xmlns',
-        'html', 'http://www.w3.org/1999/xhtml');
+      page.setAttributeNS(
+        'http://www.w3.org/2000/xmlns',
+        'html',
+        'http://www.w3.org/1999/xhtml'
+      );
       div.appendChild(text);
       vbox.appendChild(div);
       page.appendChild(vbox);
       const res = func(text);
       assert.deepEqual(res.node, div, 'node');
       assert.strictEqual(res.localName, 'html:div', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -175,8 +212,11 @@ describe('serialize-dom', () => {
       const res = func(text);
       assert.deepEqual(res.node, html, 'node');
       assert.strictEqual(res.localName, 'html', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
 
     it('should get result', () => {
@@ -185,8 +225,11 @@ describe('serialize-dom', () => {
       const res = func(html);
       assert.deepEqual(res.node, html, 'node');
       assert.strictEqual(res.localName, 'html', 'localName');
-      assert.strictEqual(res.namespaceURI, 'http://www.w3.org/1999/xhtml',
-        'namespace');
+      assert.strictEqual(
+        res.namespaceURI,
+        'http://www.w3.org/1999/xhtml',
+        'namespace'
+      );
     });
   });
 
@@ -219,8 +262,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('onclick'), false, 'func');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 1,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 1,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -233,8 +279,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('onclick'), false, 'func');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 1,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 1,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -247,8 +296,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('data'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -261,8 +313,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('data'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -275,8 +330,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('data'), false, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 1,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 1,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -291,8 +349,11 @@ describe('serialize-dom', () => {
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('href'), true, 'url');
       assert.strictEqual(elm.hasAttribute('ping'), true, 'ping url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -305,8 +366,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('href'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -324,8 +388,11 @@ describe('serialize-dom', () => {
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('href'), false, 'url');
       assert.strictEqual(elm.hasAttribute('ping'), false, 'ping url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 2,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 2,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -338,8 +405,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('poster'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -352,8 +422,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('poster'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -366,8 +439,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('poster'), false, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 1,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 1,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -380,8 +456,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('src'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -394,8 +473,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('src'), true, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -408,8 +490,11 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('src'), false, 'url');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length - 1,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length - 1,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -422,13 +507,19 @@ describe('serialize-dom', () => {
       func(elm, elm2);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.hasAttribute('value'), true, 'attr');
-      assert.strictEqual(elm2.getAttribute('value'), 'foo bar',
-        'original attr value');
+      assert.strictEqual(
+        elm2.getAttribute('value'),
+        'foo bar',
+        'original attr value'
+      );
       assert.strictEqual(elm.getAttribute('value'), '', 'cloned attr value');
       assert.strictEqual(elm2.value, 'foo bar', 'original value');
       assert.strictEqual(elm.value, '', 'cloned value');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
@@ -446,27 +537,41 @@ describe('serialize-dom', () => {
       assert.strictEqual(elm.getAttribute('value'), '', 'cloned attr value');
       assert.strictEqual(elm2.value, 'foo bar', 'original value');
       assert.strictEqual(elm.value, '', 'cloned value');
-      assert.strictEqual(elm.attributes.length, elm2.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        elm2.attributes.length,
+        'length'
+      );
     });
 
     it('should set attributes', async () => {
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      const svg2 =
-        document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      const svg2 = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'svg'
+      );
       const html = document.querySelector('html');
       const body = document.querySelector('body');
       html.setAttribute('xmlns', 'http://www.w3.org/2000/xmlns/');
-      svg2.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:html',
-        'http://www.w3.org/1999/xhtml');
-      svg2.setAttributeNS('http://www.w3.org/1999/xhtml', 'html:data-foo',
-        'bar');
+      svg2.setAttributeNS(
+        'http://www.w3.org/2000/xmlns/',
+        'xmlns:html',
+        'http://www.w3.org/1999/xhtml'
+      );
+      svg2.setAttributeNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:data-foo',
+        'bar'
+      );
       body.appendChild(svg2);
       func(svg, svg2);
       assert.strictEqual(svg.hasAttribute('xmlns:html'), true, 'attr');
       assert.strictEqual(svg.hasAttribute('html:data-foo'), true, 'attr');
-      assert.strictEqual(svg.attributes.length, svg2.attributes.length,
-        'length');
+      assert.strictEqual(
+        svg.attributes.length,
+        svg2.attributes.length,
+        'length'
+      );
     });
 
     it('should get result', () => {
@@ -478,20 +583,30 @@ describe('serialize-dom', () => {
         'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
         'vbox'
       );
-      const div = document.createElementNS('http://www.w3.org/1999/xhtml',
-        'html:div');
-      page.setAttributeNS('http://www.w3.org/2000/xmlns',
-        'html', 'http://www.w3.org/1999/xhtml');
+      const div = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
+      page.setAttributeNS(
+        'http://www.w3.org/2000/xmlns',
+        'html',
+        'http://www.w3.org/1999/xhtml'
+      );
       div.setAttribute('data-foo', 'bar');
       vbox.appendChild(div);
       page.appendChild(vbox);
-      const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
-        'html:div');
+      const elm = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
       func(elm, div);
       assert.strictEqual(elm.hasAttribute('data-foo'), true, 'attr');
       assert.strictEqual(elm.getAttribute('data-foo'), 'bar', 'value');
-      assert.strictEqual(elm.attributes.length, div.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        div.attributes.length,
+        'length'
+      );
     });
 
     it('should get result', () => {
@@ -503,19 +618,29 @@ describe('serialize-dom', () => {
         'http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul',
         'vbox'
       );
-      const div = document.createElementNS('http://www.w3.org/1999/xhtml',
-        'html:div');
-      div.setAttributeNS('http://www.w3.org/1999/xhtml', 'html:data-foo',
-        'bar');
+      const div = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
+      div.setAttributeNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:data-foo',
+        'bar'
+      );
       vbox.appendChild(div);
       page.appendChild(vbox);
-      const elm = document.createElementNS('http://www.w3.org/1999/xhtml',
-        'html:div');
+      const elm = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
       func(elm, div);
       assert.strictEqual(elm.hasAttribute('html:data-foo'), true, 'attr');
       assert.strictEqual(elm.getAttribute('html:data-foo'), 'bar', 'value');
-      assert.strictEqual(elm.attributes.length, div.attributes.length,
-        'length');
+      assert.strictEqual(
+        elm.attributes.length,
+        div.attributes.length,
+        'length'
+      );
     });
   });
 
@@ -545,14 +670,19 @@ describe('serialize-dom', () => {
     });
 
     it('should get result', () => {
-      const elm =
-        document.createElementNS('http://www.w3.org/1999/xhtml', 'html:div');
+      const elm = document.createElementNS(
+        'http://www.w3.org/1999/xhtml',
+        'html:div'
+      );
       const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
       const html = document.querySelector('html');
       const body = document.querySelector('body');
       html.setAttribute('xmlns', 'http://www.w3.org/2000/xmlns');
-      svg.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:html',
-        'http://www.w3.org/1999/xhtml');
+      svg.setAttributeNS(
+        'http://www.w3.org/2000/xmlns/',
+        'xmlns:html',
+        'http://www.w3.org/1999/xhtml'
+      );
       elm.setAttribute('data-foo', 'bar');
       svg.appendChild(elm);
       body.appendChild(svg);
@@ -573,14 +703,24 @@ describe('serialize-dom', () => {
       assert.strictEqual(res.hasAttribute('bar'), false, 'attr');
     });
 
-    it('should throw', async () => {
-      const dom =
-        new DOMParser().parseFromString('<foo@example.com>', 'text/html');
-      const { body: domBody } = dom;
-      const { firstElementChild: elm } = domBody;
-      const body = document.querySelector('body');
-      body.appendChild(elm);
-      assert.throws(() => func(elm));
+    it('should throw for invalid element name with space', () => {
+      const invalidNode = {
+        nodeType: Node.ELEMENT_NODE,
+        localName: 'foo bar',
+        namespaceURI: 'http://www.w3.org/1999/xhtml',
+        attributes: []
+      };
+      assert.throws(() => func(invalidNode));
+    });
+
+    it('should throw for invalid element name with slash', () => {
+      const invalidNode = {
+        nodeType: Node.ELEMENT_NODE,
+        localName: 'foo/bar',
+        namespaceURI: 'http://www.w3.org/1999/xhtml',
+        attributes: []
+      };
+      assert.throws(() => func(invalidNode));
     });
   });
 
@@ -604,10 +744,16 @@ describe('serialize-dom', () => {
       const res = func(arr);
       assert.strictEqual(res.nodeType, Node.DOCUMENT_FRAGMENT_NODE, 'nodeType');
       assert.strictEqual(res.childNodes.length, 2, 'childNodes');
-      assert.strictEqual(res.childNodes[0].nodeType, Node.TEXT_NODE,
-        'nodeType');
-      assert.strictEqual(res.childNodes[1].nodeType, Node.ELEMENT_NODE,
-        'nodeType');
+      assert.strictEqual(
+        res.childNodes[0].nodeType,
+        Node.TEXT_NODE,
+        'nodeType'
+      );
+      assert.strictEqual(
+        res.childNodes[1].nodeType,
+        Node.ELEMENT_NODE,
+        'nodeType'
+      );
     });
   });
 
@@ -662,18 +808,27 @@ describe('serialize-dom', () => {
     const func = mjs.serializeDomString;
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo'), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func('foo'),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo', 'image/png'), Error,
-        'Unsupported MIME type image/png.');
+      assert.throws(
+        () => func('foo', 'image/png'),
+        Error,
+        'Unsupported MIME type image/png.'
+      );
     });
 
     it('should get null', () => {
@@ -683,65 +838,102 @@ describe('serialize-dom', () => {
 
     it('should get result', () => {
       const res = func('<xml></xml>', 'text/xml');
-      assert.strictEqual(res,
-        '<xml xmlns="http://www.w3.org/1999/xhtml"></xml>', 'result');
+      assert.strictEqual(
+        res,
+        '<xml xmlns="http://www.w3.org/1999/xhtml"></xml>',
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<xml></xml>', 'application/xml');
-      assert.strictEqual(res,
-        '<xml xmlns="http://www.w3.org/1999/xhtml"></xml>', 'result');
+      assert.strictEqual(
+        res,
+        '<xml xmlns="http://www.w3.org/1999/xhtml"></xml>',
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<html></html>', 'application/xhtml+xml');
-      assert.strictEqual(res,
-        '<html xmlns="http://www.w3.org/1999/xhtml"></html>', 'result');
+      assert.strictEqual(
+        res,
+        '<html xmlns="http://www.w3.org/1999/xhtml"></html>',
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res = func('<html xmlns="http://www.w3.org/1999/xhtml"></html>',
-        'application/xhtml+xml');
-      assert.strictEqual(res,
-        '<html xmlns="http://www.w3.org/1999/xhtml"></html>', 'result');
+      const res = func(
+        '<html xmlns="http://www.w3.org/1999/xhtml"></html>',
+        'application/xhtml+xml'
+      );
+      assert.strictEqual(
+        res,
+        '<html xmlns="http://www.w3.org/1999/xhtml"></html>',
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<svg></svg>', 'image/svg+xml');
-      assert.strictEqual(res,
-        '<svg xmlns="http://www.w3.org/1999/xhtml"></svg>', 'result');
+      assert.strictEqual(
+        res,
+        '<svg xmlns="http://www.w3.org/1999/xhtml"></svg>',
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res = func('<svg xmlns="http://www.w3.org/2000/svg"></svg>',
-        'image/svg+xml');
-      assert.strictEqual(res,
-        '<svg xmlns="http://www.w3.org/2000/svg"/>', 'result');
+      const res = func(
+        '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+        'image/svg+xml'
+      );
+      assert.strictEqual(
+        res,
+        '<svg xmlns="http://www.w3.org/2000/svg"/>',
+        'result'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('<', 'text/xml'), Error,
-        'Error while parsing DOM string.');
+      assert.throws(
+        () => func('<', 'text/xml'),
+        Error,
+        'Error while parsing DOM string.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('</>', 'text/xml'), Error,
-        'Error while parsing DOM string.');
+      assert.throws(
+        () => func('</>', 'text/xml'),
+        Error,
+        'Error while parsing DOM string.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('', 'text/xml'), Error,
-        'Error while parsing DOM string.');
+      assert.throws(
+        () => func('', 'text/xml'),
+        Error,
+        'Error while parsing DOM string.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('<xml></xml><xml></xml>', 'text/xml'), Error,
-        'Error while parsing DOM string.');
+      assert.throws(
+        () => func('<xml></xml><xml></xml>', 'text/xml'),
+        Error,
+        'Error while parsing DOM string.'
+      );
     });
 
     it('should throw', () => {
-      assert.throws(() => func('foo <em>bar</em>', 'application/xhtml+xml'),
-        Error, 'Error while parsing DOM string.');
+      assert.throws(
+        () => func('foo <em>bar</em>', 'application/xhtml+xml'),
+        Error,
+        'Error while parsing DOM string.'
+      );
     });
 
     it('should get null', () => {
@@ -754,23 +946,19 @@ describe('serialize-dom', () => {
       assert.strictEqual(res, null, 'result');
     });
 
-    it('should get null', () => {
+    it('should catch error and return null when an exception occurs', () => {
       const stubErr = sinon.stub(console, 'error');
-      const res = func('Example <foo@example.dom> wrote:\nfoo', 'text/html');
-      const { calledOnce } = stubErr;
-      stubErr.restore();
-      assert.strictEqual(calledOnce, true, 'error');
-      assert.strictEqual(res, null, 'result');
-    });
-
-    it('should get null', () => {
-      const stubErr = sinon.stub(console, 'error');
-      const res =
-        func('Example <foo@example.dom> wrote:\nfoo', 'text/html', true);
-      const { calledOnce } = stubErr;
-      stubErr.restore();
-      assert.strictEqual(calledOnce, true, 'error');
-      assert.strictEqual(res, null, 'result');
+      const stubAppend = sinon
+        .stub(Node.prototype, 'appendChild')
+        .throws(new Error('DOM construction failed'));
+      try {
+        const res = func('<div>foo</div>', 'text/html');
+        assert.strictEqual(stubErr.calledOnce, true, 'console.error called');
+        assert.strictEqual(res, null, 'result is null');
+      } finally {
+        stubErr.restore();
+        stubAppend.restore();
+      }
     });
 
     it('should get result', () => {
@@ -785,14 +973,20 @@ describe('serialize-dom', () => {
 
     it('should get result', () => {
       const res = func('<<foo>>', 'text/html');
-      assert.strictEqual(res,
-        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>', 'result');
+      assert.strictEqual(
+        res,
+        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>',
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<<foo>>', 'text/html', true);
-      assert.strictEqual(res,
-        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>', 'result');
+      assert.strictEqual(
+        res,
+        '&lt;<foo xmlns="http://www.w3.org/1999/xhtml">&gt;</foo>',
+        'result'
+      );
     });
 
     it('should get result', () => {
@@ -801,24 +995,33 @@ describe('serialize-dom', () => {
     });
 
     it('should get result', () => {
-      const res =
-        func('<div>foo <bar foobar="foobar">baz</bar>\nqux</div>', 'text/html');
-      assert.strictEqual(res,
+      const res = func(
+        '<div>foo <bar foobar="foobar">baz</bar>\nqux</div>',
+        'text/html'
+      );
+      assert.strictEqual(
+        res,
         '<div xmlns="http://www.w3.org/1999/xhtml">foo <bar>baz</bar>\nqux</div>',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('foo <em>bar</em>\nbaz', 'text/html');
-      assert.strictEqual(res,
+      assert.strictEqual(
+        res,
         'foo <em xmlns="http://www.w3.org/1999/xhtml">bar</em>\nbaz',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('foo <em onclick="alert(1)">bar</em>\nbaz', 'text/html');
-      assert.strictEqual(res,
-        'foo <em xmlns="http://www.w3.org/1999/xhtml">bar</em>\nbaz', 'result');
+      assert.strictEqual(
+        res,
+        'foo <em xmlns="http://www.w3.org/1999/xhtml">bar</em>\nbaz',
+        'result'
+      );
     });
 
     it('should get result', () => {
@@ -827,53 +1030,78 @@ describe('serialize-dom', () => {
     });
 
     it('should get result', () => {
-      const res =
-        func('foo <div><script>alert(1)</script></div>\nbar', 'text/html');
-      assert.strictEqual(res,
+      const res = func(
+        'foo <div><script>alert(1)</script></div>\nbar',
+        'text/html'
+      );
+      assert.strictEqual(
+        res,
         'foo <div xmlns="http://www.w3.org/1999/xhtml">\n\n</div>\nbar',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res =
-        func('<div>foo</div>\n<div>bar</div>\n', 'text/html');
-      assert.strictEqual(res,
+      const res = func('<div>foo</div>\n<div>bar</div>\n', 'text/html');
+      assert.strictEqual(
+        res,
         '<div xmlns="http://www.w3.org/1999/xhtml">foo</div>\n<div xmlns="http://www.w3.org/1999/xhtml">bar</div>\n',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<foo/>', 'text/xml');
-      assert.strictEqual(res,
-        '<foo xmlns="http://www.w3.org/1999/xhtml"></foo>', 'result');
+      assert.strictEqual(
+        res,
+        '<foo xmlns="http://www.w3.org/1999/xhtml"></foo>',
+        'result'
+      );
     });
 
     it('should get result', () => {
       const res = func('<em>foo</em>\n', 'application/xhtml+xml');
-      assert.strictEqual(res,
-        '<em xmlns="http://www.w3.org/1999/xhtml">foo</em>', 'result');
+      assert.strictEqual(
+        res,
+        '<em xmlns="http://www.w3.org/1999/xhtml">foo</em>',
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res =
-        func('<div><em>foo</em> bar</div>\n', 'application/xhtml+xml');
-      assert.strictEqual(res,
+      const res = func(
+        '<div><em>foo</em> bar</div>\n',
+        'application/xhtml+xml'
+      );
+      assert.strictEqual(
+        res,
         '<div xmlns="http://www.w3.org/1999/xhtml">\n<em>foo</em> bar</div>',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res = func('<div><em onclick="alert(1)">foo</em> bar</div>\n', 'application/xhtml+xml');
-      assert.strictEqual(res,
+      const res = func(
+        '<div><em onclick="alert(1)">foo</em> bar</div>\n',
+        'application/xhtml+xml'
+      );
+      assert.strictEqual(
+        res,
         '<div xmlns="http://www.w3.org/1999/xhtml">\n<em>foo</em> bar</div>',
-        'result');
+        'result'
+      );
     });
 
     it('should get result', () => {
-      const res = func('<div><script>alert(1)</script> foo</div>\n', 'application/xhtml+xml');
-      assert.strictEqual(res,
+      const res = func(
+        '<div><script>alert(1)</script> foo</div>\n',
+        'application/xhtml+xml'
+      );
+      assert.strictEqual(
+        res,
         '<div xmlns="http://www.w3.org/1999/xhtml">\n foo</div>',
-        'result');
+        'result'
+      );
     });
   });
 });

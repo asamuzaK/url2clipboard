@@ -73,7 +73,8 @@ describe('localize', () => {
       const body = document.querySelector('body');
       for (const [key, value] of items) {
         p.setAttribute(value, 'bar');
-        browser.i18n.getMessage.withArgs(`${id}_${key}`)
+        browser.i18n.getMessage
+          .withArgs(`${id}_${key}`)
           .returns(`${id}_${key}`);
       }
       p.setAttribute('data-i18n', id);

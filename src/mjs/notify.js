@@ -17,8 +17,9 @@ const { i18n, runtime } = browser;
  */
 export const notifyOnCopy = label => {
   const message =
-    (isString(label) && label &&
-     i18n.getMessage(`${NOTIFY_COPY}Msg_format`, label)) ||
+    (isString(label) &&
+      label &&
+      i18n.getMessage(`${NOTIFY_COPY}Msg_format`, label)) ||
     i18n.getMessage(`${NOTIFY_COPY}Msg`);
   const ext = typeof window === 'undefined' ? 'png' : 'svg';
   const msg = {

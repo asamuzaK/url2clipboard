@@ -10,8 +10,16 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, ATTR_SAVE_HTML_HYPER, ATTR_SAVE_HTML_PLAIN,
-  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
+  ATTR_HTML_HYPER,
+  ATTR_HTML_PLAIN,
+  ATTR_SAVE_HTML_HYPER,
+  ATTR_SAVE_HTML_PLAIN,
+  ICON_BLACK,
+  ICON_COLOR,
+  ICON_DARK,
+  ICON_LIGHT,
+  ICON_RADIO,
+  ICON_WHITE,
   NOTIFY_COPY
 } from '../src/mjs/constant.js';
 import * as mjs from '../src/mjs/options-main.js';
@@ -50,14 +58,18 @@ describe('options-main', () => {
       const res = await func({
         id: 'foo'
       });
-      assert.deepEqual(res, {
-        foo: {
-          id: 'foo',
-          checked: false,
-          value: '',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          foo: {
+            id: 'foo',
+            checked: false,
+            value: '',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -65,14 +77,18 @@ describe('options-main', () => {
         id: ICON_BLACK,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_BLACK]: {
-          id: ICON_BLACK,
-          checked: false,
-          value: 'icon-black-16.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_BLACK]: {
+            id: ICON_BLACK,
+            checked: false,
+            value: 'icon-black-16.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -82,14 +98,18 @@ describe('options-main', () => {
         id: ICON_BLACK,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_BLACK]: {
-          id: ICON_BLACK,
-          checked: false,
-          value: 'icon-black-32.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_BLACK]: {
+            id: ICON_BLACK,
+            checked: false,
+            value: 'icon-black-32.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -97,14 +117,18 @@ describe('options-main', () => {
         id: ICON_COLOR,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_COLOR]: {
-          id: ICON_COLOR,
-          checked: false,
-          value: 'icon-color-16.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_COLOR]: {
+            id: ICON_COLOR,
+            checked: false,
+            value: 'icon-color-16.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -114,14 +138,18 @@ describe('options-main', () => {
         id: ICON_COLOR,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_COLOR]: {
-          id: ICON_COLOR,
-          checked: false,
-          value: 'icon-color-32.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_COLOR]: {
+            id: ICON_COLOR,
+            checked: false,
+            value: 'icon-color-32.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -129,14 +157,18 @@ describe('options-main', () => {
         id: ICON_DARK,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_DARK]: {
-          id: ICON_DARK,
-          checked: false,
-          value: 'icon-dark-16.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_DARK]: {
+            id: ICON_DARK,
+            checked: false,
+            value: 'icon-dark-16.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -146,14 +178,18 @@ describe('options-main', () => {
         id: ICON_DARK,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_DARK]: {
-          id: ICON_DARK,
-          checked: false,
-          value: 'icon-dark-32.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_DARK]: {
+            id: ICON_DARK,
+            checked: false,
+            value: 'icon-dark-32.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -161,14 +197,18 @@ describe('options-main', () => {
         id: ICON_LIGHT,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_LIGHT]: {
-          id: ICON_LIGHT,
-          checked: false,
-          value: 'icon-light-16.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_LIGHT]: {
+            id: ICON_LIGHT,
+            checked: false,
+            value: 'icon-light-16.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -178,14 +218,18 @@ describe('options-main', () => {
         id: ICON_LIGHT,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_LIGHT]: {
-          id: ICON_LIGHT,
-          checked: false,
-          value: 'icon-light-32.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_LIGHT]: {
+            id: ICON_LIGHT,
+            checked: false,
+            value: 'icon-light-32.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -193,14 +237,18 @@ describe('options-main', () => {
         id: ICON_WHITE,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_WHITE]: {
-          id: ICON_WHITE,
-          checked: false,
-          value: 'icon-white-16.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_WHITE]: {
+            id: ICON_WHITE,
+            checked: false,
+            value: 'icon-white-16.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
 
     it('should get object', async () => {
@@ -210,14 +258,18 @@ describe('options-main', () => {
         id: ICON_WHITE,
         name: ICON_RADIO
       });
-      assert.deepEqual(res, {
-        [ICON_WHITE]: {
-          id: ICON_WHITE,
-          checked: false,
-          value: 'icon-white-32.png',
-          subItemOf: null
-        }
-      }, 'result');
+      assert.deepEqual(
+        res,
+        {
+          [ICON_WHITE]: {
+            id: ICON_WHITE,
+            checked: false,
+            value: 'icon-white-32.png',
+            subItemOf: null
+          }
+        },
+        'result'
+      );
     });
   });
 
@@ -251,10 +303,12 @@ describe('options-main', () => {
       };
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
-      assert.strictEqual(browser.permissions.request.callCount, j,
-        'not called');
-      assert.strictEqual(browser.permissions.remove.callCount, k,
-        'not called');
+      assert.strictEqual(
+        browser.permissions.request.callCount,
+        j,
+        'not called'
+      );
+      assert.strictEqual(browser.permissions.remove.callCount, k, 'not called');
       assert.strictEqual(res.length, 1, 'array length');
       assert.deepEqual(res, [undefined], 'result');
     });
@@ -270,15 +324,19 @@ describe('options-main', () => {
           checked: true
         }
       };
-      browser.permissions.request.withArgs({
-        permissions: ['notification']
-      }).resolves(true);
+      browser.permissions.request
+        .withArgs({
+          permissions: ['notification']
+        })
+        .resolves(true);
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
-      assert.strictEqual(browser.permissions.request.callCount, j + 1,
-        'called');
-      assert.strictEqual(browser.permissions.remove.callCount, k,
-        'not called');
+      assert.strictEqual(
+        browser.permissions.request.callCount,
+        j + 1,
+        'called'
+      );
+      assert.strictEqual(browser.permissions.remove.callCount, k, 'not called');
       assert.strictEqual(res.length, 1, 'array length');
       assert.deepEqual(res, [undefined], 'result');
     });
@@ -296,10 +354,12 @@ describe('options-main', () => {
       };
       const res = await func(evt);
       assert.strictEqual(browser.storage.local.set.callCount, i + 1, 'called');
-      assert.strictEqual(browser.permissions.request.callCount, j,
-        'not called');
-      assert.strictEqual(browser.permissions.remove.callCount, k + 1,
-        'called');
+      assert.strictEqual(
+        browser.permissions.request.callCount,
+        j,
+        'not called'
+      );
+      assert.strictEqual(browser.permissions.remove.callCount, k + 1, 'called');
       assert.strictEqual(res.length, 1, 'array length');
       assert.deepEqual(res, [undefined], 'result');
     });

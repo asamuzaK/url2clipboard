@@ -20,18 +20,17 @@ export const promptContent = async (opt = {}) => {
   const { content, formatTitle, tabId } = opt;
   let res;
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-    const promptMsg = i18n.getMessage(USER_INPUT, formatTitle ?? '')
-      .replace(/\s+/g, ' ').trim();
+    const promptMsg = i18n
+      .getMessage(USER_INPUT, formatTitle ?? '')
+      .replace(/\s+/g, ' ')
+      .trim();
     await offscreen.createDocument({
       justification: 'Edit content of the link',
       reasons: [offscreen.Reason.DOM_PARSER],
       url: 'html/offscreen.html'
     });
     [res] = await runtime.sendMessage({
-      [PROMPT]: [
-        content,
-        promptMsg
-      ]
+      [PROMPT]: [content, promptMsg]
     });
     await offscreen.closeDocument();
   }

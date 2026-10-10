@@ -60,15 +60,15 @@ export const createManifest = async info => {
   for (const [key, value] of items) {
     manifest[key] = value;
   }
-  const unsupportedKeys = [
-    'browser_specific_settings'
-  ];
+  const unsupportedKeys = ['browser_specific_settings'];
   for (const key of unsupportedKeys) {
     delete manifest[key];
   }
   const content = `${JSON.stringify(manifest, null, INDENT)}\n`;
-  const filePath =
-    await createFile(path.join(DIR_OUT, 'manifest.json'), content);
+  const filePath = await createFile(
+    path.join(DIR_OUT, 'manifest.json'),
+    content
+  );
   if (filePath && info) {
     console.info(`Created: ${filePath}`);
   }
@@ -110,12 +110,7 @@ export const createPolyfilledJsFile = async (file, info) => {
  * @returns {Promise.<Array>} - results of each handler
  */
 export const createJsFiles = async info => {
-  const files = [
-    'background.js',
-    'offscreen.js',
-    'options.js',
-    'popup.js'
-  ];
+  const files = ['background.js', 'offscreen.js', 'options.js', 'popup.js'];
   const func = [];
   for (const file of files) {
     func.push(createPolyfilledJsFile(file, info));
@@ -134,9 +129,6 @@ export const createBlinkFiles = async (cmdOpts = {}) => {
     await rm(DIR_OUT);
     await mkdir(DIR_OUT);
   }
-  const func = [
-    createManifest(info),
-    createJsFiles(info)
-  ];
+  const func = [createManifest(info), createJsFiles(info)];
   return Promise.all(func);
 };

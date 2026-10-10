@@ -3,9 +3,7 @@
  */
 
 /* shared */
-import {
-  sanitizeURL as sanitizeUrl
-} from '../lib/url/url-sanitizer-wo-dompurify.min.js';
+import { sanitizeURL as sanitizeUrl } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { isString } from '../mjs/common.js';
 import { SANITIZE_ATTR, SANITIZE_URL } from '../mjs/constant.js';
 
@@ -50,10 +48,7 @@ export const sanitizeURL = async (url, opt) => {
         url: 'html/offscreen.html'
       });
       [res] = await runtime.sendMessage({
-        [SANITIZE_URL]: [
-          url,
-          opt
-        ]
+        [SANITIZE_URL]: [url, opt]
       });
       await offscreen.closeDocument();
     } else {

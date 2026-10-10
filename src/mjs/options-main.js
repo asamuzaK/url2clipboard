@@ -4,12 +4,23 @@
 
 /* shared */
 import {
-  getStorage, removePermission, requestPermission, setStorage
+  getStorage,
+  removePermission,
+  requestPermission,
+  setStorage
 } from './browser.js';
 import { isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, ATTR_SAVE_HTML_HYPER, ATTR_SAVE_HTML_PLAIN,
-  ICON_BLACK, ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_RADIO, ICON_WHITE,
+  ATTR_HTML_HYPER,
+  ATTR_HTML_PLAIN,
+  ATTR_SAVE_HTML_HYPER,
+  ATTR_SAVE_HTML_PLAIN,
+  ICON_BLACK,
+  ICON_COLOR,
+  ICON_DARK,
+  ICON_LIGHT,
+  ICON_RADIO,
+  ICON_WHITE,
   NOTIFY_COPY
 } from './constant.js';
 

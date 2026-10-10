@@ -117,24 +117,33 @@ describe('menu', () => {
     it('should throw', async () => {
       await func().catch(e => {
         assert.strictEqual(e instanceof TypeError, true, 'error');
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'message');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'message'
+        );
       });
     });
 
     it('should throw', async () => {
       await func('foo').catch(e => {
         assert.strictEqual(e instanceof TypeError, true, 'error');
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'message');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'message'
+        );
       });
     });
 
     it('should throw', async () => {
       await func('foo', 'bar').catch(e => {
         assert.strictEqual(e instanceof TypeError, true, 'error');
-        assert.strictEqual(e.message, 'Expected String but got Undefined.',
-          'message');
+        assert.strictEqual(
+          e.message,
+          'Expected String but got Undefined.',
+          'message'
+        );
       });
     });
 
@@ -262,17 +271,22 @@ describe('menu', () => {
 
     it('should throw', async () => {
       await func().catch(e => {
-        assert.strictEqual(e.message, 'Expected Number but got Undefined.',
-          'throw');
+        assert.strictEqual(
+          e.message,
+          'Expected Number but got Undefined.',
+          'throw'
+        );
       });
     });
 
     it('should not call function', async () => {
       const i = browser.menus.update.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
       mjs.enabledFormats.clear();
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
@@ -282,10 +296,12 @@ describe('menu', () => {
     it('should call function', async () => {
       const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
@@ -296,10 +312,12 @@ describe('menu', () => {
     it('should call function', async () => {
       const i = browser.menus.update.callCount;
       const j = browser.tabs.query.callCount;
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
       browser.runtime.id = WEBEXT_ID;
       const res = await func(1);
       assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
@@ -341,10 +359,12 @@ describe('menu', () => {
       const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
       browser.menus.refresh.resolves(undefined);
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
       mjs.enabledFormats.clear();
       const res = await func({ contexts: ['tab'] }, { id: 1 });
       assert.strictEqual(browser.menus.update.callCount, i, 'not called');
@@ -358,10 +378,12 @@ describe('menu', () => {
       const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
       browser.menus.refresh.resolves(undefined);
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}, {}, {}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}, {}, {}]);
       const res = await func({ contexts: ['tab'] }, { id: 1 });
       assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');
@@ -374,10 +396,12 @@ describe('menu', () => {
       const j = browser.menus.refresh.callCount;
       const k = browser.tabs.query.callCount;
       browser.menus.refresh.resolves(undefined);
-      browser.tabs.query.withArgs({
-        windowId: browser.windows.WINDOW_ID_CURRENT,
-        windowType: 'normal'
-      }).resolves([{}]);
+      browser.tabs.query
+        .withArgs({
+          windowId: browser.windows.WINDOW_ID_CURRENT,
+          windowType: 'normal'
+        })
+        .resolves([{}]);
       const res = await func({ contexts: ['tab'] }, { id: 1 });
       assert.strictEqual(browser.menus.update.callCount, i + 3, 'called');
       assert.strictEqual(browser.menus.refresh.callCount, j + 1, 'called');

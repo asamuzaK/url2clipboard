@@ -7,7 +7,9 @@ import { throwErr } from './common.js';
 import { showToolbarIconOptions } from './compat.js';
 import { localizeHtml } from './localize.js';
 import {
-  addButtonClickListener, addInputChangeListener, setValuesFromStorage
+  addButtonClickListener,
+  addInputChangeListener,
+  setValuesFromStorage
 } from './options-main.js';
 
 /* startup */

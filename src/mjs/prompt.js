@@ -23,8 +23,10 @@ export const promptContent = async (opt = {}) => {
   const { content, formatTitle, tabId } = opt;
   let editedContent;
   if (Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
-    const promptMsg = i18n.getMessage(USER_INPUT, formatTitle ?? '')
-      .replace(/\s+/g, ' ').trim();
+    const promptMsg = i18n
+      .getMessage(USER_INPUT, formatTitle ?? '')
+      .replace(/\s+/g, ' ')
+      .trim();
     const arr = await executeScriptToTab({
       args: [content, promptMsg],
       func: editContent,

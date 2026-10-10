@@ -4,15 +4,40 @@
 
 /* shared */
 import {
-  convertHtmlChar, convertLaTeXChar, convertNumCharRef, encodeUrlSpecialChar,
-  escapeMatchingChars, getType, isString, stripMatchingChars
+  convertHtmlChar,
+  convertLaTeXChar,
+  convertNumCharRef,
+  encodeUrlSpecialChar,
+  escapeMatchingChars,
+  getType,
+  isString,
+  stripMatchingChars
 } from './common.js';
 import { sanitizeAttributes } from './sanitize.js';
 import {
-  ASCIIDOC, BBCODE, COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL,
-  COPY_TABS_OTHER, COPY_TABS_SELECTED, CSV, DOKUWIKI, HTML_HYPER, HTML_PLAIN,
-  JIRA, LATEX, MARKDOWN, MEDIAWIKI, MIME_HTML, ORG_MODE, REST, TEXTILE,
-  TEXT_TEXT_ONLY, TEXT_TEXT_URL, TEXT_URL_ONLY
+  ASCIIDOC,
+  BBCODE,
+  COPY_LINK,
+  COPY_PAGE,
+  COPY_TAB,
+  COPY_TABS_ALL,
+  COPY_TABS_OTHER,
+  COPY_TABS_SELECTED,
+  CSV,
+  DOKUWIKI,
+  HTML_HYPER,
+  HTML_PLAIN,
+  JIRA,
+  LATEX,
+  MARKDOWN,
+  MEDIAWIKI,
+  MIME_HTML,
+  ORG_MODE,
+  REST,
+  TEXTILE,
+  TEXT_TEXT_ONLY,
+  TEXT_TEXT_URL,
+  TEXT_URL_ONLY
 } from './constant.js';
 
 /* format data */
@@ -395,6 +420,9 @@ export const createLinkText = async (data = {}) => {
       break;
     default:
   }
-  return template.replace(/%content%/g, content).replace(/%url%/g, url)
-    .replace(/%title%/g, title).replace(/%attr%/g, attr);
+  return template
+    .replace(/%content%/g, content)
+    .replace(/%url%/g, url)
+    .replace(/%title%/g, title)
+    .replace(/%attr%/g, attr);
 };

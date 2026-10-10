@@ -108,10 +108,9 @@ test.describe('Chrome Bundle E2E Tests', () => {
 
     // 7. Use targetPage to safely read the clipboard
     await targetPage.bringToFront();
-    await targetPage.waitForTimeout(500);
+    await targetPage.locator('body').click();
 
     const clipboardText = await targetPage.evaluate(async () => {
-      window.focus(); 
       return await navigator.clipboard.readText();
     });
 

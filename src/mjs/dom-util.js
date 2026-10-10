@@ -102,8 +102,11 @@ export const createElement = node => {
   let elm;
   if (node?.nodeType === Node.ELEMENT_NODE) {
     const { attributes, localName, namespaceURI, prefix } = node;
-    const ns = namespaceURI || (prefix && nsURI[prefix]) ||
-               getNodeNS(node).namespaceURI || nsURI.html;
+    const ns =
+      namespaceURI ||
+      (prefix && nsURI[prefix]) ||
+      getNodeNS(node).namespaceURI ||
+      nsURI.html;
     const name = prefix ? `${prefix}:${localName}` : localName;
     if (localName === 'script') {
       elm = null;
@@ -126,8 +129,10 @@ export const createFragment = nodes => {
   const frag = document.createDocumentFragment();
   if (Array.isArray(nodes)) {
     for (const node of nodes) {
-      if (node?.nodeType === Node.ELEMENT_NODE ||
-          node?.nodeType === Node.TEXT_NODE) {
+      if (
+        node?.nodeType === Node.ELEMENT_NODE ||
+        node?.nodeType === Node.TEXT_NODE
+      ) {
         frag.appendChild(node);
       }
     }
@@ -183,7 +188,9 @@ export const serializeDomString = (domstr, mime, reqElm = false) => {
   if (!isString(mime)) {
     throw new TypeError(`Expected String but got ${getType(mime)}.`);
   }
-  if (!/text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/.test(mime)) {
+  if (
+    !/text\/(?:ht|x)ml|application\/(?:xhtml\+)?xml|image\/svg\+xml/.test(mime)
+  ) {
     throw new TypeError(`Unsupported MIME type ${mime}.`);
   }
   const doc = new DOMParser().parseFromString(domstr, mime);

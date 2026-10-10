@@ -10,8 +10,14 @@ import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
 import {
-  ASCIIDOC, CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, COPY_LINK, COPY_PAGE,
-  EXEC_COPY, OPTIONS_OPEN
+  ASCIIDOC,
+  CONTENT_LINK,
+  CONTENT_PAGE,
+  CONTEXT_INFO,
+  COPY_LINK,
+  COPY_PAGE,
+  EXEC_COPY,
+  OPTIONS_OPEN
 } from '../src/mjs/constant.js';
 import { formatData } from '../src/mjs/format.js';
 import * as mjs from '../src/mjs/popup-main.js';
@@ -74,8 +80,11 @@ describe('popup-main', () => {
     });
 
     it('should throw', () => {
-      assert.throws(() => func(), TypeError,
-        'Expected String but got Undefined.');
+      assert.throws(
+        () => func(),
+        TypeError,
+        'Expected String but got Undefined.'
+      );
     });
 
     it('should not add', () => {
@@ -251,74 +260,98 @@ describe('popup-main', () => {
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: '',
-            isEdited: true,
-            menuItemId: 'foo',
-            selectionText: ''
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: '',
+                isEdited: true,
+                menuItemId: 'foo',
+                selectionText: ''
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: 'foo'
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
       mjs.contextInfo.selectionText = 'foo bar';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: 'foo bar',
-            isEdited: true,
-            menuItemId: 'foo',
-            selectionText: 'foo bar'
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: 'foo bar',
+                isEdited: true,
+                menuItemId: 'foo',
+                selectionText: 'foo bar'
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: 'foo'
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
     it('should call function', async () => {
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: '',
-            isEdited: true,
-            menuItemId: `${COPY_PAGE}foo`,
-            selectionText: ''
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: '',
+                isEdited: true,
+                menuItemId: `${COPY_PAGE}foo`,
+                selectionText: ''
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: `${COPY_PAGE}foo`
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -326,25 +359,33 @@ describe('popup-main', () => {
       document.getElementById(CONTENT_PAGE).value = 'baz qux';
       mjs.contextInfo.selectionText = 'foo bar';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: 'baz qux',
-            isEdited: true,
-            menuItemId: `${COPY_PAGE}foo`,
-            selectionText: 'foo bar'
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: 'baz qux',
+                isEdited: true,
+                menuItemId: `${COPY_PAGE}foo`,
+                selectionText: 'foo bar'
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: `${COPY_PAGE}foo`
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -352,26 +393,34 @@ describe('popup-main', () => {
       mjs.contextInfo.isLink = true;
       mjs.contextInfo.url = 'https://example.com/';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: '',
-            isEdited: true,
-            menuItemId: `${COPY_LINK}foo`,
-            linkUrl: 'https://example.com/',
-            selectionText: ''
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: '',
+                isEdited: true,
+                menuItemId: `${COPY_LINK}foo`,
+                linkUrl: 'https://example.com/',
+                selectionText: ''
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: `${COPY_LINK}foo`
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
 
@@ -381,26 +430,34 @@ describe('popup-main', () => {
       mjs.contextInfo.selectionText = 'foo bar';
       mjs.contextInfo.url = 'https://example.com/';
       mjs.tabInfo.tab = {};
-      browser.runtime.sendMessage.withArgs({
-        [EXEC_COPY]: {
-          info: {
-            editedText: 'baz qux',
-            isEdited: true,
-            menuItemId: `${COPY_LINK}foo`,
-            linkUrl: 'https://example.com/',
-            selectionText: 'foo bar'
+      browser.runtime.sendMessage
+        .withArgs(
+          {
+            [EXEC_COPY]: {
+              info: {
+                editedText: 'baz qux',
+                isEdited: true,
+                menuItemId: `${COPY_LINK}foo`,
+                linkUrl: 'https://example.com/',
+                selectionText: 'foo bar'
+              },
+              tab: {}
+            }
           },
-          tab: {}
-        }
-      }, null).resolves(undefined);
+          null
+        )
+        .resolves(undefined);
       const i = browser.runtime.sendMessage.callCount;
       const res = await func({
         target: {
           id: `${COPY_LINK}foo`
         }
       });
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(res, undefined, 'result');
     });
   });
@@ -423,8 +480,11 @@ describe('popup-main', () => {
     it('should call function', async () => {
       const i = browser.runtime.openOptionsPage.callCount;
       await func();
-      assert.strictEqual(browser.runtime.openOptionsPage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.openOptionsPage.callCount,
+        i + 1,
+        'called'
+      );
     });
   });
 
@@ -695,24 +755,34 @@ describe('popup-main', () => {
     it('should get null', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.query.resolves([{
-        id: browser.tabs.TAB_ID_NONE
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: browser.tabs.TAB_ID_NONE
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i,
-        'not called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i,
+        'not called'
+      );
       assert.strictEqual(res, null, 'result');
     });
 
     it('should call function', async () => {
       const i = browser.runtime.sendMessage.callCount;
       browser.runtime.sendMessage.resolves({});
-      browser.tabs.query.resolves([{
-        id: 1
-      }]);
+      browser.tabs.query.resolves([
+        {
+          id: 1
+        }
+      ]);
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.deepEqual(res, {}, 'result');
     });
   });
@@ -823,8 +893,11 @@ describe('popup-main', () => {
       const j = browser.storage.local.get.callCount;
       const k = browser.tabs.query.callCount;
       const res = await func();
-      assert.strictEqual(browser.runtime.sendMessage.callCount, i + 1,
-        'called');
+      assert.strictEqual(
+        browser.runtime.sendMessage.callCount,
+        i + 1,
+        'called'
+      );
       assert.strictEqual(browser.storage.local.get.callCount, j + 1, 'called');
       assert.strictEqual(browser.tabs.query.callCount, k + 1, 'called');
       assert.strictEqual(res, undefined, 'result');

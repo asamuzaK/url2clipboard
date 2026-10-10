@@ -8,12 +8,19 @@ import sinon from 'sinon';
 
 /* test */
 import {
-  createFile, getStat, isDir, isFile, mkdir, readFile, removeDir, rm
+  createFile,
+  getStat,
+  isDir,
+  isFile,
+  mkdir,
+  readFile,
+  removeDir,
+  rm
 } from '../scripts/file-util.js';
 
 /* constants */
-const TMPDIR = process.env.TMP || process.env.TMPDIR || process.env.TEMP ||
-               os.tmpdir();
+const TMPDIR =
+  process.env.TMP || process.env.TMPDIR || process.env.TEMP || os.tmpdir();
 
 describe('getStat', () => {
   it('should be an object', () => {
@@ -113,7 +120,9 @@ describe('removeDir', () => {
     const filePath = path.join(subDirPath, 'test.txt');
     const value = 'test file.\n';
     await fsPromise.writeFile(filePath, value, {
-      encoding: 'utf8', flag: 'w', mode: 0o666
+      encoding: 'utf8',
+      flag: 'w',
+      mode: 0o666
     });
     const res1 = await Promise.all([
       fs.existsSync(dirPath),

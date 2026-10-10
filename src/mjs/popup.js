@@ -15,6 +15,4 @@ runtime.onMessage.addListener((msg, sender) =>
 );
 
 /* startup */
-Promise.all([
-  startup()
-]).catch(throwErr);
+Promise.all([startup()]).catch(throwErr);

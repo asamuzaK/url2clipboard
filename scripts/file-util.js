@@ -112,7 +112,9 @@ export const createFile = async (file, value) => {
   }
   const filePath = path.resolve(file);
   await fsPromise.writeFile(filePath, value, {
-    encoding: CHAR, flag: 'w', mode: PERM_FILE
+    encoding: CHAR,
+    flag: 'w',
+    mode: PERM_FILE
   });
   return filePath;
 };

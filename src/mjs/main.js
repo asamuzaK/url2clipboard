@@ -4,32 +4,81 @@
 
 /* shared */
 import {
-  executeScriptToTab, getActiveTab, getActiveTabId, getAllStorage, getAllTabsInWindow,
-  getHighlightedTab, getStorage, isTab, queryTabs, removeStorage, sendMessage
+  executeScriptToTab,
+  getActiveTab,
+  getActiveTabId,
+  getAllStorage,
+  getAllTabsInWindow,
+  getHighlightedTab,
+  getStorage,
+  isTab,
+  queryTabs,
+  removeStorage,
+  sendMessage
 } from './browser.js';
 import { getType, isObjectNotEmpty, isString } from './common.js';
 import { execCopy } from './exec-copy.js';
 import {
-  createLinkText, createTabsLinkText, enabledFormats, getFormat, getFormatId,
-  getFormatsKeys, getFormatTitle, hasFormat, setFormat, setFormatData,
+  createLinkText,
+  createTabsLinkText,
+  enabledFormats,
+  getFormat,
+  getFormatId,
+  getFormatsKeys,
+  getFormatTitle,
+  hasFormat,
+  setFormat,
+  setFormatData,
   toggleEnabledFormats
 } from './format.js';
 import { setIcon } from './icon.js';
 import {
-  createContextMenu, removeContextMenu, updateContextMenu
+  createContextMenu,
+  removeContextMenu,
+  updateContextMenu
 } from './menu.js';
 import { notifyOnCopy } from './notify.js';
 import { promptContent } from './prompt.js';
 import { sanitizeURL } from './sanitize.js';
 import {
-  ATTR_HTML_HYPER, ATTR_HTML_PLAIN, CMD_COPY, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, COPY_TAB, COPY_TABS_ALL, COPY_TABS_OTHER,
-  COPY_TABS_SELECTED, EXEC_COPY, HTML_HYPER, HTML_PLAIN, ICON_AUTO, ICON_BLACK,
-  ICON_COLOR, ICON_DARK, ICON_LIGHT, ICON_WHITE, INCLUDE_ATTR_HTML_HYPER,
-  INCLUDE_ATTR_HTML_PLAIN, INCLUDE_TITLE_HTML_HYPER, INCLUDE_TITLE_HTML_PLAIN,
-  INCLUDE_TITLE_MARKDOWN, JS_CONTEXT_INFO, MARKDOWN, MIME_HTML, MIME_PLAIN,
-  NOTIFY_COPY, OPTIONS_OPEN, PREFER_CANONICAL, PROMPT, TEXT_FRAG_HTML_HYPER,
-  TEXT_FRAG_HTML_PLAIN, TEXT_SEP_LINES, TEXT_TEXT_URL, WEBEXT_ID
+  ATTR_HTML_HYPER,
+  ATTR_HTML_PLAIN,
+  CMD_COPY,
+  CONTEXT_INFO,
+  CONTEXT_INFO_GET,
+  COPY_LINK,
+  COPY_PAGE,
+  COPY_TAB,
+  COPY_TABS_ALL,
+  COPY_TABS_OTHER,
+  COPY_TABS_SELECTED,
+  EXEC_COPY,
+  HTML_HYPER,
+  HTML_PLAIN,
+  ICON_AUTO,
+  ICON_BLACK,
+  ICON_COLOR,
+  ICON_DARK,
+  ICON_LIGHT,
+  ICON_WHITE,
+  INCLUDE_ATTR_HTML_HYPER,
+  INCLUDE_ATTR_HTML_PLAIN,
+  INCLUDE_TITLE_HTML_HYPER,
+  INCLUDE_TITLE_HTML_PLAIN,
+  INCLUDE_TITLE_MARKDOWN,
+  JS_CONTEXT_INFO,
+  MARKDOWN,
+  MIME_HTML,
+  MIME_PLAIN,
+  NOTIFY_COPY,
+  OPTIONS_OPEN,
+  PREFER_CANONICAL,
+  PROMPT,
+  TEXT_FRAG_HTML_HYPER,
+  TEXT_FRAG_HTML_PLAIN,
+  TEXT_SEP_LINES,
+  TEXT_TEXT_URL,
+  WEBEXT_ID
 } from './constant.js';
 
 /* api */
@@ -120,9 +169,7 @@ export const getFormatTemplate = id => {
   const item = getFormat(id);
   let template;
   if (item) {
-    const {
-      id: itemId, template: itemTmpl, templateAlt: itemTmplAlt
-    } = item;
+    const { id: itemId, template: itemTmpl, templateAlt: itemTmplAlt } = item;
     switch (itemId) {
       case HTML_HYPER:
         template = userOpts.get(INCLUDE_TITLE_HTML_HYPER)
@@ -140,9 +187,7 @@ export const getFormatTemplate = id => {
           : itemTmplAlt;
         break;
       case TEXT_TEXT_URL:
-        template = userOpts.get(TEXT_SEP_LINES)
-          ? itemTmplAlt
-          : itemTmpl;
+        template = userOpts.get(TEXT_SEP_LINES) ? itemTmplAlt : itemTmpl;
         break;
       default:
         template = itemTmpl;
@@ -295,13 +340,21 @@ export const extractClickedData = async (info, tab) => {
   let func;
   if (isObjectNotEmpty(info) && isObjectNotEmpty(tab)) {
     const {
-      editedText, isEdited, linkText, linkUrl, menuItemId, selectionText
+      editedText,
+      isEdited,
+      linkText,
+      linkUrl,
+      menuItemId,
+      selectionText
     } = info;
     const { id: tabId, title: tabTitle, url: tabUrl } = tab;
     if (menuItemId === OPTIONS_OPEN) {
       func = runtime.openOptionsPage();
-    } else if (isString(menuItemId) &&
-               Number.isInteger(tabId) && tabId !== TAB_ID_NONE) {
+    } else if (
+      isString(menuItemId) &&
+      Number.isInteger(tabId) &&
+      tabId !== TAB_ID_NONE
+    ) {
       if (!userOpts.size) {
         await setUserOpts();
       }
@@ -312,8 +365,9 @@ export const extractClickedData = async (info, tab) => {
       const formatId = getFormatId(menuItemId);
       const formatTitle = getFormatTitle(formatId);
       const mimeType = formatId === HTML_HYPER ? MIME_HTML : MIME_PLAIN;
-      const newLine =
-        !!(formatId === TEXT_TEXT_URL && userOpts.get(TEXT_SEP_LINES));
+      const newLine = !!(
+        formatId === TEXT_TEXT_URL && userOpts.get(TEXT_SEP_LINES)
+      );
       let attr = '';
       if (formatId === HTML_HYPER) {
         if (userOpts.get(INCLUDE_ATTR_HTML_HYPER)) {
@@ -396,11 +450,11 @@ export const extractClickedData = async (info, tab) => {
         let title;
         let url;
         if (menuItemId.startsWith(COPY_PAGE)) {
-          if (selectionText &&
-              ((formatId === HTML_HYPER &&
-                userOpts.get(TEXT_FRAG_HTML_HYPER)) ||
-               (formatId === HTML_PLAIN &&
-                userOpts.get(TEXT_FRAG_HTML_PLAIN)))) {
+          if (
+            selectionText &&
+            ((formatId === HTML_HYPER && userOpts.get(TEXT_FRAG_HTML_HYPER)) ||
+              (formatId === HTML_PLAIN && userOpts.get(TEXT_FRAG_HTML_PLAIN)))
+          ) {
             const textFrag = `#:~:text=${encodeURIComponent(selectionText)}`;
             const { href: textFragUrl } = new URL(textFrag, tabUrl);
             url = await sanitizeURL(textFragUrl, {
@@ -477,7 +531,12 @@ export const extractClickedData = async (info, tab) => {
             });
           } else {
             text = await createLinkText({
-              attr, content, formatId, template, title, url
+              attr,
+              content,
+              formatId,
+              template,
+              title,
+              url
             });
           }
         }
@@ -503,7 +562,7 @@ export const extractClickedData = async (info, tab) => {
 export const handleActiveTab = async (info = {}) => {
   const { tabId } = info;
   let func;
-  if (Number.isInteger(tabId) && await isTab(tabId)) {
+  if (Number.isInteger(tabId) && (await isTab(tabId))) {
     func = updateContextMenu(true);
   }
   return func || null;
@@ -654,7 +713,9 @@ export const setStorageValue = async (item, obj, changed = false) => {
               [item]: {
                 checked
               }
-            }).then(removeContextMenu).then(createContextMenu);
+            })
+              .then(removeContextMenu)
+              .then(createContextMenu);
           } else {
             func = setUserEnabledFormats({
               [item]: {
@@ -705,7 +766,9 @@ export const handleStorage = async (data, area = 'local', changed = false) => {
  */
 export const startup = async () => {
   await setFormatData();
-  return getAllStorage().then(handleStorage).then(removeContextMenu)
+  return getAllStorage()
+    .then(handleStorage)
+    .then(removeContextMenu)
     .then(createContextMenu);
 };
 

@@ -6,12 +6,25 @@
 import { getActiveTab, getAllStorage, sendMessage } from './browser.js';
 import { getType, isObjectNotEmpty, isString, throwErr } from './common.js';
 import {
-  getFormat, getFormatId, getFormats, getFormatsKeys, hasFormat, setFormat
+  getFormat,
+  getFormatId,
+  getFormats,
+  getFormatsKeys,
+  hasFormat,
+  setFormat
 } from './format.js';
 import { localizeHtml } from './localize.js';
 import {
-  CONTENT_LINK, CONTENT_PAGE, CONTEXT_INFO, CONTEXT_INFO_GET,
-  COPY_LINK, COPY_PAGE, EXEC_COPY, LINK_DETAILS, LINK_MENU, OPTIONS_OPEN
+  CONTENT_LINK,
+  CONTENT_PAGE,
+  CONTEXT_INFO,
+  CONTEXT_INFO_GET,
+  COPY_LINK,
+  COPY_PAGE,
+  EXEC_COPY,
+  LINK_DETAILS,
+  LINK_MENU,
+  OPTIONS_OPEN
 } from './constant.js';
 
 /* api */
@@ -135,7 +148,8 @@ export const createCopyData = async evt => {
         }
         func = sendMessage(null, {
           [EXEC_COPY]: {
-            info, tab
+            info,
+            tab
           }
         });
       }

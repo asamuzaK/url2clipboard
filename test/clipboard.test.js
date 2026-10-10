@@ -132,9 +132,13 @@ describe('clipboard', () => {
 
       it('should throw', () => {
         const clip = new Clip();
-        assert.throws(() => {
-          clip.content = 1;
-        }, TypeError, 'Expected String but got Number.');
+        assert.throws(
+          () => {
+            clip.content = 1;
+          },
+          TypeError,
+          'Expected String but got Number.'
+        );
       });
 
       it('should set value', () => {
@@ -155,23 +159,35 @@ describe('clipboard', () => {
 
       it('should throw', () => {
         const clip = new Clip();
-        assert.throws(() => {
-          clip.mime = 1;
-        }, TypeError, 'Expected String but got Number.');
+        assert.throws(
+          () => {
+            clip.mime = 1;
+          },
+          TypeError,
+          'Expected String but got Number.'
+        );
       });
 
       it('should throw', () => {
         const clip = new Clip();
-        assert.throws(() => {
-          clip.mime = 'image/jpg';
-        }, Error, 'Mime type of image/jpg is not supported.');
+        assert.throws(
+          () => {
+            clip.mime = 'image/jpg';
+          },
+          Error,
+          'Mime type of image/jpg is not supported.'
+        );
       });
 
       it('should throw', () => {
         const clip = new Clip();
-        assert.throws(() => {
-          clip.mime = ' image/jpg ';
-        }, Error, 'Mime type of image/jpg is not supported.');
+        assert.throws(
+          () => {
+            clip.mime = ' image/jpg ';
+          },
+          Error,
+          'Mime type of image/jpg is not supported.'
+        );
       });
 
       it('should set value', () => {
@@ -211,8 +227,9 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
@@ -241,16 +258,19 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
         const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const clip =
-          new Clip('<a href="https://example.com">foo bar</a>', 'text/html');
+        const clip = new Clip(
+          '<a href="https://example.com">foo bar</a>',
+          'text/html'
+        );
         const i = stubSetData.withArgs('text/plain', 'foo bar').callCount;
         await clip._copySync();
         assert.strictEqual(stubRemove.calledOnce, true, 'called');
@@ -258,8 +278,10 @@ describe('clipboard', () => {
         assert.strictEqual(stubPreventDefault.calledOnce, true, 'called');
         assert.strictEqual(stubSetData.callCount, 2, 'called');
         assert.strictEqual(
-          stubSetData.withArgs('text/plain', 'foo bar').callCount, i + 1,
-          'called');
+          stubSetData.withArgs('text/plain', 'foo bar').callCount,
+          i + 1,
+          'called'
+        );
         stubAdd.restore();
         stubRemove.restore();
         delete document.execCommand;
@@ -276,8 +298,9 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
@@ -307,8 +330,9 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
@@ -333,8 +357,9 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
@@ -364,15 +389,19 @@ describe('clipboard', () => {
             setData: stubSetData
           }
         };
-        const stubAdd =
-          sinon.stub(document, 'addEventListener').callsFake((...args) => {
+        const stubAdd = sinon
+          .stub(document, 'addEventListener')
+          .callsFake((...args) => {
             const [, callback] = args;
             return callback(evt);
           });
         const stubRemove = sinon.stub(document, 'removeEventListener');
         const fakeExec = sinon.fake();
         document.execCommand = fakeExec;
-        const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==', 'base64');
+        const png = Buffer.from(
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==',
+          'base64'
+        );
         const clip = new Clip(png.toString('binary'), 'image/png');
         const i = stubSetData.callCount;
         await clip._copySync();
@@ -391,8 +420,10 @@ describe('clipboard', () => {
         const clip = new Clip('foo', 'image/jpg');
         await clip.copy().catch(e => {
           assert.strictEqual(e instanceof Error, true);
-          assert.strictEqual(e.message,
-            'Mime type of image/jpg is not supported.');
+          assert.strictEqual(
+            e.message,
+            'Mime type of image/jpg is not supported.'
+          );
         });
       });
 
@@ -608,7 +639,10 @@ describe('clipboard', () => {
       });
 
       it('should call function', async () => {
-        const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==', 'base64');
+        const png = Buffer.from(
+          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==',
+          'base64'
+        );
         const clip = new Clip(png.toString('binary'), 'image/png');
         const fakeWriteText = sinon.fake();
         const fakeWrite = sinon.fake();

@@ -34,7 +34,7 @@ const getType = o =>
  */
 const isObjectNotEmpty = o => {
   const items = /Object/i.test(getType(o)) && Object.keys(o);
-  return !!(items?.length);
+  return !!items?.length;
 };
 
 /**
@@ -106,7 +106,9 @@ export const getCloseTabsByDoubleClickValue = async () => {
   });
   let userValue;
   if (isGranted) {
-    const { browserSettings: { closeTabsByDoubleClick } } = browser;
+    const {
+      browserSettings: { closeTabsByDoubleClick }
+    } = browser;
     userValue = await closeTabsByDoubleClick.get({});
   }
   return userValue ?? null;
@@ -122,7 +124,9 @@ export const setContextMenuOnMouseup = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings: { contextMenuShowEvent } } = browser;
+    const {
+      browserSettings: { contextMenuShowEvent }
+    } = browser;
     const { levelOfControl, value } = await contextMenuShowEvent.get({});
     if (value === 'mouseup') {
       res = true;
@@ -145,7 +149,9 @@ export const clearContextMenuOnMouseup = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings: { contextMenuShowEvent } } = browser;
+    const {
+      browserSettings: { contextMenuShowEvent }
+    } = browser;
     res = await contextMenuShowEvent.clear({});
   }
   return !!res;
@@ -161,7 +167,9 @@ export const getNewTabPositionValue = async () => {
   });
   let res;
   if (isGranted) {
-    const { browserSettings: { newTabPosition } } = browser;
+    const {
+      browserSettings: { newTabPosition }
+    } = browser;
     res = await newTabPosition.get({});
   }
   return res ?? null;
@@ -179,8 +187,9 @@ export const isCommandCustomizable = async () => {
   let bool;
   if (isGranted) {
     const { commands } = browser;
-    bool = typeof commands.update === 'function' &&
-           typeof commands.reset === 'function';
+    bool =
+      typeof commands.update === 'function' &&
+      typeof commands.reset === 'function';
   }
   return !!bool;
 };
@@ -201,11 +210,16 @@ export const updateCommand = async (id, value = '') => {
   let func;
   if (await isCommandCustomizable()) {
     const { commands } = browser;
-    const shortcut =
-      value.trim().replace(/\+([a-z])$/, (m, c) => `+${c.toUpperCase()}`);
+    const shortcut = value
+      .trim()
+      .replace(/\+([a-z])$/, (m, c) => `+${c.toUpperCase()}`);
     if (shortcut === '') {
       func = commands.reset(id);
-    } else if (/^(?:(?:Alt|Command|(?:Mac)?Ctrl)(?:\+Shift)?|Alt\+(?:Command|(?:Mac)?Ctrl)|Command\+(?:Alt|MacCtrl)|Ctrl\+(?:Alt|MacCtrl)|MacCtrl\+(?:Alt|Command|Ctrl))\+[\dA-Z]|F[1-9]|Media(?:(?:Next|Prev)Track|PlayPause|Stop)$/.test(shortcut)) {
+    } else if (
+      /^(?:(?:Alt|Command|(?:Mac)?Ctrl)(?:\+Shift)?|Alt\+(?:Command|(?:Mac)?Ctrl)|Command\+(?:Alt|MacCtrl)|Ctrl\+(?:Alt|MacCtrl)|MacCtrl\+(?:Alt|Command|Ctrl))\+[\dA-Z]|F[1-9]|Media(?:(?:Next|Prev)Track|PlayPause|Stop)$/.test(
+        shortcut
+      )
+    ) {
       func = commands.update({
         shortcut,
         name: id
@@ -1063,19 +1077,24 @@ export const warmupTab = async tabId => {
 export const captureVisibleTab = async (windowId, opt) => {
   const info = await runtime.getBrowserInfo();
   let isGranted;
-  if (info.vender === 'Mozilla') {
+  if (info.vendor === 'Mozilla') {
     const browserVersion = parseFloat(info.version);
-    isGranted = (browserVersion >= 126 && await isPermissionGranted({
-      permissions: ['activeTab']
-    })) || await isPermissionGranted({
-      origins: ['<all_urls>']
-    });
+    isGranted =
+      (browserVersion >= 126 &&
+        (await isPermissionGranted({
+          permissions: ['activeTab']
+        }))) ||
+      (await isPermissionGranted({
+        origins: ['<all_urls>']
+      }));
   } else {
-    isGranted = await isPermissionGranted({
-      permissions: ['activeTab']
-    }) || await isPermissionGranted({
-      origins: ['<all_urls>']
-    });
+    isGranted =
+      (await isPermissionGranted({
+        permissions: ['activeTab']
+      })) ||
+      (await isPermissionGranted({
+        origins: ['<all_urls>']
+      }));
   }
   let url;
   if (isGranted) {
@@ -1125,8 +1144,9 @@ export const getCurrentTheme = async windowId => {
   let currentTheme;
   if (isGranted) {
     const { theme } = browser;
-    currentTheme =
-      await theme.getCurrent(Number.isInteger(windowId) ? windowId : null);
+    currentTheme = await theme.getCurrent(
+      Number.isInteger(windowId) ? windowId : null
+    );
   }
   return currentTheme ?? null;
 };

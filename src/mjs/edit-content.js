@@ -9,7 +9,9 @@
  * @returns {?string} - edited content
  */
 export const editContent = (content = '', msg = '') => {
-  const editedContent =
-    window?.prompt(msg, content.replace(/\s+/g, ' ').trim());
+  const editedContent = window?.prompt(
+    msg,
+    content.replace(/\s+/g, ' ').trim()
+  );
   return editedContent;
 };
