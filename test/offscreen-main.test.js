@@ -9,7 +9,6 @@ import sinon from 'sinon';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import DOMPurify from '../src/lib/purify/purify.min.js';
 import {
   EXEC_COPY,
   MIME_PLAIN,
@@ -26,7 +25,6 @@ describe('offscreen-main', () => {
     const stubWriteText = sinon.stub();
     const dom = createJsdom();
     window = dom && dom.window;
-    window.DOMPurify = DOMPurify;
     document = window && window.document;
     document.execCommand = sinon.stub();
     navigator = window && window.navigator;

@@ -8,7 +8,6 @@ import { afterEach, beforeEach, describe, it } from 'mocha';
 import { browser, createJsdom } from './mocha/setup.js';
 
 /* test */
-import DOMPurify from '../src/lib/purify/purify.min.js';
 import * as mjs from '../src/mjs/sanitize.js';
 
 describe('sanitize', () => {
@@ -16,7 +15,6 @@ describe('sanitize', () => {
     'Blob',
     'ClipboardItem',
     'DOMParser',
-    'DOMPurify',
     'HTMLUnknownElement',
     'Node',
     'XMLSerializer'
@@ -25,7 +23,6 @@ describe('sanitize', () => {
   beforeEach(() => {
     const dom = createJsdom();
     window = dom && dom.window;
-    window.DOMPurify = DOMPurify;
     document = window.document;
     browser._sandbox.reset();
     browser.i18n.getMessage.callsFake((...args) => args.toString());
