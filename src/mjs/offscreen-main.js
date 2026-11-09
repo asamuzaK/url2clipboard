@@ -3,7 +3,7 @@
  */
 
 /* shared */
-import { sanitizeURL } from '../lib/url/url-sanitizer.min.js';
+import { sanitizeURL } from '../lib/url/url-sanitizer-wo-dompurify.min.js';
 import { Clip } from './clipboard.js';
 import { throwErr } from './common.js';
 import { editContent } from './edit-content.js';

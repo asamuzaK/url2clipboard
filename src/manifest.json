@@ -6,6 +6,7 @@
   },
   "background": {
     "scripts": [
+      "lib/purify/purify.min.js",
       "mjs/background.js"
     ],
     "type": "module"
