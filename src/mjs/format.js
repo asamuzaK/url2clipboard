@@ -420,9 +420,9 @@ export const createLinkText = async (data = {}) => {
       break;
     default:
   }
-  return template
-    .replace(/%content%/g, content)
-    .replace(/%url%/g, url)
-    .replace(/%title%/g, title)
-    .replace(/%attr%/g, attr);
+  const values = { attr, content, title, url };
+  return template.replace(
+    /%(attr|content|title|url)%/g,
+    (m, key) => values[key]
+  );
 };

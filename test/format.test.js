@@ -516,6 +516,38 @@ describe('format', () => {
       assert.strictEqual(res, '', 'result');
     });
 
+    it('should keep replacement patterns in the values', async () => {
+      const data = {
+        content: "US$$ $` $'",
+        formatId: MARKDOWN,
+        template: formatData[MARKDOWN].template,
+        title: 'foo $& bar',
+        url: 'https://example.com/?min=1$&max=2$'
+      };
+      const res = await func(data);
+      assert.strictEqual(
+        res,
+        '[US$$ $` $\'](https://example.com/?min=1$&max=2$ "foo $&amp; bar")',
+        'result'
+      );
+    });
+
+    it('should not replace placeholders in the values', async () => {
+      const data = {
+        content: 'foo %url% %title% bar',
+        formatId: MARKDOWN,
+        template: formatData[MARKDOWN].template,
+        title: 'foo %attr% bar',
+        url: 'https://example.com/'
+      };
+      const res = await func(data);
+      assert.strictEqual(
+        res,
+        '[foo %url% %title% bar](https://example.com/ "foo %attr% bar")',
+        'result'
+      );
+    });
+
     it('should get string', async () => {
       const { href: url } = new URL('https://example.com/foo bar');
       const data = {
